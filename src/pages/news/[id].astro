@@ -3,6 +3,10 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
+// Normalize the base URL to ensure it works in all environments
+// This removes a trailing slash if it exists, so we can safely add "/news"
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 // 1. Tell Astro to generate a page for every markdown file in the 'news' collection
 export async function getStaticPaths() {
   const newsEntries = await getCollection('news');
@@ -22,10 +26,10 @@ const { Content } = await render(post);
   <div class="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-brand-orange/5 to-transparent -z-10"></div>
 
   <nav class="max-w-7xl mx-auto px-6 py-8 flex justify-between items-center">
-    <a href={import.meta.env.BASE_URL} class="text-2xl font-bold text-brand-dark tracking-tight hover:opacity-80 transition-opacity">
+    <a href={`${baseUrl}/`} class="text-2xl font-bold text-brand-dark tracking-tight hover:opacity-80 transition-opacity">
       Bio<span class="font-normal">Portal</span>
     </a>
-    <a href={`${import.meta.env.BASE_URL}#insights`} class="text-brand-orange font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
+    <a href={`${baseUrl}/#insights`} class="text-brand-orange font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       Back to Insights
     </a>
@@ -63,9 +67,6 @@ const { Content } = await render(post);
 <style>
   @reference "../../styles/global.css";
 
-  /* Since we are rendering raw Markdown, we need to style the tags (h2, p, a, ul) 
-    that Astro generates automatically from your .md files. 
-  */
   .article-content :global(h2) {
     @apply text-3xl font-bold text-gray-900 mt-12 mb-6 tracking-tight;
   }
