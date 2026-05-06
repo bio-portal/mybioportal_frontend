@@ -1,5 +1,5 @@
 ---
-title: "CQDM, Roche, The Jewish General Hospital Foundation, and McGill University Fund Research Project on Diabetic Kidney Disease"
+title: "THIS IS FAKE NOT REAL PLACEHOLDER **** CQDM, Roche, The Jewish General Hospital Foundation, and McGill University Fund Research Project on Diabetic Kidney Disease"
 date: 2025-08-28
 tag: "Funding"
 excerpt: "New resources dedicated to uncovering multi-omic biomarkers for diabetic nephropathy to advance patient outcomes."

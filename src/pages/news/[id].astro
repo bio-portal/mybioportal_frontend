@@ -22,10 +22,10 @@ const { Content } = await render(post);
   <div class="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-brand-orange/5 to-transparent -z-10"></div>
 
   <nav class="max-w-7xl mx-auto px-6 py-8 flex justify-between items-center">
-    <a href="/" class="text-2xl font-bold text-brand-dark tracking-tight hover:opacity-80 transition-opacity">
+    <a href={import.meta.env.BASE_URL} class="text-2xl font-bold text-brand-dark tracking-tight hover:opacity-80 transition-opacity">
       Bio<span class="font-normal">Portal</span>
     </a>
-    <a href="/#insights" class="text-brand-orange font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
+    <a href={`${import.meta.env.BASE_URL}#insights`} class="text-brand-orange font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       Back to Insights
     </a>
