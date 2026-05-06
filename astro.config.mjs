@@ -1,12 +1,13 @@
-// astro.config.mjs
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  // Your GitHub Pages URL
+  // Must be your exact GitHub pages domain
   site: 'https://bio-portal.github.io',
-  // The name of your repository
+  
+  // MUST have this exact line, starting with a slash
   base: '/mybioportal_frontend',
+  
   vite: {
     plugins: [tailwindcss()],
   },
