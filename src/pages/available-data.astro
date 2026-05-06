@@ -1,0 +1,94 @@
+---
+// src/pages/available-data.astro
+import Layout from '../layouts/Layout.astro';
+
+// We define the data up here so the HTML below can map over it automatically
+const stats = [
+  { label: "Clinical Data", value: "5,985", detail: "Patients with structured metadata" },
+  { label: "Plasma Aliquots", value: "43,650", detail: "Stored securely at JGH Biobank" },
+  { label: "Urine Aliquots", value: "6,284", detail: "Linked to clinical information" },
+  { label: "Proteomics", value: "1,543", detail: "Patients (Olink HT Explore)" },
+  { label: "Genomics", value: "Active", detail: "Sequencing & Variant data ready" },
+];
+---
+
+<Layout title="Available Data | BioPortal">
+  
+  <div class="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue/10 via-brand-green/5 to-transparent -z-10"></div>
+
+  <nav class="max-w-7xl mx-auto px-6 py-8 flex justify-between items-center relative z-10">
+    <a href="/" class="text-3xl font-bold tracking-tight text-brand-charcoal">
+      Bio<span class="font-normal">Portal</span>
+    </a>
+    <div class="hidden md:flex gap-8 font-medium text-brand-charcoal/80">
+      <a href="/available-data" class="text-brand-blue transition-colors">Available Data</a>
+      <a href="/participants" class="hover:text-brand-green transition-colors">Participants</a>
+      <a href="/insights" class="hover:text-brand-orange transition-colors">Insights</a>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-6 pt-12 pb-24 relative z-10">
+    
+    <header class="max-w-3xl mb-16">
+      <h1 class="text-5xl lg:text-6xl font-bold text-brand-charcoal leading-tight mb-6 tracking-tight">Data Inventory</h1>
+      <p class="text-xl text-brand-charcoal/70 leading-relaxed">
+        BioPortal organizes datasets through a secure Bento-powered framework. Below is the current real-time availability of biospecimens and clinical datasets.
+      </p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+      {stats.map((stat) => (
+        <div class="bg-white rounded-3xl p-8 shadow-soft border border-brand-blue/10 hover:-translate-y-1 transition-transform duration-300 flex flex-col justify-between">
+          <div>
+            <div class="text-brand-blue font-bold uppercase tracking-wider text-sm mb-4">
+              {stat.label}
+            </div>
+            <div class="text-5xl font-bold text-brand-charcoal mb-4">
+              {stat.value}
+            </div>
+          </div>
+          <div class="text-brand-charcoal/60 font-medium">
+            {stat.detail}
+          </div>
+        </div>
+      ))}
+      
+      <div class="bg-gradient-to-br from-brand-blue to-brand-green rounded-3xl p-8 shadow-soft text-white flex flex-col justify-center items-start hover:-translate-y-1 transition-transform duration-300">
+        <h3 class="font-bold text-2xl mb-4 leading-snug">Need technical documentation?</h3>
+        <a href="/data-access" class="bg-white text-brand-charcoal px-6 py-3 rounded-full font-semibold text-sm hover:shadow-lg transition-all flex items-center gap-2">
+          Access Protocol
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <section class="grid lg:grid-cols-2 gap-8">
+      
+      <div class="bg-white rounded-3xl p-10 shadow-soft border border-brand-orange/10 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-2 h-full bg-brand-orange"></div>
+        <h2 class="text-2xl font-bold mb-4 text-brand-charcoal">Open Science Framework</h2>
+        <p class="text-brand-charcoal/70 leading-relaxed mb-6">
+          BioPortal is built on the principle of Open Science. Any qualified investigator or partner worldwide can apply to access genomic data. Biospecimen samples are finite and require strong scientific justification for use.
+        </p>
+        <ul class="space-y-3 text-brand-charcoal/80 font-medium">
+          <li class="flex items-center gap-2"><span class="text-brand-orange font-bold">→</span> Agree to Legal Framework</li>
+          <li class="flex items-center gap-2"><span class="text-brand-orange font-bold">→</span> Obtain Independent REB Approval</li>
+          <li class="flex items-center gap-2"><span class="text-brand-orange font-bold">→</span> DSAC Committee Review</li>
+        </ul>
+      </div>
+
+      <div class="bg-white rounded-3xl p-10 shadow-soft border border-brand-green/10 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-2 h-full bg-brand-green"></div>
+        <h2 class="text-2xl font-bold mb-4 text-brand-charcoal">Platform Infrastructure</h2>
+        <p class="text-brand-charcoal/70 leading-relaxed mb-6">
+          Datasets are searched using a set of predefined variables, allowing for rapid exploration. This environment is an invaluable resource for assessing study cohort viability.
+        </p>
+        <div class="flex gap-3 mt-auto">
+            <span class="px-4 py-2 rounded-full bg-brand-green/10 text-brand-green font-bold text-sm">Bento v2</span>
+            <span class="px-4 py-2 rounded-full bg-brand-blue/10 text-brand-blue font-bold text-sm">C3G Powered</span>
+        </div>
+      </div>
+
+    </section>
+  </main>
+</Layout>

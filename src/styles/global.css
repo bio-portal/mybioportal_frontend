@@ -1,0 +1,27 @@
+/* 1. Imports FIRST */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+/* 2. Theme definitions SECOND */
+@theme {
+  --color-brand-cyan: #4baade;
+  --color-brand-orange: #f27521;
+  --color-brand-green: #8dc63f;
+  --color-brand-dark: #003f5e;
+  --color-surface: #fbfcfd;
+
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* 3. Base styles and utilities LAST */
+@layer base {
+  body {
+    @apply bg-surface text-gray-800 antialiased;
+    font-family: var(--font-sans);
+  }
+}
+
+@utility focus-ring {
+  outline: 2px solid var(--color-brand-dark);
+  outline-offset: 2px;
+}
