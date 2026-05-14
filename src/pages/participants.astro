@@ -1,0 +1,72 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+const pageData = await getEntry('pages', 'participants');
+const { hero, steps, benefit } = pageData.data;
+---
+
+<Layout title="Join BioPortal | Advancing Diabetes Research">
+  <nav class="w-full z-50 bg-surface py-6 border-b border-gray-100">
+    <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
+      <a href={`${baseUrl}/`} class="flex items-center gap-2 group">
+        <span class="text-xl font-bold text-brand-dark tracking-tight">BioPortal<span class="text-brand-orange-mid">.</span></span>
+      </a>
+      <a href={`${baseUrl}/`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        Back
+      </a>
+    </div>
+  </nav>
+
+  <div class="fixed top-0 inset-x-0 h-[600px] bg-gradient-to-br from-brand-orange-mid/5 via-brand-yellow/5 to-transparent -z-10"></div>
+
+  <main class="max-w-6xl mx-auto px-6 py-16 lg:py-24">
+    <div class="flex flex-col lg:flex-row gap-16 items-start">
+      <div class="lg:w-7/12">
+        <span class="text-brand-orange-deep font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
+        <h1 class="text-4xl lg:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight leading-[1.1]">
+          {hero.headline}<br/>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange-mid to-brand-orange-deep">{hero.gradientText}</span>
+        </h1>
+
+        <p class="text-lg text-gray-600 leading-relaxed mb-12">{hero.description}</p>
+
+        <div class="mb-12">
+          <h3 class="text-xl font-bold text-gray-900 mb-6">How participation works:</h3>
+          <div class="space-y-6">
+            {steps.map((step: any, index: number) => (
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-brand-orange-mid/10 text-brand-orange-deep flex items-center justify-center font-black shrink-0">{index + 1}</div>
+                <div>
+                  <h4 class="font-bold text-gray-900">{step.title}</h4>
+                  <p class="text-sm text-gray-500">{step.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="bg-white border-2 border-brand-orange-mid/20 rounded-[2rem] p-8 shadow-xl shadow-brand-orange-mid/5 relative overflow-hidden group">
+          <div class="absolute top-0 left-0 w-2 h-full bg-brand-orange-mid group-hover:w-3 transition-all"></div>
+          <div class="flex items-center gap-3 mb-3 mt-1">
+            <h3 class="text-2xl font-bold text-gray-900">{benefit.title}</h3>
+          </div>
+          <p class="text-gray-600 leading-relaxed mb-4">{benefit.desc}</p>
+        </div>
+      </div>
+
+      <div class="lg:w-5/12 w-full lg:sticky lg:top-8">
+        <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-gray-200 border border-gray-100 p-8">
+          <h3 class="text-2xl font-bold text-gray-900 mb-2 text-center">Ready to help?</h3>
+          <p class="text-gray-500 mb-6 text-center text-sm">Securely check your eligibility for our studies.</p>
+
+          <div class="w-full bg-surface rounded-2xl overflow-hidden min-h-[500px]">
+            <iframe id="JotFormIFrame-252394008840658" title="BioPortal Participant Intake" allowtransparency="true" allow="geolocation; microphone; camera; fullscreen" src="https://form.jotform.com/252394008840658" frameborder="0" style="min-width:100%;max-width:100%;height:500px;border:none;" scrolling="no"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

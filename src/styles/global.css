@@ -1,27 +1,30 @@
-/* 1. Imports FIRST */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
-@import "tailwindcss";
+@import "tailwindcss"; /* <-- ADD THIS LINE */
 
-/* 2. Theme definitions SECOND */
 @theme {
-  --color-brand-cyan: #4baade;
-  --color-brand-orange: #f27521;
-  --color-brand-green: #8dc63f;
+  /* Warm Path (Participants / Help) */
+  --color-brand-orange-deep: #f37a21;
+  --color-brand-orange-mid: #f89a19;
+  --color-brand-yellow: #fdbb10;
+
+  /* Bridge Path (Health / Growth) */
+  --color-brand-green-bright: #7fc342;
+  --color-brand-green-mid: #99c43c;
+  --color-brand-lime: #b3c735;
+
+  /* Cool Path (Researchers / Data) */
+  --color-brand-blue-deep: #26abe2;
+  --color-brand-blue-mid: #56bee7;
+  --color-brand-blue-light: #9fdbee;
+  --color-brand-teal: #96d6c2;
+
+  /* UI Neutrals */
   --color-brand-dark: #003f5e;
   --color-surface: #fbfcfd;
 
   --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
 }
 
-/* 3. Base styles and utilities LAST */
-@layer base {
-  body {
-    @apply bg-surface text-gray-800 antialiased;
-    font-family: var(--font-sans);
-  }
-}
-
-@utility focus-ring {
-  outline: 2px solid var(--color-brand-dark);
-  outline-offset: 2px;
+/* 2026 Polish: The "Logo Gradient" Utility */
+@utility logo-gradient {
+  background: linear-gradient(135deg, #f37a21, #fdbb10, #7fc342, #26abe2);
 }

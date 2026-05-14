@@ -1,0 +1,16 @@
+id: participants
+hero:
+  tagline: "Participant Pathway"
+  headline: "Your data. Your health."
+  gradientText: "Our future."
+  description: "Every 3 minutes, a Canadian is diagnosed with Diabetes. Global biobanks currently lack diverse ethnic representation. By safely sharing a small amount of your time and health data, you become a critical part of the solution for Montreal and the world."
+steps:
+  - title: "Check Eligibility"
+    desc: "Fill out the brief secure form on this page to see if you qualify for our current diabetes studies."
+  - title: "Transparent Consent"
+    desc: "We will carefully explain how your data is de-identified and protected before you share any samples."
+  - title: "Free Health Assessment"
+    desc: "As a thank you, receive your free, Health Canada-approved diabetic retinopathy screening."
+benefit:
+  title: "Free Diabetic Eye Assessment"
+  desc: "We offer Health Canada-approved diabetic retinopathy imaging at no cost to participants. Within 5 minutes of the scan, your doctor receives a full diagnostic report."

@@ -1,0 +1,18 @@
+id: researchers
+hero:
+  tagline: "The BioPortal Dataset"
+  headline: "Open Science at Scale."
+  description: "Browse our real-time inventory of biospecimens and multi-omic data powered by a secure Bento v2 framework."
+stats:
+  - label: "Clinical Records"
+    value: "5,985"
+    color: "brand-cyan"
+  - label: "Plasma Aliquots"
+    value: "43.6K"
+    color: "brand-orange-mid"
+  - label: "Urine Aliquots"
+    value: "6,284"
+    color: "brand-green-bright"
+  - label: "Proteomics (Olink)"
+    value: "1,543"
+    color: "brand-dark"

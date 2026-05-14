@@ -1,9 +1,19 @@
-// src/content.config.ts
 import { defineCollection, z } from 'astro:content';
-import { glob } from 'astro/loaders'; // <-- This is the new v5/v6 loader
+import { glob } from 'astro/loaders';
+
+const pages = defineCollection({
+  loader: glob({ pattern: "*.yaml", base: "./src/content/pages" }),
+  schema: z.object({
+    id: z.string(),
+    hero: z.any().optional(),
+    trustBar: z.any().optional(),
+    steps: z.any().optional(),
+    benefit: z.any().optional(),
+    stats: z.any().optional(),
+  }),
+});
 
 const team = defineCollection({
-  // Tell Astro exactly where to load these files from
   loader: glob({ pattern: "*.{yaml,yml}", base: "./src/content/team" }),
   schema: z.object({
     name: z.string(),
@@ -14,7 +24,6 @@ const team = defineCollection({
 });
 
 const news = defineCollection({
-  // Tell Astro to load markdown files from the news folder
   loader: glob({ pattern: "*.md", base: "./src/content/news" }),
   schema: z.object({
     title: z.string(),
@@ -25,4 +34,4 @@ const news = defineCollection({
   }),
 });
 
-export const collections = { team, news };
+export const collections = { pages, team, news };

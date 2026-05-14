@@ -1,0 +1,62 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+const pageData = await getEntry('pages', 'researchers');
+const { hero, stats } = pageData.data;
+---
+
+<Layout title="Data Access | BioPortal">
+  <nav class="w-full z-50 bg-surface py-6 border-b border-gray-100">
+    <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
+      <a href={`${baseUrl}/`} class="flex items-center gap-2 group">
+        <span class="text-xl font-bold text-brand-dark tracking-tight">BioPortal<span class="text-brand-blue-deep">.</span></span>
+      </a>
+      <a href={`${baseUrl}/`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        Back
+      </a>
+    </div>
+  </nav>
+
+  <div class="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue-deep/10 via-brand-teal/5 to-transparent -z-10"></div>
+
+  <main class="max-w-7xl mx-auto px-6 pt-16 pb-24 relative z-10">
+    <header class="max-w-3xl mb-16 text-center mx-auto">
+      <span class="text-brand-blue-deep font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
+      <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 tracking-tight">{hero.headline}</h1>
+      <p class="text-xl text-gray-600 leading-relaxed">{hero.description}</p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+      {stats.map((stat: any) => (
+        <div class="bg-white rounded-3xl p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100">
+            <h3 class="text-5xl font-black text-gray-900 mb-2 tracking-tighter">{stat.value}</h3>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{stat.label}</p>
+        </div>
+      ))}
+    </div>
+
+    <section class="grid lg:grid-cols-2 gap-8">
+      <div class="bg-white rounded-[2rem] p-10 shadow-soft border border-gray-100 relative overflow-hidden">
+        <h2 class="text-2xl font-bold mb-4 text-gray-900">Open Science Framework</h2>
+        <p class="text-gray-600 leading-relaxed mb-6">BioPortal is built on the principle of Open Science. Any qualified investigator or partner worldwide can apply to access genomic data. Biospecimen samples are finite and require strong scientific justification for use.</p>
+        <ul class="space-y-3 text-gray-800 font-medium">
+          <li class="flex items-center gap-2"><span class="text-brand-blue-deep font-bold">→</span> Agree to Legal Framework</li>
+          <li class="flex items-center gap-2"><span class="text-brand-blue-deep font-bold">→</span> Obtain Independent REB Approval</li>
+          <li class="flex items-center gap-2"><span class="text-brand-blue-deep font-bold">→</span> DSAC Committee Review</li>
+        </ul>
+      </div>
+
+      <div class="bg-white rounded-[2rem] p-10 shadow-soft border border-gray-100 relative overflow-hidden flex flex-col items-start justify-center">
+        <h2 class="text-2xl font-bold mb-4 text-gray-900">Platform Infrastructure</h2>
+        <p class="text-gray-600 leading-relaxed mb-8">Datasets are searched using a set of predefined variables, allowing for rapid exploration. This environment is an invaluable resource for assessing study cohort viability.</p>
+        <div class="flex gap-3">
+            <span class="px-5 py-2 rounded-full bg-brand-teal/20 text-brand-dark font-bold text-sm">Bento v2</span>
+            <span class="px-5 py-2 rounded-full bg-brand-blue-light/20 text-brand-dark font-bold text-sm">C3G Powered</span>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>

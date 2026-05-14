@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 140" preserveAspectRatio="none">
+  <!-- Gentle curve for mobile: shallower arc -->
+  <path d="M0,126 C 480,110 1440,110 1920,126 L1920,140 L0,140 Z" fill="#ffffff"/>
+</svg>

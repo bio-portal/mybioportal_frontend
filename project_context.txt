@@ -1,0 +1,972 @@
+--- PROJECT STRUCTURE ---
+.
+├── astro.config.mjs
+├── gather_context.sh
+├── organize_assets.sh
+├── package.json
+├── package-lock.json
+├── project_context.txt
+├── public
+│   ├── docs
+│   │   └── Description-of-BioPortal-data-1st-Release-March25-2026.pdf
+│   ├── images
+│   │   ├── 18-1.svg
+│   │   ├── 3c4b31f19e.svg
+│   │   ├── BioPortal-Data-Page-2-1.webp
+│   │   ├── BioPortal-Explore-Data-1.webp
+│   │   ├── BioPortal-_For-participants_-1.webp
+│   │   ├── BioPortal-For-researchers.webp
+│   │   ├── BioPortal-Hero-Data-page-1.webp
+│   │   ├── Bottom-CTA-1-1-1.webp
+│   │   ├── businessman-presenting-glowing-graph-depicting-business-growth-success-1-1-1024x576.webp
+│   │   ├── businessman-presenting-glowing-graph-depicting-business-growth-success-1-1-300x169.webp
+│   │   ├── businessman-presenting-glowing-graph-depicting-business-growth-success-1-1-768x432.webp
+│   │   ├── businessman-presenting-glowing-graph-depicting-business-growth-success-1-1.webp
+│   │   ├── Canadian-Leaf-1.svg
+│   │   ├── cropped-Favicon_BioPortal_Primary_Color-180x180.png
+│   │   ├── cropped-Favicon_BioPortal_Primary_Color-192x192.png
+│   │   ├── cropped-Favicon_BioPortal_Primary_Color-32x32.png
+│   │   ├── Diabetes-Icon-1.svg
+│   │   ├── Discover-the-Data-1-1-1-1024x469.webp
+│   │   ├── Discover-the-Data-1-1-1-1536x703.webp
+│   │   ├── Discover-the-Data-1-1-1-2048x938.webp
+│   │   ├── Discover-the-Data-1-1-1-300x137.webp
+│   │   ├── Discover-the-Data-1-1-1-768x352.webp
+│   │   ├── Discover-the-Data-1-1-1.webp
+│   │   ├── DNA-TUBE-1-1-1-251x300.webp
+│   │   ├── DNA-TUBE-1-1-1-768x916.webp
+│   │   ├── DNA-TUBE-1-1-1.webp
+│   │   ├── Explore-Collaboration-1-scaled.webp
+│   │   ├── Hero-Available-Data-Page-1.webp
+│   │   ├── hero-curve-green-desktop.svg
+│   │   ├── hero-curve-green-mobile.svg
+│   │   ├── hero-curve.svg
+│   │   ├── hero-curve-white-mobile.svg
+│   │   ├── hero-curve-white-only.svg
+│   │   ├── Hero-Page-About-Us-1.webp
+│   │   ├── HeroParticipants-1.webp
+│   │   ├── Hero-Teams-Page-1.webp
+│   │   ├── image-11-1.png
+│   │   ├── image-1-1.webp
+│   │   ├── image-6.svg
+│   │   ├── image-7-1.webp
+│   │   ├── image-8-1-scaled.webp
+│   │   ├── Learn-How-to-Access-Bioportal-1-scaled.webp
+│   │   ├── Our-Vision-1.webp
+│   │   ├── Participants-1-scaled.webp
+│   │   └── Polygonal_Art-1.webp
+│   ├── logos
+│   │   ├── BioPortal_Mark_Color.png
+│   │   ├── BioPortal_Mark_Color.svg
+│   │   ├── cerc_logo-300x114-1.webp
+│   │   ├── fondation-famille-leger-logo-couleur-rgb-1.svg
+│   │   ├── Fondation-Luci-et-Andre-Chagnon-1-1170x452-1-1024x396.png
+│   │   ├── Fondation-Luci-et-Andre-Chagnon-1-1170x452-1-300x116.png
+│   │   ├── Fondation-Luci-et-Andre-Chagnon-1-1170x452-1-768x297.png
+│   │   ├── Fondation-Luci-et-Andre-Chagnon-1-1170x452-1.png
+│   │   ├── Hoffmann-La_Roche_logo.svg-300x157.png
+│   │   ├── Hoffmann-La_Roche_logo.svg-768x402.png
+│   │   ├── Hoffmann-La_Roche_logo.svg.png
+│   │   ├── logo-blue.5ffd82884a4afd1e22aaa9c2b95c836f-1024x577.png
+│   │   ├── logo-blue.5ffd82884a4afd1e22aaa9c2b95c836f-300x169.png
+│   │   ├── logo-blue.5ffd82884a4afd1e22aaa9c2b95c836f-768x432.png
+│   │   ├── logo-blue.5ffd82884a4afd1e22aaa9c2b95c836f.png
+│   │   ├── logo.png
+│   │   ├── Logo_TR_458_x123-300x81.png
+│   │   └── Logo_TR_458_x123.png
+│   ├── news
+│   │   ├── BioPortal-in-The-News-1-1024x574.webp
+│   │   ├── BioPortal-in-The-News-1-300x168.webp
+│   │   ├── BioPortal-in-The-News-1-768x430.webp
+│   │   ├── BioPortal-in-The-News-1.webp
+│   │   ├── From-Insight-to-Impact-1-1-1-1024x689.webp
+│   │   ├── From-Insight-to-Impact-1-1-1-300x202.webp
+│   │   ├── From-Insight-to-Impact-1-1-1-768x517.webp
+│   │   └── From-Insight-to-Impact-1-1-1.webp
+│   └── team
+│       ├── Brent_Richards_PrincipalInvestigator-150x150.webp
+│       ├── Brent_Richards_PrincipalInvestigator-300x300.webp
+│       ├── Brent_Richards_PrincipalInvestigator.webp
+│       ├── Byanca_DeFariaLiboni_ClinicalResearchCoordinator-1024x1024.webp
+│       ├── Byanca_DeFariaLiboni_ClinicalResearchCoordinator-150x150.webp
+│       ├── Byanca_DeFariaLiboni_ClinicalResearchCoordinator-1536x1536.webp
+│       ├── Byanca_DeFariaLiboni_ClinicalResearchCoordinator-2048x2048.webp
+│       ├── Byanca_DeFariaLiboni_ClinicalResearchCoordinator-300x300.webp
+│       ├── Byanca_DeFariaLiboni_ClinicalResearchCoordinator-768x768.webp
+│       ├── Byanca_DeFariaLiboni_ClinicalResearchCoordinator.webp
+│       ├── Cesar_Peralta_ClinicalResearchCoordinator-1024x1024.webp
+│       ├── Cesar_Peralta_ClinicalResearchCoordinator-150x150.webp
+│       ├── Cesar_Peralta_ClinicalResearchCoordinator-300x300.webp
+│       ├── Cesar_Peralta_ClinicalResearchCoordinator-768x768.webp
+│       ├── Cesar_Peralta_ClinicalResearchCoordinator.webp
+│       ├── Corrine_Pirici_ClinicalResearchCoordinator-1024x1024.webp
+│       ├── Corrine_Pirici_ClinicalResearchCoordinator-150x150.webp
+│       ├── Corrine_Pirici_ClinicalResearchCoordinator-1536x1536.webp
+│       ├── Corrine_Pirici_ClinicalResearchCoordinator-2048x2048.webp
+│       ├── Corrine_Pirici_ClinicalResearchCoordinator-300x300.webp
+│       ├── Corrine_Pirici_ClinicalResearchCoordinator-768x768.webp
+│       ├── Corrine_Pirici_ClinicalResearchCoordinator-scaled.webp
+│       ├── Darin_Adra_DataManager-150x150.webp
+│       ├── Darin_Adra_DataManager-300x300.webp
+│       ├── Darin_Adra_DataManager.webp
+│       ├── David_Morrison_-BioPortalManager-1024x1024.webp
+│       ├── David_Morrison_-BioPortalManager-150x150.webp
+│       ├── David_Morrison_-BioPortalManager-300x300.webp
+│       ├── David_Morrison_-BioPortalManager-768x768.webp
+│       ├── David_Morrison_-BioPortalManager.webp
+│       ├── Guillaume_Butler-Laporte_CoPrincipalInvestigator-150x150.webp
+│       ├── Guillaume_Butler-Laporte_CoPrincipalInvestigator-300x300.webp
+│       ├── Guillaume_Butler-Laporte_CoPrincipalInvestigator-768x768.webp
+│       ├── Guillaume_Butler-Laporte_CoPrincipalInvestigator.webp
+│       ├── Issam_ElKbaiche_DataEngineer-150x150.webp
+│       ├── Issam_ElKbaiche_DataEngineer-300x300.webp
+│       ├── Issam_ElKbaiche_DataEngineer.webp
+│       ├── Jonafe_Daguplo_ClincalResearchCoordinator-1024x1024.webp
+│       ├── Jonafe_Daguplo_ClincalResearchCoordinator-150x150.webp
+│       ├── Jonafe_Daguplo_ClincalResearchCoordinator-1536x1536.webp
+│       ├── Jonafe_Daguplo_ClincalResearchCoordinator-2048x2048.webp
+│       ├── Jonafe_Daguplo_ClincalResearchCoordinator-300x300.webp
+│       ├── Jonafe_Daguplo_ClincalResearchCoordinator-768x768.webp
+│       ├── Jonafe_Daguplo_ClincalResearchCoordinator-scaled.webp
+│       ├── Jonathan_Afilalo_CoPrincipalInvestigator-150x150.webp
+│       ├── Jonathan_Afilalo_CoPrincipalInvestigator.webp
+│       ├── Mariana_Jaime_ClinicalResearchCoordinator-1-1024x1024.webp
+│       ├── Mariana_Jaime_ClinicalResearchCoordinator-1-150x150.webp
+│       ├── Mariana_Jaime_ClinicalResearchCoordinator-1-300x300.webp
+│       ├── Mariana_Jaime_ClinicalResearchCoordinator-1-768x768.webp
+│       ├── Mariana_Jaime_ClinicalResearchCoordinator-1.webp
+│       ├── Mariana_Pico_ClinicalResearchCoordinator-150x150.webp
+│       ├── Mariana_Pico_ClinicalResearchCoordinator-300x300.webp
+│       ├── Mariana_Pico_ClinicalResearchCoordinator-768x768.webp
+│       ├── Mariana_Pico_ClinicalResearchCoordinator.webp
+│       ├── Mina_Nikkhah_LaboratoryManager-1024x1024.webp
+│       ├── Mina_Nikkhah_LaboratoryManager-150x150.webp
+│       ├── Mina_Nikkhah_LaboratoryManager-1536x1536.webp
+│       ├── Mina_Nikkhah_LaboratoryManager-2048x2048.webp
+│       ├── Mina_Nikkhah_LaboratoryManager-300x300.webp
+│       ├── Mina_Nikkhah_LaboratoryManager-768x768.webp
+│       ├── Mina_Nikkhah_LaboratoryManager-scaled.webp
+│       ├── Nadia_Blostein_ClinicalResearchCoordinator-1024x1024.webp
+│       ├── Nadia_Blostein_ClinicalResearchCoordinator-150x150.webp
+│       ├── Nadia_Blostein_ClinicalResearchCoordinator-300x300.webp
+│       ├── Nadia_Blostein_ClinicalResearchCoordinator-768x768.webp
+│       ├── Nadia_Blostein_ClinicalResearchCoordinator.webp
+│       ├── Satoshi-Yoshiji_CoPrincipalInvestigator-150x150.webp
+│       ├── Satoshi-Yoshiji_CoPrincipalInvestigator-300x300.webp
+│       ├── Satoshi-Yoshiji_CoPrincipalInvestigator.webp
+│       ├── Tobias_Erlanger_Statistician_Epidemiologist-150x150.webp
+│       ├── Tobias_Erlanger_Statistician_Epidemiologist-300x300.webp
+│       ├── Tobias_Erlanger_Statistician_Epidemiologist.webp
+│       ├── Tricia_Peters_CoPrincipalInvestigator-150x150.webp
+│       ├── Tricia_Peters_CoPrincipalInvestigator.webp
+│       ├── Vincent_Mooser_CoPrincipalInvestigator-1024x1024.webp
+│       ├── Vincent_Mooser_CoPrincipalInvestigator-150x150.webp
+│       ├── Vincent_Mooser_CoPrincipalInvestigator-300x300.webp
+│       ├── Vincent_Mooser_CoPrincipalInvestigator-768x768.webp
+│       ├── Vincent_Mooser_CoPrincipalInvestigator.webp
+│       ├── Zaman_Afrasiabi_ClinicalResearchCoordinator-150x150.webp
+│       ├── Zaman_Afrasiabi_ClinicalResearchCoordinator-300x300.webp
+│       ├── Zaman_Afrasiabi_ClinicalResearchCoordinator-768x768.webp
+│       └── Zaman_Afrasiabi_ClinicalResearchCoordinator.webp
+├── README.md
+├── src
+│   ├── components
+│   │   ├── Hero.astro
+│   │   └── TrustBar.astro
+│   ├── content
+│   │   ├── news
+│   │   │   └── kidney-project.md
+│   │   ├── pages
+│   │   │   ├── home.yaml
+│   │   │   ├── participants.yaml
+│   │   │   └── researchers.yaml
+│   │   └── team
+│   │       ├── brent-richards.yaml
+│   │       ├── david-morrison.yaml
+│   │       ├── guillaume-butler-laporte.yaml
+│   │       ├── jonathan-afilalo.yaml
+│   │       ├── satoshi-yoshiji.yaml
+│   │       ├── tricia-peters.yaml
+│   │       └── vincent-mooser.yaml
+│   ├── content.config.ts
+│   ├── layouts
+│   │   └── Layout.astro
+│   ├── pages
+│   │   ├── index.astro
+│   │   ├── news
+│   │   │   └── [id].astro
+│   │   ├── participants.astro
+│   │   └── researchers.astro
+│   └── styles
+│       └── global.css
+└── tsconfig.json
+
+16 directories, 184 files
+
+--- FILE CONTENTS ---
+
+================================================
+FILE: ./README.md
+================================================
+# Astro Starter Kit: Minimal
+
+```sh
+npm create astro@latest -- --template minimal
+```
+
+> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+
+## 🚀 Project Structure
+
+Inside of your Astro project, you'll see the following folders and files:
+
+```text
+/
+├── public/
+├── src/
+│   └── pages/
+│       └── index.astro
+└── package.json
+```
+
+Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+
+There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+
+Any static assets, like images, can be placed in the `public/` directory.
+
+## 🧞 Commands
+
+All commands are run from the root of the project, from a terminal:
+
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `npm install`             | Installs dependencies                            |
+| `npm run dev`             | Starts local dev server at `localhost:4321`      |
+| `npm run build`           | Build your production site to `./dist/`          |
+| `npm run preview`         | Preview your build locally, before deploying     |
+| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `npm run astro -- --help` | Get help using the Astro CLI                     |
+
+## 👀 Want to learn more?
+
+Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+
+
+================================================
+FILE: ./src/pages/index.astro
+================================================
+---
+import { getCollection, getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import TrustBar from '../components/TrustBar.astro';
+
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const homeData = await getEntry('pages', 'home');
+const allTeam = await getCollection('team');
+const sortedTeam = allTeam.sort((a, b) => a.data.order - b.data.order);
+const allNews = await getCollection('news');
+const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
+---
+
+<Layout title="BioPortal | Advancing Genomic Research">
+  <nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+      <a href={`${baseUrl}/`} class="flex items-center gap-2 group">
+        <img src={`${baseUrl}/logos/BioPortal_Mark_Color.svg`} alt="Logo" class="w-8 h-8 group-hover:rotate-12 transition-transform" />
+        <span class="text-2xl font-bold text-brand-dark tracking-tight">BioPortal<span class="text-brand-blue-deep">.</span></span>
+      </a>
+      <div class="hidden md:flex items-center space-x-8 font-medium text-sm">
+        <a href="#insights" class="text-gray-500 hover:text-brand-dark transition-colors">Insights</a>
+        <a href="#team" class="text-gray-500 hover:text-brand-dark transition-colors">Our Team</a>
+        <a href="mailto:david.morrison@ladydavis.ca" class="text-brand-blue-deep hover:text-brand-dark transition-colors font-bold">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <Hero content={homeData.data.hero} />
+    <TrustBar content={homeData.data.trustBar} />
+
+    <section id="insights" class="py-24 px-6 max-w-7xl mx-auto scroll-mt-20">
+      <div class="mb-12 flex justify-between items-end">
+        <div>
+            <span class="text-brand-orange-mid font-bold tracking-widest uppercase text-xs mb-4 block">Latest Insights</span>
+            <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight">News & Discoveries</h2>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        {latestNews.map(post => (
+          <article class="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-soft hover:shadow-2xl transition-all group flex flex-col">
+            <div class="flex justify-between items-start mb-6">
+              <span class="text-[10px] font-bold text-gray-400 uppercase">
+                {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+              </span>
+              <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-brand-orange-mid/10 text-brand-orange-deep">{post.data.tag}</span>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-brand-orange-deep transition-colors">{post.data.title}</h3>
+            <p class="text-sm text-gray-500 leading-relaxed mb-8 flex-grow line-clamp-3">{post.data.excerpt}</p>
+            <a href={`${baseUrl}/news/${post.id}/`} class="text-brand-dark font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all mt-auto">
+              Read Insight <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section id="team" class="py-24 px-6 max-w-7xl mx-auto border-t border-gray-100 bg-white/50 scroll-mt-20">
+      <div class="text-center mb-16">
+        <span class="text-brand-blue-mid font-bold tracking-widest uppercase text-xs mb-4 block">Leadership</span>
+        <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight">Project Governance</h2>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-12">
+        {sortedTeam.map(member => (
+          <div class="text-center group">
+            <div class="w-40 h-40 rounded-full bg-surface mx-auto mb-6 overflow-hidden border-8 border-white shadow-xl group-hover:scale-105 transition-transform duration-500 relative flex items-center justify-center">
+               <div class="absolute inset-0 flex items-center justify-center text-brand-blue-deep bg-brand-blue-deep/5">
+                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+               </div>
+               {member.data.image && <img src={`${baseUrl}${member.data.image}`} alt={member.data.name} class="w-full h-full object-cover relative z-10" onerror="this.style.display='none'" />}
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 leading-tight mb-1">{member.data.name}</h3>
+            <p class="text-xs font-bold text-brand-blue-deep uppercase tracking-widest">{member.data.role}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-brand-dark text-white py-20 px-6 text-center">
+      <div class="text-2xl font-bold mb-2 tracking-tight">BioPortal<span class="text-brand-blue-deep">.</span></div>
+      <p class="text-gray-400 text-sm mb-12">Jewish General Hospital & McGill University</p>
+      <div class="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold">© 2026 BioPortal Research Group</div>
+  </footer>
+</Layout>
+
+
+
+================================================
+FILE: ./src/pages/news/[id].astro
+================================================
+---
+// src/pages/news/[id].astro
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+// Normalize the base URL to ensure it works in all environments
+// This removes a trailing slash if it exists, so we can safely add "/news"
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// 1. Tell Astro to generate a page for every markdown file in the 'news' collection
+export async function getStaticPaths() {
+  const newsEntries = await getCollection('news');
+  return newsEntries.map(post => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+// 2. Get the specific post data for the current page
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Layout title={`${post.data.title} | BioPortal Insights`}>
+
+  <div class="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-brand-orange/5 to-transparent -z-10"></div>
+
+  <nav class="max-w-7xl mx-auto px-6 py-8 flex justify-between items-center">
+    <a href={`${baseUrl}/`} class="text-2xl font-bold text-brand-dark tracking-tight hover:opacity-80 transition-opacity">
+      Bio<span class="font-normal">Portal</span>
+    </a>
+    <a href={`${baseUrl}/#insights`} class="text-brand-orange font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to Insights
+    </a>
+  </nav>
+
+  <main class="max-w-3xl mx-auto px-6 pt-12 pb-24">
+
+    <header class="mb-12 border-b border-gray-100 pb-12">
+      <div class="flex items-center gap-4 mb-6">
+        <span class="text-xs font-bold px-3 py-1 rounded-md bg-brand-orange/10 text-brand-orange uppercase tracking-widest">
+          {post.data.tag}
+        </span>
+        <span class="text-sm font-bold text-gray-400 uppercase tracking-widest">
+          {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </span>
+      </div>
+
+      <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight tracking-tight">
+        {post.data.title}
+      </h1>
+    </header>
+
+    <article class="text-lg text-gray-600 leading-relaxed space-y-6 article-content">
+      <Content />
+    </article>
+
+  </main>
+
+  <footer class="bg-brand-dark text-white py-12 px-6 text-center mt-12">
+      <div class="text-xl font-bold mb-2">BioPortal<span class="text-brand-blue-deep">.</span></div>
+      <p class="text-gray-400 text-xs mb-0">Jewish General Hospital & McGill University</p>
+  </footer>
+</Layout>
+
+<style>
+  @reference "../../styles/global.css";
+
+  .article-content :global(h2) {
+    @apply text-3xl font-bold text-gray-900 mt-12 mb-6 tracking-tight;
+  }
+  .article-content :global(h3) {
+    @apply text-2xl font-bold text-gray-900 mt-8 mb-4 tracking-tight;
+  }
+  .article-content :global(p) {
+    @apply mb-6;
+  }
+  .article-content :global(a) {
+    @apply text-brand-blue-deep font-semibold hover:text-brand-dark transition-colors underline underline-offset-2;
+  }
+  .article-content :global(ul) {
+    @apply list-disc list-outside ml-6 mb-6 space-y-2;
+  }
+  .article-content :global(blockquote) {
+    @apply border-l-4 border-brand-orange pl-6 py-2 my-8 text-xl italic text-gray-500 bg-brand-orange/5 rounded-r-2xl;
+  }
+  .article-content :global(strong) {
+    @apply font-bold text-gray-900;
+  }
+</style>
+
+
+
+================================================
+FILE: ./src/pages/participants.astro
+================================================
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+const pageData = await getEntry('pages', 'participants');
+const { hero, steps, benefit } = pageData.data;
+---
+
+<Layout title="Join BioPortal | Advancing Diabetes Research">
+  <nav class="w-full z-50 bg-surface py-6 border-b border-gray-100">
+    <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
+      <a href={`${baseUrl}/`} class="flex items-center gap-2 group">
+        <span class="text-xl font-bold text-brand-dark tracking-tight">BioPortal<span class="text-brand-orange-mid">.</span></span>
+      </a>
+      <a href={`${baseUrl}/`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        Back
+      </a>
+    </div>
+  </nav>
+
+  <div class="fixed top-0 inset-x-0 h-[600px] bg-gradient-to-br from-brand-orange-mid/5 via-brand-yellow/5 to-transparent -z-10"></div>
+
+  <main class="max-w-6xl mx-auto px-6 py-16 lg:py-24">
+    <div class="flex flex-col lg:flex-row gap-16 items-start">
+      <div class="lg:w-7/12">
+        <span class="text-brand-orange-deep font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
+        <h1 class="text-4xl lg:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight leading-[1.1]">
+          {hero.headline}<br/>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange-mid to-brand-orange-deep">{hero.gradientText}</span>
+        </h1>
+
+        <p class="text-lg text-gray-600 leading-relaxed mb-12">{hero.description}</p>
+
+        <div class="mb-12">
+          <h3 class="text-xl font-bold text-gray-900 mb-6">How participation works:</h3>
+          <div class="space-y-6">
+            {steps.map((step: any, index: number) => (
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-brand-orange-mid/10 text-brand-orange-deep flex items-center justify-center font-black shrink-0">{index + 1}</div>
+                <div>
+                  <h4 class="font-bold text-gray-900">{step.title}</h4>
+                  <p class="text-sm text-gray-500">{step.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="bg-white border-2 border-brand-orange-mid/20 rounded-[2rem] p-8 shadow-xl shadow-brand-orange-mid/5 relative overflow-hidden group">
+          <div class="absolute top-0 left-0 w-2 h-full bg-brand-orange-mid group-hover:w-3 transition-all"></div>
+          <div class="flex items-center gap-3 mb-3 mt-1">
+            <h3 class="text-2xl font-bold text-gray-900">{benefit.title}</h3>
+          </div>
+          <p class="text-gray-600 leading-relaxed mb-4">{benefit.desc}</p>
+        </div>
+      </div>
+
+      <div class="lg:w-5/12 w-full lg:sticky lg:top-8">
+        <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-gray-200 border border-gray-100 p-8">
+          <h3 class="text-2xl font-bold text-gray-900 mb-2 text-center">Ready to help?</h3>
+          <p class="text-gray-500 mb-6 text-center text-sm">Securely check your eligibility for our studies.</p>
+
+          <div class="w-full bg-surface rounded-2xl overflow-hidden min-h-[500px]">
+            <iframe id="JotFormIFrame-252394008840658" title="BioPortal Participant Intake" allowtransparency="true" allow="geolocation; microphone; camera; fullscreen" src="https://form.jotform.com/252394008840658" frameborder="0" style="min-width:100%;max-width:100%;height:500px;border:none;" scrolling="no"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+
+
+================================================
+FILE: ./src/pages/researchers.astro
+================================================
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+const pageData = await getEntry('pages', 'researchers');
+const { hero, stats } = pageData.data;
+---
+
+<Layout title="Data Access | BioPortal">
+  <nav class="w-full z-50 bg-surface py-6 border-b border-gray-100">
+    <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
+      <a href={`${baseUrl}/`} class="flex items-center gap-2 group">
+        <span class="text-xl font-bold text-brand-dark tracking-tight">BioPortal<span class="text-brand-blue-deep">.</span></span>
+      </a>
+      <a href={`${baseUrl}/`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        Back
+      </a>
+    </div>
+  </nav>
+
+  <div class="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue-deep/10 via-brand-teal/5 to-transparent -z-10"></div>
+
+  <main class="max-w-7xl mx-auto px-6 pt-16 pb-24 relative z-10">
+    <header class="max-w-3xl mb-16 text-center mx-auto">
+      <span class="text-brand-blue-deep font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
+      <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 tracking-tight">{hero.headline}</h1>
+      <p class="text-xl text-gray-600 leading-relaxed">{hero.description}</p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+      {stats.map((stat: any) => (
+        <div class="bg-white rounded-3xl p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100">
+            <h3 class="text-5xl font-black text-gray-900 mb-2 tracking-tighter">{stat.value}</h3>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{stat.label}</p>
+        </div>
+      ))}
+    </div>
+
+    <section class="grid lg:grid-cols-2 gap-8">
+      <div class="bg-white rounded-[2rem] p-10 shadow-soft border border-gray-100 relative overflow-hidden">
+        <h2 class="text-2xl font-bold mb-4 text-gray-900">Open Science Framework</h2>
+        <p class="text-gray-600 leading-relaxed mb-6">BioPortal is built on the principle of Open Science. Any qualified investigator or partner worldwide can apply to access genomic data. Biospecimen samples are finite and require strong scientific justification for use.</p>
+        <ul class="space-y-3 text-gray-800 font-medium">
+          <li class="flex items-center gap-2"><span class="text-brand-blue-deep font-bold">→</span> Agree to Legal Framework</li>
+          <li class="flex items-center gap-2"><span class="text-brand-blue-deep font-bold">→</span> Obtain Independent REB Approval</li>
+          <li class="flex items-center gap-2"><span class="text-brand-blue-deep font-bold">→</span> DSAC Committee Review</li>
+        </ul>
+      </div>
+
+      <div class="bg-white rounded-[2rem] p-10 shadow-soft border border-gray-100 relative overflow-hidden flex flex-col items-start justify-center">
+        <h2 class="text-2xl font-bold mb-4 text-gray-900">Platform Infrastructure</h2>
+        <p class="text-gray-600 leading-relaxed mb-8">Datasets are searched using a set of predefined variables, allowing for rapid exploration. This environment is an invaluable resource for assessing study cohort viability.</p>
+        <div class="flex gap-3">
+            <span class="px-5 py-2 rounded-full bg-brand-teal/20 text-brand-dark font-bold text-sm">Bento v2</span>
+            <span class="px-5 py-2 rounded-full bg-brand-blue-light/20 text-brand-dark font-bold text-sm">C3G Powered</span>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+
+
+================================================
+FILE: ./src/styles/global.css
+================================================
+@import "tailwindcss"; /* <-- ADD THIS LINE */
+
+@theme {
+  /* Warm Path (Participants / Help) */
+  --color-brand-orange-deep: #f37a21;
+  --color-brand-orange-mid: #f89a19;
+  --color-brand-yellow: #fdbb10;
+
+  /* Bridge Path (Health / Growth) */
+  --color-brand-green-bright: #7fc342;
+  --color-brand-green-mid: #99c43c;
+  --color-brand-lime: #b3c735;
+
+  /* Cool Path (Researchers / Data) */
+  --color-brand-blue-deep: #26abe2;
+  --color-brand-blue-mid: #56bee7;
+  --color-brand-blue-light: #9fdbee;
+  --color-brand-teal: #96d6c2;
+
+  /* UI Neutrals */
+  --color-brand-dark: #003f5e;
+  --color-surface: #fbfcfd;
+
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* 2026 Polish: The "Logo Gradient" Utility */
+@utility logo-gradient {
+  background: linear-gradient(135deg, #f37a21, #fdbb10, #7fc342, #26abe2);
+}
+
+
+
+================================================
+FILE: ./src/layouts/Layout.astro
+================================================
+---
+// src/layouts/Layout.astro
+import '../styles/global.css';
+
+const { title } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>{title}</title>
+	</head>
+	<body>
+        <slot />
+	</body>
+</html>
+
+
+================================================
+FILE: ./src/content/team/brent-richards.yaml
+================================================
+name: "Dr. Brent Richards"
+role: "Principal Investigator"
+image: "/team/Brent_Richards_PrincipalInvestigator.webp"
+order: 1
+
+
+
+================================================
+FILE: ./src/content/team/david-morrison.yaml
+================================================
+name: "David Morrison"
+role: "BioPortal Manager"
+image: "/team/David_Morrison_-BioPortalManager.webp"
+order: 2
+
+
+
+================================================
+FILE: ./src/content/team/guillaume-butler-laporte.yaml
+================================================
+name: "Dr. Guillaume Butler-Laporte"
+role: "Co-Principal Investigator"
+image: "/team/Guillaume_Butler-Laporte_CoPrincipalInvestigator.webp"
+order: 3
+
+
+
+================================================
+FILE: ./src/content/team/tricia-peters.yaml
+================================================
+name: "Dr. Tricia Peters"
+role: "Co-Principal Investigator"
+image: "/team/Tricia_Peters_CoPrincipalInvestigator.webp"
+order: 4
+
+
+
+================================================
+FILE: ./src/content/team/vincent-mooser.yaml
+================================================
+name: "Dr. Vincent Mooser"
+role: "Co-Principal Investigator"
+image: "/team/Vincent_Mooser_CoPrincipalInvestigator.webp"
+order: 5
+
+
+
+================================================
+FILE: ./src/content/team/jonathan-afilalo.yaml
+================================================
+name: "Dr. Jonathan Afilalo"
+role: "Co-Principal Investigator"
+image: "/team/Jonathan_Afilalo_CoPrincipalInvestigator.webp"
+order: 6
+
+
+
+================================================
+FILE: ./src/content/team/satoshi-yoshiji.yaml
+================================================
+name: "Dr. Satoshi Yoshiji"
+role: "Co-Principal Investigator"
+image: "/team/Satoshi-Yoshiji_CoPrincipalInvestigator.webp"
+order: 7
+
+
+
+================================================
+FILE: ./src/content/news/kidney-project.md
+================================================
+---
+title: "THIS IS FAKE NOT REAL PLACEHOLDER **** CQDM, Roche, The Jewish General Hospital Foundation, and McGill University Fund Research Project on Diabetic Kidney Disease"
+date: 2025-08-28
+tag: "Funding"
+excerpt: "New resources dedicated to uncovering multi-omic biomarkers for diabetic nephropathy to advance patient outcomes."
+---
+
+Diabetic kidney disease is a major complication for patients with diabetes. To combat this, **CQDM, Roche, The Jewish General Hospital Foundation, and McGill University** have partnered to fund a new, large-scale research initiative.
+
+### The Goal of the Project
+The primary objective of this project is to uncover multi-omic biomarkers that can predict the progression of diabetic nephropathy. By utilizing the BioPortal infrastructure, researchers will have access to:
+
+* High-fidelity proteomics (Olink HT Explore panels)
+* Comprehensive genomic sequencing
+* Deeply phenotyped clinical data
+
+> "This collaboration represents a massive step forward in precision medicine. By pooling our resources and leveraging open science, we can identify risks earlier and tailor treatments to individual patients."
+
+All of these components are made in the same style, and can easily be integrated into projects, allowing researchers worldwide to create hundreds of solutions for future clinical applications. 
+
+To learn more about accessing this specific dataset, please visit our [Data Access](/data-access) portal.
+
+
+================================================
+FILE: ./src/content/pages/home.yaml
+================================================
+id: home
+hero:
+  headline: "Connecting community to"
+  gradientText: "breakthrough medicine."
+  description: "BioPortal is a world-class partnership turning Montreal's health data into global cures. Select your path to get started."
+trustBar:
+  label: "Governed & Trusted By"
+  partners:
+    - "McGill University"
+    - "Jewish General Hospital"
+    - "C3G"
+    - "CQDM"
+    - "Roche"
+
+
+
+================================================
+FILE: ./src/content/pages/participants.yaml
+================================================
+id: participants
+hero:
+  tagline: "Participant Pathway"
+  headline: "Your data. Your health."
+  gradientText: "Our future."
+  description: "Every 3 minutes, a Canadian is diagnosed with Diabetes. Global biobanks currently lack diverse ethnic representation. By safely sharing a small amount of your time and health data, you become a critical part of the solution for Montreal and the world."
+steps:
+  - title: "Check Eligibility"
+    desc: "Fill out the brief secure form on this page to see if you qualify for our current diabetes studies."
+  - title: "Transparent Consent"
+    desc: "We will carefully explain how your data is de-identified and protected before you share any samples."
+  - title: "Free Health Assessment"
+    desc: "As a thank you, receive your free, Health Canada-approved diabetic retinopathy screening."
+benefit:
+  title: "Free Diabetic Eye Assessment"
+  desc: "We offer Health Canada-approved diabetic retinopathy imaging at no cost to participants. Within 5 minutes of the scan, your doctor receives a full diagnostic report."
+
+
+
+================================================
+FILE: ./src/content/pages/researchers.yaml
+================================================
+id: researchers
+hero:
+  tagline: "The BioPortal Dataset"
+  headline: "Open Science at Scale."
+  description: "Browse our real-time inventory of biospecimens and multi-omic data powered by a secure Bento v2 framework."
+stats:
+  - label: "Clinical Records"
+    value: "5,985"
+    color: "brand-cyan"
+  - label: "Plasma Aliquots"
+    value: "43.6K"
+    color: "brand-orange-mid"
+  - label: "Urine Aliquots"
+    value: "6,284"
+    color: "brand-green-bright"
+  - label: "Proteomics (Olink)"
+    value: "1,543"
+    color: "brand-dark"
+
+
+
+================================================
+FILE: ./src/content.config.ts
+================================================
+import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
+
+const pages = defineCollection({
+  loader: glob({ pattern: "*.yaml", base: "./src/content/pages" }),
+  schema: z.object({
+    id: z.string(),
+    hero: z.any().optional(),
+    trustBar: z.any().optional(),
+    steps: z.any().optional(),
+    benefit: z.any().optional(),
+    stats: z.any().optional(),
+  }),
+});
+
+const team = defineCollection({
+  loader: glob({ pattern: "*.{yaml,yml}", base: "./src/content/team" }),
+  schema: z.object({
+    name: z.string(),
+    role: z.string(),
+    image: z.string(),
+    order: z.number(),
+  }),
+});
+
+const news = defineCollection({
+  loader: glob({ pattern: "*.md", base: "./src/content/news" }),
+  schema: z.object({
+    title: z.string(),
+    date: z.date(),
+    tag: z.string(),
+    excerpt: z.string(),
+    image: z.string().optional(),
+  }),
+});
+
+export const collections = { pages, team, news };
+
+
+
+================================================
+FILE: ./src/components/Hero.astro
+================================================
+---
+const { content } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<header class="pt-40 pb-16 px-6 max-w-5xl mx-auto text-center">
+  <div class="mb-10 flex justify-center">
+    <img src={`${baseUrl}/logos/BioPortal_Mark_Color.png`} alt="BioPortal Logo" class="w-24 h-24 drop-shadow-2xl" />
+  </div>
+
+  <h1 class="text-5xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-6">
+    {content.headline} <br/>
+    <span class="text-transparent bg-clip-text logo-gradient">{content.gradientText}</span>
+  </h1>
+
+  <p class="text-lg lg:text-xl text-gray-500 max-w-2xl mx-auto mb-16 leading-relaxed">
+    {content.description}
+  </p>
+
+  <div class="flex flex-col sm:flex-row justify-center items-center gap-6">
+    <a href={`${baseUrl}/participants`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-brand-orange-mid hover:bg-brand-orange-deep text-white font-bold text-lg shadow-xl shadow-brand-orange-mid/20 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
+      Join as a Participant
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+    </a>
+
+    <a href={`${baseUrl}/researchers`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-white border-2 border-brand-blue-deep text-brand-blue-deep hover:bg-brand-blue-deep hover:text-white font-bold text-lg shadow-xl shadow-brand-blue-deep/10 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
+      Explore Data Access
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+    </a>
+  </div>
+</header>
+
+
+
+================================================
+FILE: ./src/components/TrustBar.astro
+================================================
+---
+const { content } = Astro.props;
+---
+
+<section class="border-y border-gray-100 bg-white/50 py-12 mb-16">
+  <div class="max-w-6xl mx-auto px-6 text-center">
+    <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-8">{content.label}</p>
+
+    <div class="flex flex-wrap justify-center items-center gap-10 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+      {content.partners.map((partner: string) => (
+        <span class="text-xl font-black text-gray-800 tracking-tighter">{partner}</span>
+      ))}
+    </div>
+  </div>
+</section>
+
+
+
+================================================
+FILE: ./astro.config.mjs
+================================================
+import { defineConfig } from 'astro/config';
+import tailwindcss from '@tailwindcss/vite';
+
+export default defineConfig({
+  // Must be your exact GitHub pages domain
+  site: 'https://bio-portal.github.io',
+  
+  // MUST have this exact line, starting with a slash
+  base: '/mybioportal_frontend',
+  
+  vite: {
+    plugins: [tailwindcss()],
+  },
+});
+
+
+================================================
+FILE: ./.github/workflows/deploy.yaml
+================================================
+# .github/workflows/deploy.yml
+name: Deploy Astro to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout your repository using git
+        uses: actions/checkout@v4
+      - name: Install, build, and upload your site
+        uses: withastro/action@v3
+        with:
+          node-version: 22 # <-- This is the new line!
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+
+

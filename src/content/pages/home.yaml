@@ -1,0 +1,31 @@
+id: home
+hero:
+  headline: "Connecting community to"
+  gradientText: "breakthrough medicine."
+  description: "BioPortal is a world-class partnership turning Montreal's health data into global cures. Select your path to get started."
+trustBar:
+  label: "Our Partners"
+  partners:
+    - name: "Jewish General Hospital"
+      logo: "/logos/jgh-logo.png"
+      url: "https://www.jgh.ca"
+    - name: "SciLoop"
+      logo: "/logos/sciloop-logo.png"
+      url: "https://sciloop.com"
+      scale: "1" # Custom scale to fix the "too small" issue
+    - name: "CQDM"
+      logo: "/logos/cqdm-logo.png"
+      url: "https://cqdm.org/"
+    - name: "CERC"
+      logo: "/logos/cerc-logo.webp"
+      url: "https://www.cerc.gc.ca/"
+    - name: "Roche"
+      logo: "/logos/roche-logo.png"
+      url: "https://www.roche.com"
+    - name: "Fondation Luci et André Chagnon"
+      logo: "/logos/fondation-chagnon-logo.png"
+      url: "https://fondationchagnon.org"
+    - name: "Fondation Famille Léger"
+      logo: "/logos/fondation-leger-logo.svg"
+      url: "https://leger.org/"
+  acknowledgments: "BioPortal contributors also include the non-profits Mierins Family Foundation, Herbert S. Lang Family, Randi Greenberg, and the Tony & Betty Infilise Family Foundation."

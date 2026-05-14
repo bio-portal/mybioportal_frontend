@@ -1,0 +1,31 @@
+---
+const { content } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<header class="pt-28 pb-8 px-6 max-w-5xl mx-auto text-center">
+  <div class="mb-6 flex justify-center">
+    <img src={`${baseUrl}/logos/BioPortal_Mark_Color.svg`} alt="BioPortal Logo" class="w-20 h-20 drop-shadow-2xl" onerror="this.style.display='none'" />
+  </div>
+
+  <h1 class="text-5xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-6">
+    {content.headline} <br/>
+    <span class="bg-gradient-to-r from-brand-orange-deep via-brand-green-bright to-brand-blue-deep bg-clip-text text-transparent pb-2">{content.gradientText}</span>
+  </h1>
+
+  <p class="text-lg lg:text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
+    {content.description}
+  </p>
+
+  <div class="flex flex-col sm:flex-row justify-center items-center gap-6">
+    <a href={`${baseUrl}/participants`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-brand-orange-mid hover:bg-brand-orange-deep text-white font-bold text-lg shadow-xl shadow-brand-orange-mid/20 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
+      Join as a Participant
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+    </a>
+
+    <a href={`${baseUrl}/researchers`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-white border-2 border-brand-blue-deep text-brand-blue-deep hover:bg-brand-blue-deep hover:text-white font-bold text-lg shadow-xl shadow-brand-blue-deep/10 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
+      Explore Data Access
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+    </a>
+  </div>
+</header>
