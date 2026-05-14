@@ -11,7 +11,7 @@ const { hero, steps, benefit } = pageData.data;
   <nav class="w-full z-50 bg-surface py-6 border-b border-gray-100">
     <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
       <a href={`${baseUrl}/`} class="flex items-center gap-2 group">
-        <img src={`${baseUrl}/logos/BioPortal_Mark_Color.svg`} alt="Logo" class="w-8 h-8" />
+        <img src={`${baseUrl}/logos/BioPortal_Mark_Color.svg`} alt="Logo" class="w-8 h-8" onerror="this.style.display='none'" />
         <span class="text-xl font-bold text-brand-dark tracking-tight">BioPortal<span class="text-brand-orange-mid">.</span></span>
       </a>
       <a href={`${baseUrl}/`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2">
@@ -107,8 +107,8 @@ const { hero, steps, benefit } = pageData.data;
         </div>
 
         <div class="mt-8 flex justify-center items-center gap-6 opacity-30 grayscale pointer-events-none">
-          <img src={`${baseUrl}/logos/jgh-logo.png`} alt="JGH" class="h-8" />
-          <img src={`${baseUrl}/logos/cqdm-logo.png`} alt="CQDM" class="h-6" />
+          <img src={`${baseUrl}/logos/jgh-logo.png`} alt="JGH" class="h-8" onerror="this.style.display='none'" />
+          <img src={`${baseUrl}/logos/cqdm-logo.png`} alt="CQDM" class="h-6" onerror="this.style.display='none'" />
         </div>
       </div>
 
@@ -117,8 +117,12 @@ const { hero, steps, benefit } = pageData.data;
 </Layout>
 
 <style>
-  /* Subtle focus-within state for the whole card row */
+  /* 1. Tell Tailwind v4 where to find our custom CSS variables */
+  @reference "../styles/global.css";
+
   label:focus-within {
-    @apply border-brand-orange-mid/50 bg-white shadow-sm;
+    /* 2. Use native CSS color-mix to avoid the Tailwind build error on custom variable opacity */
+    border-color: color-mix(in srgb, var(--color-brand-orange-mid) 50%, transparent);
+    @apply bg-white shadow-sm;
   }
 </style>

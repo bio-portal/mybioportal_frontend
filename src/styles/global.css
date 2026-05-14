@@ -1,17 +1,17 @@
-@import "tailwindcss"; /* <-- ADD THIS LINE */
+@import "tailwindcss";
 
 @theme {
-  /* Warm Path (Participants / Help) */
+  /* Warm Path */
   --color-brand-orange-deep: #f37a21;
   --color-brand-orange-mid: #f89a19;
   --color-brand-yellow: #fdbb10;
 
-  /* Bridge Path (Health / Growth) */
+  /* Bridge Path */
   --color-brand-green-bright: #7fc342;
   --color-brand-green-mid: #99c43c;
   --color-brand-lime: #b3c735;
 
-  /* Cool Path (Researchers / Data) */
+  /* Cool Path */
   --color-brand-blue-deep: #26abe2;
   --color-brand-blue-mid: #56bee7;
   --color-brand-blue-light: #9fdbee;
@@ -24,7 +24,6 @@
   --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
 }
 
-/* 2026 Polish: The "Logo Gradient" Utility */
 @utility logo-gradient {
   background: linear-gradient(135deg, #f37a21, #fdbb10, #7fc342, #26abe2);
 }
