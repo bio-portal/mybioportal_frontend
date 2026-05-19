@@ -1,0 +1,76 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Fetch the page content
+const pageData = await getEntry('pages', 'news');
+const { seoTitle, tagline, headline, description } = pageData.data;
+
+// Fetch and sort the news articles
+const allNews = await getCollection('news');
+const sortedNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Layout title={`${seoTitle} | BioPortal`}>
+  <nav class="w-full z-50 bg-surface py-6 border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+      <a href={`${baseUrl}/`} class="flex items-center group shrink-0">
+        <img src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`} alt="BioPortal Logo" class="w-40 h-auto shrink-0 group-hover:-translate-y-0.5 transition-transform" onerror="this.style.display='none'" />
+      </a>
+      <a href={`${baseUrl}/`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        Back to Home
+      </a>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-6 py-16 lg:py-24">
+    <header class="mb-16">
+      <span class="text-brand-orange-mid font-bold tracking-widest uppercase text-xs mb-4 block">{tagline}</span>
+      <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">{headline}</h1>
+      <p class="text-lg text-gray-500 max-w-2xl">{description}</p>
+    </header>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {sortedNews.map(post => (
+        <article class="bg-white rounded-[2.5rem] border border-gray-100 shadow-soft hover:shadow-2xl transition-all group flex flex-col overflow-hidden">
+
+          <div class="h-48 w-full relative overflow-hidden bg-surface flex-shrink-0">
+            {post.data.image ? (
+              <img src={`${baseUrl}${post.data.image}`} alt={post.data.title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            ) : (
+              <div class="absolute inset-0 bg-gradient-to-br from-brand-orange-mid/10 via-brand-green-bright/5 to-brand-blue-deep/10 flex items-center justify-center transition-transform duration-700 group-hover:scale-105">
+                <img src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`} alt="BioPortal Mark" class="w-32 h-auto opacity-30 grayscale" onerror="this.style.display='none'" />
+              </div>
+            )}
+          </div>
+
+          <div class="p-8 flex flex-col flex-grow">
+            <div class="flex justify-between items-start mb-6">
+              <span class="text-[10px] font-bold text-gray-400 uppercase">
+                {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+              </span>
+              <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-brand-orange-mid/10 text-brand-orange-deep">{post.data.tag}</span>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-brand-orange-deep transition-colors">{post.data.title}</h3>
+            <p class="text-sm text-gray-500 leading-relaxed mb-8 flex-grow line-clamp-3">{post.data.excerpt}</p>
+            <a href={`${baseUrl}/news/${post.id}/`} class="text-brand-dark font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all mt-auto">
+              Read Insight <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </main>
+
+  <footer class="bg-brand-dark text-white py-20 px-6 text-center">
+    <div class="text-2xl font-bold mb-2 tracking-tight">BioPortal<span class="text-brand-blue-deep">.</span></div>
+    <p class="text-gray-400 text-sm mb-6">Jewish General Hospital & McGill University</p>
+    <div class="mb-12">
+      <a href={`${baseUrl}/privacy`} class="text-xs text-gray-400 hover:text-white underline transition-colors">Privacy Policy & Data Safeguards</a>
+    </div>
+    <div class="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold">© 2026 BioPortal Research Group</div>
+  </footer>
+</Layout>
