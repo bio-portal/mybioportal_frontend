@@ -6,37 +6,17 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pageData = await getEntry('pages', 'participants');
 const { hero, steps, benefit } = pageData.data;
 ---
-
-<Layout title="Join BioPortal | Advancing Diabetes Research">
-  <nav class="w-full z-50 bg-surface py-6 border-b border-gray-100">
-    <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
-      <a href={`${baseUrl}/`} class="flex items-center group shrink-0">
-        <img
-          src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
-          alt="BioPortal Logo"
-          class="w-40 h-auto shrink-0 group-hover:-translate-y-0.5 transition-transform"
-          onerror="this.style.display='none'"
-        />
-      </a>
-      <a href={`${baseUrl}/`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        Back
-      </a>
-    </div>
-  </nav>
-
+<Layout title="Join BioPortal | Advancing Diabetes Research" navType="minimal">
   <div class="fixed top-0 inset-x-0 h-[600px] bg-gradient-to-br from-brand-orange-mid/5 via-brand-yellow/5 to-transparent -z-10"></div>
 
-  <main class="max-w-6xl mx-auto px-6 py-16 lg:py-24">
+  <main class="max-w-6xl mx-auto px-6 py-12 lg:py-16">
     <div class="flex flex-col lg:flex-row gap-16 items-start">
-
       <div class="lg:w-7/12">
         <span class="text-brand-orange-deep font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
         <h1 class="text-4xl lg:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight leading-[1.1]">
           {hero.headline}<br/>
           <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange-mid to-brand-orange-deep">{hero.gradientText}</span>
         </h1>
-
         <p class="text-lg text-gray-600 leading-relaxed mb-12">{hero.description}</p>
 
         <div class="mb-12">
@@ -61,11 +41,9 @@ const { hero, steps, benefit } = pageData.data;
         </div>
       </div>
 
-      <div class="lg:w-5/12 w-full lg:sticky lg:top-12">
+      <div class="lg:w-5/12 w-full lg:sticky lg:top-32">
         <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-brand-orange-mid/10 border border-gray-100 p-8 lg:p-10 relative overflow-hidden">
-
           <div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-yellow/10 rounded-full blur-3xl"></div>
-
           <div class="relative z-10">
             <h3 class="text-2xl font-bold text-gray-900 mb-2">Eligibility Check</h3>
             <p class="text-gray-500 mb-8 text-sm">Answer 3 quick questions to see if you can join our current Montreal study.</p>
@@ -75,12 +53,10 @@ const { hero, steps, benefit } = pageData.data;
                 <span class="text-sm font-semibold text-gray-700">Are you 18 years or older?</span>
                 <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-orange-mid focus:ring-brand-orange-mid" />
               </label>
-
               <label class="group flex items-center justify-between p-4 rounded-2xl border-2 border-gray-50 bg-surface hover:border-brand-orange-mid/30 hover:bg-white transition-all cursor-pointer">
                 <span class="text-sm font-semibold text-gray-700">Do you live in the Greater Montreal area?</span>
                 <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-orange-mid focus:ring-brand-orange-mid" />
               </label>
-
               <label class="group flex items-center justify-between p-4 rounded-2xl border-2 border-gray-50 bg-surface hover:border-brand-orange-mid/30 hover:bg-white transition-all cursor-pointer">
                 <span class="text-sm font-semibold text-gray-700">Have you been diagnosed with Type 1 or Type 2 Diabetes?</span>
                 <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-orange-mid focus:ring-brand-orange-mid" />
@@ -88,25 +64,17 @@ const { hero, steps, benefit } = pageData.data;
 
               <div class="pt-4">
                 <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Your Email Address</label>
-                <input
-                  type="email"
-                  placeholder="name@email.com"
-                  class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-orange-mid focus:bg-white focus:ring-0 transition-all outline-none text-sm"
-                />
+                <input type="email" placeholder="name@email.com" class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-orange-mid focus:bg-white focus:ring-0 transition-all outline-none text-sm" />
               </div>
-
-              <button
-                type="button"
-                class="w-full py-5 rounded-2xl bg-brand-orange-mid text-white font-bold text-lg shadow-lg shadow-brand-orange-mid/30 hover:bg-brand-orange-deep hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 mt-4"
-              >
+              <button type="button" class="w-full py-5 rounded-2xl bg-brand-orange-mid text-white font-bold text-lg shadow-lg shadow-brand-orange-mid/30 hover:bg-brand-orange-deep hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 mt-4">
                 Check My Eligibility
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
               </button>
             </form>
 
             <p class="mt-6 text-[11px] text-gray-400 text-center leading-relaxed">
-  By clicking "Check My Eligibility", you agree to be contacted by our clinical team regarding research opportunities. Review our dedicated <a href={`${baseUrl}/privacy`} class="text-brand-orange-deep underline hover:text-brand-dark transition-colors">Privacy and Data Protection Policy</a>.
-</p>
+              By clicking "Check My Eligibility", you agree to be contacted by our clinical team regarding research opportunities. Review our dedicated <a href={`${baseUrl}/privacy`} class="text-brand-orange-deep underline hover:text-brand-dark transition-colors">Privacy and Data Protection Policy</a>.
+            </p>
           </div>
         </div>
 
@@ -115,17 +83,13 @@ const { hero, steps, benefit } = pageData.data;
           <img src={`${baseUrl}/logos/cqdm-logo.png`} alt="CQDM" class="h-6" onerror="this.style.display='none'" />
         </div>
       </div>
-
     </div>
   </main>
 </Layout>
 
 <style>
-  /* 1. Tell Tailwind v4 where to find our custom CSS variables */
   @reference "../styles/global.css";
-
   label:focus-within {
-    /* 2. Use native CSS color-mix to avoid the Tailwind build error on custom variable opacity */
     border-color: color-mix(in srgb, var(--color-brand-orange-mid) 50%, transparent);
     @apply bg-white shadow-sm;
   }

@@ -2,10 +2,8 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
-// Normalize the base URL to ensure it works in all environments
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-// 1. Tell Astro to generate a page for every markdown file in the 'news' collection
 export async function getStaticPaths() {
   const newsEntries = await getCollection('news');
   return newsEntries.map(post => ({
@@ -14,34 +12,18 @@ export async function getStaticPaths() {
   }));
 }
 
-// 2. Get the specific post data for the current page
 const { post } = Astro.props;
 const { Content } = await render(post);
 ---
-
-<Layout title={`${post.data.title} | BioPortal Insights`}>
-
+<Layout
+  title={`${post.data.title} | BioPortal Insights`}
+  navType="minimal"
+  backLink="/news"
+  backText="Back to Insights"
+>
   <div class="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-brand-orange-mid/5 to-transparent -z-10"></div>
 
-  <nav class="w-full z-50 bg-surface/90 backdrop-blur-md py-6 border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-      <a href={`${baseUrl}/`} class="flex items-center group shrink-0">
-        <img
-          src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
-          alt="BioPortal Logo"
-          class="w-40 h-auto shrink-0 group-hover:-translate-y-0.5 transition-transform"
-          onerror="this.style.display='none'"
-        />
-      </a>
-      <a href={`${baseUrl}/news`} class="text-brand-orange-mid font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        Back to Insights
-      </a>
-    </div>
-  </nav>
-
   <main class="max-w-3xl mx-auto px-6 pt-12 pb-24">
-
     <header class="mb-10 border-b border-gray-100 pb-10">
       <div class="flex items-center gap-4 mb-6">
         <span class="text-xs font-bold px-3 py-1 rounded-md bg-brand-orange-mid/10 text-brand-orange-deep uppercase tracking-widest">
@@ -70,41 +52,16 @@ const { Content } = await render(post);
     <article class="text-lg text-gray-600 leading-relaxed space-y-6 article-content">
       <Content />
     </article>
-
   </main>
-
-  <footer class="bg-brand-dark text-white py-20 px-6 text-center mt-12">
-    <div class="text-2xl font-bold mb-2 tracking-tight">BioPortal<span class="text-brand-blue-deep">.</span></div>
-    <p class="text-gray-400 text-sm mb-6">Jewish General Hospital & McGill University</p>
-    <div class="mb-12">
-      <a href={`${baseUrl}/privacy`} class="text-xs text-gray-400 hover:text-white underline transition-colors">Privacy Policy & Data Safeguards</a>
-    </div>
-    <div class="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold">© 2026 BioPortal Research Group</div>
-  </footer>
 </Layout>
 
 <style>
   @reference "../../styles/global.css";
-
-  .article-content :global(h2) {
-    @apply text-3xl font-bold text-gray-900 mt-12 mb-6 tracking-tight;
-  }
-  .article-content :global(h3) {
-    @apply text-2xl font-bold text-gray-900 mt-8 mb-4 tracking-tight;
-  }
-  .article-content :global(p) {
-    @apply mb-6;
-  }
-  .article-content :global(a) {
-    @apply text-brand-blue-deep font-semibold hover:text-brand-dark transition-colors underline underline-offset-2;
-  }
-  .article-content :global(ul) {
-    @apply list-disc list-outside ml-6 mb-6 space-y-2;
-  }
-  .article-content :global(blockquote) {
-    @apply border-l-4 border-brand-orange-mid pl-6 py-2 my-8 text-xl italic text-gray-500 bg-brand-orange-mid/5 rounded-r-2xl;
-  }
-  .article-content :global(strong) {
-    @apply font-bold text-gray-900;
-  }
+  .article-content :global(h2) { @apply text-3xl font-bold text-gray-900 mt-12 mb-6 tracking-tight; }
+  .article-content :global(h3) { @apply text-2xl font-bold text-gray-900 mt-8 mb-4 tracking-tight; }
+  .article-content :global(p) { @apply mb-6; }
+  .article-content :global(a) { @apply text-brand-blue-deep font-semibold hover:text-brand-dark transition-colors underline underline-offset-2; }
+  .article-content :global(ul) { @apply list-disc list-outside ml-6 mb-6 space-y-2; }
+  .article-content :global(blockquote) { @apply border-l-4 border-brand-orange-mid pl-6 py-2 my-8 text-xl italic text-gray-500 bg-brand-orange-mid/5 rounded-r-2xl; }
+  .article-content :global(strong) { @apply font-bold text-gray-900; }
 </style>

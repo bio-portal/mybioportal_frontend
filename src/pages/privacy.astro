@@ -2,42 +2,19 @@
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 
-const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pageData = await getEntry('pages', 'privacy');
 const { tagline, headline, description, safeguardsTitle, safeguards, footerBox } = pageData.data;
 ---
-
-<Layout title={`${headline} | BioPortal`}>
-  <nav class="w-full z-50 bg-surface py-6 border-b border-gray-100">
-    <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
-      <a href={`${baseUrl}/`} class="flex items-center group shrink-0">
-        <img
-          src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
-          alt="BioPortal Logo"
-          class="w-40 h-auto shrink-0 group-hover:-translate-y-0.5 transition-transform"
-          onerror="this.style.display='none'"
-        />
-      </a>
-      <a href={`${baseUrl}/`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        Back
-      </a>
-    </div>
-  </nav>
-
+<Layout title={`${headline} | BioPortal`} navType="minimal">
   <div class="fixed top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue-deep/5 via-brand-teal/5 to-transparent -z-10"></div>
 
-  <main class="max-w-3xl mx-auto px-6 py-16 lg:py-24">
+  <main class="max-w-3xl mx-auto px-6 py-12 lg:py-16">
     <span class="text-brand-blue-deep font-bold tracking-widest uppercase text-xs mb-4 block">{tagline}</span>
     <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-8 leading-tight">{headline}</h1>
 
     <div class="text-gray-600 space-y-6 leading-relaxed">
-      <p class="text-lg text-gray-900 font-medium">
-        {description}
-      </p>
-
+      <p class="text-lg text-gray-900 font-medium">{description}</p>
       <hr class="border-gray-100 my-8" />
-
       <h2 class="text-xl font-bold text-gray-900 mt-8 mb-6">{safeguardsTitle}</h2>
 
       <ul class="space-y-6 list-none pl-0">
@@ -55,9 +32,7 @@ const { tagline, headline, description, safeguardsTitle, safeguards, footerBox }
       {footerBox && (
         <div class="mt-12 p-8 bg-surface rounded-[2rem] border border-gray-100 shadow-xl shadow-gray-100/20">
           <h3 class="font-bold text-gray-900 mb-2 text-base">{footerBox.title}</h3>
-          <p class="text-sm text-gray-500 leading-relaxed">
-            {footerBox.desc}
-          </p>
+          <p class="text-sm text-gray-500 leading-relaxed">{footerBox.desc}</p>
         </div>
       )}
     </div>
