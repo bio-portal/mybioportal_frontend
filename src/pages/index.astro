@@ -6,6 +6,7 @@ import TrustBar from '../components/TrustBar.astro';
 
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
+// Data Fetching
 const homeData = await getEntry('pages', 'home');
 const allTeam = await getCollection('team');
 const sortedTeam = allTeam.sort((a, b) => a.data.order - b.data.order);
@@ -39,8 +40,8 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
     <section id="insights" class="py-16 px-6 max-w-7xl mx-auto scroll-mt-20">
       <div class="mb-12 flex justify-between items-end">
         <div>
-            <span class="text-brand-orange-mid font-bold tracking-widest uppercase text-xs mb-4 block">Latest Insights</span>
-            <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight">News & Discoveries</h2>
+          <span class="text-brand-orange-mid font-bold tracking-widest uppercase text-xs mb-4 block">Latest Insights</span>
+          <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight">News & Discoveries</h2>
         </div>
       </div>
       <div class="grid md:grid-cols-3 gap-8">
@@ -61,7 +62,8 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
         ))}
       </div>
     </section>
-<section id="team" class="py-16 px-6 max-w-7xl mx-auto border-t border-gray-100 bg-surface/30 scroll-mt-20">
+
+    <section id="team" class="py-16 px-6 max-w-7xl mx-auto border-t border-gray-100 bg-surface/30 scroll-mt-20">
       <div class="mb-16">
         <span class="text-brand-blue-mid font-bold tracking-widest uppercase text-xs mb-4 block">Leadership & Operations</span>
         <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight mb-4">Our Team</h2>
@@ -73,7 +75,7 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
         <div class="lg:w-7/12 w-full space-y-16">
 
           <div>
-            <h3 class="text-xl font-bold text-gray-900 mb-8 pb-4 border-b border-gray-200">Governing Committee</h3>
+            <h3 class="text-xl font-bold text-gray-900 mb-8 pb-4 border-b border-gray-200" data-group="governing">Governing Committee</h3>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
               {sortedTeam.filter(m => m.data.group === 'governing').map(member => (
                 <div class="team-card group cursor-pointer relative" tabindex="0">
@@ -95,7 +97,7 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
           </div>
 
           <div>
-            <h3 class="text-xl font-bold text-gray-900 mb-8 pb-4 border-b border-gray-200">Recruitment & Operations</h3>
+            <h3 class="text-xl font-bold text-gray-900 mb-8 pb-4 border-b border-gray-200" data-group="recruitment">Recruitment & Operations</h3>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
               {sortedTeam.filter(m => m.data.group === 'recruitment').map(member => (
                 <div class="team-card group cursor-pointer relative" tabindex="0">
@@ -115,7 +117,6 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
               ))}
             </div>
           </div>
-
         </div>
 
         <div class="hidden lg:block lg:w-5/12 sticky top-32">
@@ -132,101 +133,87 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
             </div>
           </div>
         </div>
-
       </div>
     </section>
   </main>
 
   <footer class="bg-brand-dark text-white py-20 px-6 text-center">
-      <div class="text-2xl font-bold mb-2 tracking-tight">BioPortal<span class="text-brand-blue-deep">.</span></div>
-      <p class="text-gray-400 text-sm mb-12">Jewish General Hospital & McGill University</p>
-      <div class="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold">© 2026 BioPortal Research Group</div>
+    <div class="text-2xl font-bold mb-2 tracking-tight">BioPortal<span class="text-brand-blue-deep">.</span></div>
+    <p class="text-gray-400 text-sm mb-6">Jewish General Hospital & McGill University</p>
+    <div class="mb-12">
+      <a href={`${baseUrl}/privacy`} class="text-xs text-gray-400 hover:text-white underline transition-colors">Privacy Policy & Data Safeguards</a>
+    </div>
+    <div class="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold">© 2026 BioPortal Research Group</div>
   </footer>
-</Layout>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const teamCards = document.querySelectorAll('.team-card');
-    const spotlightContent = document.getElementById('spotlight-content');
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const teamCards = document.querySelectorAll('.team-card');
+      const spotlightContent = document.getElementById('spotlight-content');
 
-    let activeHoverTarget = null;
-    let currentDisplayedCard = null; // NEW: Tracks who is currently in the spotlight
+      let activeHoverTarget = null;
+      let currentDisplayedCard = null;
 
-    teamCards.forEach(card => {
-      // --- DESKTOP: Hover Logic ---
-      card.addEventListener('mouseenter', () => {
-        if (window.innerWidth < 1024) return;
+      teamCards.forEach(card => {
+        // --- DESKTOP: Hover Logic ---
+        card.addEventListener('mouseenter', () => {
+          if (window.innerWidth < 1024) return;
+          if (currentDisplayedCard === card) return;
 
-        // NEW FIX: If we are already displaying this exact person, do absolutely nothing!
-        if (currentDisplayedCard === card) return;
+          activeHoverTarget = card;
+          const name = card.querySelector('.member-name').textContent;
+          const role = card.querySelector('.member-role').textContent;
+          const bio = card.querySelector('.member-bio').textContent;
+          const imgEl = card.querySelector('.member-img');
+          const imgSrc = imgEl ? imgEl.getAttribute('src') : null;
 
-        activeHoverTarget = card;
-        const name = card.querySelector('.member-name').textContent;
-        const role = card.querySelector('.member-role').textContent;
-        const bio = card.querySelector('.member-bio').textContent;
-        const imgEl = card.querySelector('.member-img');
-        const imgSrc = imgEl ? imgEl.getAttribute('src') : null;
+          // Robust check using data attributes
+          const groupTitleEl = card.closest('div').parentElement.querySelector('h3');
+          const isGov = groupTitleEl && groupTitleEl.getAttribute('data-group') === 'governing';
+          const themeColorClass = isGov ? 'text-brand-blue-deep' : 'text-brand-orange-mid';
 
-        const isGov = card.parentElement.previousElementSibling.textContent.includes('Governing');
-        const themeColorClass = isGov ? 'text-brand-blue-deep' : 'text-brand-orange-mid';
+          spotlightContent.style.opacity = '0';
 
-        spotlightContent.style.opacity = '0';
+          setTimeout(() => {
+            if (activeHoverTarget !== card) return;
+            currentDisplayedCard = card;
 
-        setTimeout(() => {
-          // If the user rapidly hovered over someone else during the fade out, abort.
-          if (activeHoverTarget !== card) return;
-
-          // Lock this card in as the currently displayed one
-          currentDisplayedCard = card;
-
-          spotlightContent.innerHTML = `
-            <div class="flex justify-between items-start mb-6 gap-4">
-              <div class="pt-2">
-                <h3 class="text-2xl font-bold text-gray-900 mb-1 tracking-tight leading-tight">${name}</h3>
-                <p class="text-xs font-bold ${themeColorClass} uppercase tracking-widest">${role}</p>
+            spotlightContent.innerHTML = `
+              <div class="flex justify-between items-start mb-6 gap-4">
+                <div class="pt-2">
+                  <h3 class="text-2xl font-bold text-gray-900 mb-1 tracking-tight leading-tight">${name}</h3>
+                  <p class="text-xs font-bold ${themeColorClass} uppercase tracking-widest">${role}</p>
+                </div>
+                ${imgSrc
+                  ? `<img src="${imgSrc}" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl bg-surface shrink-0" />`
+                  : `<div class="w-28 h-28 bg-surface rounded-full border-4 border-white shadow-xl shrink-0"></div>`
+                }
               </div>
-              ${imgSrc
-                ? `<img src="${imgSrc}" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl bg-surface shrink-0" />`
-                : `<div class="w-28 h-28 bg-surface rounded-full border-4 border-white shadow-xl shrink-0"></div>`
-              }
-            </div>
-            <div class="text-gray-600 leading-relaxed text-sm space-y-4 pr-2">${bio}</div>
-          `;
+              <div class="text-gray-600 leading-relaxed text-sm space-y-4 pr-2">${bio}</div>
+            `;
 
-          spotlightContent.style.opacity = '1';
-        }, 150);
-      });
-
-      // --- MOBILE: Click Accordion Logic ---
-      card.addEventListener('click', () => {
-        if (window.innerWidth >= 1024) return;
-
-        const mobileContainer = card.querySelector('.mobile-bio-container');
-        const isOpen = mobileContainer.style.maxHeight && mobileContainer.style.maxHeight !== '0px';
-
-        document.querySelectorAll('.mobile-bio-container').forEach(c => {
-          c.style.maxHeight = '0px';
-          c.style.opacity = '0';
+            spotlightContent.style.opacity = '1';
+          }, 150);
         });
 
-        if (!isOpen) {
-          mobileContainer.style.maxHeight = mobileContainer.scrollHeight + 'px';
-          mobileContainer.style.opacity = '1';
-        }
+        // --- MOBILE: Click Accordion Logic ---
+        card.addEventListener('click', () => {
+          if (window.innerWidth >= 1024) return;
+
+          const mobileContainer = card.querySelector('.mobile-bio-container');
+          const isOpen = mobileContainer.style.maxHeight && mobileContainer.style.maxHeight !== '0px';
+
+          document.querySelectorAll('.mobile-bio-container').forEach(c => {
+            c.style.maxHeight = '0px';
+            c.style.opacity = '0';
+          });
+
+          if (!isOpen) {
+            mobileContainer.style.maxHeight = mobileContainer.scrollHeight + 'px';
+            mobileContainer.style.opacity = '1';
+          }
+        });
       });
     });
-  });
-</script>
-
-
-  </main>
-
-<footer class="bg-brand-dark text-white py-20 px-6 text-center">
-      <div class="text-2xl font-bold mb-2 tracking-tight">BioPortal<span class="text-brand-blue-deep">.</span></div>
-      <p class="text-gray-400 text-sm mb-6">Jewish General Hospital & McGill University</p>
-      <div class="mb-12">
-        <a href={`${baseUrl}/privacy`} class="text-xs text-gray-400 hover:text-white underline transition-colors">Privacy Policy & Data Safeguards</a>
-      </div>
-      <div class="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold">© 2026 BioPortal Research Group</div>
-  </footer>
+  </script>
 </Layout>

@@ -7,13 +7,13 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
   <div class="max-w-6xl mx-auto px-6 text-center">
     <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-10">{content.label}</p>
 
-    <div class="flex flex-wrap justify-center items-center gap-x-12 gap-y-10 md:gap-x-20 opacity-70 grayscale hover:grayscale-0 transition-all duration-500 mb-12">
+    <div class="flex flex-wrap justify-center items-center gap-x-12 gap-y-10 md:gap-x-20 transition-all duration-500 mb-12">
       {content.partners.map((partner: any) => (
         <a
           href={partner.url}
           target="_blank"
           rel="noopener noreferrer"
-          class="hover:scale-110 transition-transform flex items-center justify-center"
+          class="hover:scale-110 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center drop-shadow-sm hover:drop-shadow-md"
           title={partner.name}
         >
           {partner.logo ? (
@@ -22,6 +22,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
               alt={partner.name}
               class="h-10 md:h-12 w-auto object-contain"
               style={partner.scale ? `transform: scale(${partner.scale});` : ''}
+              onerror="this.style.display='none'"
             />
           ) : (
             <span class="text-lg font-black text-gray-800 tracking-tighter">{partner.name}</span>
