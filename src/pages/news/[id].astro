@@ -21,12 +21,12 @@ const { Content } = await render(post);
   backLink="/news"
   backText="Back to Insights"
 >
-  <div class="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-brand-orange-mid/5 to-transparent -z-10"></div>
+  <div class="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-brand-blue-deep/5 to-transparent -z-10"></div>
 
   <main class="max-w-3xl mx-auto px-6 pt-12 pb-24">
     <header class="mb-10 border-b border-gray-100 pb-10">
       <div class="flex items-center gap-4 mb-6">
-        <span class="text-xs font-bold px-3 py-1 rounded-md bg-brand-orange-mid/10 text-brand-orange-deep uppercase tracking-widest">
+        <span class="text-xs font-bold px-3 py-1 rounded-md bg-brand-blue-deep/10 text-brand-blue-deep uppercase tracking-widest">
           {post.data.tag}
         </span>
         <span class="text-sm font-bold text-gray-400 uppercase tracking-widest">
@@ -62,6 +62,6 @@ const { Content } = await render(post);
   .article-content :global(p) { @apply mb-6; }
   .article-content :global(a) { @apply text-brand-blue-deep font-semibold hover:text-brand-dark transition-colors underline underline-offset-2; }
   .article-content :global(ul) { @apply list-disc list-outside ml-6 mb-6 space-y-2; }
-  .article-content :global(blockquote) { @apply border-l-4 border-brand-orange-mid pl-6 py-2 my-8 text-xl italic text-gray-500 bg-brand-orange-mid/5 rounded-r-2xl; }
+  .article-content :global(blockquote) { @apply border-l-4 border-brand-blue-deep pl-6 py-2 my-8 text-xl italic text-gray-500 bg-brand-blue-deep/5 rounded-r-2xl; }
   .article-content :global(strong) { @apply font-bold text-gray-900; }
 </style>

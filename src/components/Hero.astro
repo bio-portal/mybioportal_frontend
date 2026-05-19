@@ -2,8 +2,7 @@
 const { content } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
-
-<header class="pt-28 pb-8 px-6 max-w-5xl mx-auto text-center">
+<header class="pt-28 pb-8 px-6 max-w-5xl mx-auto text-center relative z-10">
   <h1 class="text-5xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-6">
     {content.headline} <br/>
     <span class="bg-gradient-to-r from-brand-orange-deep via-brand-green-bright to-brand-blue-deep bg-clip-text text-transparent pb-2">{content.gradientText}</span>
@@ -13,15 +12,25 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     {content.description}
   </p>
 
-  <div class="flex flex-col sm:flex-row justify-center items-center gap-6">
-    <a href={`${baseUrl}/participants`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-brand-orange-mid hover:bg-brand-orange-deep text-white font-bold text-lg shadow-xl shadow-brand-orange-mid/20 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
-      Join as a Participant
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-    </a>
+  <div class="flex flex-col sm:flex-row justify-center items-center gap-6 z-20">
+    <div class="relative group/btn w-full sm:w-auto">
+      <a href={`${baseUrl}/participants`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-brand-green-bright hover:bg-brand-green-mid text-white font-bold text-lg shadow-xl shadow-brand-green-bright/20 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
+        Join Study
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+      </a>
+      <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 p-4 bg-white border border-gray-100 text-gray-600 text-xs text-left leading-relaxed rounded-2xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none z-50 hidden sm:block">
+        Register your interest to safely contribute biospecimens and clinical data to our Montreal-based research cohorts.
+      </div>
+    </div>
 
-    <a href={`${baseUrl}/researchers`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-white border-2 border-brand-blue-deep text-brand-blue-deep hover:bg-brand-blue-deep hover:text-white font-bold text-lg shadow-xl shadow-brand-blue-deep/10 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
-      Explore Data Access
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-    </a>
+    <div class="relative group/btn w-full sm:w-auto">
+      <a href={`${baseUrl}/researchers`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-white border-2 border-brand-blue-deep text-brand-blue-deep hover:bg-brand-blue-deep hover:text-white font-bold text-lg shadow-xl shadow-brand-blue-deep/10 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
+        Request Data
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+      </a>
+      <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 p-4 bg-white border border-gray-100 text-gray-600 text-xs text-left leading-relaxed rounded-2xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none z-50 hidden sm:block">
+        Access our secure portal to explore de-identified datasets and request biological materials for your research.
+      </div>
+    </div>
   </div>
 </header>

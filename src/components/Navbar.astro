@@ -1,63 +1,58 @@
 ---
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-const { 
-  type = 'main', // 'main' or 'minimal'
-  ctaMode = 'visible', // 'scroll' (hides until scrolled) or 'visible'
-  backLink = '/', 
-  backText = 'Back' 
+const {
+  type = 'main',
+  ctaMode = 'visible',
+  backLink = '/',
+  backText = 'Back'
 } = Astro.props;
 ---
-
-<nav 
-  class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300"
-  data-cta-mode={ctaMode}
->
+<nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300" data-cta-mode={ctaMode}>
   <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
-    
-    <a href={`${baseUrl}/`} class="flex items-center group shrink-0">
-      <img
-        src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
-        alt="BioPortal Logo"
-        class="w-40 h-auto shrink-0 group-hover:-translate-y-0.5 transition-transform"
-        onerror="this.style.display='none'"
-      />
+
+    <a href={`${baseUrl}/`} class="flex items-center shrink-0">
+      <img src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`} alt="BioPortal Logo" class="w-40 h-auto shrink-0 hover:-translate-y-0.5 transition-transform" onerror="this.style.display='none'" />
     </a>
 
     {type === 'main' ? (
       <>
-        <div class="hidden lg:flex items-center space-x-8 font-medium text-sm absolute left-1/2 -translate-x-1/2">
+        <div id="nav-cta-group" class={`absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-4 transition-all duration-500 ease-out ${ctaMode === 'scroll' ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}>
+          <div class="relative group/btn">
+            <a href={`${baseUrl}/researchers`} class="text-xs font-bold text-brand-blue-deep hover:text-brand-dark transition-colors px-2 py-2">Request Data</a>
+            <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-56 p-3 bg-white border border-gray-100 text-gray-500 text-[11px] leading-relaxed rounded-xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none">
+              Explore de-identified datasets and request cohort materials for approved research.
+            </div>
+          </div>
+          <div class="relative group/btn">
+            <a href={`${baseUrl}/participants`} class="px-5 py-2.5 rounded-full bg-brand-green-bright text-white text-xs font-bold shadow-md shadow-brand-green-bright/20 hover:bg-brand-green-mid hover:-translate-y-0.5 transition-all">Join Study</a>
+            <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-56 p-3 bg-white border border-gray-100 text-gray-500 text-[11px] leading-relaxed rounded-xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none">
+              Contribute clinical data to advance Montreal-based genomic research.
+            </div>
+          </div>
+        </div>
+
+        <div class="hidden lg:flex items-center space-x-8 font-medium text-sm ml-auto">
           <a href={`${baseUrl}/#insights`} class="text-gray-500 hover:text-brand-dark transition-colors">Insights</a>
           <a href={`${baseUrl}/#team`} class="text-gray-500 hover:text-brand-dark transition-colors">Our Team</a>
           <a href={`${baseUrl}/privacy`} class="text-gray-500 hover:text-brand-dark transition-colors">Data Security</a>
         </div>
-
-        <div class={`nav-cta-group hidden md:flex items-center gap-4 transition-all duration-500 ease-out ${ctaMode === 'scroll' ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}>
-          <a href={`${baseUrl}/researchers`} class="text-xs font-bold text-brand-blue-deep hover:text-brand-dark transition-colors">
-            Request Data
-          </a>
-          <a href={`${baseUrl}/participants`} class="px-5 py-2.5 rounded-full bg-brand-orange-mid text-white text-xs font-bold shadow-md shadow-brand-orange-mid/20 hover:bg-brand-orange-deep hover:-translate-y-0.5 transition-all">
-            Join Study
-          </a>
-        </div>
       </>
     ) : (
-      <a href={`${baseUrl}${backLink}`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2">
+      <a href={`${baseUrl}${backLink}`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2 ml-auto">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
         {backText}
       </a>
     )}
-
   </div>
 </nav>
 
 <script>
-  // Encapsulated logic: Only runs if the navbar is specifically set to "scroll" mode
   document.addEventListener("DOMContentLoaded", () => {
     const nav = document.querySelector('nav[data-cta-mode="scroll"]');
-    if (!nav) return; 
+    if (!nav) return;
 
-    const navCtaGroup = nav.querySelector('.nav-cta-group');
+    const navCtaGroup = nav.querySelector('#nav-cta-group');
     const handleScroll = () => {
       if (window.scrollY > 400) {
         navCtaGroup.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
@@ -69,6 +64,6 @@ const {
     };
 
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); 
+    handleScroll();
   });
 </script>

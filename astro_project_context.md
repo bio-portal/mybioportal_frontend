@@ -1,5 +1,5 @@
 # BioPortal Astro Architectural Context
-Generated on: Tue 19 May 2026 03:29:15 PM EDT
+Generated on: Tue 19 May 2026 03:45:53 PM EDT
 
 ---
 
@@ -18,7 +18,9 @@ Generated on: Tue 19 May 2026 03:29:15 PM EDT
 ├── README.md
 ├── [01;34msrc[00m
 │   ├── [01;34mcomponents[00m
+│   │   ├── Footer.astro
 │   │   ├── Hero.astro
+│   │   ├── Navbar.astro
 │   │   └── TrustBar.astro
 │   ├── [01;34mcontent[00m
 │   │   ├── [01;34mnews[00m
@@ -64,7 +66,7 @@ Generated on: Tue 19 May 2026 03:29:15 PM EDT
 │       └── global.css
 └── tsconfig.json
 
-10 directories, 47 files
+10 directories, 49 files
 ```
 
 ---
@@ -189,10 +191,8 @@ export const collections = { pages, team, news };
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
-// Normalize the base URL to ensure it works in all environments
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-// 1. Tell Astro to generate a page for every markdown file in the 'news' collection
 export async function getStaticPaths() {
   const newsEntries = await getCollection('news');
   return newsEntries.map(post => ({
@@ -201,34 +201,18 @@ export async function getStaticPaths() {
   }));
 }
 
-// 2. Get the specific post data for the current page
 const { post } = Astro.props;
 const { Content } = await render(post);
 ---
-
-<Layout title={`${post.data.title} | BioPortal Insights`}>
-
+<Layout
+  title={`${post.data.title} | BioPortal Insights`}
+  navType="minimal"
+  backLink="/news"
+  backText="Back to Insights"
+>
   <div class="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-brand-orange-mid/5 to-transparent -z-10"></div>
 
-  <nav class="w-full z-50 bg-surface/90 backdrop-blur-md py-6 border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-      <a href={`${baseUrl}/`} class="flex items-center group shrink-0">
-        <img
-          src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
-          alt="BioPortal Logo"
-          class="w-40 h-auto shrink-0 group-hover:-translate-y-0.5 transition-transform"
-          onerror="this.style.display='none'"
-        />
-      </a>
-      <a href={`${baseUrl}/news`} class="text-brand-orange-mid font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        Back to Insights
-      </a>
-    </div>
-  </nav>
-
   <main class="max-w-3xl mx-auto px-6 pt-12 pb-24">
-
     <header class="mb-10 border-b border-gray-100 pb-10">
       <div class="flex items-center gap-4 mb-6">
         <span class="text-xs font-bold px-3 py-1 rounded-md bg-brand-orange-mid/10 text-brand-orange-deep uppercase tracking-widest">
@@ -257,43 +241,18 @@ const { Content } = await render(post);
     <article class="text-lg text-gray-600 leading-relaxed space-y-6 article-content">
       <Content />
     </article>
-
   </main>
-
-  <footer class="bg-brand-dark text-white py-20 px-6 text-center mt-12">
-    <div class="text-2xl font-bold mb-2 tracking-tight">BioPortal<span class="text-brand-blue-deep">.</span></div>
-    <p class="text-gray-400 text-sm mb-6">Jewish General Hospital & McGill University</p>
-    <div class="mb-12">
-      <a href={`${baseUrl}/privacy`} class="text-xs text-gray-400 hover:text-white underline transition-colors">Privacy Policy & Data Safeguards</a>
-    </div>
-    <div class="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold">© 2026 BioPortal Research Group</div>
-  </footer>
 </Layout>
 
 <style>
   @reference "../../styles/global.css";
-
-  .article-content :global(h2) {
-    @apply text-3xl font-bold text-gray-900 mt-12 mb-6 tracking-tight;
-  }
-  .article-content :global(h3) {
-    @apply text-2xl font-bold text-gray-900 mt-8 mb-4 tracking-tight;
-  }
-  .article-content :global(p) {
-    @apply mb-6;
-  }
-  .article-content :global(a) {
-    @apply text-brand-blue-deep font-semibold hover:text-brand-dark transition-colors underline underline-offset-2;
-  }
-  .article-content :global(ul) {
-    @apply list-disc list-outside ml-6 mb-6 space-y-2;
-  }
-  .article-content :global(blockquote) {
-    @apply border-l-4 border-brand-orange-mid pl-6 py-2 my-8 text-xl italic text-gray-500 bg-brand-orange-mid/5 rounded-r-2xl;
-  }
-  .article-content :global(strong) {
-    @apply font-bold text-gray-900;
-  }
+  .article-content :global(h2) { @apply text-3xl font-bold text-gray-900 mt-12 mb-6 tracking-tight; }
+  .article-content :global(h3) { @apply text-2xl font-bold text-gray-900 mt-8 mb-4 tracking-tight; }
+  .article-content :global(p) { @apply mb-6; }
+  .article-content :global(a) { @apply text-brand-blue-deep font-semibold hover:text-brand-dark transition-colors underline underline-offset-2; }
+  .article-content :global(ul) { @apply list-disc list-outside ml-6 mb-6 space-y-2; }
+  .article-content :global(blockquote) { @apply border-l-4 border-brand-orange-mid pl-6 py-2 my-8 text-xl italic text-gray-500 bg-brand-orange-mid/5 rounded-r-2xl; }
+  .article-content :global(strong) { @apply font-bold text-gray-900; }
 </style>
 
 ```
@@ -305,48 +264,14 @@ import { getCollection, getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
-
-// Fetch the page content
 const pageData = await getEntry('pages', 'news');
 const { seoTitle, tagline, headline, description } = pageData.data;
 
-// Fetch and sort the news articles
 const allNews = await getCollection('news');
 const sortedNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
-
 <Layout title={`${seoTitle} | BioPortal`}>
-<nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
-
-      <a href={`${baseUrl}/`} class="flex items-center group shrink-0">
-        <img
-          src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
-          alt="BioPortal Logo"
-          class="w-40 h-auto shrink-0 group-hover:-translate-y-0.5 transition-transform"
-          onerror="this.style.display='none'"
-        />
-      </a>
-
-      <div class="hidden lg:flex items-center space-x-8 font-medium text-sm absolute left-1/2 -translate-x-1/2">
-        <a href="#insights" class="text-gray-500 hover:text-brand-dark transition-colors">Insights</a>
-        <a href="#team" class="text-gray-500 hover:text-brand-dark transition-colors">Our Team</a>
-        <a href={`${baseUrl}/privacy`} class="text-gray-500 hover:text-brand-dark transition-colors">Data Security</a>
-      </div>
-
-      <div id="nav-cta-group" class="hidden md:flex items-center gap-4 opacity-0 -translate-y-2 pointer-events-none transition-all duration-500 ease-out">
-        <a href={`${baseUrl}/researchers`} class="text-xs font-bold text-brand-blue-deep hover:text-brand-dark transition-colors">
-          Request Data
-        </a>
-        <a href={`${baseUrl}/participants`} class="px-5 py-2.5 rounded-full bg-brand-orange-mid text-white text-xs font-bold shadow-md shadow-brand-orange-mid/20 hover:bg-brand-orange-deep hover:-translate-y-0.5 transition-all">
-          Join Study
-        </a>
-      </div>
-
-    </div>
-  </nav>
-
-  <main class="max-w-7xl mx-auto px-6 py-16 lg:py-24">
+  <main class="max-w-7xl mx-auto px-6 py-12 lg:py-16">
     <header class="mb-16">
       <span class="text-brand-orange-mid font-bold tracking-widest uppercase text-xs mb-4 block">{tagline}</span>
       <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">{headline}</h1>
@@ -356,7 +281,6 @@ const sortedNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
       {sortedNews.map(post => (
         <article class="bg-white rounded-[2.5rem] border border-gray-100 shadow-soft hover:shadow-2xl transition-all group flex flex-col overflow-hidden">
-
           <div class="h-48 w-full relative overflow-hidden bg-surface flex-shrink-0">
             {post.data.image ? (
               <img src={`${baseUrl}${post.data.image}`} alt={post.data.title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
@@ -366,7 +290,6 @@ const sortedNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
               </div>
             )}
           </div>
-
           <div class="p-8 flex flex-col flex-grow">
             <div class="flex justify-between items-start mb-6">
               <span class="text-[10px] font-bold text-gray-400 uppercase">
@@ -384,43 +307,6 @@ const sortedNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
       ))}
     </div>
   </main>
-
-  <footer class="bg-brand-dark text-white py-20 px-6 text-center">
-    <div class="text-2xl font-bold mb-2 tracking-tight">BioPortal<span class="text-brand-blue-deep">.</span></div>
-    <p class="text-gray-400 text-sm mb-6">Jewish General Hospital & McGill University</p>
-    <div class="mb-12">
-      <a href={`${baseUrl}/privacy`} class="text-xs text-gray-400 hover:text-white underline transition-colors">Privacy Policy & Data Safeguards</a>
-    </div>
-    <div class="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold">© 2026 BioPortal Research Group</div>
-  </footer>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    // 1. Grab the element we want to hide/show in the navbar
-    const navCtaGroup = document.getElementById('nav-cta-group');
-
-    // 2. Grab the hero buttons on the page (we need to give them an ID in the Hero component)
-    // For now, we will just listen to how far the user has scrolled down the page.
-    // If they scroll past ~400px (roughly where the hero ends), we reveal the nav buttons.
-
-    const handleScroll = () => {
-      if (window.scrollY > 400) {
-        // Reveal Navbar Buttons
-        navCtaGroup.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
-        navCtaGroup.classList.add('opacity-100', 'translate-y-0');
-      } else {
-        // Hide Navbar Buttons
-        navCtaGroup.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none');
-        navCtaGroup.classList.remove('opacity-100', 'translate-y-0');
-      }
-    };
-
-    // Attach the scroll listener
-    window.addEventListener('scroll', handleScroll);
-
-    // Run once on load just in case the user refreshes halfway down the page
-    handleScroll();
-  });
-</script>
 </Layout>
 
 ```
@@ -434,46 +320,13 @@ import Hero from '../components/Hero.astro';
 import TrustBar from '../components/TrustBar.astro';
 
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
-
-// Data Fetching
 const homeData = await getEntry('pages', 'home');
 const allTeam = await getCollection('team');
 const sortedTeam = allTeam.sort((a, b) => a.data.order - b.data.order);
 const allNews = await getCollection('news');
 const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
 ---
-
-<Layout title="BioPortal | Advancing Genomic Research">
-  <nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
-
-      <a href={`${baseUrl}/`} class="flex items-center group shrink-0">
-        <img
-          src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
-          alt="BioPortal Logo"
-          class="w-40 h-auto shrink-0 group-hover:-translate-y-0.5 transition-transform"
-          onerror="this.style.display='none'"
-        />
-      </a>
-
-      <div class="hidden lg:flex items-center space-x-8 font-medium text-sm absolute left-1/2 -translate-x-1/2">
-        <a href="#insights" class="text-gray-500 hover:text-brand-dark transition-colors">Insights</a>
-        <a href="#team" class="text-gray-500 hover:text-brand-dark transition-colors">Our Team</a>
-        <a href={`${baseUrl}/privacy`} class="text-gray-500 hover:text-brand-dark transition-colors">Data Security</a>
-      </div>
-
-      <div id="nav-cta-group" class="hidden md:flex items-center gap-4 opacity-0 -translate-y-2 pointer-events-none transition-all duration-500 ease-out">
-        <a href={`${baseUrl}/researchers`} class="text-xs font-bold text-brand-blue-deep hover:text-brand-dark transition-colors">
-          Request Data
-        </a>
-        <a href={`${baseUrl}/participants`} class="px-5 py-2.5 rounded-full bg-brand-orange-mid text-white text-xs font-bold shadow-md shadow-brand-orange-mid/20 hover:bg-brand-orange-deep hover:-translate-y-0.5 transition-all">
-          Join Study
-        </a>
-      </div>
-
-    </div>
-  </nav>
-
+<Layout title="BioPortal | Advancing Genomic Research" ctaMode="scroll">
   <main>
     <Hero content={homeData.data.hero} />
     <TrustBar content={homeData.data.trustBar} />
@@ -537,15 +390,21 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
             <h3 class="text-xl font-bold text-gray-900 mb-8 pb-4 border-b border-gray-200" data-group="governing">Governing Committee</h3>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
               {sortedTeam.filter(m => m.data.group === 'governing').map(member => (
-                <div class="team-card group cursor-pointer relative" tabindex="0">
-                  <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-surface mx-auto mb-4 overflow-hidden border-4 border-white shadow-md group-hover:shadow-xl group-hover:scale-105 group-hover:border-brand-blue-deep/30 transition-all duration-500 relative">
-                     {member.data.image ? <img src={`${baseUrl}${member.data.image}`} alt={member.data.name} class="w-full h-full object-cover member-img" onerror="this.style.display='none'" /> : <div class="w-full h-full bg-brand-blue-deep/5 flex items-center justify-center member-img-fallback"><svg width="32" height="32" class="text-brand-blue-deep/30" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>}
-                  </div>
-                  <div class="text-center">
-                    <h4 class="text-sm font-bold text-gray-900 leading-tight mb-1 member-name">{member.data.name}</h4>
-                    <p class="text-[10px] font-bold text-brand-blue-deep uppercase tracking-wider member-role">{member.data.role}</p>
-                  </div>
-                  <div class="hidden member-bio">{member.data.bio}</div>
+      <div class="team-card group cursor-pointer relative" tabindex="0">
+
+        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full mx-auto mb-4 p-[3px] bg-white group-hover:logo-gradient transition-all duration-500 shadow-md group-hover:shadow-xl group-hover:scale-105 relative">
+          <div class="w-full h-full rounded-full overflow-hidden border-2 border-white bg-surface relative">
+            {member.data.image ? <img src={`${baseUrl}${member.data.image}`} alt={member.data.name} class="w-full h-full object-cover member-img" onerror="this.style.display='none'" /> : <div class="w-full h-full flex items-center justify-center member-img-fallback"><svg width="32" height="32" class="text-brand-blue-deep/30" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>}
+          </div>
+        </div>
+
+        <div class="text-center">
+          <h4 class="text-sm font-bold text-gray-900 leading-tight mb-1 member-name">{member.data.name}</h4>
+          <p class="text-[10px] font-bold text-brand-blue-deep uppercase tracking-wider member-role">{member.data.role}</p>
+        </div>
+        <div class="hidden member-bio">{member.data.bio}</div>
+      </div>
+    ))}
 
                   <div class="lg:hidden mobile-bio-container overflow-hidden max-h-0 opacity-0 transition-all duration-500 ease-in-out mt-0">
                     <p class="text-xs text-gray-600 leading-relaxed p-4 bg-white rounded-2xl border border-gray-100 shadow-sm mt-3">{member.data.bio}</p>
@@ -595,41 +454,15 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
     </section>
   </main>
 
-  <footer class="bg-brand-dark text-white py-20 px-6 text-center">
-    <div class="text-2xl font-bold mb-2 tracking-tight">BioPortal<span class="text-brand-blue-deep">.</span></div>
-    <p class="text-gray-400 text-sm mb-6">Jewish General Hospital & McGill University</p>
-    <div class="mb-12">
-      <a href={`${baseUrl}/privacy`} class="text-xs text-gray-400 hover:text-white underline transition-colors">Privacy Policy & Data Safeguards</a>
-    </div>
-    <div class="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold">© 2026 BioPortal Research Group</div>
-  </footer>
-
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const teamCards = document.querySelectorAll('.team-card');
       const spotlightContent = document.getElementById('spotlight-content');
-      const navCtaGroup = document.getElementById('nav-cta-group');
 
       let activeHoverTarget = null;
       let currentDisplayedCard = null;
 
-      // --- SCROLL ACTION: Reveal Navbar CTAs past Hero bounds ---
-      const handleScroll = () => {
-        if (window.scrollY > 400) {
-          navCtaGroup.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
-          navCtaGroup.classList.add('opacity-100', 'translate-y-0');
-        } else {
-          navCtaGroup.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none');
-          navCtaGroup.classList.remove('opacity-100', 'translate-y-0');
-        }
-      };
-
-      window.addEventListener('scroll', handleScroll);
-      handleScroll(); // Check immediately on load/refresh
-
-      // --- TEAM CARDS: Interactivity ---
       teamCards.forEach(card => {
-        // Desktop Hover Logic
         card.addEventListener('mouseenter', () => {
           if (window.innerWidth < 1024) return;
           if (currentDisplayedCard === card) return;
@@ -669,7 +502,6 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
           }, 150);
         });
 
-        // Mobile Click Accordion Logic
         card.addEventListener('click', () => {
           if (window.innerWidth >= 1024) return;
 
@@ -703,37 +535,17 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pageData = await getEntry('pages', 'participants');
 const { hero, steps, benefit } = pageData.data;
 ---
-
-<Layout title="Join BioPortal | Advancing Diabetes Research">
-  <nav class="w-full z-50 bg-surface py-6 border-b border-gray-100">
-    <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
-      <a href={`${baseUrl}/`} class="flex items-center group shrink-0">
-        <img
-          src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
-          alt="BioPortal Logo"
-          class="w-40 h-auto shrink-0 group-hover:-translate-y-0.5 transition-transform"
-          onerror="this.style.display='none'"
-        />
-      </a>
-      <a href={`${baseUrl}/`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        Back
-      </a>
-    </div>
-  </nav>
-
+<Layout title="Join BioPortal | Advancing Diabetes Research" navType="minimal">
   <div class="fixed top-0 inset-x-0 h-[600px] bg-gradient-to-br from-brand-orange-mid/5 via-brand-yellow/5 to-transparent -z-10"></div>
 
-  <main class="max-w-6xl mx-auto px-6 py-16 lg:py-24">
+  <main class="max-w-6xl mx-auto px-6 py-12 lg:py-16">
     <div class="flex flex-col lg:flex-row gap-16 items-start">
-
       <div class="lg:w-7/12">
         <span class="text-brand-orange-deep font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
         <h1 class="text-4xl lg:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight leading-[1.1]">
           {hero.headline}<br/>
           <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange-mid to-brand-orange-deep">{hero.gradientText}</span>
         </h1>
-
         <p class="text-lg text-gray-600 leading-relaxed mb-12">{hero.description}</p>
 
         <div class="mb-12">
@@ -758,11 +570,9 @@ const { hero, steps, benefit } = pageData.data;
         </div>
       </div>
 
-      <div class="lg:w-5/12 w-full lg:sticky lg:top-12">
+      <div class="lg:w-5/12 w-full lg:sticky lg:top-32">
         <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-brand-orange-mid/10 border border-gray-100 p-8 lg:p-10 relative overflow-hidden">
-
           <div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-yellow/10 rounded-full blur-3xl"></div>
-
           <div class="relative z-10">
             <h3 class="text-2xl font-bold text-gray-900 mb-2">Eligibility Check</h3>
             <p class="text-gray-500 mb-8 text-sm">Answer 3 quick questions to see if you can join our current Montreal study.</p>
@@ -772,12 +582,10 @@ const { hero, steps, benefit } = pageData.data;
                 <span class="text-sm font-semibold text-gray-700">Are you 18 years or older?</span>
                 <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-orange-mid focus:ring-brand-orange-mid" />
               </label>
-
               <label class="group flex items-center justify-between p-4 rounded-2xl border-2 border-gray-50 bg-surface hover:border-brand-orange-mid/30 hover:bg-white transition-all cursor-pointer">
                 <span class="text-sm font-semibold text-gray-700">Do you live in the Greater Montreal area?</span>
                 <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-orange-mid focus:ring-brand-orange-mid" />
               </label>
-
               <label class="group flex items-center justify-between p-4 rounded-2xl border-2 border-gray-50 bg-surface hover:border-brand-orange-mid/30 hover:bg-white transition-all cursor-pointer">
                 <span class="text-sm font-semibold text-gray-700">Have you been diagnosed with Type 1 or Type 2 Diabetes?</span>
                 <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-orange-mid focus:ring-brand-orange-mid" />
@@ -785,25 +593,17 @@ const { hero, steps, benefit } = pageData.data;
 
               <div class="pt-4">
                 <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Your Email Address</label>
-                <input
-                  type="email"
-                  placeholder="name@email.com"
-                  class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-orange-mid focus:bg-white focus:ring-0 transition-all outline-none text-sm"
-                />
+                <input type="email" placeholder="name@email.com" class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-orange-mid focus:bg-white focus:ring-0 transition-all outline-none text-sm" />
               </div>
-
-              <button
-                type="button"
-                class="w-full py-5 rounded-2xl bg-brand-orange-mid text-white font-bold text-lg shadow-lg shadow-brand-orange-mid/30 hover:bg-brand-orange-deep hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 mt-4"
-              >
+              <button type="button" class="w-full py-5 rounded-2xl bg-brand-orange-mid text-white font-bold text-lg shadow-lg shadow-brand-orange-mid/30 hover:bg-brand-orange-deep hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 mt-4">
                 Check My Eligibility
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
               </button>
             </form>
 
             <p class="mt-6 text-[11px] text-gray-400 text-center leading-relaxed">
-  By clicking "Check My Eligibility", you agree to be contacted by our clinical team regarding research opportunities. Review our dedicated <a href={`${baseUrl}/privacy`} class="text-brand-orange-deep underline hover:text-brand-dark transition-colors">Privacy and Data Protection Policy</a>.
-</p>
+              By clicking "Check My Eligibility", you agree to be contacted by our clinical team regarding research opportunities. Review our dedicated <a href={`${baseUrl}/privacy`} class="text-brand-orange-deep underline hover:text-brand-dark transition-colors">Privacy and Data Protection Policy</a>.
+            </p>
           </div>
         </div>
 
@@ -812,18 +612,25 @@ const { hero, steps, benefit } = pageData.data;
           <img src={`${baseUrl}/logos/cqdm-logo.png`} alt="CQDM" class="h-6" onerror="this.style.display='none'" />
         </div>
       </div>
-
     </div>
   </main>
 </Layout>
 
-<style>
-  /* 1. Tell Tailwind v4 where to find our custom CSS variables */
-  @reference "../styles/global.css";
+<div class="fixed top-0 inset-x-0 h-[600px] bg-gradient-to-br from-brand-green-bright/5 via-brand-teal/5 to-transparent -z-10"></div>
 
+<label class="group flex items-center justify-between p-4 rounded-2xl border-2 border-gray-50 bg-surface hover:border-brand-green-bright/30 hover:bg-white transition-all cursor-pointer">
+  <span class="text-sm font-semibold text-gray-700">Are you 18 years or older?</span>
+  <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-green-bright focus:ring-brand-green-bright" />
+</label>
+<button type="button" class="w-full py-5 rounded-2xl bg-brand-green-bright text-white font-bold text-lg shadow-lg shadow-brand-green-bright/30 hover:bg-brand-green-mid hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 mt-4">
+  Check My Eligibility
+  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+</button>
+
+<style>
+  @reference "../styles/global.css";
   label:focus-within {
-    /* 2. Use native CSS color-mix to avoid the Tailwind build error on custom variable opacity */
-    border-color: color-mix(in srgb, var(--color-brand-orange-mid) 50%, transparent);
+    border-color: color-mix(in srgb, var(--color-brand-green-bright) 50%, transparent);
     @apply bg-white shadow-sm;
   }
 </style>
@@ -832,7 +639,6 @@ const { hero, steps, benefit } = pageData.data;
 
 ### 🧩 File: `src/pages/researchers.astro`
 ```astro
-
 ---
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
@@ -841,28 +647,10 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pageData = await getEntry('pages', 'researchers');
 const { hero, stats } = pageData.data;
 ---
-
-<Layout title="Data Access | BioPortal">
-  <nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60">
-    <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-      <a href={`${baseUrl}/`} class="flex items-center group shrink-0">
-        <img
-          src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
-          alt="BioPortal Logo"
-          class="w-40 h-auto shrink-0 group-hover:-translate-y-0.5 transition-transform"
-          onerror="this.style.display='none'"
-        />
-      </a>
-      <a href={`${baseUrl}/`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        Back to Home
-      </a>
-    </div>
-  </nav>
-
+<Layout title="Data Access | BioPortal" navType="minimal" backText="Back to Home">
   <div class="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue-deep/10 via-brand-teal/5 to-transparent -z-10"></div>
 
-  <main class="max-w-7xl mx-auto px-6 pt-32 pb-24 relative z-10">
+  <main class="max-w-7xl mx-auto px-6 pt-12 pb-24 relative z-10">
     <header class="max-w-3xl mb-16 text-center mx-auto">
       <span class="text-brand-blue-deep font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
       <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 tracking-tight">{hero.headline}</h1>
@@ -926,26 +714,15 @@ const { hero, stats } = pageData.data;
             Access Requirements
           </h3>
           <ul class="space-y-4 text-sm text-gray-300">
-            <li class="flex items-start gap-3">
-              <span class="text-brand-teal font-bold">01</span>
-              <span>Institutionally-approved REB/IRB documentation for your specific project.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-brand-teal font-bold">02</span>
-              <span>Signed Data Transfer Agreement (DTA) or Material Transfer Agreement (MTA).</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-brand-teal font-bold">03</span>
-              <span>Adherence to our Open Science and attribution framework.</span>
-            </li>
+            <li class="flex items-start gap-3"><span class="text-brand-teal font-bold">01</span><span>Institutionally-approved REB/IRB documentation for your specific project.</span></li>
+            <li class="flex items-start gap-3"><span class="text-brand-teal font-bold">02</span><span>Signed Data Transfer Agreement (DTA) or Material Transfer Agreement (MTA).</span></li>
+            <li class="flex items-start gap-3"><span class="text-brand-teal font-bold">03</span><span>Adherence to our Open Science and attribution framework.</span></li>
           </ul>
         </div>
 
         <div class="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-soft">
           <h3 class="text-xl font-bold text-gray-900 mb-4">Infrastructure</h3>
-          <p class="text-sm text-gray-500 leading-relaxed mb-6">
-            Our platform utilizes <strong>Bento v2</strong> for cohort discovery and <strong>C3G</strong> for secure high-performance genomic compute.
-          </p>
+          <p class="text-sm text-gray-500 leading-relaxed mb-6">Our platform utilizes <strong>Bento v2</strong> for cohort discovery and <strong>C3G</strong> for secure high-performance genomic compute.</p>
           <div class="flex gap-2">
             <span class="px-3 py-1 rounded-full bg-brand-teal/10 text-brand-dark font-bold text-[10px] uppercase tracking-wider">Bento v2</span>
             <span class="px-3 py-1 rounded-full bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-wider">C3G Powered</span>
@@ -964,42 +741,19 @@ const { hero, stats } = pageData.data;
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 
-const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pageData = await getEntry('pages', 'privacy');
 const { tagline, headline, description, safeguardsTitle, safeguards, footerBox } = pageData.data;
 ---
-
-<Layout title={`${headline} | BioPortal`}>
-  <nav class="w-full z-50 bg-surface py-6 border-b border-gray-100">
-    <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
-      <a href={`${baseUrl}/`} class="flex items-center group shrink-0">
-        <img
-          src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
-          alt="BioPortal Logo"
-          class="w-40 h-auto shrink-0 group-hover:-translate-y-0.5 transition-transform"
-          onerror="this.style.display='none'"
-        />
-      </a>
-      <a href={`${baseUrl}/`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        Back
-      </a>
-    </div>
-  </nav>
-
+<Layout title={`${headline} | BioPortal`} navType="minimal">
   <div class="fixed top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue-deep/5 via-brand-teal/5 to-transparent -z-10"></div>
 
-  <main class="max-w-3xl mx-auto px-6 py-16 lg:py-24">
+  <main class="max-w-3xl mx-auto px-6 py-12 lg:py-16">
     <span class="text-brand-blue-deep font-bold tracking-widest uppercase text-xs mb-4 block">{tagline}</span>
     <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-8 leading-tight">{headline}</h1>
 
     <div class="text-gray-600 space-y-6 leading-relaxed">
-      <p class="text-lg text-gray-900 font-medium">
-        {description}
-      </p>
-
+      <p class="text-lg text-gray-900 font-medium">{description}</p>
       <hr class="border-gray-100 my-8" />
-
       <h2 class="text-xl font-bold text-gray-900 mt-8 mb-6">{safeguardsTitle}</h2>
 
       <ul class="space-y-6 list-none pl-0">
@@ -1017,9 +771,7 @@ const { tagline, headline, description, safeguardsTitle, safeguards, footerBox }
       {footerBox && (
         <div class="mt-12 p-8 bg-surface rounded-[2rem] border border-gray-100 shadow-xl shadow-gray-100/20">
           <h3 class="font-bold text-gray-900 mb-2 text-base">{footerBox.title}</h3>
-          <p class="text-sm text-gray-500 leading-relaxed">
-            {footerBox.desc}
-          </p>
+          <p class="text-sm text-gray-500 leading-relaxed">{footerBox.desc}</p>
         </div>
       )}
     </div>
@@ -1031,22 +783,37 @@ const { tagline, headline, description, safeguardsTitle, safeguards, footerBox }
 ### 🧩 File: `src/layouts/Layout.astro`
 ```astro
 ---
-// src/layouts/Layout.astro
 import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
 
-const { title } = Astro.props;
+const { 
+  title, 
+  navType = 'main', 
+  ctaMode = 'visible', 
+  backLink = '/', 
+  backText = 'Back',
+  hideFooter = false
+} = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<title>{title}</title>
-	</head>
-	<body>
-        <slot />
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title}</title>
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <Navbar type={navType} ctaMode={ctaMode} backLink={backLink} backText={backText} />
+    
+    <div class="flex-grow pt-20"> 
+      <slot />
+    </div>
+
+    {!hideFooter && <Footer />}
+  </body>
 </html>
+
 ```
 
 ### 🧩 File: `src/components/Hero.astro`
@@ -1056,7 +823,7 @@ const { content } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
-<header class="pt-28 pb-8 px-6 max-w-5xl mx-auto text-center">
+<header class="pt-28 pb-8 px-6 max-w-5xl mx-auto text-center relative z-10">
   <h1 class="text-5xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-6">
     {content.headline} <br/>
     <span class="bg-gradient-to-r from-brand-orange-deep via-brand-green-bright to-brand-blue-deep bg-clip-text text-transparent pb-2">{content.gradientText}</span>
@@ -1066,16 +833,28 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     {content.description}
   </p>
 
-  <div class="flex flex-col sm:flex-row justify-center items-center gap-6">
-    <a href={`${baseUrl}/participants`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-brand-orange-mid hover:bg-brand-orange-deep text-white font-bold text-lg shadow-xl shadow-brand-orange-mid/20 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
-      Join as a Participant
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-    </a>
+  <div class="flex flex-col sm:flex-row justify-center items-center gap-6 z-20">
 
-    <a href={`${baseUrl}/researchers`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-white border-2 border-brand-blue-deep text-brand-blue-deep hover:bg-brand-blue-deep hover:text-white font-bold text-lg shadow-xl shadow-brand-blue-deep/10 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
-      Explore Data Access
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-    </a>
+    <div class="relative group/btn w-full sm:w-auto">
+      <a href={`${baseUrl}/participants`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-brand-green-bright hover:bg-brand-green-mid text-white font-bold text-lg shadow-xl shadow-brand-green-bright/20 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
+        Join Study
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+      </a>
+      <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 p-4 bg-white border border-gray-100 text-gray-600 text-xs text-left leading-relaxed rounded-2xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none z-50 hidden sm:block">
+        Register your interest to safely contribute biospecimens and clinical data to our Montreal-based research cohorts.
+      </div>
+    </div>
+
+    <div class="relative group/btn w-full sm:w-auto">
+      <a href={`${baseUrl}/researchers`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-white border-2 border-brand-blue-deep text-brand-blue-deep hover:bg-brand-blue-deep hover:text-white font-bold text-lg shadow-xl shadow-brand-blue-deep/10 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
+        Request Data
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+      </a>
+      <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 p-4 bg-white border border-gray-100 text-gray-600 text-xs text-left leading-relaxed rounded-2xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none z-50 hidden sm:block">
+        Access our secure portal to explore de-identified datasets and request biological materials for your research.
+      </div>
+    </div>
+
   </div>
 </header>
 
@@ -1125,6 +904,111 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     )}
   </div>
 </section>
+
+```
+
+### 🧩 File: `src/components/Footer.astro`
+```astro
+---
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<footer class="bg-brand-dark text-white py-20 px-6 text-center mt-auto">
+  <div class="text-2xl font-bold mb-2 tracking-tight">BioPortal<span class="text-brand-blue-deep">.</span></div>
+  <p class="text-gray-400 text-sm mb-6">Jewish General Hospital & McGill University</p>
+  <div class="mb-12">
+    <a href={`${baseUrl}/privacy`} class="text-xs text-gray-400 hover:text-white underline transition-colors">Privacy Policy & Data Safeguards</a>
+  </div>
+  <div class="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold">© 2026 BioPortal Research Group</div>
+</footer>
+
+```
+
+### 🧩 File: `src/components/Navbar.astro`
+```astro
+---
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const {
+  type = 'main',
+  ctaMode = 'visible',
+  backLink = '/',
+  backText = 'Back'
+} = Astro.props;
+---
+
+<nav
+  class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300"
+  data-cta-mode={ctaMode}
+>
+  <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
+
+    <a href={`${baseUrl}/`} class="flex items-center shrink-0">
+      <img
+        src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
+        alt="BioPortal Logo"
+        class="w-40 h-auto shrink-0 hover:-translate-y-0.5 transition-transform"
+        onerror="this.style.display='none'"
+      />
+    </a>
+
+    {type === 'main' ? (
+      <>
+        <div id="nav-cta-group" class={`absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-4 transition-all duration-500 ease-out ${ctaMode === 'scroll' ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}>
+
+          <div class="relative group/btn">
+            <a href={`${baseUrl}/researchers`} class="text-xs font-bold text-brand-blue-deep hover:text-brand-dark transition-colors px-2 py-2">
+              Request Data
+            </a>
+            <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-56 p-3 bg-white border border-gray-100 text-gray-500 text-[11px] leading-relaxed rounded-xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none">
+              Explore de-identified datasets and request cohort materials for approved research.
+            </div>
+          </div>
+
+          <div class="relative group/btn">
+            <a href={`${baseUrl}/participants`} class="px-5 py-2.5 rounded-full bg-brand-green-bright text-white text-xs font-bold shadow-md shadow-brand-green-bright/20 hover:bg-brand-green-mid hover:-translate-y-0.5 transition-all">
+              Join Study
+            </a>
+            <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-56 p-3 bg-white border border-gray-100 text-gray-500 text-[11px] leading-relaxed rounded-xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none">
+              Contribute clinical data to advance Montreal-based genomic research.
+            </div>
+          </div>
+        </div>
+
+        <div class="hidden lg:flex items-center space-x-8 font-medium text-sm ml-auto">
+          <a href={`${baseUrl}/#insights`} class="text-gray-500 hover:text-brand-dark transition-colors">Insights</a>
+          <a href={`${baseUrl}/#team`} class="text-gray-500 hover:text-brand-dark transition-colors">Our Team</a>
+          <a href={`${baseUrl}/privacy`} class="text-gray-500 hover:text-brand-dark transition-colors">Data Security</a>
+        </div>
+      </>
+    ) : (
+      <a href={`${baseUrl}${backLink}`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2 ml-auto">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        {backText}
+      </a>
+    )}
+  </div>
+</nav>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const nav = document.querySelector('nav[data-cta-mode="scroll"]');
+    if (!nav) return;
+
+    const navCtaGroup = nav.querySelector('#nav-cta-group');
+    const handleScroll = () => {
+      if (window.scrollY > 400) {
+        navCtaGroup.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
+        navCtaGroup.classList.add('opacity-100', 'translate-y-0');
+      } else {
+        navCtaGroup.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none');
+        navCtaGroup.classList.remove('opacity-100', 'translate-y-0');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+  });
+</script>
 
 ```
 

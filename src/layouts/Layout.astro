@@ -3,11 +3,11 @@ import '../styles/global.css';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 
-const { 
-  title, 
-  navType = 'main', 
-  ctaMode = 'visible', 
-  backLink = '/', 
+const {
+  title,
+  navType = 'main',
+  ctaMode = 'visible',
+  backLink = '/',
   backText = 'Back',
   hideFooter = false
 } = Astro.props;
@@ -19,10 +19,10 @@ const {
     <meta name="viewport" content="width=device-width" />
     <title>{title}</title>
   </head>
-  <body class="flex flex-col min-h-screen">
+  <body class="flex flex-col min-h-screen bg-surface">
     <Navbar type={navType} ctaMode={ctaMode} backLink={backLink} backText={backText} />
-    
-    <div class="flex-grow pt-20"> 
+
+    <div class="flex-grow pt-20">
       <slot />
     </div>
 
