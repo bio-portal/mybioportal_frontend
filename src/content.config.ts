@@ -5,11 +5,28 @@ const pages = defineCollection({
   loader: glob({ pattern: "*.yaml", base: "./src/content/pages" }),
   schema: z.object({
     id: z.string(),
+    // Existing page fields
     hero: z.any().optional(),
     trustBar: z.any().optional(),
     steps: z.any().optional(),
     benefit: z.any().optional(),
     stats: z.any().optional(),
+
+    // NEW: Added fields to support the Privacy page schema
+    tagline: z.string().optional(),
+    headline: z.string().optional(),
+    description: z.string().optional(),
+    safeguardsTitle: z.string().optional(),
+    safeguards: z.array(
+      z.object({
+        title: z.string(),
+        desc: z.string()
+      })
+    ).optional(),
+    footerBox: z.object({
+      title: z.string(),
+      desc: z.string()
+    }).optional(),
   }),
 });
 
