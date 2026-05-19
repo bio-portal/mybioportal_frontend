@@ -18,8 +18,10 @@ const team = defineCollection({
   schema: z.object({
     name: z.string(),
     role: z.string(),
-    image: z.string(),
+    image: z.string().optional(),
     order: z.number(),
+    group: z.string(), // 'governing' or 'recruitment'
+    bio: z.string(),
   }),
 });
 

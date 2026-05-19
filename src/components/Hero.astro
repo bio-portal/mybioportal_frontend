@@ -4,10 +4,6 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <header class="pt-28 pb-8 px-6 max-w-5xl mx-auto text-center">
-  <div class="mb-6 flex justify-center">
-    <img src={`${baseUrl}/logos/BioPortal_Mark_Color.svg`} alt="BioPortal Logo" class="w-20 h-20 drop-shadow-2xl" onerror="this.style.display='none'" />
-  </div>
-
   <h1 class="text-5xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-6">
     {content.headline} <br/>
     <span class="bg-gradient-to-r from-brand-orange-deep via-brand-green-bright to-brand-blue-deep bg-clip-text text-transparent pb-2">{content.gradientText}</span>
