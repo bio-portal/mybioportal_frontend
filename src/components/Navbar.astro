@@ -18,18 +18,25 @@ const {
     {type === 'main' ? (
       <>
         <div id="nav-cta-group" class={`absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-4 transition-all duration-500 ease-out ${ctaMode === 'scroll' ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}>
+
           <div class="relative group/btn">
-            <a href={`${baseUrl}/researchers`} class="text-xs font-bold text-brand-blue-deep hover:text-brand-dark transition-colors px-2 py-2">Request Data</a>
-            <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-56 p-3 bg-white border border-gray-100 text-gray-500 text-[11px] leading-relaxed rounded-xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none">
-              Explore de-identified datasets and request cohort materials for approved research.
-            </div>
-          </div>
-          <div class="relative group/btn">
-            <a href={`${baseUrl}/participants`} class="px-5 py-2.5 rounded-full bg-brand-green-bright text-white text-xs font-bold shadow-md shadow-brand-green-bright/20 hover:bg-brand-green-mid hover:-translate-y-0.5 transition-all">Join Study</a>
+            <a href={`${baseUrl}/participants`} class="px-5 py-2 rounded-full border-2 border-brand-green-bright text-brand-green-bright text-xs font-bold hover:bg-brand-green-bright hover:text-white transition-all bg-white">
+              Join Study
+            </a>
             <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-56 p-3 bg-white border border-gray-100 text-gray-500 text-[11px] leading-relaxed rounded-xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none">
               Contribute clinical data to advance Montreal-based genomic research.
             </div>
           </div>
+
+          <div class="relative group/btn">
+            <a href={`${baseUrl}/researchers`} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white">
+              Request Data
+            </a>
+            <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-56 p-3 bg-white border border-gray-100 text-gray-500 text-[11px] leading-relaxed rounded-xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none">
+              Explore de-identified datasets and request cohort materials for approved research.
+            </div>
+          </div>
+
         </div>
 
         <div class="hidden lg:flex items-center space-x-8 font-medium text-sm ml-auto">
@@ -53,8 +60,27 @@ const {
     if (!nav) return;
 
     const navCtaGroup = nav.querySelector('#nav-cta-group');
+    const heroButtons = document.getElementById('hero-button-group');
+
     const handleScroll = () => {
-      if (window.scrollY > 400) {
+      let shouldShow = false;
+
+      if (heroButtons) {
+        // Get precise coordinates of the hero buttons on the screen
+        const rect = heroButtons.getBoundingClientRect();
+
+        // The navbar is exactly 80 pixels tall (h-20).
+        // If the bottom edge of the hero buttons is less than 80px from the top of the screen,
+        // it means they have physically slid underneath the navbar. Time to reveal!
+        if (rect.bottom < 80) {
+          shouldShow = true;
+        }
+      } else {
+        // Safe fallback if for some reason the hero buttons aren't on the page
+        if (window.scrollY > 400) shouldShow = true;
+      }
+
+      if (shouldShow) {
         navCtaGroup.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
         navCtaGroup.classList.add('opacity-100', 'translate-y-0');
       } else {

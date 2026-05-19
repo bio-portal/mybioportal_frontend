@@ -12,9 +12,10 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     {content.description}
   </p>
 
-  <div class="flex flex-col sm:flex-row justify-center items-center gap-6 z-20">
+  <div id="hero-button-group" class="flex flex-col sm:flex-row justify-center items-center gap-6 z-20">
+
     <div class="relative group/btn w-full sm:w-auto">
-      <a href={`${baseUrl}/participants`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-brand-green-bright hover:bg-brand-green-mid text-white font-bold text-lg shadow-xl shadow-brand-green-bright/20 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
+      <a href={`${baseUrl}/participants`} class="w-full sm:w-auto px-10 py-4 rounded-full border-2 border-brand-green-bright text-brand-green-bright font-bold text-lg transition-all hover:-translate-y-1 hover:bg-brand-green-bright hover:text-white flex items-center justify-center gap-3">
         Join Study
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
       </a>
@@ -24,7 +25,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     </div>
 
     <div class="relative group/btn w-full sm:w-auto">
-      <a href={`${baseUrl}/researchers`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-white border-2 border-brand-blue-deep text-brand-blue-deep hover:bg-brand-blue-deep hover:text-white font-bold text-lg shadow-xl shadow-brand-blue-deep/10 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
+      <a href={`${baseUrl}/researchers`} class="w-full sm:w-auto px-10 py-4 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep font-bold text-lg transition-all hover:-translate-y-1 hover:bg-brand-blue-deep hover:text-white flex items-center justify-center gap-3">
         Request Data
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
       </a>
@@ -32,5 +33,6 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         Access our secure portal to explore de-identified datasets and request biological materials for your research.
       </div>
     </div>
+
   </div>
 </header>

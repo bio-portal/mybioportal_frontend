@@ -16,10 +16,10 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
     <Hero content={homeData.data.hero} />
     <TrustBar content={homeData.data.trustBar} />
 
-    <section id="insights" class="py-16 px-6 max-w-7xl mx-auto scroll-mt-20">
+<section id="insights" class="py-16 px-6 max-w-7xl mx-auto scroll-mt-20">
       <div class="mb-12 flex justify-between items-end">
         <div>
-          <span class="text-brand-orange-mid font-bold tracking-widest uppercase text-xs mb-4 block">Latest Insights</span>
+          <span class="text-brand-blue-mid font-bold tracking-widest uppercase text-xs mb-4 block">Latest Insights</span>
           <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight">News & Discoveries</h2>
         </div>
       </div>
@@ -40,9 +40,9 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
             <div class="p-8 flex flex-col flex-grow">
               <div class="flex justify-between items-start mb-6">
                 <span class="text-[10px] font-bold text-gray-400 uppercase">{post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
-                <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-brand-orange-mid/10 text-brand-orange-deep">{post.data.tag}</span>
+                <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-brand-blue-deep/10 text-brand-blue-deep">{post.data.tag}</span>
               </div>
-              <h3 class="text-xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-brand-orange-deep transition-colors">{post.data.title}</h3>
+              <h3 class="text-xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-brand-blue-deep transition-colors">{post.data.title}</h3>
               <p class="text-sm text-gray-500 leading-relaxed mb-8 flex-grow line-clamp-3">{post.data.excerpt}</p>
               <a href={`${baseUrl}/news/${post.id}/`} class="text-brand-dark font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all mt-auto">
                 Read Insight <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
