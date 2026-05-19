@@ -16,8 +16,13 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
 <Layout title="BioPortal | Advancing Genomic Research">
   <nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60">
     <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-      <a href={`${baseUrl}/`} class="flex items-center group">
-        <img src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`} alt="BioPortal Logo" class="h-8 w-auto group-hover:-translate-y-0.5 transition-transform" onerror="this.style.display='none'" />
+      <a href={`${baseUrl}/`} class="flex items-center group shrink-0">
+        <img
+          src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
+          alt="BioPortal Logo"
+          class="w-40 h-auto shrink-0 group-hover:-translate-y-0.5 transition-transform"
+          onerror="this.style.display='none'"
+        />
       </a>
       <div class="hidden md:flex items-center space-x-8 font-medium text-sm">
         <a href="#insights" class="text-gray-500 hover:text-brand-dark transition-colors">Insights</a>
