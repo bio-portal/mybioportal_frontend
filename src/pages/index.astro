@@ -15,8 +15,9 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
 ---
 
 <Layout title="BioPortal | Advancing Genomic Research">
-  <nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60">
-    <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+  <nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
+
       <a href={`${baseUrl}/`} class="flex items-center group shrink-0">
         <img
           src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
@@ -25,11 +26,22 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
           onerror="this.style.display='none'"
         />
       </a>
-      <div class="hidden md:flex items-center space-x-8 font-medium text-sm">
+
+      <div class="hidden lg:flex items-center space-x-8 font-medium text-sm absolute left-1/2 -translate-x-1/2">
         <a href="#insights" class="text-gray-500 hover:text-brand-dark transition-colors">Insights</a>
         <a href="#team" class="text-gray-500 hover:text-brand-dark transition-colors">Our Team</a>
-        <a href="mailto:david.morrison@ladydavis.ca" class="text-brand-blue-deep hover:text-brand-dark transition-colors font-bold">Contact</a>
+        <a href={`${baseUrl}/privacy`} class="text-gray-500 hover:text-brand-dark transition-colors">Data Security</a>
       </div>
+
+      <div id="nav-cta-group" class="hidden md:flex items-center gap-4 opacity-0 -translate-y-2 pointer-events-none transition-all duration-500 ease-out">
+        <a href={`${baseUrl}/researchers`} class="text-xs font-bold text-brand-blue-deep hover:text-brand-dark transition-colors">
+          Request Data
+        </a>
+        <a href={`${baseUrl}/participants`} class="px-5 py-2.5 rounded-full bg-brand-orange-mid text-white text-xs font-bold shadow-md shadow-brand-orange-mid/20 hover:bg-brand-orange-deep hover:-translate-y-0.5 transition-all">
+          Join Study
+        </a>
+      </div>
+
     </div>
   </nav>
 
@@ -91,9 +103,7 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
       </div>
 
       <div class="flex flex-col lg:flex-row gap-12 relative items-start">
-
         <div class="lg:w-7/12 w-full space-y-16">
-
           <div>
             <h3 class="text-xl font-bold text-gray-900 mb-8 pb-4 border-b border-gray-200" data-group="governing">Governing Committee</h3>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
@@ -141,7 +151,6 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
 
         <div class="hidden lg:block lg:w-5/12 sticky top-32">
           <div class="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-brand-dark/5 border border-gray-100 min-h-[420px] relative overflow-hidden group">
-
             <div class="absolute -top-24 -right-24 w-96 h-96 bg-gradient-to-bl from-brand-orange-mid/20 via-brand-green-bright/10 to-brand-blue-deep/20 rounded-full blur-3xl pointer-events-none"></div>
 
             <div id="spotlight-content" class="transition-opacity duration-300 opacity-100 relative z-10 flex flex-col h-full justify-center">
@@ -170,12 +179,28 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
     document.addEventListener("DOMContentLoaded", () => {
       const teamCards = document.querySelectorAll('.team-card');
       const spotlightContent = document.getElementById('spotlight-content');
+      const navCtaGroup = document.getElementById('nav-cta-group');
 
       let activeHoverTarget = null;
       let currentDisplayedCard = null;
 
+      // --- SCROLL ACTION: Reveal Navbar CTAs past Hero bounds ---
+      const handleScroll = () => {
+        if (window.scrollY > 400) {
+          navCtaGroup.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
+          navCtaGroup.classList.add('opacity-100', 'translate-y-0');
+        } else {
+          navCtaGroup.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none');
+          navCtaGroup.classList.remove('opacity-100', 'translate-y-0');
+        }
+      };
+
+      window.addEventListener('scroll', handleScroll);
+      handleScroll(); // Check immediately on load/refresh
+
+      // --- TEAM CARDS: Interactivity ---
       teamCards.forEach(card => {
-        // --- DESKTOP: Hover Logic ---
+        // Desktop Hover Logic
         card.addEventListener('mouseenter', () => {
           if (window.innerWidth < 1024) return;
           if (currentDisplayedCard === card) return;
@@ -187,7 +212,6 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
           const imgEl = card.querySelector('.member-img');
           const imgSrc = imgEl ? imgEl.getAttribute('src') : null;
 
-          // Robust check using data attributes
           const groupTitleEl = card.closest('div').parentElement.querySelector('h3');
           const isGov = groupTitleEl && groupTitleEl.getAttribute('data-group') === 'governing';
           const themeColorClass = isGov ? 'text-brand-blue-deep' : 'text-brand-orange-mid';
@@ -216,7 +240,7 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
           }, 150);
         });
 
-        // --- MOBILE: Click Accordion Logic ---
+        // Mobile Click Accordion Logic
         card.addEventListener('click', () => {
           if (window.innerWidth >= 1024) return;
 
