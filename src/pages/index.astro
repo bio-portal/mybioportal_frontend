@@ -57,26 +57,152 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
       </div>
     </section>
 
-    <section id="team" class="py-16 px-6 max-w-7xl mx-auto border-t border-gray-100 bg-white/50 scroll-mt-20">
-      <div class="text-center mb-16">
-        <span class="text-brand-blue-mid font-bold tracking-widest uppercase text-xs mb-4 block">Leadership</span>
-        <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight">Project Governance</h2>
+<section id="team" class="py-16 px-6 max-w-7xl mx-auto border-t border-gray-100 bg-surface/30 scroll-mt-20">
+      <div class="mb-16">
+        <span class="text-brand-blue-mid font-bold tracking-widest uppercase text-xs mb-4 block">Leadership & Operations</span>
+        <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight mb-4">Our Team</h2>
+        <p class="text-lg text-gray-500 max-w-2xl">The minds behind BioPortal. Our dedicated professionals work tirelessly to connect with participants and advance groundbreaking scientific research.</p>
       </div>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-12">
-        {sortedTeam.map(member => (
-          <div class="text-center group">
-            <div class="w-40 h-40 rounded-full bg-surface mx-auto mb-6 overflow-hidden border-8 border-white shadow-xl group-hover:scale-105 transition-transform duration-500 relative flex items-center justify-center">
-               <div class="absolute inset-0 flex items-center justify-center text-brand-blue-deep bg-brand-blue-deep/5">
-                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-               </div>
-               {member.data.image && <img src={`${baseUrl}${member.data.image}`} alt={member.data.name} class="w-full h-full object-cover relative z-10" onerror="this.style.display='none'" />}
+
+      <div class="flex flex-col lg:flex-row gap-12 relative items-start">
+
+        <div class="lg:w-7/12 w-full space-y-16">
+
+          <div>
+            <h3 class="text-xl font-bold text-gray-900 mb-8 pb-4 border-b border-gray-200">Governing Committee</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
+              {sortedTeam.filter(m => m.data.group === 'governing').map(member => (
+                <div class="team-card group cursor-pointer relative" tabindex="0">
+                  <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-surface mx-auto mb-4 overflow-hidden border-4 border-white shadow-md group-hover:shadow-xl group-hover:scale-105 group-hover:border-brand-blue-deep/20 transition-all duration-500 relative">
+                     {member.data.image ? <img src={`${baseUrl}${member.data.image}`} alt={member.data.name} class="w-full h-full object-cover member-img" onerror="this.style.display='none'" /> : <div class="w-full h-full bg-brand-blue-deep/5 flex items-center justify-center member-img-fallback"><svg width="32" height="32" class="text-brand-blue-deep/30" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>}
+                  </div>
+                  <div class="text-center">
+                    <h4 class="text-sm font-bold text-gray-900 leading-tight mb-1 member-name">{member.data.name}</h4>
+                    <p class="text-[10px] font-bold text-brand-blue-deep uppercase tracking-wider member-role">{member.data.role}</p>
+                  </div>
+                  <div class="hidden member-bio">{member.data.bio}</div>
+
+                  <div class="lg:hidden mobile-bio-container overflow-hidden max-h-0 opacity-0 transition-all duration-500 ease-in-out mt-0">
+                    <p class="text-xs text-gray-600 leading-relaxed p-4 bg-white rounded-2xl border border-gray-100 shadow-sm mt-3">{member.data.bio}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-            <h3 class="text-xl font-bold text-gray-900 leading-tight mb-1">{member.data.name}</h3>
-            <p class="text-xs font-bold text-brand-blue-deep uppercase tracking-widest">{member.data.role}</p>
           </div>
-        ))}
+
+          <div>
+            <h3 class="text-xl font-bold text-gray-900 mb-8 pb-4 border-b border-gray-200">Recruitment & Operations</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
+              {sortedTeam.filter(m => m.data.group === 'recruitment').map(member => (
+                <div class="team-card group cursor-pointer relative" tabindex="0">
+                  <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-surface mx-auto mb-4 overflow-hidden border-4 border-white shadow-md group-hover:shadow-xl group-hover:scale-105 group-hover:border-brand-orange-mid/20 transition-all duration-500 relative">
+                     {member.data.image ? <img src={`${baseUrl}${member.data.image}`} alt={member.data.name} class="w-full h-full object-cover member-img" onerror="this.style.display='none'" /> : <div class="w-full h-full bg-brand-orange-mid/5 flex items-center justify-center member-img-fallback"><svg width="32" height="32" class="text-brand-orange-mid/30" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>}
+                  </div>
+                  <div class="text-center">
+                    <h4 class="text-sm font-bold text-gray-900 leading-tight mb-1 member-name">{member.data.name}</h4>
+                    <p class="text-[10px] font-bold text-brand-orange-mid uppercase tracking-wider member-role">{member.data.role}</p>
+                  </div>
+                  <div class="hidden member-bio">{member.data.bio}</div>
+
+                  <div class="lg:hidden mobile-bio-container overflow-hidden max-h-0 opacity-0 transition-all duration-500 ease-in-out mt-0">
+                    <p class="text-xs text-gray-600 leading-relaxed p-4 bg-white rounded-2xl border border-gray-100 shadow-sm mt-3">{member.data.bio}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
+        <div class="hidden lg:block lg:w-5/12 sticky top-32">
+          <div class="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-brand-dark/5 border border-gray-100 min-h-[420px] relative overflow-hidden group">
+
+            <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-brand-blue-light/10 to-transparent rounded-bl-full pointer-events-none transition-colors duration-700" id="spotlight-bg"></div>
+
+            <div id="spotlight-content" class="transition-opacity duration-300 opacity-100 relative z-10">
+              <div class="w-16 h-16 bg-surface rounded-full mb-6 flex items-center justify-center text-brand-blue-deep/30 border-2 border-gray-50">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-3 tracking-tight">Interactive Roster</h3>
+              <p class="text-gray-500 leading-relaxed">Hover over any team member's portrait on the left to read their full biography and role within the BioPortal initiative.</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const teamCards = document.querySelectorAll('.team-card');
+        const spotlightContent = document.getElementById('spotlight-content');
+        const spotlightBg = document.getElementById('spotlight-bg');
+
+        // Variables for soft transitions
+        let isTransitioning = false;
+        let activeHoverTarget = null;
+
+        teamCards.forEach(card => {
+          // --- DESKTOP: Hover Logic ---
+          card.addEventListener('mouseenter', () => {
+            if (window.innerWidth < 1024) return; // Skip on mobile
+
+            activeHoverTarget = card;
+            const name = card.querySelector('.member-name').textContent;
+            const role = card.querySelector('.member-role').textContent;
+            const bio = card.querySelector('.member-bio').textContent;
+            const imgEl = card.querySelector('.member-img');
+            const imgSrc = imgEl ? imgEl.getAttribute('src') : null;
+
+            // Determine if governing (blue) or recruitment (orange) for subtle theme shift
+            const isGov = card.closest('div').previousElementSibling.textContent.includes('Governing');
+            const themeColorClass = isGov ? 'text-brand-blue-deep' : 'text-brand-orange-mid';
+            const bgGradient = isGov ? 'from-brand-blue-light/10' : 'from-brand-orange-mid/10';
+
+            // Fade out
+            spotlightContent.style.opacity = '0';
+            if(spotlightBg) spotlightBg.className = `absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl ${bgGradient} to-transparent rounded-bl-full pointer-events-none transition-colors duration-700`;
+
+            setTimeout(() => {
+              // Only update if mouse is still on THIS card (prevents fast-hover flickering)
+              if (activeHoverTarget !== card) return;
+
+              spotlightContent.innerHTML = `
+                ${imgSrc
+                  ? `<img src="${imgSrc}" class="w-20 h-20 rounded-full object-cover mb-6 border-4 border-white shadow-md bg-surface" />`
+                  : `<div class="w-20 h-20 bg-surface rounded-full mb-6 border-4 border-white shadow-md"></div>`
+                }
+                <h3 class="text-2xl font-bold text-gray-900 mb-1 tracking-tight">${name}</h3>
+                <p class="text-xs font-bold ${themeColorClass} uppercase tracking-widest mb-6">${role}</p>
+                <div class="text-gray-600 leading-relaxed text-sm space-y-4">${bio}</div>
+              `;
+              // Fade in
+              spotlightContent.style.opacity = '1';
+            }, 150);
+          });
+
+          // --- MOBILE: Click Accordion Logic ---
+          card.addEventListener('click', () => {
+            if (window.innerWidth >= 1024) return; // Skip on desktop
+
+            const mobileContainer = card.querySelector('.mobile-bio-container');
+            const isOpen = mobileContainer.style.maxHeight && mobileContainer.style.maxHeight !== '0px';
+
+            // Close all other accordions smoothly
+            document.querySelectorAll('.mobile-bio-container').forEach(c => {
+              c.style.maxHeight = '0px';
+              c.style.opacity = '0';
+            });
+
+            // Open this one if it was closed
+            if (!isOpen) {
+              mobileContainer.style.maxHeight = mobileContainer.scrollHeight + 'px';
+              mobileContainer.style.opacity = '1';
+            }
+          });
+        });
+      });
+    </script>
   </main>
 
   <footer class="bg-brand-dark text-white py-20 px-6 text-center">
