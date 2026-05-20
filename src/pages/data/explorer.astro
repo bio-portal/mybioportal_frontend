@@ -1,280 +1,356 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-
-const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 <Layout
-  title="Live Cohort Explorer | BioPortal"
+  title="BioPortal Explorer | Live Dashboard"
   navType="minimal"
   backLink="/data"
   backText="Back to Data Access"
 >
-  <div class="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-b from-brand-blue-deep/10 via-brand-teal/5 to-transparent -z-10"></div>
+  <div class="flex min-h-screen bg-slate-50 font-sans">
 
-  <div class="max-w-7xl mx-auto px-6 py-8 min-h-[calc(100vh-14rem)] flex flex-col lg:flex-row gap-8 items-start">
-
-    <aside class="w-full lg:w-72 bg-white rounded-3xl p-6 border border-gray-100 shadow-xl shadow-gray-100/30 shrink-0 lg:sticky lg:top-28">
-      <div class="mb-6">
-        <label class="block text-[10px] uppercase tracking-widest font-black text-gray-400 mb-4 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">Cohort Slices</label>
-        <div id="filter-list" class="space-y-1.5 max-h-[300px] lg:max-h-[550px] overflow-y-auto pr-1">
-          <button id="btn-baseline" class="w-full text-left px-4 py-3 rounded-xl text-xs font-bold transition-all bg-brand-dark/5 text-brand-dark border-l-4 border-brand-dark shadow-sm">
-            Baseline Cohort
-          </button>
-          <div id="filter-loading" class="text-xs text-center text-gray-400 py-4 font-medium italic">Syncing filter matrix...</div>
-        </div>
+    <aside class="w-72 bg-white border-r border-slate-200 p-6 flex-shrink-0 sticky top-0 h-screen overflow-y-auto custom-scrollbar">
+      <div class="flex items-center gap-2 mb-8">
+        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">B</div>
+        <h2 class="text-xl font-bold tracking-tight text-slate-800">BioPortal</h2>
       </div>
 
-      <div class="pt-4 border-t border-gray-50 flex flex-col gap-2 text-[11px] text-gray-400 font-medium">
-        <div class="flex justify-between items-center">
-          <span>API Stream: <span class="text-brand-green-bright font-bold">Active</span></span>
-          <span id="cache-indicator" class="px-2 py-0.5 rounded-md bg-gray-100 font-bold uppercase tracking-wider text-[9px]">CONNECTING</span>
+      <div class="mb-6">
+        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 block">Active Filter</label>
+        <div id="filter-list" class="space-y-1">
+          <button id="btn-baseline" class="w-full text-left px-4 py-2 rounded-md text-slate-600 hover:bg-slate-50 transition-colors text-sm font-semibold flex justify-between items-center filter-active">
+            <span>Baseline (Total)</span>
+            <span id="size-baseline" class="text-xs bg-slate-100 px-2 py-0.5 rounded text-slate-500">...</span>
+          </button>
+          </div>
+      </div>
+
+      <div class="mt-auto pt-6 border-t border-slate-100">
+        <div class="text-xs text-slate-400">
+          <p>Status: <span class="text-green-500 font-medium">Cloud API Connected</span></p>
+          <p class="mt-1">Gateway: <span id="cache-indicator" class="font-bold text-slate-500">FETCHING</span></p>
         </div>
       </div>
     </aside>
 
-    <main class="flex-1 w-full">
-      <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 bg-white/40 p-6 rounded-3xl border border-white/60 backdrop-blur-md shadow-sm">
+    <main class="flex-1 p-8">
+      <header class="flex justify-between items-end mb-8">
         <div>
-          <h1 id="active-cohort-title" class="text-3xl font-extrabold text-gray-900 tracking-tight leading-none">Baseline Cohort</h1>
-          <p class="text-xs text-gray-400 mt-2.5 font-semibold tracking-wide uppercase">Interactive Multi-Omics Visualizer</p>
+          <h1 class="text-3xl font-bold text-slate-900" id="view-title">Cohort Overview</h1>
+          <p class="text-slate-500 mt-1">Aggregated population statistics with data privacy masking.</p>
         </div>
-        <div class="relative w-full sm:w-80">
-          <input
-            type="text"
-            id="chart-search"
-            placeholder="Search metric cards (e.g. SBP, Ancestry)..."
-            class="w-full pl-10 pr-4 py-3 rounded-2xl bg-white border border-gray-100 focus:border-brand-blue-deep focus:ring-2 focus:ring-brand-blue-deep/10 transition-all outline-none text-xs font-medium shadow-sm"
-          />
-          <svg class="w-4 h-4 absolute left-3.5 top-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-          </svg>
+
+        <div class="flex items-center gap-4">
+          <div class="text-right bg-white px-5 py-2.5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-center">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Active Cohort Size</span>
+            <span id="top-cohort-size" class="text-xl font-black text-blue-600 leading-none mt-1">...</span>
+          </div>
+          <div class="relative w-80">
+            <input type="text" id="chart-search" placeholder="Search variables (e.g. BMI)..."
+                   class="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" />
+            <svg class="w-5 h-5 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
         </div>
       </header>
 
-      <div id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div id="dashboard-grid" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         </div>
 
-      <div id="search-fallback" class="hidden flex-col items-center justify-center py-24 text-center text-gray-400 bg-white border border-gray-100 rounded-[2.5rem] shadow-sm">
-        <div class="w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center text-gray-300 border border-gray-100 mb-4">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-          </svg>
-        </div>
-        <p class="text-base font-bold text-gray-800 mb-1">No matching metrics discovered</p>
-        <p class="text-xs text-gray-400 max-w-xs mx-auto">Verify your parameters or shift back to the global baseline cohort matrix.</p>
+      <div id="search-fallback" class="hidden flex-col items-center justify-center py-20 text-slate-400">
+        <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <p class="text-lg">No charts matching your search criteria.</p>
       </div>
     </main>
   </div>
 </Layout>
 
+<style>
+  .glass-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(226, 232, 240, 1);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .glass-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
+  :global(.filter-active) { border-left: 4px solid #3b82f6 !important; background-color: #eff6ff !important; font-weight: 600 !important; color: #1d4ed8 !important; }
+
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+</style>
+
 <script>
   import Chart from 'chart.js/auto';
 
-  // Points directly into your production Go Cloud Function API deployment Gateway
-  const API_GATEWAY = "https://us-central1-bioportal-data-viewer.cloudfunctions.net/GetStats";
+  const API_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats";
 
   let variableMetadata = [];
   let summaryStatistics = [];
+  let availableFiltersList = [];
   let activeFilter = 'baseline';
-  let chartsMap = {};
+  let chartInstances = {};
+  let cohortSizesDictionary = {};
 
   async function fetchFromPortal(queryString) {
-    const response = await fetch(`${API_GATEWAY}?${queryString}`);
-    if (!response.ok) throw new Error("API performance runtime timeout");
+    const cacheBuster = `&_cb=${new Date().getTime()}`;
+    const response = await fetch(`${API_GATEWAY}?${queryString}${cacheBuster}`);
+    if (!response.ok) throw new Error("API performance connection latency exception");
 
-    // Evaluate memory caching distribution variables for diagnostic transparency
     const cacheHeader = response.headers.get("X-Cache");
     const indicator = document.getElementById("cache-indicator");
     if (indicator && cacheHeader) {
       indicator.innerText = cacheHeader;
-      if (cacheHeader === "HIT") {
-        indicator.className = "px-2 py-0.5 rounded-md bg-brand-green-bright/10 text-brand-green-bright font-black uppercase tracking-wider text-[9px]";
-      } else {
-        indicator.className = "px-2 py-0.5 rounded-md bg-brand-orange-deep/10 text-brand-orange-deep font-black uppercase tracking-wider text-[9px]";
-      }
+      indicator.className = cacheHeader === "HIT" ? "text-green-600 font-bold uppercase" : "text-blue-600 font-bold uppercase";
     }
     return await response.json();
   }
 
   async function initializeEngine() {
     try {
-      const [meta, filters] = await Promise.all([
-        fetchFromPortal("type=metadata"),
-        fetchFromPortal("type=filters")
-      ]);
+      variableMetadata = await fetchFromPortal("type=metadata");
+      availableFiltersList = await fetchFromPortal("type=filters");
+      summaryStatistics = await fetchFromPortal("filter=baseline");
 
-      variableMetadata = meta;
-      renderFilterMenu(filters);
-      await loadCohortData('baseline');
+      calculateCohortSizes();
+      renderFilterMenu();
+      renderDashboard();
+      updateCohortSizeCounters();
 
-      document.getElementById('chart-search').addEventListener('keyup', handleSearchQuery);
+      const searchInput = document.getElementById('chart-search');
+      if (searchInput) {
+        searchInput.addEventListener('keyup', handleSearchQuery);
+      }
     } catch (err) {
-      console.error("Dashboard engine structural sync crash:", err);
+      console.error("Critical rendering initialization crash:", err);
+      const grid = document.getElementById('dashboard-grid');
+      if (grid) {
+        grid.innerHTML = `<div class="col-span-full p-6 text-center bg-red-50 text-red-700 font-medium rounded-xl border border-red-100">Failed to link with visualization engine services. Validate instance routing parameters.</div>`;
+      }
     }
   }
 
-  function renderFilterMenu(filters) {
-    const container = document.getElementById('filter-list');
-    const loadingPlaceholder = document.getElementById('filter-loading');
-    if (loadingPlaceholder) loadingPlaceholder.remove();
+  function calculateCohortSizes() {
+    const sexStat = summaryStatistics.find(s => s.chart_id === 'sex');
+    if (sexStat && sexStat.data) {
+      cohortSizesDictionary['baseline'] = sexStat.data.reduce((acc, curr) => acc + (parseInt(curr.count) || 0), 0);
+      const baselineLabel = document.getElementById('size-baseline');
+      if (baselineLabel) baselineLabel.innerText = cohortSizesDictionary['baseline'];
+    }
+
+    variableMetadata.forEach(meta => {
+      const prefix = meta.chart_id.toLowerCase().replace(/ /g, '_');
+      const chartMatch = summaryStatistics.find(s => s.chart_id === meta.chart_id);
+
+      if (chartMatch && chartMatch.data) {
+        chartMatch.data.forEach(item => {
+          const cleanCategory = item.category.toLowerCase().replace(/ /g, '_');
+          const compiledKey = prefix + '_' + cleanCategory;
+          cohortSizesDictionary[compiledKey] = item.count;
+        });
+      }
+    });
+  }
+
+  function renderFilterMenu() {
+    const listContainer = document.getElementById('filter-list');
+    if (!listContainer) return;
 
     const baselineBtn = document.getElementById('btn-baseline');
-    container.innerHTML = '';
-    container.appendChild(baselineBtn);
-    baselineBtn.onclick = () => loadCohortData('baseline');
+    listContainer.innerHTML = '';
+    if (baselineBtn) {
+      listContainer.appendChild(baselineBtn);
+      baselineBtn.onclick = () => changeFilter('baseline');
+    }
 
-    filters.filter(f => f !== 'baseline').sort().forEach(fKey => {
-      const btn = document.createElement('button');
-      btn.id = `btn-${fKey}`;
-      btn.className = "w-full text-left px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-all border-l-4 border-transparent";
+    variableMetadata.forEach(meta => {
+      const prefix = meta.chart_id.toLowerCase().replace(/ /g, '_');
+      const matchedSlices = availableFiltersList.filter(fKey => fKey.startsWith(prefix + '_'));
+      if (matchedSlices.length === 0) return;
 
-      // Transform raw snake keys into structured clean language strings
-      let formattedText = fKey.replace(/_/g, ' ')
-                              .replace('has ', 'With ')
-                              .replace('demo ', '')
-                              .replace('yes', '(Yes)')
-                              .replace('no', '(No)');
+      const groupContainer = document.createElement('div');
+      groupContainer.className = "mt-4 pt-2 border-t border-slate-100";
 
-      btn.innerText = formattedText.replace(/(^\w|\s\w)/g, m => m.toUpperCase());
-      btn.onclick = () => loadCohortData(fKey);
-      container.appendChild(btn);
+      const headingLabel = document.createElement('span');
+      headingLabel.className = "text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2 px-2";
+      headingLabel.innerText = meta.display_name;
+      groupContainer.appendChild(headingLabel);
+
+      const baselineChart = summaryStatistics.find(s => s.chart_id === meta.chart_id);
+      if (baselineChart && baselineChart.data) {
+        baselineChart.data.forEach(item => {
+          const cleanCat = item.category.toLowerCase().replace(/ /g, '_');
+          const composedFilterKey = prefix + '_' + cleanCat;
+
+          const directMatch = availableFiltersList.includes(composedFilterKey);
+          const fallbackKey = matchedSlices.find(fKey => fKey.endsWith('_' + cleanCat) || cleanCat.endsWith(fKey.replace(prefix + '_', '')));
+
+          const finalFilterKey = directMatch ? composedFilterKey : fallbackKey;
+
+          if (finalFilterKey) {
+            const btn = document.createElement('button');
+            btn.id = `btn-${finalFilterKey}`;
+            btn.className = "w-full text-left px-4 py-1.5 rounded-md text-slate-600 hover:bg-slate-50 transition-colors text-xs flex justify-between items-center pl-4";
+            btn.innerHTML = `<span>${item.category}</span> <span class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-400">${item.count}</span>`;
+            btn.onclick = () => changeFilter(finalFilterKey);
+            groupContainer.appendChild(btn);
+          }
+        });
+      }
+      listContainer.appendChild(groupContainer);
     });
   }
 
-  async function loadCohortData(filterKey) {
-    document.querySelectorAll('#filter-list button').forEach(b => {
-      b.className = "w-full text-left px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-all border-l-4 border-transparent";
-    });
-
-    const activeBtn = document.getElementById(`btn-${filterKey}`);
-    if (activeBtn) {
-      activeBtn.className = "w-full text-left px-4 py-3 rounded-xl text-xs font-bold transition-all bg-brand-dark/5 text-brand-dark border-l-4 border-brand-dark shadow-sm";
-    }
+  async function changeFilter(filterKey) {
+    document.querySelectorAll('#filter-list button').forEach(b => b.classList.remove('filter-active'));
+    const targetedButton = document.getElementById(`btn-${filterKey}`);
+    if (targetedButton) targetedButton.classList.add('filter-active');
 
     activeFilter = filterKey;
-
-    let headingText = filterKey === 'baseline' ? 'Baseline Cohort' : filterKey.replace(/_/g, ' ').replace(/(^\w|\s\w)/g, m => m.toUpperCase());
-    document.getElementById('active-cohort-title').innerText = headingText;
+    const titleEl = document.getElementById('view-title');
+    if (titleEl) {
+      titleEl.innerText = filterKey === 'baseline' ? 'Cohort Overview' : filterKey.replace(/_/g, ' ').replace(/(^|\s)\S/g, l => l.toUpperCase());
+    }
 
     try {
-      summaryStatistics = await fetchFromPortal(`filter=${filterKey}`);
-      renderDashboardGrid();
+      summaryStatistics = await fetchFromPortal(`filter=${encodeURIComponent(filterKey)}`);
+      renderDashboard();
+      updateCohortSizeCounters();
     } catch (err) {
-      console.error("Failed structural dataset slice updates swap:", err);
+      console.error("Failed executing data matrix reload update cycle:", err);
     }
   }
 
-  function renderDashboardGrid() {
-    const grid = document.getElementById('dashboard-grid');
+  function updateCohortSizeCounters() {
+    let selectedSize = "...";
+    if (activeFilter === 'baseline') {
+      selectedSize = cohortSizesDictionary['baseline'] || "...";
+    } else {
+      selectedSize = cohortSizesDictionary[activeFilter] || "...";
+    }
+    const sizeEl = document.getElementById('top-cohort-size');
+    if (sizeEl) sizeEl.innerText = selectedSize;
+  }
 
-    // Clear structural graph bindings cleanly to eliminate canvas context memory leaks
-    Object.values(chartsMap).forEach(chart => chart.destroy());
-    chartsMap = {};
+  function handleSearchQuery() {
+    const searchInput = document.getElementById('chart-search');
+    if (!searchInput) return;
+
+    const query = searchInput.value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.chart-card');
+    let foundCount = 0;
+
+    cards.forEach(card => {
+      const title = card.getAttribute('data-title')?.toLowerCase() || "";
+      if (title.includes(query)) {
+        (card as HTMLElement).style.display = 'flex';
+        foundCount++;
+      } else {
+        (card as HTMLElement).style.display = 'none';
+      }
+    });
+
+    const fallbackEl = document.getElementById('search-fallback');
+    if (fallbackEl) {
+      fallbackEl.style.display = foundCount === 0 ? 'flex' : 'none';
+    }
+  }
+
+  function renderDashboard() {
+    const grid = document.getElementById('dashboard-grid');
+    if (!grid) return;
+
+    Object.values(chartInstances).forEach(chart => chart.destroy());
+    chartInstances = {};
     grid.innerHTML = '';
 
     variableMetadata.forEach(meta => {
-      // Find row data based on the correct nested slice array contract
-      const match = summaryStatistics.find(s => s.chart_id === meta.chart_id);
-      if (!match) return;
+      const statEntry = summaryStatistics.find(s => s.chart_id === meta.chart_id);
+      if (!statEntry) return;
 
       const card = document.createElement('div');
-      card.className = "chart-card bg-white border border-gray-100 rounded-3xl p-5 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex flex-col";
+      card.className = "chart-card glass-card rounded-2xl p-6 bg-white flex flex-col";
       card.setAttribute('data-title', meta.display_name);
 
       card.innerHTML = `
-        <div class="flex justify-between items-start mb-4 border-b border-gray-50 pb-3">
-          <h3 class="font-bold text-xs text-gray-800 tracking-tight">${meta.display_name}</h3>
-          <span class="text-[9px] bg-brand-dark/5 text-brand-dark px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">${meta.units}</span>
+        <div class="flex justify-between items-start mb-4">
+          <h3 class="font-bold text-slate-700">${meta.display_name}</h3>
+          <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded font-bold uppercase">${meta.units}</span>
         </div>
-        <div class="relative h-[200px] w-full">
-          <canvas id="canvas-${meta.chart_id}"></canvas>
+        <div class="relative h-[220px] w-full">
+          <canvas id="chart-${meta.chart_id}"></canvas>
         </div>
       `;
 
       grid.appendChild(card);
-      renderChartInstance(meta, match.data);
+      renderChartInstance(meta, statEntry.data);
     });
-
     handleSearchQuery();
   }
 
-  function renderChartInstance(meta, dataset) {
-    const canvasElement = document.getElementById(`canvas-${meta.chart_id}`);
+  function renderChartInstance(meta, data) {
+    const canvasElement = document.getElementById(`chart-${meta.chart_id}`);
     if (!canvasElement) return;
 
     const ctx = (canvasElement as HTMLCanvasElement).getContext('2d');
-    const labels = dataset.map(d => d.category.toUpperCase());
+    const labels = data.map(d => d.category);
 
-    // Preserve suppression masks visually; if count is "<10", paint safely as zero value metric metrics
-    const numericData = dataset.map(d => d.count === '<10' ? 0 : parseInt(d.count, 10));
+    const values = data.map(d => d.count === '<10' || d.count === '<20' ? 0 : parseInt(d.count, 10));
 
-    // Custom data path colors matching your exact global theme variables configuration
-    const primaryColorsPalette = meta.chart_type === 'pie' ?
-      ['#26abe2', '#56bee7', '#9fdbee', '#96d6c2', '#003f5e'] : '#26abe2';
+    const paletteColors = meta.chart_type === 'pie' ?
+      ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe'] : '#3b82f6';
 
-    chartsMap[meta.chart_id] = new Chart(ctx, {
+    chartInstances[meta.chart_id] = new Chart(ctx, {
       type: meta.chart_type === 'pie' ? 'doughnut' : 'bar',
       data: {
         labels: labels,
         datasets: [{
-          data: numericData,
-          backgroundColor: primaryColorsPalette,
+          data: values,
+          backgroundColor: paletteColors,
           borderWidth: 0,
-          borderRadius: meta.chart_type === 'pie' ? 0 : 5,
-          hoverBackgroundColor: '#003f5e',
-          barPercentage: 0.65
+          borderRadius: meta.chart_type === 'pie' ? 0 : 6,
+          hoverBackgroundColor: '#1d4ed8'
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const targetIndex = elements[0].index;
+            const selectedLabel = chartInstances[meta.chart_id].data.labels[targetIndex];
+
+            const targetPrefix = meta.chart_id.toLowerCase().replace(/ /g, '_');
+            const sanitizedCategory = selectedLabel.toLowerCase().replace(/ /g, '_');
+            const targetFilterKey = targetPrefix + '_' + sanitizedCategory;
+
+            const fallbackKey = availableFiltersList.find(fKey => fKey.endsWith('_' + sanitizedCategory) || sanitizedCategory.endsWith(fKey.replace(targetPrefix + '_', '')));
+            const finalKey = availableFiltersList.includes(targetFilterKey) ? targetFilterKey : fallbackKey;
+
+            if (finalKey) {
+              changeFilter(finalKey);
+            }
+          }
+        },
         plugins: {
-          legend: {
-            display: meta.chart_type === 'pie',
-            position: 'bottom',
-            labels: { boxWidth: 8, font: { size: 9, weight: '700' }, color: '#4b5563', padding: 12 }
-          },
+          legend: { display: meta.chart_type === 'pie', position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
           tooltip: {
-            backgroundColor: '#003f5e',
-            titleFont: { size: 10, weight: '700' },
-            bodyFont: { size: 11 },
-            padding: 10,
-            cornerRadius: 8,
             callbacks: {
               label: (context) => {
-                const calculatedCount = dataset[context.dataIndex].count;
-                return ` Volume: ${calculatedCount} ${meta.units}`;
+                const rawDisplayCount = data[context.dataIndex].count;
+                return ` Count: ${rawDisplayCount} ${meta.units}`;
               }
             }
           }
         },
         scales: meta.chart_type === 'bar' ? {
-          y: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { font: { size: 9, weight: '500' }, color: '#9ca3af' } },
-          x: { grid: { display: false }, ticks: { font: { size: 9, weight: '600' }, color: '#4b5563' } }
+          y: { beginAtZero: true, grid: { display: false }, ticks: { font: { size: 10 } } },
+          x: { grid: { display: false }, ticks: { font: { size: 10 } } }
         } : {}
       }
     });
   }
 
-  function handleSearchQuery() {
-    const query = document.getElementById('chart-search').value.toLowerCase().trim();
-    const cards = document.querySelectorAll('.chart-card');
-    let validatedItems = 0;
-
-    cards.forEach(card => {
-      const targetMatch = card.getAttribute('data-title').toLowerCase();
-      if (targetMatch.includes(query)) {
-        card.style.display = 'flex';
-        validatedItems++;
-      } else {
-        card.style.display = 'none';
-      }
-    });
-
-    document.getElementById('search-fallback').className = validatedItems === 0 ? 'flex' : 'hidden';
-  }
-
-  // 🛡️ STRONG BROWSER RUNTIME GATE: Executes instantly if document state is parsed, bypassing deferred module lockups
+  // Astro Hydration Bypass
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeEngine);
   } else {
