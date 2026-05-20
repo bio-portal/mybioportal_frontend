@@ -28,14 +28,14 @@ const { hero, stats } = pageData.data;
     <div class="grid lg:grid-cols-12 gap-8 items-start">
       <div class="lg:col-span-7">
         <div class="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-brand-blue-deep/5 border border-gray-100">
-          
+
           <div class="mb-10 p-6 rounded-2xl border-2 border-dashed border-brand-blue-deep/20 bg-brand-blue-deep/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <h4 class="font-bold text-slate-800 text-sm">Interactive Data Explorer Available</h4>
               <p class="text-xs text-gray-500 mt-0.5">Visualize real-time clinical cohorts and sample metrics immediately.</p>
             </div>
-            <a 
-              href={`${baseUrl}/data/explorer/`} 
+            <a
+              href={`${baseUrl}/data/explorer/`}
               class="px-5 py-2.5 rounded-xl bg-brand-blue-deep text-white text-xs font-bold shadow-md hover:bg-brand-dark transition-all inline-flex items-center gap-2 shrink-0"
             >
               Launch Live Explorer
@@ -44,7 +44,7 @@ const { hero, stats } = pageData.data;
           </div>
 
           <h2 class="text-3xl font-bold text-gray-900 mb-2">Request Data Access</h2>
-          <p class="text-gray-500 mb-8">Inquire about specific cohorts or request structural credentials for the comprehensive exploration portal.</p>
+          <p class="text-gray-500 mb-8">Inquire about specific cohorts or request structural credentials to access full genomic and clinical datasets.</p>
 
           <form class="space-y-6">
             <div class="grid md:grid-cols-2 gap-6">
@@ -96,10 +96,13 @@ const { hero, stats } = pageData.data;
 
         <div class="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-soft">
           <h3 class="text-xl font-bold text-gray-900 mb-4">Infrastructure Vetting</h3>
-          <p class="text-sm text-gray-500 leading-relaxed mb-6">The infrastructure utilizes standardized metadata schemas for discovery and leverages computing networks configured by <strong>C3G</strong> for down-stream processing operations.</p>
-          <div class="flex gap-2">
-            <span class="px-3 py-1 rounded-full bg-brand-teal/10 text-brand-dark font-bold text-[10px] uppercase tracking-wider">GA4GH Standard</span>
-            <span class="px-3 py-1 rounded-full bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-wider">C3G Powered</span>
+          <p class="text-sm text-gray-500 leading-relaxed mb-6">
+            The infrastructure utilizes our custom-built interactive discovery platform and leverages high-performance computing networks provided by the <strong>Digital Research Alliance of Canada (AllianceCan)</strong> alongside a secure, private compute cluster at the <strong>Lady Davis Institute (LDI)</strong> for downstream processing operations.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 rounded-full bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-wider">LDI Private Cluster</span>
+            <span class="px-3 py-1 rounded-full bg-brand-teal/10 text-brand-dark font-bold text-[10px] uppercase tracking-wider">AllianceCan</span>
+            <span class="px-3 py-1 rounded-full bg-brand-orange-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-wider">GA4GH Standard</span>
           </div>
         </div>
       </div>
