@@ -20,7 +20,7 @@ let visibleCharts = new Set<string>();
 (window as any).switchTab = switchTab;
 
 /**
- * Reads CSS tokens from global.css dynamically at runtime to guarantee absolute visual consistency
+ * Reads CSS tokens from global.css dynamically at runtime
  */
 function initializePalette() {
   const rootStyle = getComputedStyle(document.documentElement);
@@ -39,29 +39,66 @@ function initializePalette() {
   ];
 }
 
-function switchTab(tabName: string) {
-  const filterBtn = document.getElementById('tab-btn-filters')!;
-  const chartsBtn = document.getElementById('tab-btn-charts')!;
-  const filterContent = document.getElementById('tab-content-filters')!;
-  const chartsContent = document.getElementById('tab-content-charts')!;
+// ==========================================
+// UI STATE MANAGEMENT
+// ==========================================
 
-  if (tabName === 'filters') {
-    filterBtn.className = "flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-brand-blue-deep border-b-[3px] border-brand-blue-deep transition-colors bg-brand-blue-deep/5";
-    chartsBtn.className = "flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-gray-400 border-b-[3px] border-transparent hover:text-gray-600 hover:bg-gray-50 transition-colors";
-    filterContent.style.display = 'block';
-    chartsContent.style.display = 'none';
-  } else {
-    chartsBtn.className = "flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-brand-blue-deep border-b-[3px] border-brand-blue-deep transition-colors bg-brand-blue-deep/5";
-    filterBtn.className = "flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-gray-400 border-b-[3px] border-transparent hover:text-gray-600 hover:bg-gray-50 transition-colors";
-    chartsContent.style.display = 'block';
-    filterContent.style.display = 'none';
-  }
+function switchTab(tabName: string) {
+  const isFilters = tabName === 'filters';
+
+  const activeClass = "flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-brand-blue-deep border-b-[3px] border-brand-blue-deep transition-colors bg-brand-blue-deep/5";
+  const inactiveClass = "flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-gray-400 border-b-[3px] border-transparent hover:text-gray-600 hover:bg-gray-50 transition-colors";
+
+  document.getElementById('tab-btn-filters')!.className = isFilters ? activeClass : inactiveClass;
+  document.getElementById('tab-btn-charts')!.className = !isFilters ? activeClass : inactiveClass;
+
+  document.getElementById('tab-content-filters')!.style.display = isFilters ? 'block' : 'none';
+  document.getElementById('tab-content-charts')!.style.display = !isFilters ? 'block' : 'none';
+
   handleUnifiedSearch();
 }
 
+function showLoadingState() {
+  const overlay = document.getElementById('loading-overlay');
+  const grid = document.getElementById('dashboard-grid');
+  const logoContainer = document.getElementById('loader-logo-container');
+
+  if (overlay && grid && logoContainer) {
+    overlay.classList.remove('opacity-0', 'pointer-events-none');
+    overlay.classList.add('opacity-100', 'pointer-events-auto');
+
+    grid.classList.add('opacity-20', 'blur-sm', 'scale-[0.98]');
+    grid.classList.remove('opacity-100', 'blur-none', 'scale-100');
+
+    logoContainer.classList.remove('logo-vanish');
+    logoContainer.style.opacity = '1';
+  }
+}
+
+function hideLoadingState() {
+  const overlay = document.getElementById('loading-overlay');
+  const grid = document.getElementById('dashboard-grid');
+  const logoContainer = document.getElementById('loader-logo-container');
+
+  if (overlay && grid && logoContainer) {
+    logoContainer.classList.add('logo-vanish');
+
+    setTimeout(() => {
+      overlay.classList.add('opacity-0', 'pointer-events-none');
+      overlay.classList.remove('opacity-100', 'pointer-events-auto');
+
+      grid.classList.remove('opacity-20', 'blur-sm', 'scale-[0.98]');
+      grid.classList.add('opacity-100', 'blur-none', 'scale-100');
+    }, 450);
+  }
+}
+
+// ==========================================
+// DATA FETCHING & INITIALIZATION
+// ==========================================
+
 async function fetchFromPortal(queryString: string) {
-  const cacheBuster = `&_cb=${new Date().getTime()}`;
-  const response = await fetch(`${API_GATEWAY}?${queryString}${cacheBuster}`);
+  const response = await fetch(`${API_GATEWAY}?${queryString}&_cb=${new Date().getTime()}`);
   if (!response.ok) throw new Error("API performance timeout exception");
 
   const cacheHeader = response.headers.get("X-Cache");
@@ -76,10 +113,14 @@ async function fetchFromPortal(queryString: string) {
 async function initializeEngine() {
   try {
     initializePalette();
+    showLoadingState();
+    const startTime = Date.now();
 
-    variableMetadata = await fetchFromPortal("type=metadata");
-    availableFiltersList = await fetchFromPortal("type=filters");
-    summaryStatistics = await fetchFromPortal("filter=baseline");
+    [variableMetadata, availableFiltersList, summaryStatistics] = await Promise.all([
+      fetchFromPortal("type=metadata"),
+      fetchFromPortal("type=filters"),
+      fetchFromPortal("filter=baseline")
+    ]);
 
     variableMetadata.forEach(meta => visibleCharts.add(meta.chart_id));
 
@@ -91,30 +132,40 @@ async function initializeEngine() {
 
     const searchInput = document.getElementById('global-search');
     if (searchInput) searchInput.addEventListener('keyup', handleUnifiedSearch);
+
+    const elapsed = Date.now() - startTime;
+    if (elapsed < 800) await new Promise(r => setTimeout(r, 800 - elapsed));
+
+    hideLoadingState();
+
   } catch (err) {
     console.error(err);
+    hideLoadingState();
     const grid = document.getElementById('dashboard-grid');
     if (grid) grid.innerHTML = `<div class="col-span-full p-8 text-center bg-red-50 text-red-700 rounded-2xl border border-red-100 font-bold">API Connection Failed. Please reload.</div>`;
   }
 }
 
 function calculateCohortSizes() {
-  const sexStat = summaryStatistics.find(s => s.chart_id === 'sex');
-  if (sexStat && sexStat.data) {
-    cohortSizesDictionary['baseline'] = sexStat.data.reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0);
-  }
+  cohortSizesDictionary = {}; // Reset
 
-  variableMetadata.forEach(meta => {
-    const prefix = meta.chart_id.toLowerCase().replace(/ /g, '_');
-    const chartMatch = summaryStatistics.find(s => s.chart_id === meta.chart_id);
-    if (chartMatch && chartMatch.data) {
-      chartMatch.data.forEach((item: any) => {
+  summaryStatistics.forEach(stat => {
+     const prefix = stat.chart_id.toLowerCase().replace(/ /g, '_');
+
+     if (stat.chart_id === 'sex') {
+        cohortSizesDictionary['baseline'] = stat.data.reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0);
+     }
+
+     stat.data.forEach((item: any) => {
         const cleanCategory = item.category.toLowerCase().replace(/ /g, '_');
         cohortSizesDictionary[`${prefix}_${cleanCategory}`] = item.count;
-      });
-    }
+     });
   });
 }
+
+// ==========================================
+// RENDERERS
+// ==========================================
 
 function renderFilterMenu() {
   const listContainer = document.getElementById('filter-list');
@@ -239,34 +290,37 @@ async function changeFilter(filterKey: string) {
   }
 
   try {
+    showLoadingState();
+    const startTime = Date.now();
+
     summaryStatistics = await fetchFromPortal(`filter=${encodeURIComponent(filterKey)}`);
+
     renderDashboard();
     updateCohortSizeCounters();
+
+    const elapsed = Date.now() - startTime;
+    if (elapsed < 600) await new Promise(r => setTimeout(r, 600 - elapsed));
+
+    hideLoadingState();
+
   } catch (err) {
     console.error("Failed executing data matrix reload", err);
+    hideLoadingState();
   }
 }
 
-// ... rest of file continues cleanly un-nested ...
 function updateCohortSizeCounters() {
-  let selectedSize: any = "...";
-  if (activeFilter === 'baseline') {
-    selectedSize = cohortSizesDictionary['baseline'] || "...";
-  } else {
-    selectedSize = cohortSizesDictionary[activeFilter] || "...";
-  }
+  const selectedSize = cohortSizesDictionary[activeFilter] || "...";
+
   const sizeEl = document.getElementById('top-cohort-size');
   const baselineSidebarSize = document.getElementById('size-baseline');
 
-  if (sizeEl) {
-    if (selectedSize !== '<10' && selectedSize !== '<20' && selectedSize !== '...') {
-       sizeEl.innerText = parseInt(selectedSize).toLocaleString();
-       if(baselineSidebarSize && activeFilter === 'baseline') baselineSidebarSize.innerText = parseInt(selectedSize).toLocaleString();
-    } else {
-       sizeEl.innerText = selectedSize;
-       if(baselineSidebarSize && activeFilter === 'baseline') baselineSidebarSize.innerText = selectedSize;
-    }
-  }
+  const displayVal = (selectedSize !== '<10' && selectedSize !== '<20' && selectedSize !== '...')
+      ? parseInt(selectedSize as string).toLocaleString()
+      : selectedSize;
+
+  if (sizeEl) sizeEl.innerText = displayVal as string;
+  if (baselineSidebarSize && activeFilter === 'baseline') baselineSidebarSize.innerText = displayVal as string;
 }
 
 function handleUnifiedSearch() {
@@ -275,9 +329,14 @@ function handleUnifiedSearch() {
 
   const query = searchInput.value.toLowerCase().trim();
 
+  // Quick helper to toggle display based on search
+  const toggleDisplay = (element: HTMLElement, show: boolean) => {
+    element.style.display = show ? 'flex' : 'none';
+  };
+
   document.querySelectorAll('.toggle-item').forEach(item => {
     const text = (item.querySelector('.searchable-text') as HTMLElement).innerText.toLowerCase();
-    (item as HTMLElement).style.display = text.includes(query) ? 'flex' : 'none';
+    toggleDisplay(item as HTMLElement, text.includes(query));
   });
 
   document.querySelectorAll('.filter-group').forEach(group => {
@@ -286,12 +345,9 @@ function handleUnifiedSearch() {
 
     group.querySelectorAll('.filter-btn').forEach(btn => {
        const btnText = (btn.querySelector('.searchable-text') as HTMLElement).innerText.toLowerCase();
-       if (btnText.includes(query) || title.includes(query)) {
-           (btn as HTMLElement).style.display = 'flex';
-           hasVisibleChild = true;
-       } else {
-           (btn as HTMLElement).style.display = 'none';
-       }
+       const isMatch = btnText.includes(query) || title.includes(query);
+       toggleDisplay(btn as HTMLElement, isMatch);
+       if (isMatch) hasVisibleChild = true;
     });
 
     if (query !== '' && hasVisibleChild) {
@@ -305,15 +361,15 @@ function handleUnifiedSearch() {
   document.querySelectorAll('.chart-card').forEach(card => {
     const title = card.getAttribute('data-title')?.toLowerCase() || "";
     if (title.includes(query)) {
-      (card as HTMLElement).style.display = 'flex';
+      toggleDisplay(card as HTMLElement, true);
       foundCards++;
     } else {
-      (card as HTMLElement).style.display = 'none';
+      toggleDisplay(card as HTMLElement, false);
     }
   });
 
   const fallbackEl = document.getElementById('search-fallback');
-  if (fallbackEl) fallbackEl.style.display = foundCards === 0 ? 'flex' : 'none';
+  if (fallbackEl) toggleDisplay(fallbackEl, foundCards === 0);
 }
 
 function exportCohortCSV() {
@@ -331,14 +387,6 @@ function exportCohortCSV() {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-}
-
-function generateColorCycle(length: number) {
-    let colors = [];
-    for(let i = 0; i < length; i++) {
-        colors.push(PALETTE[i % PALETTE.length]);
-    }
-    return colors;
 }
 
 function renderDashboard() {
@@ -399,7 +447,7 @@ function renderChartInstance(meta: any, data: any[]) {
   const isPie = meta.chart_type === 'pie';
   const isHorizontalBar = !isPie;
 
-  const colorArray = generateColorCycle(labels.length);
+  const colorArray = labels.map((_, i) => PALETTE[i % PALETTE.length]);
 
   chartInstances[meta.chart_id] = new Chart(ctx as any, {
     type: isPie ? 'doughnut' : 'bar',
@@ -410,7 +458,7 @@ function renderChartInstance(meta: any, data: any[]) {
         backgroundColor: colorArray,
         borderWidth: 0,
         borderRadius: isPie ? 0 : 4,
-        hoverBackgroundColor: PALETTE[8],
+        hoverBackgroundColor: PALETTE[8], // dark
         minBarLength: isPie ? undefined : 8
       }]
     },
