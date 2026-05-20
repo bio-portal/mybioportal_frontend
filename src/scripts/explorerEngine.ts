@@ -2,7 +2,7 @@ import Chart from 'chart.js/auto';
 
 const API_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats";
 
-// Populated dynamically from global.css at runtime
+// Populated dynamically from global.css overrides at runtime
 let PALETTE: string[] = [];
 
 let variableMetadata: any[] = [];
@@ -20,7 +20,7 @@ let visibleCharts = new Set<string>();
 (window as any).switchTab = switchTab;
 
 /**
- * Reads CSS variables from global.css at runtime to guarantee absolute consistency
+ * Reads CSS tokens from global.css dynamically at runtime to guarantee absolute visual consistency
  */
 function initializePalette() {
   const rootStyle = getComputedStyle(document.documentElement);
@@ -62,7 +62,7 @@ function switchTab(tabName: string) {
 async function fetchFromPortal(queryString: string) {
   const cacheBuster = `&_cb=${new Date().getTime()}`;
   const response = await fetch(`${API_GATEWAY}?${queryString}${cacheBuster}`);
-  if (!response.ok) throw new Error("API timeout");
+  if (!response.ok) throw new Error("API performance timeout exception");
 
   const cacheHeader = response.headers.get("X-Cache");
   const indicator = document.getElementById("cache-indicator");
@@ -127,18 +127,15 @@ function renderFilterMenu() {
     if (matchedSlices.length === 0) return;
 
     const detailsEl = document.createElement('details');
-    // 🌟 FIX: Removed top margin/padding, rely entirely on border-b for stacking
     detailsEl.className = "group border-b border-gray-100 filter-group";
     detailsEl.open = false;
 
     const summaryEl = document.createElement('summary');
-    // 🌟 FIX: Added py-4, px-2, w-full, hover background, and bumped font size
     summaryEl.className = "flex justify-between items-center w-full font-extrabold text-xs text-gray-600 uppercase tracking-widest cursor-pointer list-none py-4 px-2 hover:text-brand-blue-deep hover:bg-brand-blue-deep/5 transition-all select-none";
     summaryEl.innerHTML = `<span class="searchable-text">${meta.display_name}</span> <span class="transition-transform duration-300 group-open:rotate-180 text-brand-blue-deep">▼</span>`;
     detailsEl.appendChild(summaryEl);
 
     const itemsContainer = document.createElement('div');
-    // Added mb-4 so there is breathing room before the next dividing line when open
     itemsContainer.className = "space-y-1.5 pl-3 border-l-[3px] border-gray-100 ml-1.5 mb-4";
 
     const baselineChart = summaryStatistics.find(s => s.chart_id === meta.chart_id);
@@ -153,7 +150,7 @@ function renderFilterMenu() {
         if (finalFilterKey) {
           const btn = document.createElement('button');
           btn.id = `btn-${finalFilterKey}`;
-          btn.className = "filter-btn w-full text-left px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-[13px] flex justify-between items-center font-medium border border-transparent";
+          btn.className = "filter-btn w-full text-left px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-[13px] flex justify-between items-center font-medium border border-transparent cursor-pointer";
 
           let displayCount: string | number = item.count;
           if (displayCount !== '<10' && displayCount !== '<20') {
@@ -230,7 +227,6 @@ async function changeFilter(filterKey: string) {
   if (targetedButton) {
       targetedButton.classList.add('filter-active');
       if (filterKey !== 'baseline') {
-          // Open the specific accordion we clicked, but don't force others closed
           const parentDetails = targetedButton.closest('details');
           if (parentDetails) parentDetails.open = true;
       }
@@ -251,6 +247,7 @@ async function changeFilter(filterKey: string) {
   }
 }
 
+// ... rest of file continues cleanly un-nested ...
 function updateCohortSizeCounters() {
   let selectedSize: any = "...";
   if (activeFilter === 'baseline') {
@@ -278,13 +275,11 @@ function handleUnifiedSearch() {
 
   const query = searchInput.value.toLowerCase().trim();
 
-  // 1. Sidebar Toggles Search
   document.querySelectorAll('.toggle-item').forEach(item => {
     const text = (item.querySelector('.searchable-text') as HTMLElement).innerText.toLowerCase();
     (item as HTMLElement).style.display = text.includes(query) ? 'flex' : 'none';
   });
 
-  // 2. Sidebar Accordions Search
   document.querySelectorAll('.filter-group').forEach(group => {
     const title = (group.querySelector('summary .searchable-text') as HTMLElement).innerText.toLowerCase();
     let hasVisibleChild = false;
@@ -299,9 +294,6 @@ function handleUnifiedSearch() {
        }
     });
 
-    // 🌟 THE FIX: Only expand accordions if actively typing a query.
-    // We completely omit the `else if (query === '') { open = false }` logic
-    // so the state persists when not searching.
     if (query !== '' && hasVisibleChild) {
        (group as HTMLDetailsElement).open = true;
     }
@@ -309,7 +301,6 @@ function handleUnifiedSearch() {
     (group as HTMLElement).style.display = (title.includes(query) || hasVisibleChild) ? 'block' : 'none';
   });
 
-  // 3. Dashboard Cards Search
   let foundCards = 0;
   document.querySelectorAll('.chart-card').forEach(card => {
     const title = card.getAttribute('data-title')?.toLowerCase() || "";
@@ -404,3 +395,82 @@ function renderChartInstance(meta: any, data: any[]) {
   const ctx = (canvasElement as HTMLCanvasElement).getContext('2d');
   const labels = data.map(d => d.category);
   const values = data.map(d => d.count === '<10' || d.count === '<20' ? 0 : parseInt(d.count, 10));
+
+  const isPie = meta.chart_type === 'pie';
+  const isHorizontalBar = !isPie;
+
+  const colorArray = generateColorCycle(labels.length);
+
+  chartInstances[meta.chart_id] = new Chart(ctx as any, {
+    type: isPie ? 'doughnut' : 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colorArray,
+        borderWidth: 0,
+        borderRadius: isPie ? 0 : 4,
+        hoverBackgroundColor: PALETTE[8],
+        minBarLength: isPie ? undefined : 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: isHorizontalBar ? 'y' : 'x',
+      onClick: (event, elements) => {
+        if (elements.length > 0) {
+          const targetIndex = elements[0].index;
+          const selectedLabel = chartInstances[meta.chart_id].data.labels![targetIndex] as string;
+
+          const targetPrefix = meta.chart_id.toLowerCase().replace(/ /g, '_');
+          const sanitizedCategory = selectedLabel.toLowerCase().replace(/ /g, '_');
+          const targetFilterKey = targetPrefix + '_' + sanitizedCategory;
+
+          const fallbackKey = availableFiltersList.find(fKey => fKey.endsWith('_' + sanitizedCategory) || sanitizedCategory.endsWith(fKey.replace(targetPrefix + '_', '')));
+          const finalKey = availableFiltersList.includes(targetFilterKey) ? targetFilterKey : fallbackKey;
+
+          if (finalKey) changeFilter(finalKey);
+        }
+      },
+      plugins: {
+        legend: {
+          display: isPie,
+          position: 'bottom',
+          labels: { boxWidth: 10, padding: 15, font: { size: 11, family: "'Outfit', sans-serif", weight: '600' }, color: '#4b5563' }
+        },
+        tooltip: {
+          backgroundColor: PALETTE[8],
+          titleFont: { size: 12, family: "'Outfit', sans-serif", weight: '700' },
+          bodyFont: { size: 13, family: "'Outfit', sans-serif" },
+          padding: 12,
+          cornerRadius: 8,
+          callbacks: {
+            label: (context) => {
+              const rawDisplayCount = data[context.dataIndex].count;
+              const unitString = meta.units.toLowerCase() === 'patients' ? '' : ` ${meta.units}`;
+              return ` Count: ${rawDisplayCount}${unitString}`;
+            }
+          }
+        }
+      },
+      scales: isPie ? undefined : {
+        y: {
+          grid: { display: false },
+          ticks: { font: { size: 11, family: "'Outfit', sans-serif", weight: '600' }, color: '#64748b' }
+        },
+        x: {
+          beginAtZero: true,
+          grid: { color: '#f1f5f9' },
+          ticks: { font: { size: 11, family: "'Outfit', sans-serif", weight: '500' }, color: '#94a3b8' }
+        }
+      }
+    }
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeEngine);
+} else {
+  initializeEngine();
+}
