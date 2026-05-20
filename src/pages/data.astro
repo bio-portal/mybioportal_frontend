@@ -5,7 +5,7 @@ import Layout from '../layouts/Layout.astro';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pageData = await getEntry('pages', 'data');
 
-// 🌟 FIX: Safety fallbacks. If the YAML fails validation, the page survives.
+// Safety fallbacks ensuring structure protection if content models fail verification
 const hero = pageData?.data?.hero || { tagline: 'Data', headline: 'BioPortal Datasets', description: 'Loading data...' };
 const stats = pageData?.data?.stats || [];
 ---
@@ -35,23 +35,22 @@ const stats = pageData?.data?.stats || [];
         ))}
       </div>
 
-      <div class="lg:col-span-5 bp-gradient-bg rounded-[2rem] p-10 text-white shadow-2xl shadow-brand-blue-deep/30 flex flex-col justify-between relative overflow-hidden group">
-        <div class="absolute inset-0 bg-black/10 z-0"></div>
+      <div class="lg:col-span-5 bp-frosted-gradient rounded-[2rem] p-10 border border-white/60 shadow-2xl shadow-brand-blue-deep/5 flex flex-col justify-between relative overflow-hidden group">
 
         <div class="relative z-10 mb-10">
-          <span class="px-3 py-1.5 rounded-lg bg-black/20 border border-white/20 text-white font-bold text-[10px] uppercase tracking-[0.15em] mb-6 inline-block backdrop-blur-md">Interactive Platform</span>
-          <h2 class="text-4xl font-black tracking-tight mb-4 drop-shadow-md">Live Data Explorer</h2>
-          <p class="text-white text-sm leading-relaxed font-semibold opacity-95 drop-shadow-sm">
+          <span class="px-3 py-1.5 rounded-lg bg-brand-blue-deep/10 text-brand-blue-deep font-bold text-[10px] uppercase tracking-[0.15em] mb-6 inline-block">Interactive Platform</span>
+          <h2 class="text-4xl font-black tracking-tight text-gray-900 mb-4">Live Data Explorer</h2>
+          <p class="text-gray-600 text-sm leading-relaxed font-medium opacity-90">
             Visualize real-time clinical cohorts, demographic distributions, and sample metrics immediately through our zero-latency gateway. Filter and export aggregates on the fly.
           </p>
         </div>
 
         <a
           href={`${baseUrl}/data/explorer/`}
-          class="relative z-10 w-full py-4 rounded-xl bg-white text-brand-dark text-sm font-bold shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3"
+          class="relative z-10 w-full py-4 rounded-xl bg-white border-2 border-gray-200 text-brand-dark text-sm font-bold shadow-md hover:shadow-xl hover:scale-105 hover:bg-brand-green-bright hover:border-brand-green-bright hover:text-white transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer group/btn"
         >
-          Launch Live Explorer
-          <svg class="w-5 h-5 text-brand-blue-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+          Launch Explorer
+          <svg class="w-5 h-5 text-brand-blue-deep group-hover/btn:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
         </a>
       </div>
 
@@ -82,7 +81,6 @@ const stats = pageData?.data?.stats || [];
           <div class="flex flex-wrap gap-2">
             <span class="px-3 py-1.5 rounded-lg bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-widest">LDI Private Cluster</span>
             <span class="px-3 py-1.5 rounded-lg bg-brand-teal/10 text-brand-dark font-bold text-[10px] uppercase tracking-widest">AllianceCan</span>
-            <span class="px-3 py-1.5 rounded-lg bg-brand-orange-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-widest">GA4GH Standard</span>
           </div>
         </div>
       </div>
@@ -132,8 +130,17 @@ const stats = pageData?.data?.stats || [];
 </Layout>
 
 <style>
-  .bp-gradient-bg {
-    background: linear-gradient(135deg, #0ea5e9 0%, #00a490 25%, #a1d044 50%, #f6c244 75%, #ff7c43 100%);
+  .bp-frosted-gradient {
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    background: linear-gradient(
+      135deg,
+      rgba(14, 165, 233, 0.05) 0%,
+      rgba(0, 164, 144, 0.05) 25%,
+      rgba(161, 208, 68, 0.04) 50%,
+      rgba(246, 194, 68, 0.04) 75%,
+      rgba(255, 124, 67, 0.05) 100%
+    ), rgba(255, 255, 255, 0.55);
   }
 </style>
 
