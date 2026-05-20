@@ -618,7 +618,7 @@ const { hero, steps, benefit } = pageData.data;
 
 ```
 
-### 🧩 File: `src/pages/researchers.astro`
+### 🧩 File: `src/pages/data.astro`
 ```astro
 ---
 import { getEntry } from 'astro:content';
@@ -826,7 +826,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     </div>
 
     <div class="relative group/btn w-full sm:w-auto">
-      <a href={`${baseUrl}/researchers`} class="w-full sm:w-auto px-10 py-4 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep font-bold text-lg transition-all hover:-translate-y-1 hover:bg-brand-blue-deep hover:text-white flex items-center justify-center gap-3">
+      <a href={`${baseUrl}/data`} class="w-full sm:w-auto px-10 py-4 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep font-bold text-lg transition-all hover:-translate-y-1 hover:bg-brand-blue-deep hover:text-white flex items-center justify-center gap-3">
         Request Data
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
       </a>
@@ -936,7 +936,7 @@ const {
           </div>
 
           <div class="relative group/btn">
-            <a href={`${baseUrl}/researchers`} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white">
+            <a href={`${baseUrl}/data`} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white">
               Request Data
             </a>
             <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-56 p-3 bg-white border border-gray-100 text-gray-500 text-[11px] leading-relaxed rounded-xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none">

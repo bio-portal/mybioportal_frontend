@@ -524,7 +524,7 @@ const { hero, steps, benefit } = pageData.data;
 
 
 ================================================
-FILE: ./src/pages/researchers.astro
+FILE: ./src/pages/data.astro
 ================================================
 ---
 import { getEntry } from 'astro:content';
@@ -787,7 +787,7 @@ benefit:
 
 
 ================================================
-FILE: ./src/content/pages/researchers.yaml
+FILE: ./src/content/pages/data.yaml
 ================================================
 id: researchers
 hero:
@@ -881,7 +881,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
     </a>
 
-    <a href={`${baseUrl}/researchers`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-white border-2 border-brand-blue-deep text-brand-blue-deep hover:bg-brand-blue-deep hover:text-white font-bold text-lg shadow-xl shadow-brand-blue-deep/10 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
+    <a href={`${baseUrl}/data`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-white border-2 border-brand-blue-deep text-brand-blue-deep hover:bg-brand-blue-deep hover:text-white font-bold text-lg shadow-xl shadow-brand-blue-deep/10 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
       Explore Data Access
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
     </a>
