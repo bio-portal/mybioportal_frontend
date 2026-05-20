@@ -1,0 +1,108 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+const pageData = await getEntry('pages', 'data');
+const { hero, stats } = pageData.data;
+---
+<Layout title="Data Access & Cohorts | BioPortal" navType="minimal" backText="Back to Home">
+  <div class="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue-deep/10 via-brand-teal/5 to-transparent -z-10"></div>
+
+  <main class="max-w-7xl mx-auto px-6 pt-12 pb-24 relative z-10">
+    <header class="max-w-3xl mb-16 text-center mx-auto">
+      <span class="text-brand-blue-deep font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
+      <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 tracking-tight">{hero.headline}</h1>
+      <p class="text-xl text-gray-600 leading-relaxed">{hero.description}</p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+      {stats.map((stat: any) => (
+        <div class="bg-white rounded-3xl p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50">
+            <h3 class="text-5xl font-black text-gray-900 mb-2 tracking-tighter">{stat.value}</h3>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{stat.label}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="grid lg:grid-cols-12 gap-8 items-start">
+      <div class="lg:col-span-7">
+        <div class="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-brand-blue-deep/5 border border-gray-100">
+          
+          <div class="mb-10 p-6 rounded-2xl border-2 border-dashed border-brand-blue-deep/20 bg-brand-blue-deep/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h4 class="font-bold text-slate-800 text-sm">Interactive Data Explorer Available</h4>
+              <p class="text-xs text-gray-500 mt-0.5">Visualize real-time clinical cohorts and sample metrics immediately.</p>
+            </div>
+            <a 
+              href={`${baseUrl}/data/explorer/`} 
+              class="px-5 py-2.5 rounded-xl bg-brand-blue-deep text-white text-xs font-bold shadow-md hover:bg-brand-dark transition-all inline-flex items-center gap-2 shrink-0"
+            >
+              Launch Live Explorer
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+
+          <h2 class="text-3xl font-bold text-gray-900 mb-2">Request Data Access</h2>
+          <p class="text-gray-500 mb-8">Inquire about specific cohorts or request structural credentials for the comprehensive exploration portal.</p>
+
+          <form class="space-y-6">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Full Name</label>
+                <input type="text" placeholder="Dr. Jane Smith" class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-blue-deep focus:bg-white outline-none transition-all text-sm" />
+              </div>
+              <div>
+                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Institutional Email</label>
+                <input type="email" placeholder="jane.smith@mcgill.ca" class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-blue-deep focus:bg-white outline-none transition-all text-sm" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Research Interest</label>
+              <select class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-blue-deep focus:bg-white outline-none transition-all text-sm appearance-none cursor-pointer">
+                <option>Diabetes & Endocrinology</option>
+                <option>Proteomics & Biomarkers</option>
+                <option>Genomics & Rare Variants</option>
+                <option>Other / Multi-Omics</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Brief Project Overview</label>
+              <textarea rows="3" placeholder="Describe your intended scientific use of BioPortal datasets..." class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-blue-deep focus:bg-white outline-none transition-all text-sm resize-none"></textarea>
+            </div>
+
+            <button type="button" class="w-full py-5 rounded-2xl bg-brand-blue-deep text-white font-bold text-lg shadow-lg shadow-brand-blue-deep/20 hover:bg-brand-dark hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3">
+              Submit Access Inquiry
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5 space-y-6">
+        <div class="bg-brand-dark rounded-[2rem] p-8 text-white shadow-xl">
+          <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-brand-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            Access Requirements
+          </h3>
+          <ul class="space-y-4 text-sm text-gray-300">
+            <li class="flex items-start gap-3"><span class="text-brand-teal font-bold">01</span><span>Institutionally-approved REB/IRB documentation matching the target request.</span></li>
+            <li class="flex items-start gap-3"><span class="text-brand-teal font-bold">02</span><span>Executed Data Transfer Agreement (DTA) or institutional alignment contracts.</span></li>
+            <li class="flex items-start gap-3"><span class="text-brand-teal font-bold">03</span><span>Compliance with the BioPortal open science attribution framework.</span></li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-soft">
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Infrastructure Vetting</h3>
+          <p class="text-sm text-gray-500 leading-relaxed mb-6">The infrastructure utilizes standardized metadata schemas for discovery and leverages computing networks configured by <strong>C3G</strong> for down-stream processing operations.</p>
+          <div class="flex gap-2">
+            <span class="px-3 py-1 rounded-full bg-brand-teal/10 text-brand-dark font-bold text-[10px] uppercase tracking-wider">GA4GH Standard</span>
+            <span class="px-3 py-1 rounded-full bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-wider">C3G Powered</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

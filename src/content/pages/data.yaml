@@ -1,0 +1,14 @@
+id: "data"
+hero:
+  tagline: "Open Science & Cohort Analytics"
+  headline: "BioPortal Population Datasets"
+  description: "Access deep-phenotyped research cohorts, explore multi-omics sample distributions, and request secure biological materials for approved scientific inquiries."
+stats:
+  - value: "6,648"
+    label: "Total Phenopackets"
+  - value: "158"
+    label: "Clinical Variables"
+  - value: "887"
+    label: "Proteomic Profiles"
+  - value: "2,450"
+    label: "Matched Biosamples"

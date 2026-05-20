@@ -1,0 +1,251 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Layout 
+  title="Live Cohort Explorer | BioPortal" 
+  navType="minimal" 
+  backLink="/data" 
+  backText="Back to Data Access"
+>
+  <div class="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-brand-blue-deep/5 to-transparent -z-10"></div>
+
+  <div class="max-w-7xl mx-auto px-6 py-6 min-h-[calc(100vh-12rem)] flex flex-col lg:flex-row gap-8 items-start">
+    
+    <aside class="w-full lg:w-72 bg-white rounded-3xl p-6 border border-gray-100 shadow-xl shadow-gray-100/40 shrink-0 lg:sticky lg:top-28">
+      <div class="mb-6">
+        <label class="block text-[10px] uppercase tracking-widest font-black text-gray-400 mb-3">Cohort Filters</label>
+        <div id="filter-list" class="space-y-1.5 max-h-[300px] lg:max-h-[500px] overflow-y-auto pr-1">
+          <button id="btn-baseline" class="w-full text-left px-4 py-2.5 rounded-2xl text-xs font-bold transition-all bg-brand-dark/5 text-brand-dark border-l-4 border-brand-dark">
+            Baseline Cohort
+          </button>
+          </div>
+      </div>
+
+      <div class="pt-4 border-t border-gray-50 flex items-center justify-between text-[11px] text-gray-400 font-medium">
+        <span>Cloud Engine: <span class="text-brand-green-bright font-bold">Connected</span></span>
+        <span id="cache-indicator" class="px-2 py-0.5 rounded bg-gray-100 font-bold uppercase tracking-wider text-[9px]">SYNC</span>
+      </div>
+    </aside>
+
+    <main class="flex-1 w-full">
+      <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+          <h1 id="active-cohort-title" class="text-3xl font-extrabold text-gray-900 tracking-tight leading-none">Baseline Cohort</h1>
+          <p class="text-sm text-gray-400 mt-2 font-medium">Anonymized summary distributions with cell suppression safeguards.</p>
+        </div>
+        <div class="relative w-full sm:w-80">
+          <input 
+            type="text" 
+            id="chart-search" 
+            placeholder="Search metric cards (e.g. SBP)..." 
+            class="w-full pl-10 pr-4 py-3 rounded-2xl bg-white border border-gray-100 focus:border-brand-blue-deep transition-all outline-none text-xs font-medium shadow-sm"
+          />
+          <svg class="w-4 h-4 absolute left-3.5 top-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </div>
+      </header>
+
+      <div id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        </div>
+
+      <div id="search-fallback" class="hidden flex-col items-center justify-center py-20 text-center text-gray-400 bg-white border border-gray-100 rounded-[2.5rem] shadow-sm">
+        <svg class="w-12 h-12 mb-4 text-gray-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <p class="text-base font-bold text-gray-700 mb-1">No matching metrics found</p>
+        <p class="text-xs text-gray-400">Refine your query string or toggle different cohort filters.</p>
+      </div>
+    </main>
+  </div>
+</Layout>
+
+<script>
+  import Chart from 'chart.js/auto';
+
+  // Points directly to your high-performance Go Cloud Function endpoint
+  const API_GATEWAY = "https://us-central1-bioportal-data-viewer.cloudfunctions.net/GetStats";
+
+  let variableMetadata = [];
+  let summaryStatistics = [];
+  let activeFilter = 'baseline';
+  let chartsMap = {};
+
+  async function fetchFromPortal(queryString) {
+    const response = await fetch(`${API_GATEWAY}?${queryString}`);
+    if (!response.ok) throw new Error("API Execution failure");
+    
+    // Sniff edge cache headers for performance auditing tracking
+    const cacheHeader = response.headers.get("X-Cache");
+    const indicator = document.getElementById("cache-indicator");
+    if (indicator && cacheHeader) {
+      indicator.innerText = cacheHeader;
+      if (cacheHeader === "HIT") {
+        indicator.className = "px-2 py-0.5 rounded bg-brand-green-bright/10 text-brand-green-bright font-black uppercase tracking-wider text-[9px]";
+      } else {
+        indicator.className = "px-2 py-0.5 rounded bg-brand-orange-deep/10 text-brand-orange-deep font-black uppercase tracking-wider text-[9px]";
+      }
+    }
+    return await response.json();
+  }
+
+  async function initializeEngine() {
+    try {
+      const [meta, filters] = await Promise.all([
+        fetchFromPortal("type=metadata"),
+        fetchFromPortal("type=filters")
+      ]);
+
+      variableMetadata = meta;
+      renderFilterMenu(filters);
+      await loadCohortData('baseline');
+
+      document.getElementById('chart-search').addEventListener('keyup', handleSearchQuery);
+    } catch (err) {
+      console.error("Dashboard engine startup crash:", err);
+    }
+  }
+
+  function renderFilterMenu(filters) {
+    const container = document.getElementById('filter-list');
+    const baselineBtn = document.getElementById('btn-baseline');
+    container.innerHTML = '';
+    container.appendChild(baselineBtn);
+    baselineBtn.onclick = () => loadCohortData('baseline');
+
+    filters.filter(f => f !== 'baseline').sort().forEach(fKey => {
+      const btn = document.createElement('button');
+      btn.id = `btn-${fKey}`;
+      btn.className = "w-full text-left px-4 py-2.5 rounded-2xl text-xs font-semibold transition-all hover:bg-gray-50 text-gray-500 hover:text-gray-900 border-l-4 border-transparent";
+      
+      // Clean display names (e.g., "has_Stroke_yes" -> "Has Stroke: Yes")
+      btn.innerText = fKey.replace(/_/g, ' ').replace(/(^\w|\s\w)/g, m => m.toUpperCase());
+      btn.onclick = () => loadCohortData(fKey);
+      container.appendChild(btn);
+    });
+  }
+
+  async function loadCohortData(filterKey) {
+    document.querySelectorAll('#filter-list button').forEach(b => {
+      b.className = "w-full text-left px-4 py-2.5 rounded-2xl text-xs font-semibold transition-all hover:bg-gray-50 text-gray-500 hover:text-gray-900 border-l-4 border-transparent";
+    });
+    
+    const activeBtn = document.getElementById(`btn-${filterKey}`);
+    if (activeBtn) {
+      activeBtn.className = "w-full text-left px-4 py-2.5 rounded-2xl text-xs font-bold transition-all bg-brand-dark/5 text-brand-dark border-l-4 border-brand-dark";
+    }
+
+    activeFilter = filterKey;
+    document.getElementById('active-cohort-title').innerText = filterKey === 'baseline' ? 'Baseline Cohort' : filterKey.replace(/_/g, ' ').replace(/(^\w|\s\w)/g, m => m.toUpperCase());
+
+    try {
+      summaryStatistics = await fetchFromPortal(`filter=${filterKey}`);
+      renderDashboardGrid();
+    } catch (err) {
+      console.error("Failed to execute data slice update swap:", err);
+    }
+  }
+
+  function renderDashboardGrid() {
+    const grid = document.getElementById('dashboard-grid');
+    
+    // Clean canvas traces to prevent WebGL context memory leaks
+    Object.values(chartsMap).forEach(chart => chart.destroy());
+    chartsMap = {};
+    grid.innerHTML = '';
+
+    variableMetadata.forEach(meta => {
+      const match = summaryStatistics.find(s => s.chart_id === meta.chart_id);
+      if (!match) return;
+
+      const card = document.createElement('div');
+      card.className = "chart-card bg-white border border-gray-100 rounded-[2rem] p-6 shadow-sm hover:shadow-md transition-all flex flex-col";
+      card.setAttribute('data-title', meta.display_name);
+
+      card.innerHTML = `
+        <div class="flex justify-between items-start mb-4">
+          <h3 class="font-bold text-sm text-gray-800 leading-snug tracking-tight">${meta.display_name}</h3>
+          <span class="text-[9px] bg-brand-dark/5 text-brand-dark px-2 py-0.5 rounded font-bold uppercase tracking-wider">${meta.units}</span>
+        </div>
+        <div class="chart-container">
+          <canvas id="canvas-${meta.chart_id}"></canvas>
+        </div>
+      `;
+
+      grid.appendChild(card);
+      renderChartInstance(meta, match.data);
+    });
+    
+    handleSearchQuery();
+  }
+
+  function renderChartInstance(meta, dataset) {
+    const ctx = document.getElementById(`canvas-${meta.chart_id}`).getContext('2d');
+    const labels = dataset.map(d => d.category);
+    
+    // Safely transform strings to numbers; represent suppressed metrics ("<10") as zero to preserve styling boundaries
+    const numericData = dataset.map(d => d.count === '<10' ? 0 : parseInt(d.count, 10));
+
+    // Maps directly to the cool path tokens declared inside your global.css variables
+    const primaryColor = meta.chart_type === 'pie' ? ['#26abe2', '#56bee7', '#9fdbee', '#96d6c2', '#003f5e'] : '#26abe2';
+
+    chartsMap[meta.chart_id] = new Chart(ctx, {
+      type: meta.chart_type === 'pie' ? 'doughnut' : 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: numericData,
+          backgroundColor: primaryColor,
+          borderWidth: 0,
+          borderRadius: 6,
+          hoverBackgroundColor: '#003f5e'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: meta.chart_type === 'pie',
+            position: 'bottom',
+            labels: { boxWidth: 10, font: { size: 10, weight: '600' }, color: '#4b5563' }
+          },
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                const absoluteCount = dataset[context.dataIndex].count;
+                return ` Volume: ${absoluteCount} ${meta.units}`;
+              }
+            }
+          }
+        },
+        scales: meta.chart_type === 'bar' ? {
+          y: { beginAtZero: true, grid: { display: false }, ticks: { font: { size: 10 }, color: '#9ca3af' } },
+          x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#4b5563' } }
+        } : {}
+      }
+    });
+  }
+
+  function handleSearchQuery() {
+    const query = document.getElementById('chart-search').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.chart-card');
+    let dynamicCount = 0;
+
+    cards.forEach(card => {
+      const matchKey = card.getAttribute('data-title').toLowerCase();
+      if (matchKey.includes(query)) {
+        card.style.display = 'flex';
+        dynamicCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    document.getElementById('search-fallback').className = dynamicCount === 0 ? 'flex' : 'hidden';
+  }
+
+  window.addEventListener('DOMContentLoaded', initializeEngine);
+</script>

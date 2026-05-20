@@ -1,5 +1,5 @@
 # BioPortal Astro Architectural Context
-Generated on: Tue 19 May 2026 03:45:53 PM EDT
+Generated on: Wed 20 May 2026 11:43:38 AM EDT
 
 ---
 
@@ -210,12 +210,12 @@ const { Content } = await render(post);
   backLink="/news"
   backText="Back to Insights"
 >
-  <div class="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-brand-orange-mid/5 to-transparent -z-10"></div>
+  <div class="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-brand-blue-deep/5 to-transparent -z-10"></div>
 
   <main class="max-w-3xl mx-auto px-6 pt-12 pb-24">
     <header class="mb-10 border-b border-gray-100 pb-10">
       <div class="flex items-center gap-4 mb-6">
-        <span class="text-xs font-bold px-3 py-1 rounded-md bg-brand-orange-mid/10 text-brand-orange-deep uppercase tracking-widest">
+        <span class="text-xs font-bold px-3 py-1 rounded-md bg-brand-blue-deep/10 text-brand-blue-deep uppercase tracking-widest">
           {post.data.tag}
         </span>
         <span class="text-sm font-bold text-gray-400 uppercase tracking-widest">
@@ -251,7 +251,7 @@ const { Content } = await render(post);
   .article-content :global(p) { @apply mb-6; }
   .article-content :global(a) { @apply text-brand-blue-deep font-semibold hover:text-brand-dark transition-colors underline underline-offset-2; }
   .article-content :global(ul) { @apply list-disc list-outside ml-6 mb-6 space-y-2; }
-  .article-content :global(blockquote) { @apply border-l-4 border-brand-orange-mid pl-6 py-2 my-8 text-xl italic text-gray-500 bg-brand-orange-mid/5 rounded-r-2xl; }
+  .article-content :global(blockquote) { @apply border-l-4 border-brand-blue-deep pl-6 py-2 my-8 text-xl italic text-gray-500 bg-brand-blue-deep/5 rounded-r-2xl; }
   .article-content :global(strong) { @apply font-bold text-gray-900; }
 </style>
 
@@ -273,7 +273,7 @@ const sortedNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
 <Layout title={`${seoTitle} | BioPortal`}>
   <main class="max-w-7xl mx-auto px-6 py-12 lg:py-16">
     <header class="mb-16">
-      <span class="text-brand-orange-mid font-bold tracking-widest uppercase text-xs mb-4 block">{tagline}</span>
+      <span class="text-brand-blue-deep font-bold tracking-widest uppercase text-xs mb-4 block">{tagline}</span>
       <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">{headline}</h1>
       <p class="text-lg text-gray-500 max-w-2xl">{description}</p>
     </header>
@@ -295,9 +295,9 @@ const sortedNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
               <span class="text-[10px] font-bold text-gray-400 uppercase">
                 {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
               </span>
-              <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-brand-orange-mid/10 text-brand-orange-deep">{post.data.tag}</span>
+              <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-brand-blue-deep/10 text-brand-blue-deep">{post.data.tag}</span>
             </div>
-            <h3 class="text-xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-brand-orange-deep transition-colors">{post.data.title}</h3>
+            <h3 class="text-xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-brand-blue-deep transition-colors">{post.data.title}</h3>
             <p class="text-sm text-gray-500 leading-relaxed mb-8 flex-grow line-clamp-3">{post.data.excerpt}</p>
             <a href={`${baseUrl}/news/${post.id}/`} class="text-brand-dark font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all mt-auto">
               Read Insight <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -331,10 +331,10 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
     <Hero content={homeData.data.hero} />
     <TrustBar content={homeData.data.trustBar} />
 
-    <section id="insights" class="py-16 px-6 max-w-7xl mx-auto scroll-mt-20">
+<section id="insights" class="py-16 px-6 max-w-7xl mx-auto scroll-mt-20">
       <div class="mb-12 flex justify-between items-end">
         <div>
-          <span class="text-brand-orange-mid font-bold tracking-widest uppercase text-xs mb-4 block">Latest Insights</span>
+          <span class="text-brand-blue-mid font-bold tracking-widest uppercase text-xs mb-4 block">Latest Insights</span>
           <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight">News & Discoveries</h2>
         </div>
       </div>
@@ -354,12 +354,10 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
 
             <div class="p-8 flex flex-col flex-grow">
               <div class="flex justify-between items-start mb-6">
-                <span class="text-[10px] font-bold text-gray-400 uppercase">
-                  {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                </span>
-                <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-brand-orange-mid/10 text-brand-orange-deep">{post.data.tag}</span>
+                <span class="text-[10px] font-bold text-gray-400 uppercase">{post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-brand-blue-deep/10 text-brand-blue-deep">{post.data.tag}</span>
               </div>
-              <h3 class="text-xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-brand-orange-deep transition-colors">{post.data.title}</h3>
+              <h3 class="text-xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-brand-blue-deep transition-colors">{post.data.title}</h3>
               <p class="text-sm text-gray-500 leading-relaxed mb-8 flex-grow line-clamp-3">{post.data.excerpt}</p>
               <a href={`${baseUrl}/news/${post.id}/`} class="text-brand-dark font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all mt-auto">
                 Read Insight <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -386,26 +384,22 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
 
       <div class="flex flex-col lg:flex-row gap-12 relative items-start">
         <div class="lg:w-7/12 w-full space-y-16">
+
           <div>
             <h3 class="text-xl font-bold text-gray-900 mb-8 pb-4 border-b border-gray-200" data-group="governing">Governing Committee</h3>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
               {sortedTeam.filter(m => m.data.group === 'governing').map(member => (
-      <div class="team-card group cursor-pointer relative" tabindex="0">
-
-        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full mx-auto mb-4 p-[3px] bg-white group-hover:logo-gradient transition-all duration-500 shadow-md group-hover:shadow-xl group-hover:scale-105 relative">
-          <div class="w-full h-full rounded-full overflow-hidden border-2 border-white bg-surface relative">
-            {member.data.image ? <img src={`${baseUrl}${member.data.image}`} alt={member.data.name} class="w-full h-full object-cover member-img" onerror="this.style.display='none'" /> : <div class="w-full h-full flex items-center justify-center member-img-fallback"><svg width="32" height="32" class="text-brand-blue-deep/30" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>}
-          </div>
-        </div>
-
-        <div class="text-center">
-          <h4 class="text-sm font-bold text-gray-900 leading-tight mb-1 member-name">{member.data.name}</h4>
-          <p class="text-[10px] font-bold text-brand-blue-deep uppercase tracking-wider member-role">{member.data.role}</p>
-        </div>
-        <div class="hidden member-bio">{member.data.bio}</div>
-      </div>
-    ))}
-
+                <div class="team-card group cursor-pointer relative" tabindex="0">
+                  <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full mx-auto mb-4 p-[3px] bg-white group-hover:logo-gradient transition-all duration-500 shadow-md group-hover:shadow-xl group-hover:scale-105 relative">
+                    <div class="w-full h-full rounded-full overflow-hidden border-2 border-white bg-surface relative">
+                      {member.data.image ? <img src={`${baseUrl}${member.data.image}`} alt={member.data.name} class="w-full h-full object-cover member-img" onerror="this.style.display='none'" /> : <div class="w-full h-full flex items-center justify-center member-img-fallback"><svg width="32" height="32" class="text-brand-blue-deep/30" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>}
+                    </div>
+                  </div>
+                  <div class="text-center">
+                    <h4 class="text-sm font-bold text-gray-900 leading-tight mb-1 member-name">{member.data.name}</h4>
+                    <p class="text-[10px] font-bold text-brand-blue-deep uppercase tracking-wider member-role">{member.data.role}</p>
+                  </div>
+                  <div class="hidden member-bio">{member.data.bio}</div>
                   <div class="lg:hidden mobile-bio-container overflow-hidden max-h-0 opacity-0 transition-all duration-500 ease-in-out mt-0">
                     <p class="text-xs text-gray-600 leading-relaxed p-4 bg-white rounded-2xl border border-gray-100 shadow-sm mt-3">{member.data.bio}</p>
                   </div>
@@ -419,15 +413,16 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
               {sortedTeam.filter(m => m.data.group === 'recruitment').map(member => (
                 <div class="team-card group cursor-pointer relative" tabindex="0">
-                  <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-surface mx-auto mb-4 overflow-hidden border-4 border-white shadow-md group-hover:shadow-xl group-hover:scale-105 group-hover:border-brand-orange-mid/30 transition-all duration-500 relative">
-                     {member.data.image ? <img src={`${baseUrl}${member.data.image}`} alt={member.data.name} class="w-full h-full object-cover member-img" onerror="this.style.display='none'" /> : <div class="w-full h-full bg-brand-orange-mid/5 flex items-center justify-center member-img-fallback"><svg width="32" height="32" class="text-brand-orange-mid/30" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>}
+                  <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full mx-auto mb-4 p-[3px] bg-white group-hover:logo-gradient transition-all duration-500 shadow-md group-hover:shadow-xl group-hover:scale-105 relative">
+                    <div class="w-full h-full rounded-full overflow-hidden border-2 border-white bg-surface relative">
+                      {member.data.image ? <img src={`${baseUrl}${member.data.image}`} alt={member.data.name} class="w-full h-full object-cover member-img" onerror="this.style.display='none'" /> : <div class="w-full h-full flex items-center justify-center member-img-fallback"><svg width="32" height="32" class="text-brand-blue-deep/30" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>}
+                    </div>
                   </div>
                   <div class="text-center">
                     <h4 class="text-sm font-bold text-gray-900 leading-tight mb-1 member-name">{member.data.name}</h4>
-                    <p class="text-[10px] font-bold text-brand-orange-mid uppercase tracking-wider member-role">{member.data.role}</p>
+                    <p class="text-[10px] font-bold text-brand-blue-deep uppercase tracking-wider member-role">{member.data.role}</p>
                   </div>
                   <div class="hidden member-bio">{member.data.bio}</div>
-
                   <div class="lg:hidden mobile-bio-container overflow-hidden max-h-0 opacity-0 transition-all duration-500 ease-in-out mt-0">
                     <p class="text-xs text-gray-600 leading-relaxed p-4 bg-white rounded-2xl border border-gray-100 shadow-sm mt-3">{member.data.bio}</p>
                   </div>
@@ -435,6 +430,7 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
               ))}
             </div>
           </div>
+
         </div>
 
         <div class="hidden lg:block lg:w-5/12 sticky top-32">
@@ -474,9 +470,8 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
           const imgEl = card.querySelector('.member-img');
           const imgSrc = imgEl ? imgEl.getAttribute('src') : null;
 
-          const groupTitleEl = card.closest('div').parentElement.querySelector('h3');
-          const isGov = groupTitleEl && groupTitleEl.getAttribute('data-group') === 'governing';
-          const themeColorClass = isGov ? 'text-brand-blue-deep' : 'text-brand-orange-mid';
+          // Uniform Brand Blue for all spotlight tags
+          const themeColorClass = 'text-brand-blue-deep';
 
           spotlightContent.style.opacity = '0';
 
@@ -504,15 +499,12 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
 
         card.addEventListener('click', () => {
           if (window.innerWidth >= 1024) return;
-
           const mobileContainer = card.querySelector('.mobile-bio-container');
           const isOpen = mobileContainer.style.maxHeight && mobileContainer.style.maxHeight !== '0px';
-
           document.querySelectorAll('.mobile-bio-container').forEach(c => {
             c.style.maxHeight = '0px';
             c.style.opacity = '0';
           });
-
           if (!isOpen) {
             mobileContainer.style.maxHeight = mobileContainer.scrollHeight + 'px';
             mobileContainer.style.opacity = '1';
@@ -536,15 +528,15 @@ const pageData = await getEntry('pages', 'participants');
 const { hero, steps, benefit } = pageData.data;
 ---
 <Layout title="Join BioPortal | Advancing Diabetes Research" navType="minimal">
-  <div class="fixed top-0 inset-x-0 h-[600px] bg-gradient-to-br from-brand-orange-mid/5 via-brand-yellow/5 to-transparent -z-10"></div>
+  <div class="fixed top-0 inset-x-0 h-[600px] bg-gradient-to-br from-brand-green-bright/5 via-brand-teal/5 to-transparent -z-10"></div>
 
   <main class="max-w-6xl mx-auto px-6 py-12 lg:py-16">
     <div class="flex flex-col lg:flex-row gap-16 items-start">
       <div class="lg:w-7/12">
-        <span class="text-brand-orange-deep font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
+        <span class="text-brand-green-bright font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
         <h1 class="text-4xl lg:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight leading-[1.1]">
           {hero.headline}<br/>
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange-mid to-brand-orange-deep">{hero.gradientText}</span>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-green-bright to-brand-teal">{hero.gradientText}</span>
         </h1>
         <p class="text-lg text-gray-600 leading-relaxed mb-12">{hero.description}</p>
 
@@ -553,7 +545,7 @@ const { hero, steps, benefit } = pageData.data;
           <div class="space-y-6">
             {steps.map((step: any, index: number) => (
               <div class="flex items-start gap-4">
-                <div class="w-10 h-10 rounded-full bg-brand-orange-mid/10 text-brand-orange-deep flex items-center justify-center font-black shrink-0">{index + 1}</div>
+                <div class="w-10 h-10 rounded-full bg-brand-green-bright/10 text-brand-green-bright flex items-center justify-center font-black shrink-0">{index + 1}</div>
                 <div>
                   <h4 class="font-bold text-gray-900">{step.title}</h4>
                   <p class="text-sm text-gray-500">{step.desc}</p>
@@ -563,46 +555,46 @@ const { hero, steps, benefit } = pageData.data;
           </div>
         </div>
 
-        <div class="bg-white border-2 border-brand-orange-mid/20 rounded-[2rem] p-8 shadow-xl shadow-brand-orange-mid/5 relative overflow-hidden group">
-          <div class="absolute top-0 left-0 w-2 h-full bg-brand-orange-mid group-hover:w-3 transition-all"></div>
+        <div class="bg-white border-2 border-brand-green-bright/20 rounded-[2rem] p-8 shadow-xl shadow-brand-green-bright/5 relative overflow-hidden group">
+          <div class="absolute top-0 left-0 w-2 h-full bg-brand-green-bright group-hover:w-3 transition-all"></div>
           <h3 class="text-2xl font-bold text-gray-900 mb-2">{benefit.title}</h3>
           <p class="text-gray-600 leading-relaxed">{benefit.desc}</p>
         </div>
       </div>
 
       <div class="lg:w-5/12 w-full lg:sticky lg:top-32">
-        <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-brand-orange-mid/10 border border-gray-100 p-8 lg:p-10 relative overflow-hidden">
-          <div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-yellow/10 rounded-full blur-3xl"></div>
+        <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-brand-green-bright/10 border border-gray-100 p-8 lg:p-10 relative overflow-hidden">
+          <div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-teal/10 rounded-full blur-3xl"></div>
           <div class="relative z-10">
             <h3 class="text-2xl font-bold text-gray-900 mb-2">Eligibility Check</h3>
             <p class="text-gray-500 mb-8 text-sm">Answer 3 quick questions to see if you can join our current Montreal study.</p>
 
             <form class="space-y-5">
-              <label class="group flex items-center justify-between p-4 rounded-2xl border-2 border-gray-50 bg-surface hover:border-brand-orange-mid/30 hover:bg-white transition-all cursor-pointer">
+              <label class="group flex items-center justify-between p-4 rounded-2xl border-2 border-gray-50 bg-surface hover:border-brand-green-bright/30 hover:bg-white transition-all cursor-pointer">
                 <span class="text-sm font-semibold text-gray-700">Are you 18 years or older?</span>
-                <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-orange-mid focus:ring-brand-orange-mid" />
+                <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-green-bright focus:ring-brand-green-bright" />
               </label>
-              <label class="group flex items-center justify-between p-4 rounded-2xl border-2 border-gray-50 bg-surface hover:border-brand-orange-mid/30 hover:bg-white transition-all cursor-pointer">
+              <label class="group flex items-center justify-between p-4 rounded-2xl border-2 border-gray-50 bg-surface hover:border-brand-green-bright/30 hover:bg-white transition-all cursor-pointer">
                 <span class="text-sm font-semibold text-gray-700">Do you live in the Greater Montreal area?</span>
-                <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-orange-mid focus:ring-brand-orange-mid" />
+                <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-green-bright focus:ring-brand-green-bright" />
               </label>
-              <label class="group flex items-center justify-between p-4 rounded-2xl border-2 border-gray-50 bg-surface hover:border-brand-orange-mid/30 hover:bg-white transition-all cursor-pointer">
+              <label class="group flex items-center justify-between p-4 rounded-2xl border-2 border-gray-50 bg-surface hover:border-brand-green-bright/30 hover:bg-white transition-all cursor-pointer">
                 <span class="text-sm font-semibold text-gray-700">Have you been diagnosed with Type 1 or Type 2 Diabetes?</span>
-                <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-orange-mid focus:ring-brand-orange-mid" />
+                <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-green-bright focus:ring-brand-green-bright" />
               </label>
 
               <div class="pt-4">
                 <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Your Email Address</label>
-                <input type="email" placeholder="name@email.com" class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-orange-mid focus:bg-white focus:ring-0 transition-all outline-none text-sm" />
+                <input type="email" placeholder="name@email.com" class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-green-bright focus:bg-white focus:ring-0 transition-all outline-none text-sm" />
               </div>
-              <button type="button" class="w-full py-5 rounded-2xl bg-brand-orange-mid text-white font-bold text-lg shadow-lg shadow-brand-orange-mid/30 hover:bg-brand-orange-deep hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 mt-4">
+              <button type="button" class="w-full py-5 rounded-2xl bg-brand-green-bright text-white font-bold text-lg shadow-lg shadow-brand-green-bright/30 hover:bg-brand-green-mid hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 mt-4">
                 Check My Eligibility
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
               </button>
             </form>
 
             <p class="mt-6 text-[11px] text-gray-400 text-center leading-relaxed">
-              By clicking "Check My Eligibility", you agree to be contacted by our clinical team regarding research opportunities. Review our dedicated <a href={`${baseUrl}/privacy`} class="text-brand-orange-deep underline hover:text-brand-dark transition-colors">Privacy and Data Protection Policy</a>.
+              By clicking "Check My Eligibility", you agree to be contacted by our clinical team regarding research opportunities. Review our dedicated <a href={`${baseUrl}/privacy`} class="text-brand-green-bright underline hover:text-brand-dark transition-colors">Privacy and Data Protection Policy</a>.
             </p>
           </div>
         </div>
@@ -615,17 +607,6 @@ const { hero, steps, benefit } = pageData.data;
     </div>
   </main>
 </Layout>
-
-<div class="fixed top-0 inset-x-0 h-[600px] bg-gradient-to-br from-brand-green-bright/5 via-brand-teal/5 to-transparent -z-10"></div>
-
-<label class="group flex items-center justify-between p-4 rounded-2xl border-2 border-gray-50 bg-surface hover:border-brand-green-bright/30 hover:bg-white transition-all cursor-pointer">
-  <span class="text-sm font-semibold text-gray-700">Are you 18 years or older?</span>
-  <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-green-bright focus:ring-brand-green-bright" />
-</label>
-<button type="button" class="w-full py-5 rounded-2xl bg-brand-green-bright text-white font-bold text-lg shadow-lg shadow-brand-green-bright/30 hover:bg-brand-green-mid hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 mt-4">
-  Check My Eligibility
-  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
-</button>
 
 <style>
   @reference "../styles/global.css";
@@ -787,11 +768,11 @@ import '../styles/global.css';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 
-const { 
-  title, 
-  navType = 'main', 
-  ctaMode = 'visible', 
-  backLink = '/', 
+const {
+  title,
+  navType = 'main',
+  ctaMode = 'visible',
+  backLink = '/',
   backText = 'Back',
   hideFooter = false
 } = Astro.props;
@@ -803,10 +784,10 @@ const {
     <meta name="viewport" content="width=device-width" />
     <title>{title}</title>
   </head>
-  <body class="flex flex-col min-h-screen">
+  <body class="flex flex-col min-h-screen bg-surface">
     <Navbar type={navType} ctaMode={ctaMode} backLink={backLink} backText={backText} />
-    
-    <div class="flex-grow pt-20"> 
+
+    <div class="flex-grow pt-20">
       <slot />
     </div>
 
@@ -822,7 +803,6 @@ const {
 const { content } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
-
 <header class="pt-28 pb-8 px-6 max-w-5xl mx-auto text-center relative z-10">
   <h1 class="text-5xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-6">
     {content.headline} <br/>
@@ -833,10 +813,10 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     {content.description}
   </p>
 
-  <div class="flex flex-col sm:flex-row justify-center items-center gap-6 z-20">
+  <div id="hero-button-group" class="flex flex-col sm:flex-row justify-center items-center gap-6 z-20">
 
     <div class="relative group/btn w-full sm:w-auto">
-      <a href={`${baseUrl}/participants`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-brand-green-bright hover:bg-brand-green-mid text-white font-bold text-lg shadow-xl shadow-brand-green-bright/20 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
+      <a href={`${baseUrl}/participants`} class="w-full sm:w-auto px-10 py-4 rounded-full border-2 border-brand-green-bright text-brand-green-bright font-bold text-lg transition-all hover:-translate-y-1 hover:bg-brand-green-bright hover:text-white flex items-center justify-center gap-3">
         Join Study
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
       </a>
@@ -846,7 +826,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     </div>
 
     <div class="relative group/btn w-full sm:w-auto">
-      <a href={`${baseUrl}/researchers`} class="w-full sm:w-auto px-10 py-5 rounded-full bg-white border-2 border-brand-blue-deep text-brand-blue-deep hover:bg-brand-blue-deep hover:text-white font-bold text-lg shadow-xl shadow-brand-blue-deep/10 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
+      <a href={`${baseUrl}/researchers`} class="w-full sm:w-auto px-10 py-4 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep font-bold text-lg transition-all hover:-translate-y-1 hover:bg-brand-blue-deep hover:text-white flex items-center justify-center gap-3">
         Request Data
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
       </a>
@@ -935,20 +915,11 @@ const {
   backText = 'Back'
 } = Astro.props;
 ---
-
-<nav
-  class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300"
-  data-cta-mode={ctaMode}
->
+<nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300" data-cta-mode={ctaMode}>
   <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
 
     <a href={`${baseUrl}/`} class="flex items-center shrink-0">
-      <img
-        src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
-        alt="BioPortal Logo"
-        class="w-40 h-auto shrink-0 hover:-translate-y-0.5 transition-transform"
-        onerror="this.style.display='none'"
-      />
+      <img src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`} alt="BioPortal Logo" class="w-40 h-auto shrink-0 hover:-translate-y-0.5 transition-transform" onerror="this.style.display='none'" />
     </a>
 
     {type === 'main' ? (
@@ -956,7 +927,16 @@ const {
         <div id="nav-cta-group" class={`absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-4 transition-all duration-500 ease-out ${ctaMode === 'scroll' ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}>
 
           <div class="relative group/btn">
-            <a href={`${baseUrl}/researchers`} class="text-xs font-bold text-brand-blue-deep hover:text-brand-dark transition-colors px-2 py-2">
+            <a href={`${baseUrl}/participants`} class="px-5 py-2 rounded-full border-2 border-brand-green-bright text-brand-green-bright text-xs font-bold hover:bg-brand-green-bright hover:text-white transition-all bg-white">
+              Join Study
+            </a>
+            <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-56 p-3 bg-white border border-gray-100 text-gray-500 text-[11px] leading-relaxed rounded-xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none">
+              Contribute clinical data to advance Montreal-based genomic research.
+            </div>
+          </div>
+
+          <div class="relative group/btn">
+            <a href={`${baseUrl}/researchers`} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white">
               Request Data
             </a>
             <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-56 p-3 bg-white border border-gray-100 text-gray-500 text-[11px] leading-relaxed rounded-xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none">
@@ -964,14 +944,6 @@ const {
             </div>
           </div>
 
-          <div class="relative group/btn">
-            <a href={`${baseUrl}/participants`} class="px-5 py-2.5 rounded-full bg-brand-green-bright text-white text-xs font-bold shadow-md shadow-brand-green-bright/20 hover:bg-brand-green-mid hover:-translate-y-0.5 transition-all">
-              Join Study
-            </a>
-            <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-56 p-3 bg-white border border-gray-100 text-gray-500 text-[11px] leading-relaxed rounded-xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none">
-              Contribute clinical data to advance Montreal-based genomic research.
-            </div>
-          </div>
         </div>
 
         <div class="hidden lg:flex items-center space-x-8 font-medium text-sm ml-auto">
@@ -995,8 +967,27 @@ const {
     if (!nav) return;
 
     const navCtaGroup = nav.querySelector('#nav-cta-group');
+    const heroButtons = document.getElementById('hero-button-group');
+
     const handleScroll = () => {
-      if (window.scrollY > 400) {
+      let shouldShow = false;
+
+      if (heroButtons) {
+        // Get precise coordinates of the hero buttons on the screen
+        const rect = heroButtons.getBoundingClientRect();
+
+        // The navbar is exactly 80 pixels tall (h-20).
+        // If the bottom edge of the hero buttons is less than 80px from the top of the screen,
+        // it means they have physically slid underneath the navbar. Time to reveal!
+        if (rect.bottom < 80) {
+          shouldShow = true;
+        }
+      } else {
+        // Safe fallback if for some reason the hero buttons aren't on the page
+        if (window.scrollY > 400) shouldShow = true;
+      }
+
+      if (shouldShow) {
         navCtaGroup.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
         navCtaGroup.classList.add('opacity-100', 'translate-y-0');
       } else {
