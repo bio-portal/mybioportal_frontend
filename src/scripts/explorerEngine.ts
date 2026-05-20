@@ -67,17 +67,9 @@ function switchTab(tabName: string) {
 function showLoadingState() {
   const overlay = document.getElementById('loading-overlay');
   const grid = document.getElementById('dashboard-grid');
-  const logo = document.getElementById('loader-logo');
 
-  if (overlay && grid && logo) {
-    // 🌟 FORCE DOM REFLOW: This fixes the bug where the logo wouldn't animate on filter clicks
-    logo.classList.remove('logo-vanish', 'animate-pulse');
-    void logo.offsetWidth;
-
-    // Start pulsing at max opacity
-    logo.classList.add('animate-pulse');
-
-    // Show frosted overlay
+  if (overlay && grid) {
+    // Reveal frosted overlay
     overlay.classList.remove('opacity-0', 'pointer-events-none');
     overlay.classList.add('opacity-100', 'pointer-events-auto');
 
@@ -90,23 +82,15 @@ function showLoadingState() {
 function hideLoadingState() {
   const overlay = document.getElementById('loading-overlay');
   const grid = document.getElementById('dashboard-grid');
-  const logo = document.getElementById('loader-logo');
 
-  if (overlay && grid && logo) {
-    // Stop pulsing and trigger the 360-degree spin vanish
-    logo.classList.remove('animate-pulse');
-    void logo.offsetWidth; // Force reflow
-    logo.classList.add('logo-vanish');
+  if (overlay && grid) {
+    // Fade out frosted overlay immediately
+    overlay.classList.add('opacity-0', 'pointer-events-none');
+    overlay.classList.remove('opacity-100', 'pointer-events-auto');
 
-    // Wait precisely for the 500ms spin animation to finish before fading out the frosted glass
-    setTimeout(() => {
-      overlay.classList.add('opacity-0', 'pointer-events-none');
-      overlay.classList.remove('opacity-100', 'pointer-events-auto');
-
-      // Snap the grid back to full clarity
-      grid.classList.remove('opacity-20', 'blur-sm', 'scale-[0.98]');
-      grid.classList.add('opacity-100', 'blur-none', 'scale-100');
-    }, 500);
+    // Snap grid back to full focus
+    grid.classList.remove('opacity-20', 'blur-sm', 'scale-[0.98]');
+    grid.classList.add('opacity-100', 'blur-none', 'scale-100');
   }
 }
 
