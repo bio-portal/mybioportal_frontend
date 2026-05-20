@@ -1,7 +1,5 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-
-const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 <Layout
   title="Interactive Data Explorer | BioPortal"
@@ -13,88 +11,81 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   <div class="flex min-h-[calc(100vh-80px)] bg-transparent font-sans">
 
-    <aside class="w-80 bg-white/80 backdrop-blur-md border-r border-gray-200 p-6 flex-shrink-0 sticky top-20 h-[calc(100vh-80px)] overflow-y-auto custom-scrollbar shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-20">
-      <div class="flex items-center gap-3 mb-8">
-        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-md bg-gradient-to-br from-brand-orange-deep via-brand-green-bright to-brand-blue-deep">
-          B
-        </div>
-        <div>
-          <h2 class="text-xl font-extrabold tracking-tight text-brand-dark leading-none">BioPortal</h2>
-          <span class="text-[10px] font-bold text-brand-blue-deep uppercase tracking-widest">Live Explorer</span>
-        </div>
-      </div>
+    <aside class="w-80 bg-white/95 backdrop-blur-xl border-r border-gray-200 p-6 flex-shrink-0 sticky top-20 h-[calc(100vh-80px)] overflow-y-auto custom-scrollbar shadow-lg z-20 flex flex-col">
 
-      <div class="mb-6">
-        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 block px-1">Cohort Selection</label>
-        <div id="filter-list" class="space-y-1">
-          <button id="btn-baseline" class="w-full text-left px-4 py-3 rounded-xl text-brand-dark hover:bg-brand-blue-deep/5 transition-colors text-sm font-bold flex justify-between items-center filter-active border border-transparent shadow-sm">
-            <span>Baseline (Total)</span>
-            <span id="size-baseline" class="text-xs bg-white px-2 py-0.5 rounded-md text-brand-blue-deep shadow-sm border border-gray-100">...</span>
-          </button>
-          </div>
-      </div>
-
-      <div class="mt-auto pt-6 border-t border-gray-100">
-        <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wider space-y-1.5">
-          <div class="flex justify-between items-center">
-            <span>Gateway API</span>
-            <span class="text-brand-green-bright font-black">Connected</span>
-          </div>
-          <div class="flex justify-between items-center">
-            <span>Cache Status</span>
-            <span id="cache-indicator" class="text-brand-blue-deep font-black">SYNCING</span>
-          </div>
-        </div>
-      </div>
-    </aside>
-
-    <main class="flex-1 p-8 lg:p-10 relative z-10 w-full overflow-x-hidden">
-
-      <header class="flex flex-col xl:flex-row justify-between items-start xl:items-end mb-10 gap-6 border-b border-gray-200 pb-8">
-        <div>
-          <h1 class="text-4xl font-black text-brand-dark tracking-tight mb-2" id="view-title">Cohort Overview</h1>
-          <p class="text-sm text-gray-500 font-medium">Aggregated clinical statistics with robust privacy masking.</p>
+      <div class="mb-8 space-y-4">
+        <div class="relative w-full">
+          <input type="text" id="chart-search" placeholder="Search charts..."
+                 class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-xs font-semibold shadow-inner" />
+          <svg class="w-4 h-4 absolute left-3 top-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
 
-        <div class="flex flex-wrap items-center gap-3">
-
-          <div class="bg-white px-5 py-2 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-center min-w-[140px]">
-            <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Active Cohort Size</span>
-            <span id="top-cohort-size" class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-blue-deep to-brand-teal leading-none mt-0.5">...</span>
-          </div>
-
-          <div class="relative group/menu">
-            <button class="flex items-center gap-2 px-5 py-3.5 bg-white border border-gray-200 rounded-2xl text-xs font-bold text-brand-dark hover:border-brand-blue-deep hover:text-brand-blue-deep transition-all shadow-sm">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-              Customize View
+        <div class="flex gap-2">
+          <div class="relative group/menu flex-1">
+            <button class="w-full flex items-center justify-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-700 hover:border-brand-blue-deep hover:text-brand-blue-deep transition-all shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+              View
             </button>
-            <div class="absolute right-0 top-full mt-2 w-72 bg-white border border-gray-100 rounded-2xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/menu:opacity-100 invisible group-hover/menu:visible transition-all duration-200 z-50 p-4 max-h-[400px] overflow-y-auto custom-scrollbar">
+            <div class="absolute left-0 top-full mt-2 w-64 bg-white border border-gray-100 rounded-2xl shadow-2xl shadow-brand-dark/10 opacity-0 group-hover/menu:opacity-100 invisible group-hover/menu:visible transition-all duration-200 z-50 p-4 max-h-[300px] overflow-y-auto custom-scrollbar">
               <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block">Toggle Metrics</span>
               <div id="chart-toggles" class="space-y-2">
                 </div>
             </div>
           </div>
 
-          <button onclick="exportCohortCSV()" class="flex items-center gap-2 px-5 py-3.5 bg-brand-dark text-white rounded-2xl text-xs font-bold hover:bg-brand-blue-deep transition-colors shadow-md hover:shadow-lg hover:-translate-y-0.5">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-            Export CSV
+          <button onclick="exportCohortCSV()" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white border border-gray-200 text-gray-700 rounded-xl text-xs font-bold hover:bg-brand-dark hover:border-brand-dark hover:text-white transition-all shadow-sm">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            Export
           </button>
+        </div>
+      </div>
 
-          <div class="relative w-full sm:w-64">
-            <input type="text" id="chart-search" placeholder="Search variables..."
-                   class="w-full pl-10 pr-4 py-3.5 rounded-2xl bg-white border border-gray-200 focus:border-brand-blue-deep focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-xs font-semibold shadow-sm" />
-            <svg class="w-4 h-4 absolute left-4 top-[14px] text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+      <hr class="border-gray-100 mb-6" />
+
+      <div class="flex-1">
+        <div class="flex justify-between items-center mb-3 px-1">
+          <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Cohort Selection</label>
+          <button onclick="changeFilter('baseline')" class="text-[10px] font-bold text-brand-blue-deep hover:text-brand-dark uppercase tracking-wider transition-colors">Reset</button>
+        </div>
+
+        <div id="filter-list" class="space-y-1">
+          <button id="btn-baseline" class="w-full text-left px-4 py-2.5 rounded-xl text-brand-dark hover:bg-brand-blue-deep/5 transition-colors text-sm font-bold flex justify-between items-center filter-active border border-transparent shadow-sm">
+            <span>Baseline (Total)</span>
+            <span id="size-baseline" class="text-[10px] bg-white px-2 py-0.5 rounded text-brand-blue-deep shadow-sm border border-gray-100 font-black">...</span>
+          </button>
           </div>
+      </div>
 
+      <div class="mt-8 pt-4 border-t border-gray-100">
+        <div class="text-[9px] text-gray-400 font-bold uppercase tracking-widest flex justify-between items-center">
+          <span>Data Link</span>
+          <span id="cache-indicator" class="text-brand-green-bright flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-brand-green-bright animate-pulse"></span> SYNCING
+          </span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="flex-1 p-8 lg:p-10 relative z-10 w-full overflow-x-hidden">
+
+      <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 border-b border-gray-200 pb-6">
+        <div>
+          <h1 class="text-3xl font-black text-brand-dark tracking-tight mb-1" id="view-title">Cohort Overview</h1>
+          <p class="text-xs text-gray-500 font-semibold uppercase tracking-widest">Active Data Slice</p>
+        </div>
+
+        <div class="text-right">
+          <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Total Patients</span>
+          <span id="top-cohort-size" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-orange-deep via-brand-green-bright to-brand-blue-deep leading-none">...</span>
         </div>
       </header>
 
-      <div id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         </div>
 
-      <div id="search-fallback" class="hidden flex-col items-center justify-center py-32 text-gray-400 bg-white/50 border border-gray-100 rounded-[2.5rem] mt-6">
-        <svg class="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-        <p class="text-lg font-bold text-gray-600">No metrics match your current view parameters.</p>
+      <div id="search-fallback" class="hidden flex-col items-center justify-center py-32 text-gray-400 bg-white/50 border border-gray-100 rounded-[2.5rem] mt-6 shadow-inner">
+        <svg class="w-12 h-12 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <p class="text-sm font-bold text-gray-500 uppercase tracking-widest">No matching metrics</p>
       </div>
     </main>
   </div>
@@ -136,9 +127,8 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   const API_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats";
 
-  // BioPortal Unified Palette Sequence
+  // BioPortal Unified Palette
   const PALETTE = ['#003f5e', '#26abe2', '#56bee7', '#9fdbee', '#96d6c2'];
-  const PRIMARY_COLOR = '#26abe2';
 
   let variableMetadata = [];
   let summaryStatistics = [];
@@ -146,7 +136,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
   let activeFilter = 'baseline';
   let chartInstances = {};
   let cohortSizesDictionary = {};
-  let visibleCharts = new Set(); // Tracks active toggles
+  let visibleCharts = new Set();
 
   // Expose to window for the onclick HTML bindings
   (window as any).changeFilter = changeFilter;
@@ -155,13 +145,13 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
   async function fetchFromPortal(queryString) {
     const cacheBuster = `&_cb=${new Date().getTime()}`;
     const response = await fetch(`${API_GATEWAY}?${queryString}${cacheBuster}`);
-    if (!response.ok) throw new Error("API performance timeout");
+    if (!response.ok) throw new Error("API timeout");
 
     const cacheHeader = response.headers.get("X-Cache");
     const indicator = document.getElementById("cache-indicator");
     if (indicator && cacheHeader) {
-      indicator.innerText = cacheHeader;
-      indicator.className = cacheHeader === "HIT" ? "text-brand-green-bright font-black uppercase" : "text-brand-blue-deep font-black uppercase";
+      indicator.innerHTML = `<span class="w-1.5 h-1.5 rounded-full ${cacheHeader === "HIT" ? 'bg-brand-green-bright' : 'bg-brand-blue-deep'}"></span> ${cacheHeader === "HIT" ? 'LIVE' : 'SYNCED'}`;
+      indicator.className = `flex items-center gap-1.5 ${cacheHeader === "HIT" ? 'text-brand-green-bright' : 'text-brand-blue-deep'}`;
     }
     return await response.json();
   }
@@ -172,7 +162,6 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
       availableFiltersList = await fetchFromPortal("type=filters");
       summaryStatistics = await fetchFromPortal("filter=baseline");
 
-      // By default, show all charts
       variableMetadata.forEach(meta => visibleCharts.add(meta.chart_id));
 
       calculateCohortSizes();
@@ -182,15 +171,11 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
       updateCohortSizeCounters();
 
       const searchInput = document.getElementById('chart-search');
-      if (searchInput) {
-        searchInput.addEventListener('keyup', handleSearchQuery);
-      }
+      if (searchInput) searchInput.addEventListener('keyup', handleSearchQuery);
     } catch (err) {
-      console.error("Critical rendering initialization crash:", err);
+      console.error(err);
       const grid = document.getElementById('dashboard-grid');
-      if (grid) {
-        grid.innerHTML = `<div class="col-span-full p-8 text-center bg-red-50 text-red-700 font-medium rounded-2xl border border-red-100">Failed to link with visualization engine. Validate API connectivity.</div>`;
-      }
+      if (grid) grid.innerHTML = `<div class="col-span-full p-8 text-center bg-red-50 text-red-700 rounded-2xl border border-red-100 font-bold">API Connection Failed. Please reload.</div>`;
     }
   }
 
@@ -218,7 +203,6 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     const listContainer = document.getElementById('filter-list');
     if (!listContainer) return;
 
-    // Keep baseline button at top
     const baselineBtn = document.getElementById('btn-baseline');
     listContainer.innerHTML = '';
     if (baselineBtn) listContainer.appendChild(baselineBtn);
@@ -228,10 +212,9 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
       const matchedSlices = availableFiltersList.filter(fKey => fKey.startsWith(prefix + '_'));
       if (matchedSlices.length === 0) return;
 
-      // Accordion Wrapper
       const detailsEl = document.createElement('details');
       detailsEl.className = "group border-t border-gray-100 pt-3 mt-3";
-      detailsEl.open = true; // Open by default
+      detailsEl.open = false; // Collapsed by default as requested
 
       const summaryEl = document.createElement('summary');
       summaryEl.className = "flex justify-between items-center font-bold text-[10px] text-gray-400 uppercase tracking-widest cursor-pointer list-none px-2 mb-2 hover:text-brand-blue-deep transition-colors select-none";
@@ -255,13 +238,12 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
             btn.id = `btn-${finalFilterKey}`;
             btn.className = "w-full text-left px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-xs flex justify-between items-center font-medium border border-transparent";
 
-            // Format number if possible, mask "<10" gracefully
             let displayCount = item.count;
             if (displayCount !== '<10' && displayCount !== '<20') {
                displayCount = parseInt(displayCount).toLocaleString();
             }
 
-            btn.innerHTML = `<span>${item.category}</span> <span class="text-[9px] bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 font-bold">${displayCount}</span>`;
+            btn.innerHTML = `<span>${item.category}</span> <span class="text-[9px] bg-gray-100 px-1.5 py-0.5 rounded text-gray-400 font-bold">${displayCount}</span>`;
             btn.onclick = () => changeFilter(finalFilterKey);
             itemsContainer.appendChild(btn);
           }
@@ -291,7 +273,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         } else {
           visibleCharts.delete(meta.chart_id);
         }
-        renderDashboard(); // Re-render grid to reflect toggles
+        renderDashboard();
       };
 
       const span = document.createElement('span');
@@ -307,7 +289,12 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
   async function changeFilter(filterKey) {
     document.querySelectorAll('#filter-list button').forEach(b => b.classList.remove('filter-active'));
     const targetedButton = document.getElementById(`btn-${filterKey}`);
-    if (targetedButton) targetedButton.classList.add('filter-active');
+    if (targetedButton) {
+        targetedButton.classList.add('filter-active');
+        // Ensure parent accordion is open if a child is selected programmatically
+        const parentDetails = targetedButton.closest('details');
+        if (parentDetails) parentDetails.open = true;
+    }
 
     activeFilter = filterKey;
     const titleEl = document.getElementById('view-title');
@@ -320,7 +307,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
       renderDashboard();
       updateCohortSizeCounters();
     } catch (err) {
-      console.error("Failed executing data matrix reload update cycle:", err);
+      console.error("Failed executing data matrix reload", err);
     }
   }
 
@@ -334,7 +321,6 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     const sizeEl = document.getElementById('top-cohort-size');
 
     if (sizeEl) {
-      // Format number elegantly unless masked
       if (selectedSize !== '<10' && selectedSize !== '<20' && selectedSize !== '...') {
          sizeEl.innerText = parseInt(selectedSize).toLocaleString();
       } else {
@@ -380,10 +366,27 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `BioPortal_Cohort_${activeFilter.replace(/_/g, '-')}.csv`);
+    link.setAttribute("download", `BioPortal_${activeFilter}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  }
+
+  // Create a canvas-based gradient block for the bars
+  function createGradient(ctx, height) {
+      const gradient = ctx.createLinearGradient(0, height, 0, 0); // Bottom to Top
+      gradient.addColorStop(0, '#f37a21'); // brand-orange-deep
+      gradient.addColorStop(0.5, '#7fc342'); // brand-green-bright
+      gradient.addColorStop(1, '#26abe2'); // brand-blue-deep
+      return gradient;
+  }
+
+  function createHorizontalGradient(ctx, width) {
+      const gradient = ctx.createLinearGradient(0, 0, width, 0); // Left to Right
+      gradient.addColorStop(0, '#f37a21');
+      gradient.addColorStop(0.5, '#7fc342');
+      gradient.addColorStop(1, '#26abe2');
+      return gradient;
   }
 
   function renderDashboard() {
@@ -395,26 +398,22 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     grid.innerHTML = '';
 
     variableMetadata.forEach(meta => {
-      // Respect the Customize View toggles
       if (!visibleCharts.has(meta.chart_id)) return;
 
       const statEntry = summaryStatistics.find(s => s.chart_id === meta.chart_id);
       if (!statEntry) return;
 
-      // Remove Empty 0 count rows entirely
       const filteredData = statEntry.data.filter(d => d.count !== 0 && d.count !== "0");
-      if (filteredData.length === 0) return; // Hide card entirely if all data is empty
+      if (filteredData.length === 0) return;
 
       const card = document.createElement('div');
-      card.className = "chart-card glass-card rounded-[2rem] p-7 flex flex-col group";
+      card.className = "chart-card glass-card rounded-2xl p-6 flex flex-col group";
       card.setAttribute('data-title', meta.display_name);
 
       card.innerHTML = `
-        <div class="flex justify-between items-start mb-6">
-          <h3 class="font-bold text-gray-900 text-sm tracking-tight leading-tight group-hover:text-brand-blue-deep transition-colors">${meta.display_name}</h3>
-          <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100 shrink-0">
-             <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-          </div>
+        <div class="flex justify-between items-start mb-6 border-b border-gray-100 pb-4">
+          <h3 class="font-bold text-brand-dark text-sm tracking-tight leading-tight group-hover:text-brand-blue-deep transition-colors">${meta.display_name}</h3>
+          <span class="text-[9px] bg-gray-50 text-gray-400 px-2 py-0.5 rounded font-bold uppercase tracking-widest border border-gray-100">${meta.units}</span>
         </div>
         <div class="relative h-[220px] w-full">
           <canvas id="chart-${meta.chart_id}"></canvas>
@@ -433,14 +432,18 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     const ctx = (canvasElement as HTMLCanvasElement).getContext('2d');
     const labels = data.map(d => d.category);
-
-    // Convert counts safely, mapping <10 values internally to 0 to prevent axis scaling distortion
     const values = data.map(d => d.count === '<10' || d.count === '<20' ? 0 : parseInt(d.count, 10));
 
-    // Aesthetics Configuration
     const isPie = meta.chart_type === 'pie';
-    // Use horizontal bar charts for improved readability on long string labels
     const isHorizontalBar = !isPie;
+
+    // Compute Gradients
+    let backgroundFill = PALETTE; // Default to pie palette
+    if (!isPie) {
+        // Delaying gradient creation slightly until canvas sizing is calculated by chartJS is tricky,
+        // but passing a fixed bounding box creates the linear stroke nicely.
+        backgroundFill = isHorizontalBar ? createHorizontalGradient(ctx, 400) : createGradient(ctx, 220);
+    }
 
     chartInstances[meta.chart_id] = new Chart(ctx, {
       type: isPie ? 'doughnut' : 'bar',
@@ -448,11 +451,11 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         labels: labels,
         datasets: [{
           data: values,
-          backgroundColor: isPie ? PALETTE : PRIMARY_COLOR,
+          backgroundColor: backgroundFill,
           borderWidth: 0,
-          borderRadius: isPie ? 0 : 6,
+          borderRadius: isPie ? 0 : 4,
           hoverBackgroundColor: '#003f5e',
-          minBarLength: isPie ? undefined : 8 // Ensures <10 masked fields still draw a physical, interactive bar block
+          minBarLength: isPie ? undefined : 8
         }]
       },
       options: {
@@ -471,9 +474,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
             const fallbackKey = availableFiltersList.find(fKey => fKey.endsWith('_' + sanitizedCategory) || sanitizedCategory.endsWith(fKey.replace(targetPrefix + '_', '')));
             const finalKey = availableFiltersList.includes(targetFilterKey) ? targetFilterKey : fallbackKey;
 
-            if (finalKey) {
-              changeFilter(finalKey);
-            }
+            if (finalKey) changeFilter(finalKey);
           }
         },
         plugins: {
@@ -487,11 +488,10 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
             titleFont: { size: 11, family: "'Outfit', sans-serif", weight: '700' },
             bodyFont: { size: 12, family: "'Outfit', sans-serif" },
             padding: 12,
-            cornerRadius: 12,
+            cornerRadius: 8,
             callbacks: {
               label: (context) => {
                 const rawDisplayCount = data[context.dataIndex].count;
-                // Only append units if they provide distinct meaning outside of 'patients'
                 const unitString = meta.units.toLowerCase() === 'patients' ? '' : ` ${meta.units}`;
                 return ` Count: ${rawDisplayCount}${unitString}`;
               }
@@ -513,7 +513,6 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     });
   }
 
-  // Bypass generic hydration locks guarantees execution
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeEngine);
   } else {
