@@ -1,0 +1,118 @@
+---
+---
+<aside class="w-[360px] bg-white border-r border-gray-200 flex-shrink-0 sticky top-20 h-[calc(100vh-80px)] flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-20">
+      
+  <div class="p-6 border-b border-gray-100 bg-surface/30">
+    <div class="flex gap-3 mb-5">
+      <button onclick="changeFilter('baseline')" class="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-600 hover:border-brand-blue-deep hover:text-brand-blue-deep transition-all shadow-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
+        Reset All
+      </button>
+      <button onclick="exportCohortCSV()" class="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-brand-dark border border-brand-dark text-white rounded-xl text-xs font-bold hover:bg-brand-blue-deep hover:border-brand-blue-deep transition-all shadow-md hover:shadow-lg">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+        Export
+      </button>
+    </div>
+
+    <div class="relative w-full">
+      <input type="text" id="global-search" placeholder="Search cohorts or charts..." 
+             class="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-gray-200 focus:border-brand-blue-deep focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-sm placeholder:text-gray-400" />
+      <svg class="w-4 h-4 absolute left-4 top-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+    </div>
+  </div>
+
+  <div class="flex border-b border-gray-200 shrink-0">
+    <button onclick="switchTab('filters')" id="tab-btn-filters" class="flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-brand-blue-deep border-b-[3px] border-brand-blue-deep transition-colors bg-brand-blue-deep/5">Filters</button>
+    <button onclick="switchTab('charts')" id="tab-btn-charts" class="flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-gray-400 border-b-[3px] border-transparent hover:text-gray-600 hover:bg-gray-50 transition-colors">Charts</button>
+  </div>
+
+  <div class="flex-1 overflow-y-auto custom-scrollbar p-6">
+    
+    <div id="tab-content-filters" class="block">
+      <button id="btn-baseline" onclick="changeFilter('baseline')" class="w-full text-left px-4 py-3 rounded-xl text-brand-dark hover:bg-brand-blue-deep/5 transition-colors text-[15px] font-bold flex justify-between items-center filter-active border border-transparent shadow-sm mb-4">
+        <span>Baseline (Total)</span>
+        <span id="size-baseline" class="text-[11px] bg-white px-2.5 py-1 rounded-lg text-brand-blue-deep shadow-sm border border-gray-100 font-black">...</span>
+      </button>
+      <div id="filter-list" class="space-y-2 filter-search-target">
+        </div>
+    </div>
+
+    <div id="tab-content-charts" class="hidden">
+      <div class="flex gap-2 mb-6 pb-4 border-b border-gray-100 justify-between items-center px-1">
+        <span class="text-[11px] font-extrabold text-gray-400 uppercase tracking-widest">Visibility Controls</span>
+        <div class="space-x-3">
+          <button onclick="toggleAllCharts(true)" class="text-[11px] font-bold text-brand-blue-deep hover:text-brand-dark transition-colors">Select All</button>
+          <button onclick="toggleAllCharts(false)" class="text-[11px] font-bold text-gray-400 hover:text-brand-dark transition-colors">Clear</button>
+        </div>
+      </div>
+      <div id="chart-toggles" class="space-y-2 filter-search-target">
+        </div>
+    </div>
+
+  </div>
+
+  <div class="p-6 border-t border-gray-100 bg-surface/50 shrink-0">
+    <div class="text-[10px] text-gray-400 font-bold uppercase tracking-widest flex justify-between items-center">
+      <span>Data Gateway</span>
+      <span id="cache-indicator" class="text-brand-green-bright flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-brand-green-bright animate-pulse"></span> SYNCING
+      </span>
+    </div>
+  </div>
+</aside>
+
+<style>
+  :global(.filter-active) { 
+    border-color: var(--color-brand-blue-deep) !important; 
+    background-color: color-mix(in srgb, var(--color-brand-blue-deep) 8%, transparent) !important; 
+    color: var(--color-brand-dark) !important; 
+  }
+  
+  :global(details > summary) { list-style: none; }
+  :global(details > summary::-webkit-details-marker) { display: none; }
+  
+  .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--color-brand-blue-deep); }
+
+  /* Apple-Style Toggle Switch CSS */
+  :global(.apple-switch) {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+  :global(.apple-switch input) { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  :global(.slider) {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #e2e8f0;
+    transition: .4s;
+    border-radius: 24px;
+  }
+  :global(.slider:before) {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  :global(input:checked + .slider) {
+    background-color: var(--color-brand-green-bright);
+  }
+  :global(input:checked + .slider:before) {
+    transform: translateX(20px);
+  }
+</style>

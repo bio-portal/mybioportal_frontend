@@ -1,0 +1,29 @@
+---
+---
+<div id="dashboard-grid" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8">
+  </div>
+
+<div id="search-fallback" class="hidden flex-col items-center justify-center py-32 text-gray-400 bg-white/50 border border-gray-100 rounded-[2.5rem] mt-6 shadow-sm">
+  <svg class="w-14 h-14 mb-6 opacity-50 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+  <p class="text-base font-bold text-gray-500 uppercase tracking-[0.15em]">No matching metrics</p>
+</div>
+
+<style>
+  :global(.glass-card) {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  :global(.glass-card:hover) { 
+    transform: translateY(-4px); 
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); 
+    border-color: var(--color-brand-blue-deep);
+  }
+  
+  :global(.custom-scrollbar::-webkit-scrollbar) { width: 6px; }
+  :global(.custom-scrollbar::-webkit-scrollbar-track) { background: transparent; }
+  :global(.custom-scrollbar::-webkit-scrollbar-thumb) { background: #cbd5e1; border-radius: 10px; }
+  :global(.custom-scrollbar::-webkit-scrollbar-thumb:hover) { background: var(--color-brand-blue-deep); }
+</style>
