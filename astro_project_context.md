@@ -1,5 +1,5 @@
 # BioPortal Astro Architectural Context
-Generated on: Wed 20 May 2026 11:43:38 AM EDT
+Generated on: Wed 20 May 2026 01:07:59 PM EDT
 
 ---
 
@@ -26,6 +26,7 @@ Generated on: Wed 20 May 2026 11:43:38 AM EDT
 │   │   ├── [01;34mnews[00m
 │   │   │   └── kidney-project.md
 │   │   ├── [01;34mpages[00m
+│   │   │   ├── data.yaml
 │   │   │   ├── home.yaml
 │   │   │   ├── news.yaml
 │   │   │   ├── participants.yaml
@@ -55,18 +56,20 @@ Generated on: Wed 20 May 2026 11:43:38 AM EDT
 │   ├── [01;34mlayouts[00m
 │   │   └── Layout.astro
 │   ├── [01;34mpages[00m
+│   │   ├── [01;34mdata[00m
+│   │   │   └── explorer.astro
+│   │   ├── data.astro
 │   │   ├── index.astro
 │   │   ├── [01;34mnews[00m
 │   │   │   ├── [id].astro
 │   │   │   └── index.astro
 │   │   ├── participants.astro
-│   │   ├── privacy.astro
-│   │   └── researchers.astro
+│   │   └── privacy.astro
 │   └── [01;34mstyles[00m
 │       └── global.css
 └── tsconfig.json
 
-10 directories, 49 files
+11 directories, 51 files
 ```
 
 ---
@@ -90,6 +93,7 @@ Generated on: Wed 20 May 2026 11:43:38 AM EDT
   "dependencies": {
     "@tailwindcss/vite": "^4.2.4",
     "astro": "^6.2.2",
+    "chart.js": "^4.4.2",
     "tailwindcss": "^4.2.4"
   }
 }
@@ -618,104 +622,6 @@ const { hero, steps, benefit } = pageData.data;
 
 ```
 
-### 🧩 File: `src/pages/data.astro`
-```astro
----
-import { getEntry } from 'astro:content';
-import Layout from '../layouts/Layout.astro';
-
-const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
-const pageData = await getEntry('pages', 'researchers');
-const { hero, stats } = pageData.data;
----
-<Layout title="Data Access | BioPortal" navType="minimal" backText="Back to Home">
-  <div class="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue-deep/10 via-brand-teal/5 to-transparent -z-10"></div>
-
-  <main class="max-w-7xl mx-auto px-6 pt-12 pb-24 relative z-10">
-    <header class="max-w-3xl mb-16 text-center mx-auto">
-      <span class="text-brand-blue-deep font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
-      <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 tracking-tight">{hero.headline}</h1>
-      <p class="text-xl text-gray-600 leading-relaxed">{hero.description}</p>
-    </header>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-      {stats.map((stat: any) => (
-        <div class="bg-white rounded-3xl p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50">
-            <h3 class="text-5xl font-black text-gray-900 mb-2 tracking-tighter">{stat.value}</h3>
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{stat.label}</p>
-        </div>
-      ))}
-    </div>
-
-    <div class="grid lg:grid-cols-12 gap-8 items-start">
-      <div class="lg:col-span-7">
-        <div class="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-brand-blue-deep/5 border border-gray-100">
-          <h2 class="text-3xl font-bold text-gray-900 mb-2">Request Data Access</h2>
-          <p class="text-gray-500 mb-8">Inquire about specific cohorts or request access to the Bento exploration portal.</p>
-
-          <form class="space-y-6">
-            <div class="grid md:grid-cols-2 gap-6">
-              <div>
-                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Full Name</label>
-                <input type="text" placeholder="Dr. Jane Smith" class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-blue-deep focus:bg-white outline-none transition-all text-sm" />
-              </div>
-              <div>
-                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Institutional Email</label>
-                <input type="email" placeholder="jane.smith@mcgill.ca" class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-blue-deep focus:bg-white outline-none transition-all text-sm" />
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Research Interest</label>
-              <select class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-blue-deep focus:bg-white outline-none transition-all text-sm appearance-none cursor-pointer">
-                <option>Diabetes & Endocrinology</option>
-                <option>Proteomics & Biomarkers</option>
-                <option>Genomics & Rare Variants</option>
-                <option>Other / Multi-Omics</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Brief Project Overview</label>
-              <textarea rows="3" placeholder="Describe your intended use of BioPortal data..." class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-blue-deep focus:bg-white outline-none transition-all text-sm resize-none"></textarea>
-            </div>
-
-            <button type="button" class="w-full py-5 rounded-2xl bg-brand-blue-deep text-white font-bold text-lg shadow-lg shadow-brand-blue-deep/20 hover:bg-brand-dark hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3">
-              Submit Access Inquiry
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-            </button>
-          </form>
-        </div>
-      </div>
-
-      <div class="lg:col-span-5 space-y-6">
-        <div class="bg-brand-dark rounded-[2rem] p-8 text-white shadow-xl">
-          <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-            <svg class="w-5 h-5 text-brand-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-            Access Requirements
-          </h3>
-          <ul class="space-y-4 text-sm text-gray-300">
-            <li class="flex items-start gap-3"><span class="text-brand-teal font-bold">01</span><span>Institutionally-approved REB/IRB documentation for your specific project.</span></li>
-            <li class="flex items-start gap-3"><span class="text-brand-teal font-bold">02</span><span>Signed Data Transfer Agreement (DTA) or Material Transfer Agreement (MTA).</span></li>
-            <li class="flex items-start gap-3"><span class="text-brand-teal font-bold">03</span><span>Adherence to our Open Science and attribution framework.</span></li>
-          </ul>
-        </div>
-
-        <div class="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-soft">
-          <h3 class="text-xl font-bold text-gray-900 mb-4">Infrastructure</h3>
-          <p class="text-sm text-gray-500 leading-relaxed mb-6">Our platform utilizes <strong>Bento v2</strong> for cohort discovery and <strong>C3G</strong> for secure high-performance genomic compute.</p>
-          <div class="flex gap-2">
-            <span class="px-3 py-1 rounded-full bg-brand-teal/10 text-brand-dark font-bold text-[10px] uppercase tracking-wider">Bento v2</span>
-            <span class="px-3 py-1 rounded-full bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-wider">C3G Powered</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-</Layout>
-
-```
-
 ### 🧩 File: `src/pages/privacy.astro`
 ```astro
 ---
@@ -758,6 +664,483 @@ const { tagline, headline, description, safeguardsTitle, safeguards, footerBox }
     </div>
   </main>
 </Layout>
+
+```
+
+### 🧩 File: `src/pages/data.astro`
+```astro
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+const pageData = await getEntry('pages', 'data');
+const { hero, stats } = pageData.data;
+---
+<Layout title="Data Access & Cohorts | BioPortal" navType="minimal" backText="Back to Home">
+  <div class="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue-deep/10 via-brand-teal/5 to-transparent -z-10"></div>
+
+  <main class="max-w-7xl mx-auto px-6 pt-12 pb-24 relative z-10">
+    <header class="max-w-3xl mb-16 text-center mx-auto">
+      <span class="text-brand-blue-deep font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
+      <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 tracking-tight">{hero.headline}</h1>
+      <p class="text-xl text-gray-600 leading-relaxed">{hero.description}</p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+      {stats.map((stat: any) => (
+        <div class="bg-white rounded-3xl p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50">
+            <h3 class="text-5xl font-black text-gray-900 mb-2 tracking-tighter">{stat.value}</h3>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{stat.label}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="grid lg:grid-cols-12 gap-8 items-start">
+      <div class="lg:col-span-7">
+        <div class="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-brand-blue-deep/5 border border-gray-100">
+          
+          <div class="mb-10 p-6 rounded-2xl border-2 border-dashed border-brand-blue-deep/20 bg-brand-blue-deep/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h4 class="font-bold text-slate-800 text-sm">Interactive Data Explorer Available</h4>
+              <p class="text-xs text-gray-500 mt-0.5">Visualize real-time clinical cohorts and sample metrics immediately.</p>
+            </div>
+            <a 
+              href={`${baseUrl}/data/explorer/`} 
+              class="px-5 py-2.5 rounded-xl bg-brand-blue-deep text-white text-xs font-bold shadow-md hover:bg-brand-dark transition-all inline-flex items-center gap-2 shrink-0"
+            >
+              Launch Live Explorer
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+
+          <h2 class="text-3xl font-bold text-gray-900 mb-2">Request Data Access</h2>
+          <p class="text-gray-500 mb-8">Inquire about specific cohorts or request structural credentials for the comprehensive exploration portal.</p>
+
+          <form class="space-y-6">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Full Name</label>
+                <input type="text" placeholder="Dr. Jane Smith" class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-blue-deep focus:bg-white outline-none transition-all text-sm" />
+              </div>
+              <div>
+                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Institutional Email</label>
+                <input type="email" placeholder="jane.smith@mcgill.ca" class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-blue-deep focus:bg-white outline-none transition-all text-sm" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Research Interest</label>
+              <select class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-blue-deep focus:bg-white outline-none transition-all text-sm appearance-none cursor-pointer">
+                <option>Diabetes & Endocrinology</option>
+                <option>Proteomics & Biomarkers</option>
+                <option>Genomics & Rare Variants</option>
+                <option>Other / Multi-Omics</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Brief Project Overview</label>
+              <textarea rows="3" placeholder="Describe your intended scientific use of BioPortal datasets..." class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-blue-deep focus:bg-white outline-none transition-all text-sm resize-none"></textarea>
+            </div>
+
+            <button type="button" class="w-full py-5 rounded-2xl bg-brand-blue-deep text-white font-bold text-lg shadow-lg shadow-brand-blue-deep/20 hover:bg-brand-dark hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3">
+              Submit Access Inquiry
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5 space-y-6">
+        <div class="bg-brand-dark rounded-[2rem] p-8 text-white shadow-xl">
+          <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-brand-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            Access Requirements
+          </h3>
+          <ul class="space-y-4 text-sm text-gray-300">
+            <li class="flex items-start gap-3"><span class="text-brand-teal font-bold">01</span><span>Institutionally-approved REB/IRB documentation matching the target request.</span></li>
+            <li class="flex items-start gap-3"><span class="text-brand-teal font-bold">02</span><span>Executed Data Transfer Agreement (DTA) or institutional alignment contracts.</span></li>
+            <li class="flex items-start gap-3"><span class="text-brand-teal font-bold">03</span><span>Compliance with the BioPortal open science attribution framework.</span></li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-soft">
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Infrastructure Vetting</h3>
+          <p class="text-sm text-gray-500 leading-relaxed mb-6">The infrastructure utilizes standardized metadata schemas for discovery and leverages computing networks configured by <strong>C3G</strong> for down-stream processing operations.</p>
+          <div class="flex gap-2">
+            <span class="px-3 py-1 rounded-full bg-brand-teal/10 text-brand-dark font-bold text-[10px] uppercase tracking-wider">GA4GH Standard</span>
+            <span class="px-3 py-1 rounded-full bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-wider">C3G Powered</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+```
+
+### 🧩 File: `src/pages/data/explorer.astro`
+```astro
+---
+import Layout from '../../layouts/Layout.astro';
+---
+<Layout
+  title="BioPortal Explorer | Live Dashboard"
+  navType="minimal"
+  backLink="/data"
+  backText="Back to Data Access"
+>
+  <div class="flex min-h-screen bg-slate-50 font-sans">
+
+    <aside class="w-72 bg-white border-r border-slate-200 p-6 flex-shrink-0 sticky top-0 h-screen overflow-y-auto custom-scrollbar">
+      <div class="flex items-center gap-2 mb-8">
+        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">B</div>
+        <h2 class="text-xl font-bold tracking-tight text-slate-800">BioPortal</h2>
+      </div>
+
+      <div class="mb-6">
+        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 block">Active Filter</label>
+        <div id="filter-list" class="space-y-1">
+          <button id="btn-baseline" class="w-full text-left px-4 py-2 rounded-md text-slate-600 hover:bg-slate-50 transition-colors text-sm font-semibold flex justify-between items-center filter-active">
+            <span>Baseline (Total)</span>
+            <span id="size-baseline" class="text-xs bg-slate-100 px-2 py-0.5 rounded text-slate-500">...</span>
+          </button>
+          </div>
+      </div>
+
+      <div class="mt-auto pt-6 border-t border-slate-100">
+        <div class="text-xs text-slate-400">
+          <p>Status: <span class="text-green-500 font-medium">Cloud API Connected</span></p>
+          <p class="mt-1">Gateway: <span id="cache-indicator" class="font-bold text-slate-500">FETCHING</span></p>
+        </div>
+      </div>
+    </aside>
+
+    <main class="flex-1 p-8">
+      <header class="flex justify-between items-end mb-8">
+        <div>
+          <h1 class="text-3xl font-bold text-slate-900" id="view-title">Cohort Overview</h1>
+          <p class="text-slate-500 mt-1">Aggregated population statistics with data privacy masking.</p>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div class="text-right bg-white px-5 py-2.5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-center">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Active Cohort Size</span>
+            <span id="top-cohort-size" class="text-xl font-black text-blue-600 leading-none mt-1">...</span>
+          </div>
+          <div class="relative w-80">
+            <input type="text" id="chart-search" placeholder="Search variables (e.g. BMI)..."
+                   class="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" />
+            <svg class="w-5 h-5 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+        </div>
+      </header>
+
+      <div id="dashboard-grid" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        </div>
+
+      <div id="search-fallback" class="hidden flex-col items-center justify-center py-20 text-slate-400">
+        <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <p class="text-lg">No charts matching your search criteria.</p>
+      </div>
+    </main>
+  </div>
+</Layout>
+
+<style>
+  .glass-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(226, 232, 240, 1);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .glass-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
+  :global(.filter-active) { border-left: 4px solid #3b82f6 !important; background-color: #eff6ff !important; font-weight: 600 !important; color: #1d4ed8 !important; }
+
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+</style>
+
+<script>
+  import Chart from 'chart.js/auto';
+
+  const API_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats";
+
+  let variableMetadata = [];
+  let summaryStatistics = [];
+  let availableFiltersList = [];
+  let activeFilter = 'baseline';
+  let chartInstances = {};
+  let cohortSizesDictionary = {};
+
+  async function fetchFromPortal(queryString) {
+    const cacheBuster = `&_cb=${new Date().getTime()}`;
+    const response = await fetch(`${API_GATEWAY}?${queryString}${cacheBuster}`);
+    if (!response.ok) throw new Error("API performance connection latency exception");
+
+    const cacheHeader = response.headers.get("X-Cache");
+    const indicator = document.getElementById("cache-indicator");
+    if (indicator && cacheHeader) {
+      indicator.innerText = cacheHeader;
+      indicator.className = cacheHeader === "HIT" ? "text-green-600 font-bold uppercase" : "text-blue-600 font-bold uppercase";
+    }
+    return await response.json();
+  }
+
+  async function initializeEngine() {
+    try {
+      variableMetadata = await fetchFromPortal("type=metadata");
+      availableFiltersList = await fetchFromPortal("type=filters");
+      summaryStatistics = await fetchFromPortal("filter=baseline");
+
+      calculateCohortSizes();
+      renderFilterMenu();
+      renderDashboard();
+      updateCohortSizeCounters();
+
+      const searchInput = document.getElementById('chart-search');
+      if (searchInput) {
+        searchInput.addEventListener('keyup', handleSearchQuery);
+      }
+    } catch (err) {
+      console.error("Critical rendering initialization crash:", err);
+      const grid = document.getElementById('dashboard-grid');
+      if (grid) {
+        grid.innerHTML = `<div class="col-span-full p-6 text-center bg-red-50 text-red-700 font-medium rounded-xl border border-red-100">Failed to link with visualization engine services. Validate instance routing parameters.</div>`;
+      }
+    }
+  }
+
+  function calculateCohortSizes() {
+    const sexStat = summaryStatistics.find(s => s.chart_id === 'sex');
+    if (sexStat && sexStat.data) {
+      cohortSizesDictionary['baseline'] = sexStat.data.reduce((acc, curr) => acc + (parseInt(curr.count) || 0), 0);
+      const baselineLabel = document.getElementById('size-baseline');
+      if (baselineLabel) baselineLabel.innerText = cohortSizesDictionary['baseline'];
+    }
+
+    variableMetadata.forEach(meta => {
+      const prefix = meta.chart_id.toLowerCase().replace(/ /g, '_');
+      const chartMatch = summaryStatistics.find(s => s.chart_id === meta.chart_id);
+
+      if (chartMatch && chartMatch.data) {
+        chartMatch.data.forEach(item => {
+          const cleanCategory = item.category.toLowerCase().replace(/ /g, '_');
+          const compiledKey = prefix + '_' + cleanCategory;
+          cohortSizesDictionary[compiledKey] = item.count;
+        });
+      }
+    });
+  }
+
+  function renderFilterMenu() {
+    const listContainer = document.getElementById('filter-list');
+    if (!listContainer) return;
+
+    const baselineBtn = document.getElementById('btn-baseline');
+    listContainer.innerHTML = '';
+    if (baselineBtn) {
+      listContainer.appendChild(baselineBtn);
+      baselineBtn.onclick = () => changeFilter('baseline');
+    }
+
+    variableMetadata.forEach(meta => {
+      const prefix = meta.chart_id.toLowerCase().replace(/ /g, '_');
+      const matchedSlices = availableFiltersList.filter(fKey => fKey.startsWith(prefix + '_'));
+      if (matchedSlices.length === 0) return;
+
+      const groupContainer = document.createElement('div');
+      groupContainer.className = "mt-4 pt-2 border-t border-slate-100";
+
+      const headingLabel = document.createElement('span');
+      headingLabel.className = "text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2 px-2";
+      headingLabel.innerText = meta.display_name;
+      groupContainer.appendChild(headingLabel);
+
+      const baselineChart = summaryStatistics.find(s => s.chart_id === meta.chart_id);
+      if (baselineChart && baselineChart.data) {
+        baselineChart.data.forEach(item => {
+          const cleanCat = item.category.toLowerCase().replace(/ /g, '_');
+          const composedFilterKey = prefix + '_' + cleanCat;
+
+          const directMatch = availableFiltersList.includes(composedFilterKey);
+          const fallbackKey = matchedSlices.find(fKey => fKey.endsWith('_' + cleanCat) || cleanCat.endsWith(fKey.replace(prefix + '_', '')));
+
+          const finalFilterKey = directMatch ? composedFilterKey : fallbackKey;
+
+          if (finalFilterKey) {
+            const btn = document.createElement('button');
+            btn.id = `btn-${finalFilterKey}`;
+            btn.className = "w-full text-left px-4 py-1.5 rounded-md text-slate-600 hover:bg-slate-50 transition-colors text-xs flex justify-between items-center pl-4";
+            btn.innerHTML = `<span>${item.category}</span> <span class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-400">${item.count}</span>`;
+            btn.onclick = () => changeFilter(finalFilterKey);
+            groupContainer.appendChild(btn);
+          }
+        });
+      }
+      listContainer.appendChild(groupContainer);
+    });
+  }
+
+  async function changeFilter(filterKey) {
+    document.querySelectorAll('#filter-list button').forEach(b => b.classList.remove('filter-active'));
+    const targetedButton = document.getElementById(`btn-${filterKey}`);
+    if (targetedButton) targetedButton.classList.add('filter-active');
+
+    activeFilter = filterKey;
+    const titleEl = document.getElementById('view-title');
+    if (titleEl) {
+      titleEl.innerText = filterKey === 'baseline' ? 'Cohort Overview' : filterKey.replace(/_/g, ' ').replace(/(^|\s)\S/g, l => l.toUpperCase());
+    }
+
+    try {
+      summaryStatistics = await fetchFromPortal(`filter=${encodeURIComponent(filterKey)}`);
+      renderDashboard();
+      updateCohortSizeCounters();
+    } catch (err) {
+      console.error("Failed executing data matrix reload update cycle:", err);
+    }
+  }
+
+  function updateCohortSizeCounters() {
+    let selectedSize = "...";
+    if (activeFilter === 'baseline') {
+      selectedSize = cohortSizesDictionary['baseline'] || "...";
+    } else {
+      selectedSize = cohortSizesDictionary[activeFilter] || "...";
+    }
+    const sizeEl = document.getElementById('top-cohort-size');
+    if (sizeEl) sizeEl.innerText = selectedSize;
+  }
+
+  function handleSearchQuery() {
+    const searchInput = document.getElementById('chart-search');
+    if (!searchInput) return;
+
+    const query = searchInput.value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.chart-card');
+    let foundCount = 0;
+
+    cards.forEach(card => {
+      const title = card.getAttribute('data-title')?.toLowerCase() || "";
+      if (title.includes(query)) {
+        (card as HTMLElement).style.display = 'flex';
+        foundCount++;
+      } else {
+        (card as HTMLElement).style.display = 'none';
+      }
+    });
+
+    const fallbackEl = document.getElementById('search-fallback');
+    if (fallbackEl) {
+      fallbackEl.style.display = foundCount === 0 ? 'flex' : 'none';
+    }
+  }
+
+  function renderDashboard() {
+    const grid = document.getElementById('dashboard-grid');
+    if (!grid) return;
+
+    Object.values(chartInstances).forEach(chart => chart.destroy());
+    chartInstances = {};
+    grid.innerHTML = '';
+
+    variableMetadata.forEach(meta => {
+      const statEntry = summaryStatistics.find(s => s.chart_id === meta.chart_id);
+      if (!statEntry) return;
+
+      const card = document.createElement('div');
+      card.className = "chart-card glass-card rounded-2xl p-6 bg-white flex flex-col";
+      card.setAttribute('data-title', meta.display_name);
+
+      card.innerHTML = `
+        <div class="flex justify-between items-start mb-4">
+          <h3 class="font-bold text-slate-700">${meta.display_name}</h3>
+          <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded font-bold uppercase">${meta.units}</span>
+        </div>
+        <div class="relative h-[220px] w-full">
+          <canvas id="chart-${meta.chart_id}"></canvas>
+        </div>
+      `;
+
+      grid.appendChild(card);
+      renderChartInstance(meta, statEntry.data);
+    });
+    handleSearchQuery();
+  }
+
+  function renderChartInstance(meta, data) {
+    const canvasElement = document.getElementById(`chart-${meta.chart_id}`);
+    if (!canvasElement) return;
+
+    const ctx = (canvasElement as HTMLCanvasElement).getContext('2d');
+    const labels = data.map(d => d.category);
+
+    const values = data.map(d => d.count === '<10' || d.count === '<20' ? 0 : parseInt(d.count, 10));
+
+    const paletteColors = meta.chart_type === 'pie' ?
+      ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe'] : '#3b82f6';
+
+    chartInstances[meta.chart_id] = new Chart(ctx, {
+      type: meta.chart_type === 'pie' ? 'doughnut' : 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: paletteColors,
+          borderWidth: 0,
+          borderRadius: meta.chart_type === 'pie' ? 0 : 6,
+          hoverBackgroundColor: '#1d4ed8'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const targetIndex = elements[0].index;
+            const selectedLabel = chartInstances[meta.chart_id].data.labels[targetIndex];
+
+            const targetPrefix = meta.chart_id.toLowerCase().replace(/ /g, '_');
+            const sanitizedCategory = selectedLabel.toLowerCase().replace(/ /g, '_');
+            const targetFilterKey = targetPrefix + '_' + sanitizedCategory;
+
+            const fallbackKey = availableFiltersList.find(fKey => fKey.endsWith('_' + sanitizedCategory) || sanitizedCategory.endsWith(fKey.replace(targetPrefix + '_', '')));
+            const finalKey = availableFiltersList.includes(targetFilterKey) ? targetFilterKey : fallbackKey;
+
+            if (finalKey) {
+              changeFilter(finalKey);
+            }
+          }
+        },
+        plugins: {
+          legend: { display: meta.chart_type === 'pie', position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                const rawDisplayCount = data[context.dataIndex].count;
+                return ` Count: ${rawDisplayCount} ${meta.units}`;
+              }
+            }
+          }
+        },
+        scales: meta.chart_type === 'bar' ? {
+          y: { beginAtZero: true, grid: { display: false }, ticks: { font: { size: 10 } } },
+          x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+        } : {}
+      }
+    });
+  }
+
+  // Astro Hydration Bypass
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeEngine);
+  } else {
+    initializeEngine();
+  }
+</script>
 
 ```
 

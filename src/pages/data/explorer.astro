@@ -1,64 +1,100 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 <Layout
-  title="BioPortal Explorer | Live Dashboard"
+  title="Interactive Data Explorer | BioPortal"
   navType="minimal"
   backLink="/data"
-  backText="Back to Data Access"
+  backText="Back to Data Request"
 >
-  <div class="flex min-h-screen bg-slate-50 font-sans">
+  <div class="absolute top-0 inset-x-0 h-[600px] bg-gradient-to-b from-brand-blue-deep/5 via-brand-teal/5 to-transparent -z-10 pointer-events-none"></div>
 
-    <aside class="w-72 bg-white border-r border-slate-200 p-6 flex-shrink-0 sticky top-0 h-screen overflow-y-auto custom-scrollbar">
-      <div class="flex items-center gap-2 mb-8">
-        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">B</div>
-        <h2 class="text-xl font-bold tracking-tight text-slate-800">BioPortal</h2>
+  <div class="flex min-h-[calc(100vh-80px)] bg-transparent font-sans">
+
+    <aside class="w-80 bg-white/80 backdrop-blur-md border-r border-gray-200 p-6 flex-shrink-0 sticky top-20 h-[calc(100vh-80px)] overflow-y-auto custom-scrollbar shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-20">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-md bg-gradient-to-br from-brand-orange-deep via-brand-green-bright to-brand-blue-deep">
+          B
+        </div>
+        <div>
+          <h2 class="text-xl font-extrabold tracking-tight text-brand-dark leading-none">BioPortal</h2>
+          <span class="text-[10px] font-bold text-brand-blue-deep uppercase tracking-widest">Live Explorer</span>
+        </div>
       </div>
 
       <div class="mb-6">
-        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 block">Active Filter</label>
+        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 block px-1">Cohort Selection</label>
         <div id="filter-list" class="space-y-1">
-          <button id="btn-baseline" class="w-full text-left px-4 py-2 rounded-md text-slate-600 hover:bg-slate-50 transition-colors text-sm font-semibold flex justify-between items-center filter-active">
+          <button id="btn-baseline" class="w-full text-left px-4 py-3 rounded-xl text-brand-dark hover:bg-brand-blue-deep/5 transition-colors text-sm font-bold flex justify-between items-center filter-active border border-transparent shadow-sm">
             <span>Baseline (Total)</span>
-            <span id="size-baseline" class="text-xs bg-slate-100 px-2 py-0.5 rounded text-slate-500">...</span>
+            <span id="size-baseline" class="text-xs bg-white px-2 py-0.5 rounded-md text-brand-blue-deep shadow-sm border border-gray-100">...</span>
           </button>
           </div>
       </div>
 
-      <div class="mt-auto pt-6 border-t border-slate-100">
-        <div class="text-xs text-slate-400">
-          <p>Status: <span class="text-green-500 font-medium">Cloud API Connected</span></p>
-          <p class="mt-1">Gateway: <span id="cache-indicator" class="font-bold text-slate-500">FETCHING</span></p>
+      <div class="mt-auto pt-6 border-t border-gray-100">
+        <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wider space-y-1.5">
+          <div class="flex justify-between items-center">
+            <span>Gateway API</span>
+            <span class="text-brand-green-bright font-black">Connected</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span>Cache Status</span>
+            <span id="cache-indicator" class="text-brand-blue-deep font-black">SYNCING</span>
+          </div>
         </div>
       </div>
     </aside>
 
-    <main class="flex-1 p-8">
-      <header class="flex justify-between items-end mb-8">
+    <main class="flex-1 p-8 lg:p-10 relative z-10 w-full overflow-x-hidden">
+
+      <header class="flex flex-col xl:flex-row justify-between items-start xl:items-end mb-10 gap-6 border-b border-gray-200 pb-8">
         <div>
-          <h1 class="text-3xl font-bold text-slate-900" id="view-title">Cohort Overview</h1>
-          <p class="text-slate-500 mt-1">Aggregated population statistics with data privacy masking.</p>
+          <h1 class="text-4xl font-black text-brand-dark tracking-tight mb-2" id="view-title">Cohort Overview</h1>
+          <p class="text-sm text-gray-500 font-medium">Aggregated clinical statistics with robust privacy masking.</p>
         </div>
 
-        <div class="flex items-center gap-4">
-          <div class="text-right bg-white px-5 py-2.5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-center">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Active Cohort Size</span>
-            <span id="top-cohort-size" class="text-xl font-black text-blue-600 leading-none mt-1">...</span>
+        <div class="flex flex-wrap items-center gap-3">
+
+          <div class="bg-white px-5 py-2 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-center min-w-[140px]">
+            <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Active Cohort Size</span>
+            <span id="top-cohort-size" class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-blue-deep to-brand-teal leading-none mt-0.5">...</span>
           </div>
-          <div class="relative w-80">
-            <input type="text" id="chart-search" placeholder="Search variables (e.g. BMI)..."
-                   class="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" />
-            <svg class="w-5 h-5 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+
+          <div class="relative group/menu">
+            <button class="flex items-center gap-2 px-5 py-3.5 bg-white border border-gray-200 rounded-2xl text-xs font-bold text-brand-dark hover:border-brand-blue-deep hover:text-brand-blue-deep transition-all shadow-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+              Customize View
+            </button>
+            <div class="absolute right-0 top-full mt-2 w-72 bg-white border border-gray-100 rounded-2xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/menu:opacity-100 invisible group-hover/menu:visible transition-all duration-200 z-50 p-4 max-h-[400px] overflow-y-auto custom-scrollbar">
+              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block">Toggle Metrics</span>
+              <div id="chart-toggles" class="space-y-2">
+                </div>
+            </div>
           </div>
+
+          <button onclick="exportCohortCSV()" class="flex items-center gap-2 px-5 py-3.5 bg-brand-dark text-white rounded-2xl text-xs font-bold hover:bg-brand-blue-deep transition-colors shadow-md hover:shadow-lg hover:-translate-y-0.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            Export CSV
+          </button>
+
+          <div class="relative w-full sm:w-64">
+            <input type="text" id="chart-search" placeholder="Search variables..."
+                   class="w-full pl-10 pr-4 py-3.5 rounded-2xl bg-white border border-gray-200 focus:border-brand-blue-deep focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-xs font-semibold shadow-sm" />
+            <svg class="w-4 h-4 absolute left-4 top-[14px] text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+
         </div>
       </header>
 
-      <div id="dashboard-grid" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         </div>
 
-      <div id="search-fallback" class="hidden flex-col items-center justify-center py-20 text-slate-400">
-        <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        <p class="text-lg">No charts matching your search criteria.</p>
+      <div id="search-fallback" class="hidden flex-col items-center justify-center py-32 text-gray-400 bg-white/50 border border-gray-100 rounded-[2.5rem] mt-6">
+        <svg class="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <p class="text-lg font-bold text-gray-600">No metrics match your current view parameters.</p>
       </div>
     </main>
   </div>
@@ -66,17 +102,33 @@ import Layout from '../../layouts/Layout.astro';
 
 <style>
   .glass-card {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(226, 232, 240, 1);
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+    transition: all 0.3s ease;
   }
-  .glass-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
-  :global(.filter-active) { border-left: 4px solid #3b82f6 !important; background-color: #eff6ff !important; font-weight: 600 !important; color: #1d4ed8 !important; }
+  .glass-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -4px rgb(0 0 0 / 0.08);
+    border-color: #cbd5e1;
+  }
 
-  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  /* Active filter item styling */
+  :global(.filter-active) {
+    border-color: var(--color-brand-blue-deep) !important;
+    background-color: color-mix(in srgb, var(--color-brand-blue-deep) 8%, transparent) !important;
+    color: var(--color-brand-dark) !important;
+  }
+
+  /* Accordion Animations */
+  details > summary { list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+
+  /* Premium Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar { width: 5px; }
   .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
   .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--color-brand-blue-deep); }
 </style>
 
 <script>
@@ -84,23 +136,32 @@ import Layout from '../../layouts/Layout.astro';
 
   const API_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats";
 
+  // BioPortal Unified Palette Sequence
+  const PALETTE = ['#003f5e', '#26abe2', '#56bee7', '#9fdbee', '#96d6c2'];
+  const PRIMARY_COLOR = '#26abe2';
+
   let variableMetadata = [];
   let summaryStatistics = [];
   let availableFiltersList = [];
   let activeFilter = 'baseline';
   let chartInstances = {};
   let cohortSizesDictionary = {};
+  let visibleCharts = new Set(); // Tracks active toggles
+
+  // Expose to window for the onclick HTML bindings
+  (window as any).changeFilter = changeFilter;
+  (window as any).exportCohortCSV = exportCohortCSV;
 
   async function fetchFromPortal(queryString) {
     const cacheBuster = `&_cb=${new Date().getTime()}`;
     const response = await fetch(`${API_GATEWAY}?${queryString}${cacheBuster}`);
-    if (!response.ok) throw new Error("API performance connection latency exception");
+    if (!response.ok) throw new Error("API performance timeout");
 
     const cacheHeader = response.headers.get("X-Cache");
     const indicator = document.getElementById("cache-indicator");
     if (indicator && cacheHeader) {
       indicator.innerText = cacheHeader;
-      indicator.className = cacheHeader === "HIT" ? "text-green-600 font-bold uppercase" : "text-blue-600 font-bold uppercase";
+      indicator.className = cacheHeader === "HIT" ? "text-brand-green-bright font-black uppercase" : "text-brand-blue-deep font-black uppercase";
     }
     return await response.json();
   }
@@ -111,8 +172,12 @@ import Layout from '../../layouts/Layout.astro';
       availableFiltersList = await fetchFromPortal("type=filters");
       summaryStatistics = await fetchFromPortal("filter=baseline");
 
+      // By default, show all charts
+      variableMetadata.forEach(meta => visibleCharts.add(meta.chart_id));
+
       calculateCohortSizes();
       renderFilterMenu();
+      buildChartToggleMenu();
       renderDashboard();
       updateCohortSizeCounters();
 
@@ -124,7 +189,7 @@ import Layout from '../../layouts/Layout.astro';
       console.error("Critical rendering initialization crash:", err);
       const grid = document.getElementById('dashboard-grid');
       if (grid) {
-        grid.innerHTML = `<div class="col-span-full p-6 text-center bg-red-50 text-red-700 font-medium rounded-xl border border-red-100">Failed to link with visualization engine services. Validate instance routing parameters.</div>`;
+        grid.innerHTML = `<div class="col-span-full p-8 text-center bg-red-50 text-red-700 font-medium rounded-2xl border border-red-100">Failed to link with visualization engine. Validate API connectivity.</div>`;
       }
     }
   }
@@ -134,18 +199,16 @@ import Layout from '../../layouts/Layout.astro';
     if (sexStat && sexStat.data) {
       cohortSizesDictionary['baseline'] = sexStat.data.reduce((acc, curr) => acc + (parseInt(curr.count) || 0), 0);
       const baselineLabel = document.getElementById('size-baseline');
-      if (baselineLabel) baselineLabel.innerText = cohortSizesDictionary['baseline'];
+      if (baselineLabel) baselineLabel.innerText = cohortSizesDictionary['baseline'].toLocaleString();
     }
 
     variableMetadata.forEach(meta => {
       const prefix = meta.chart_id.toLowerCase().replace(/ /g, '_');
       const chartMatch = summaryStatistics.find(s => s.chart_id === meta.chart_id);
-
       if (chartMatch && chartMatch.data) {
         chartMatch.data.forEach(item => {
           const cleanCategory = item.category.toLowerCase().replace(/ /g, '_');
-          const compiledKey = prefix + '_' + cleanCategory;
-          cohortSizesDictionary[compiledKey] = item.count;
+          cohortSizesDictionary[`${prefix}_${cleanCategory}`] = item.count;
         });
       }
     });
@@ -155,48 +218,89 @@ import Layout from '../../layouts/Layout.astro';
     const listContainer = document.getElementById('filter-list');
     if (!listContainer) return;
 
+    // Keep baseline button at top
     const baselineBtn = document.getElementById('btn-baseline');
     listContainer.innerHTML = '';
-    if (baselineBtn) {
-      listContainer.appendChild(baselineBtn);
-      baselineBtn.onclick = () => changeFilter('baseline');
-    }
+    if (baselineBtn) listContainer.appendChild(baselineBtn);
 
     variableMetadata.forEach(meta => {
       const prefix = meta.chart_id.toLowerCase().replace(/ /g, '_');
       const matchedSlices = availableFiltersList.filter(fKey => fKey.startsWith(prefix + '_'));
       if (matchedSlices.length === 0) return;
 
-      const groupContainer = document.createElement('div');
-      groupContainer.className = "mt-4 pt-2 border-t border-slate-100";
+      // Accordion Wrapper
+      const detailsEl = document.createElement('details');
+      detailsEl.className = "group border-t border-gray-100 pt-3 mt-3";
+      detailsEl.open = true; // Open by default
 
-      const headingLabel = document.createElement('span');
-      headingLabel.className = "text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2 px-2";
-      headingLabel.innerText = meta.display_name;
-      groupContainer.appendChild(headingLabel);
+      const summaryEl = document.createElement('summary');
+      summaryEl.className = "flex justify-between items-center font-bold text-[10px] text-gray-400 uppercase tracking-widest cursor-pointer list-none px-2 mb-2 hover:text-brand-blue-deep transition-colors select-none";
+      summaryEl.innerHTML = `<span>${meta.display_name}</span> <span class="transition-transform duration-300 group-open:rotate-180 text-brand-blue-deep">▼</span>`;
+      detailsEl.appendChild(summaryEl);
+
+      const itemsContainer = document.createElement('div');
+      itemsContainer.className = "space-y-1 mt-2 pl-2 border-l-2 border-gray-50 ml-2";
 
       const baselineChart = summaryStatistics.find(s => s.chart_id === meta.chart_id);
       if (baselineChart && baselineChart.data) {
         baselineChart.data.forEach(item => {
           const cleanCat = item.category.toLowerCase().replace(/ /g, '_');
           const composedFilterKey = prefix + '_' + cleanCat;
-
           const directMatch = availableFiltersList.includes(composedFilterKey);
           const fallbackKey = matchedSlices.find(fKey => fKey.endsWith('_' + cleanCat) || cleanCat.endsWith(fKey.replace(prefix + '_', '')));
-
           const finalFilterKey = directMatch ? composedFilterKey : fallbackKey;
 
           if (finalFilterKey) {
             const btn = document.createElement('button');
             btn.id = `btn-${finalFilterKey}`;
-            btn.className = "w-full text-left px-4 py-1.5 rounded-md text-slate-600 hover:bg-slate-50 transition-colors text-xs flex justify-between items-center pl-4";
-            btn.innerHTML = `<span>${item.category}</span> <span class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-400">${item.count}</span>`;
+            btn.className = "w-full text-left px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-xs flex justify-between items-center font-medium border border-transparent";
+
+            // Format number if possible, mask "<10" gracefully
+            let displayCount = item.count;
+            if (displayCount !== '<10' && displayCount !== '<20') {
+               displayCount = parseInt(displayCount).toLocaleString();
+            }
+
+            btn.innerHTML = `<span>${item.category}</span> <span class="text-[9px] bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 font-bold">${displayCount}</span>`;
             btn.onclick = () => changeFilter(finalFilterKey);
-            groupContainer.appendChild(btn);
+            itemsContainer.appendChild(btn);
           }
         });
       }
-      listContainer.appendChild(groupContainer);
+      detailsEl.appendChild(itemsContainer);
+      listContainer.appendChild(detailsEl);
+    });
+  }
+
+  function buildChartToggleMenu() {
+    const container = document.getElementById('chart-toggles');
+    if (!container) return;
+    container.innerHTML = '';
+
+    variableMetadata.forEach(meta => {
+      const label = document.createElement('label');
+      label.className = "flex items-center gap-3 p-2 hover:bg-gray-50 rounded-xl cursor-pointer transition-colors";
+
+      const checkbox = document.createElement('input');
+      checkbox.type = "checkbox";
+      checkbox.checked = true;
+      checkbox.className = "w-4 h-4 text-brand-blue-deep border-gray-300 rounded focus:ring-brand-blue-deep";
+      checkbox.onchange = (e) => {
+        if ((e.target as HTMLInputElement).checked) {
+          visibleCharts.add(meta.chart_id);
+        } else {
+          visibleCharts.delete(meta.chart_id);
+        }
+        renderDashboard(); // Re-render grid to reflect toggles
+      };
+
+      const span = document.createElement('span');
+      span.className = "text-xs font-semibold text-gray-700";
+      span.innerText = meta.display_name;
+
+      label.appendChild(checkbox);
+      label.appendChild(span);
+      container.appendChild(label);
     });
   }
 
@@ -228,7 +332,15 @@ import Layout from '../../layouts/Layout.astro';
       selectedSize = cohortSizesDictionary[activeFilter] || "...";
     }
     const sizeEl = document.getElementById('top-cohort-size');
-    if (sizeEl) sizeEl.innerText = selectedSize;
+
+    if (sizeEl) {
+      // Format number elegantly unless masked
+      if (selectedSize !== '<10' && selectedSize !== '<20' && selectedSize !== '...') {
+         sizeEl.innerText = parseInt(selectedSize).toLocaleString();
+      } else {
+         sizeEl.innerText = selectedSize;
+      }
+    }
   }
 
   function handleSearchQuery() {
@@ -250,9 +362,28 @@ import Layout from '../../layouts/Layout.astro';
     });
 
     const fallbackEl = document.getElementById('search-fallback');
-    if (fallbackEl) {
-      fallbackEl.style.display = foundCount === 0 ? 'flex' : 'none';
-    }
+    if (fallbackEl) fallbackEl.style.display = foundCount === 0 ? 'flex' : 'none';
+  }
+
+  function exportCohortCSV() {
+    let csvContent = "data:text/csv;charset=utf-8,Variable,Category,Count,Unit\n";
+
+    variableMetadata.forEach(meta => {
+      const stat = summaryStatistics.find(s => s.chart_id === meta.chart_id);
+      if(stat && stat.data) {
+        stat.data.forEach(d => {
+          csvContent += `"${meta.display_name}","${d.category}","${d.count}","${meta.units}"\n`;
+        });
+      }
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `BioPortal_Cohort_${activeFilter.replace(/_/g, '-')}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   function renderDashboard() {
@@ -264,17 +395,26 @@ import Layout from '../../layouts/Layout.astro';
     grid.innerHTML = '';
 
     variableMetadata.forEach(meta => {
+      // Respect the Customize View toggles
+      if (!visibleCharts.has(meta.chart_id)) return;
+
       const statEntry = summaryStatistics.find(s => s.chart_id === meta.chart_id);
       if (!statEntry) return;
 
+      // Remove Empty 0 count rows entirely
+      const filteredData = statEntry.data.filter(d => d.count !== 0 && d.count !== "0");
+      if (filteredData.length === 0) return; // Hide card entirely if all data is empty
+
       const card = document.createElement('div');
-      card.className = "chart-card glass-card rounded-2xl p-6 bg-white flex flex-col";
+      card.className = "chart-card glass-card rounded-[2rem] p-7 flex flex-col group";
       card.setAttribute('data-title', meta.display_name);
 
       card.innerHTML = `
-        <div class="flex justify-between items-start mb-4">
-          <h3 class="font-bold text-slate-700">${meta.display_name}</h3>
-          <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded font-bold uppercase">${meta.units}</span>
+        <div class="flex justify-between items-start mb-6">
+          <h3 class="font-bold text-gray-900 text-sm tracking-tight leading-tight group-hover:text-brand-blue-deep transition-colors">${meta.display_name}</h3>
+          <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100 shrink-0">
+             <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+          </div>
         </div>
         <div class="relative h-[220px] w-full">
           <canvas id="chart-${meta.chart_id}"></canvas>
@@ -282,7 +422,7 @@ import Layout from '../../layouts/Layout.astro';
       `;
 
       grid.appendChild(card);
-      renderChartInstance(meta, statEntry.data);
+      renderChartInstance(meta, filteredData);
     });
     handleSearchQuery();
   }
@@ -294,26 +434,31 @@ import Layout from '../../layouts/Layout.astro';
     const ctx = (canvasElement as HTMLCanvasElement).getContext('2d');
     const labels = data.map(d => d.category);
 
+    // Convert counts safely, mapping <10 values internally to 0 to prevent axis scaling distortion
     const values = data.map(d => d.count === '<10' || d.count === '<20' ? 0 : parseInt(d.count, 10));
 
-    const paletteColors = meta.chart_type === 'pie' ?
-      ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe'] : '#3b82f6';
+    // Aesthetics Configuration
+    const isPie = meta.chart_type === 'pie';
+    // Use horizontal bar charts for improved readability on long string labels
+    const isHorizontalBar = !isPie;
 
     chartInstances[meta.chart_id] = new Chart(ctx, {
-      type: meta.chart_type === 'pie' ? 'doughnut' : 'bar',
+      type: isPie ? 'doughnut' : 'bar',
       data: {
         labels: labels,
         datasets: [{
           data: values,
-          backgroundColor: paletteColors,
+          backgroundColor: isPie ? PALETTE : PRIMARY_COLOR,
           borderWidth: 0,
-          borderRadius: meta.chart_type === 'pie' ? 0 : 6,
-          hoverBackgroundColor: '#1d4ed8'
+          borderRadius: isPie ? 0 : 6,
+          hoverBackgroundColor: '#003f5e',
+          minBarLength: isPie ? undefined : 8 // Ensures <10 masked fields still draw a physical, interactive bar block
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        indexAxis: isHorizontalBar ? 'y' : 'x',
         onClick: (event, elements) => {
           if (elements.length > 0) {
             const targetIndex = elements[0].index;
@@ -332,25 +477,43 @@ import Layout from '../../layouts/Layout.astro';
           }
         },
         plugins: {
-          legend: { display: meta.chart_type === 'pie', position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
+          legend: {
+            display: isPie,
+            position: 'bottom',
+            labels: { boxWidth: 10, padding: 15, font: { size: 10, family: "'Outfit', sans-serif", weight: '600' }, color: '#4b5563' }
+          },
           tooltip: {
+            backgroundColor: '#003f5e',
+            titleFont: { size: 11, family: "'Outfit', sans-serif", weight: '700' },
+            bodyFont: { size: 12, family: "'Outfit', sans-serif" },
+            padding: 12,
+            cornerRadius: 12,
             callbacks: {
               label: (context) => {
                 const rawDisplayCount = data[context.dataIndex].count;
-                return ` Count: ${rawDisplayCount} ${meta.units}`;
+                // Only append units if they provide distinct meaning outside of 'patients'
+                const unitString = meta.units.toLowerCase() === 'patients' ? '' : ` ${meta.units}`;
+                return ` Count: ${rawDisplayCount}${unitString}`;
               }
             }
           }
         },
-        scales: meta.chart_type === 'bar' ? {
-          y: { beginAtZero: true, grid: { display: false }, ticks: { font: { size: 10 } } },
-          x: { grid: { display: false }, ticks: { font: { size: 10 } } }
-        } : {}
+        scales: isPie ? {} : {
+          y: {
+            grid: { display: false },
+            ticks: { font: { size: 10, family: "'Outfit', sans-serif", weight: '600' }, color: '#64748b' }
+          },
+          x: {
+            beginAtZero: true,
+            grid: { color: '#f1f5f9' },
+            ticks: { font: { size: 10, family: "'Outfit', sans-serif", weight: '500' }, color: '#94a3b8' }
+          }
+        }
       }
     });
   }
 
-  // Astro Hydration Bypass
+  // Bypass generic hydration locks guarantees execution
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeEngine);
   } else {
