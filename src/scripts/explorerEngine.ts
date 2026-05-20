@@ -58,40 +58,58 @@ function switchTab(tabName: string) {
   handleUnifiedSearch();
 }
 
+
+
+// ==========================================
+// UI STATE MANAGEMENT
+// ==========================================
+
 function showLoadingState() {
   const overlay = document.getElementById('loading-overlay');
   const grid = document.getElementById('dashboard-grid');
-  const logoContainer = document.getElementById('loader-logo-container');
+  const logo = document.getElementById('loader-logo');
 
-  if (overlay && grid && logoContainer) {
+  if (overlay && grid && logo) {
+    // 🌟 FORCE DOM REFLOW: This fixes the bug where the logo wouldn't animate on filter clicks
+    logo.classList.remove('logo-vanish', 'animate-pulse');
+    void logo.offsetWidth;
+
+    // Start pulsing at max opacity
+    logo.classList.add('animate-pulse');
+
+    // Show frosted overlay
     overlay.classList.remove('opacity-0', 'pointer-events-none');
     overlay.classList.add('opacity-100', 'pointer-events-auto');
 
+    // Wash out the grid
     grid.classList.add('opacity-20', 'blur-sm', 'scale-[0.98]');
     grid.classList.remove('opacity-100', 'blur-none', 'scale-100');
-
-    logoContainer.classList.remove('logo-vanish');
-    logoContainer.style.opacity = '1';
   }
 }
 
 function hideLoadingState() {
   const overlay = document.getElementById('loading-overlay');
   const grid = document.getElementById('dashboard-grid');
-  const logoContainer = document.getElementById('loader-logo-container');
+  const logo = document.getElementById('loader-logo');
 
-  if (overlay && grid && logoContainer) {
-    logoContainer.classList.add('logo-vanish');
+  if (overlay && grid && logo) {
+    // Stop pulsing and trigger the 360-degree spin vanish
+    logo.classList.remove('animate-pulse');
+    void logo.offsetWidth; // Force reflow
+    logo.classList.add('logo-vanish');
 
+    // Wait precisely for the 500ms spin animation to finish before fading out the frosted glass
     setTimeout(() => {
       overlay.classList.add('opacity-0', 'pointer-events-none');
       overlay.classList.remove('opacity-100', 'pointer-events-auto');
 
+      // Snap the grid back to full clarity
       grid.classList.remove('opacity-20', 'blur-sm', 'scale-[0.98]');
       grid.classList.add('opacity-100', 'blur-none', 'scale-100');
-    }, 450);
+    }, 500);
   }
 }
+
 
 // ==========================================
 // DATA FETCHING & INITIALIZATION

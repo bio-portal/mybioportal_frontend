@@ -5,15 +5,14 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   <div id="loading-overlay" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-surface/60 backdrop-blur-md transition-all duration-300 opacity-0 pointer-events-none rounded-[2.5rem]">
 
-    <div id="loader-logo-container" class="relative flex items-center justify-center mb-4">
-      <svg class="absolute inset-0 w-28 h-28 text-brand-blue-deep/20 animate-spin -m-4" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="3" />
-        <circle cx="50" cy="50" r="48" fill="none" stroke="var(--color-brand-blue-deep)" stroke-width="3" stroke-dasharray="80 300" stroke-linecap="round" />
-      </svg>
-      <img src={`${baseUrl}/logos/BioPortal_Mark_Color.svg`} alt="Loading" class="w-20 h-20 animate-pulse drop-shadow-md relative z-10" onerror="this.style.display='none'" />
-    </div>
+    <img
+      id="loader-logo"
+      src={`${baseUrl}/logos/BioPortal_Mark_Color.svg`}
+      alt="Loading"
+      class="w-32 h-32 md:w-40 md:h-40 drop-shadow-2xl"
+      onerror="this.style.display='none'"
+    />
 
-    <p class="mt-8 text-[10px] font-black text-brand-dark uppercase tracking-[0.2em] animate-pulse">Syncing Cohort Data</p>
   </div>
 
   <div id="dashboard-grid" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 transition-all duration-500 transform scale-100 opacity-100 origin-top">
@@ -47,12 +46,12 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   /* 🌟 The Custom 360-Degree Vanish Animation */
   :global(.logo-vanish) {
-    animation: spinAndVanish 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    animation: spinAndVanish 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 
   @keyframes spinAndVanish {
     0% { transform: rotate(0deg) scale(1); opacity: 1; filter: blur(0px); }
-    30% { transform: rotate(-30deg) scale(1.1); opacity: 1; }
-    100% { transform: rotate(360deg) scale(0); opacity: 0; filter: blur(4px); }
+    15% { transform: rotate(-15deg) scale(1.1); opacity: 1; } /* Anticipation pull-back */
+    100% { transform: rotate(360deg) scale(0); opacity: 0; filter: blur(4px); } /* 360 Clockwise Vanish */
   }
 </style>
