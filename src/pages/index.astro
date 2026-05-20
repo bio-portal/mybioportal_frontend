@@ -12,54 +12,13 @@ const allNews = await getCollection('news');
 const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
 ---
 <Layout title="BioPortal | Advancing Genomic Research" ctaMode="scroll">
-  <main class="relative">
+  <main class="relative -mt-16 pt-0">
 
     <Hero content={homeData.data.hero} />
 
     <TrustBar content={homeData.data.trustBar} />
 
-    <section id="safety-impact" class="py-12 px-6 max-w-7xl mx-auto scroll-mt-20">
-      <div class="bg-gradient-to-br from-brand-dark to-brand-dark/95 rounded-[2.5rem] p-8 lg:p-12 text-white shadow-2xl relative overflow-hidden group">
-        <div class="absolute -top-40 -left-40 w-96 h-96 bg-brand-blue-deep/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none"></div>
-
-        <div class="grid lg:grid-cols-12 gap-8 items-center relative z-10">
-          <div class="lg:col-span-5 space-y-4">
-            <span class="text-brand-teal font-bold tracking-widest uppercase text-xs block">Ethical Safeguards</span>
-            <h2 class="text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight text-white">Your Privacy is Our Absolute Foundation</h2>
-            <p class="text-gray-300 text-sm leading-relaxed font-medium">
-              BioPortal operates under strict institutional oversight and open-science ethics frameworks. We prioritize participant protection, consent flexibility, and de-identified transparency at every step of scientific discovery.
-            </p>
-          </div>
-
-          <div class="lg:col-span-7 grid sm:grid-cols-3 gap-4">
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition-colors">
-              <div class="w-10 h-10 bg-brand-blue-deep/20 rounded-xl flex items-center justify-center text-brand-blue-mid mb-4">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-              </div>
-              <h4 class="font-bold text-white text-sm mb-1">Double Anonymized</h4>
-              <p class="text-gray-400 text-xs leading-relaxed font-medium">All personal identity metadata is permanently stripped before analytics integration.</p>
-            </div>
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition-colors">
-              <div class="w-10 h-10 bg-brand-green-bright/20 rounded-xl flex items-center justify-center text-brand-green-bright mb-4">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-              </div>
-              <h4 class="font-bold text-white text-sm mb-1">Full Control</h4>
-              <p class="text-gray-400 text-xs leading-relaxed font-medium">Participants retain the baseline ethical right to update or withdraw consent options at any time.</p>
-            </div>
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition-colors">
-              <div class="w-10 h-10 bg-brand-orange-mid/20 rounded-xl flex items-center justify-center text-brand-orange-mid mb-4">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-              </div>
-              <h4 class="font-bold text-white text-sm mb-1">Direct Medicine</h4>
-              <p class="text-gray-400 text-xs leading-relaxed font-medium">Your contributions fuel real localized breakthroughs across Montreal medical pipelines.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="insights" class="py-10 px-6 max-w-7xl mx-auto scroll-mt-20">
+    <section id="insights" class="py-12 px-6 max-w-7xl mx-auto scroll-mt-20">
       <div class="mb-10 flex justify-between items-end">
         <div>
           <span class="text-brand-blue-mid font-bold tracking-widest uppercase text-xs mb-3 block">Latest Insights</span>
@@ -209,7 +168,7 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
             currentDisplayedCard = card;
 
             spotlightContent.innerHTML = `
-              <div class="flex justify-between items-start mb-6 gap-4 animate-fadeIn">
+              <div class="flex justify-between items-start mb-6 gap-4">
                 <div class="pt-2">
                   <h3 class="text-2xl font-bold text-gray-900 mb-1 tracking-tight leading-tight">${name}</h3>
                   <p class="text-xs font-bold ${themeColorClass} uppercase tracking-widest">${role}</p>
