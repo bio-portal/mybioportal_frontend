@@ -12,15 +12,16 @@
     </div>
   </div>
 
-<div class="px-6 py-4 bg-brand-blue-deep/5 border-b border-gray-100 shrink-0">
+  <div class="px-6 py-4 bg-brand-blue-deep/5 border-b border-gray-100 shrink-0">
     <p class="text-xs text-gray-600 leading-relaxed font-medium">
-      <strong>Cohort Discovery:</strong> Click directly on any chart segment or sidebar attribute to isolate a sub-population. You can refine chart layouts by clicking legend labels to toggle specific variables.
+      <strong>Cohort Discovery:</strong> Click directly on any chart segment or sidebar attribute to isolate a sub-population. You can refine pie chart layouts by clicking legend labels to toggle specific variables.
     </p>
     <p class="text-[11px] text-gray-400 mt-1.5 leading-normal">
       To ensure precision and maintain privacy, the explorer updates population metrics using one active filter condition at a time.
     </p>
   </div>
-  <div class="p-5 lg:p-6 border-b border-gray-100 bg-surface/30">
+
+  <div class="p-5 lg:p-6 border-b border-gray-100 bg-surface/30 shrink-0">
     <div class="flex gap-3 mb-5">
       <button onclick="changeFilter('baseline')" class="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-600 hover:border-brand-blue-deep hover:text-brand-blue-deep transition-all shadow-sm cursor-pointer group">
         <svg class="w-4 h-4 text-gray-400 group-hover:text-brand-blue-deep transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
@@ -54,19 +55,15 @@
 
   <div class="flex-1 overflow-y-auto custom-scrollbar p-6">
 
-<div id="tab-content-filters" class="block">
+    <div id="tab-content-filters" class="block">
       <button id="btn-baseline" onclick="changeFilter('baseline')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-brand-blue-deep/5 transition-colors text-[14px] flex justify-between items-center filter-active border border-transparent mb-2 cursor-pointer group">
-
         <div class="flex items-center gap-3">
           <span class="font-bold">Baseline (Total Cohort)</span>
         </div>
-
         <span id="size-baseline" class="text-[11px] bg-white px-2 py-0.5 rounded text-brand-blue-deep border border-gray-100 font-black shadow-sm">...</span>
       </button>
 
-      <div id="filter-list" class="space-y-1 filter-search-target">
-        </div>
-    </div>
+      <div id="filter-list" class="space-y-1 filter-search-target"></div>
     </div>
 
     <div id="tab-content-charts" class="hidden">
@@ -78,13 +75,10 @@
           <button onclick="toggleAllCharts(false)" class="text-[10px] font-bold text-gray-400 hover:text-brand-dark transition-colors cursor-pointer">None</button>
         </div>
       </div>
-      <div id="chart-toggles" class="space-y-2 filter-search-target">
-        </div>
+      <div id="chart-toggles" class="space-y-2 filter-search-target"></div>
     </div>
 
-  </div>
-
-  <div class="p-5 border-t border-gray-100 bg-surface/50 shrink-0">
+  </div> <div class="p-5 border-t border-gray-100 bg-surface/50 shrink-0">
     <div class="text-[10px] text-gray-400 font-bold uppercase tracking-widest flex justify-between items-center">
       <span>Data Gateway</span>
       <span id="cache-indicator" class="text-brand-green-bright flex items-center gap-2">
@@ -95,7 +89,6 @@
 </aside>
 
 <style>
-  /* 🌟 UPGRADED: High-end Radio Logic Styling */
   :global(.filter-active) {
     background-color: color-mix(in srgb, var(--color-brand-blue-deep) 6%, transparent) !important;
     border-color: color-mix(in srgb, var(--color-brand-blue-deep) 20%, transparent) !important;
@@ -105,7 +98,6 @@
     color: var(--color-brand-dark) !important;
   }
 
-  /* Handle dynamic injected buttons to mimic the Baseline radio UI */
   :global(#filter-list button) {
     display: flex !important;
     justify-content: space-between !important;
@@ -124,7 +116,6 @@
     background-color: #f8fafc !important;
   }
 
-  /* Structural fixes for injected accordion elements */
   :global(details > summary) { list-style: none; }
   :global(details > summary::-webkit-details-marker) { display: none; }
 
