@@ -78,6 +78,7 @@ function switchTab(tabName: string) {
   handleUnifiedSearch();
 }
 
+
 function showLoadingState() {
   const overlay = document.getElementById('loading-overlay');
   const grid = document.getElementById('dashboard-grid');
@@ -92,9 +93,9 @@ function showLoadingState() {
     grid.classList.remove('scale-100');
   }
   if (header) {
-    // Only frost/blur the header, don't mess with the grid's blur!
-    header.classList.add('opacity-40', 'blur-sm', 'scale-[0.99]');
-    header.classList.remove('opacity-100', 'blur-none', 'scale-100');
+    // We only scale it. The global overlay handles the blur perfectly now.
+    header.classList.add('scale-[0.99]');
+    header.classList.remove('scale-100');
   }
 }
 
@@ -112,8 +113,8 @@ function hideLoadingState() {
     grid.classList.add('scale-100');
   }
   if (header) {
-    header.classList.remove('opacity-40', 'blur-sm', 'scale-[0.99]');
-    header.classList.add('opacity-100', 'blur-none', 'scale-100');
+    header.classList.remove('scale-[0.99]');
+    header.classList.add('scale-100');
   }
 }
 

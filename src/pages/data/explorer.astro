@@ -5,17 +5,50 @@ import ExplorerHeader from '../../components/explorer/ExplorerHeader.astro';
 import ExplorerGrid from '../../components/explorer/ExplorerGrid.astro';
 ---
 <Layout title="Interactive Data Explorer | BioPortal" navType="minimal" backLink="/data" backText="Back to Data Request">
-
-  <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-brand-dark/40 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300 lg:hidden" onclick="toggleMobileSidebar()"></div>
+  <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-brand-dark/40 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300 lg:hidden"></div>
 
   <div class="flex min-h-[calc(100vh-80px)] bg-surface font-sans relative">
     <ExplorerSidebar />
 
     <main id="main-content-area" class="flex-1 p-6 lg:p-12 relative z-10 w-full overflow-x-hidden transition-all duration-500 origin-top">
+
+      <div id="loading-overlay" class="absolute inset-0 z-50 bg-surface/60 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-500"></div>
+
       <ExplorerHeader />
       <ExplorerGrid />
     </main>
   </div>
-</Layout>
+
+  </Layout>
 
 <script src="../../scripts/explorerEngine.ts"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('explorer-sidebar');
+    const overlay = document.getElementById('mobile-sidebar-overlay');
+    const openBtn = document.getElementById('mobile-filter-btn');
+    const closeBtn = document.getElementById('mobile-close-sidebar');
+
+    const toggleSidebar = (force?: boolean) => {
+      if (!sidebar || !overlay) return;
+      const isOpen = sidebar.classList.contains('translate-x-0');
+      const shouldOpen = force !== undefined ? force : !isOpen;
+
+      if (shouldOpen) {
+        overlay.classList.remove('hidden');
+        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+        sidebar.classList.remove('-translate-x-full');
+        sidebar.classList.add('translate-x-0');
+      } else {
+        overlay.classList.add('opacity-0');
+        sidebar.classList.remove('translate-x-0');
+        sidebar.classList.add('-translate-x-full');
+        setTimeout(() => overlay.classList.add('hidden'), 300);
+      }
+    };
+
+    if (openBtn) openBtn.addEventListener('click', () => toggleSidebar(true));
+    if (closeBtn) closeBtn.addEventListener('click', () => toggleSidebar(false));
+    if (overlay) overlay.addEventListener('click', () => toggleSidebar(false));
+  });
+</script>
