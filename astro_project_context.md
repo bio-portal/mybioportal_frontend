@@ -1,5 +1,5 @@
 # BioPortal Astro Architectural Context
-Generated on: Wed 20 May 2026 02:06:49 PM EDT
+Generated on: Thu 21 May 2026 09:14:40 AM EDT
 
 ---
 
@@ -34,8 +34,7 @@ Generated on: Wed 20 May 2026 02:06:49 PM EDT
 │   │   │   ├── home.yaml
 │   │   │   ├── news.yaml
 │   │   │   ├── participants.yaml
-│   │   │   ├── privacy.yaml
-│   │   │   └── researchers.yaml
+│   │   │   └── privacy.yaml
 │   │   └── [01;34mteam[00m
 │   │       ├── 01-brent-richards.yaml
 │   │       ├── 02-vincent-mooser.yaml
@@ -75,7 +74,7 @@ Generated on: Wed 20 May 2026 02:06:49 PM EDT
 │       └── global.css
 └── tsconfig.json
 
-13 directories, 55 files
+13 directories, 54 files
 ```
 
 ---
@@ -337,14 +336,16 @@ const allNews = await getCollection('news');
 const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
 ---
 <Layout title="BioPortal | Advancing Genomic Research" ctaMode="scroll">
-  <main>
+  <main class="relative">
+
     <Hero content={homeData.data.hero} />
+
     <TrustBar content={homeData.data.trustBar} />
 
-<section id="insights" class="py-16 px-6 max-w-7xl mx-auto scroll-mt-20">
-      <div class="mb-12 flex justify-between items-end">
+    <section id="insights" class="pt-2 pb-12 px-6 max-w-7xl mx-auto scroll-mt-20">
+      <div class="mb-6 flex justify-between items-end">
         <div>
-          <span class="text-brand-blue-mid font-bold tracking-widest uppercase text-xs mb-4 block">Latest Insights</span>
+          <span class="text-brand-blue-mid font-bold tracking-widest uppercase text-xs mb-2 block">Latest Insights</span>
           <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight">News & Discoveries</h2>
         </div>
       </div>
@@ -377,29 +378,29 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
         ))}
       </div>
 
-      <div class="mt-12 text-center">
-        <a href={`${baseUrl}/news`} class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-surface border-2 border-gray-100 text-brand-dark font-bold hover:border-brand-blue-deep hover:text-brand-blue-deep transition-colors shadow-sm">
+      <div class="mt-10 text-center">
+        <a href={`${baseUrl}/news`} class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-surface border-2 border-gray-100 text-brand-dark font-bold hover:border-brand-blue-deep hover:text-brand-blue-deep transition-colors shadow-sm cursor-pointer">
           View All Insights
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
         </a>
       </div>
     </section>
 
-    <section id="team" class="py-16 px-6 max-w-7xl mx-auto border-t border-gray-100 bg-surface/30 scroll-mt-20">
-      <div class="mb-16">
-        <span class="text-brand-blue-mid font-bold tracking-widest uppercase text-xs mb-4 block">Leadership & Operations</span>
-        <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight mb-4">Our Team</h2>
+    <section id="team" class="py-12 px-6 max-w-7xl mx-auto border-t border-gray-100 bg-surface/30 scroll-mt-20">
+      <div class="mb-12">
+        <span class="text-brand-blue-mid font-bold tracking-widest uppercase text-xs mb-3 block">Leadership & Operations</span>
+        <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight mb-3">Our Team</h2>
         <p class="text-lg text-gray-500 max-w-2xl">The minds behind BioPortal. Our dedicated professionals work tirelessly to connect with participants and advance groundbreaking scientific research.</p>
       </div>
 
       <div class="flex flex-col lg:flex-row gap-12 relative items-start">
-        <div class="lg:w-7/12 w-full space-y-16">
+        <div class="lg:w-7/12 w-full space-y-12">
 
           <div>
-            <h3 class="text-xl font-bold text-gray-900 mb-8 pb-4 border-b border-gray-200" data-group="governing">Governing Committee</h3>
+            <h3 class="text-xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-200" data-group="governing">Governing Committee</h3>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
               {sortedTeam.filter(m => m.data.group === 'governing').map(member => (
-                <div class="team-card group cursor-pointer relative" tabindex="0">
+                <div class="team-card group cursor-pointer relative outline-none" tabindex="0">
                   <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full mx-auto mb-4 p-[3px] bg-white group-hover:logo-gradient transition-all duration-500 shadow-md group-hover:shadow-xl group-hover:scale-105 relative">
                     <div class="w-full h-full rounded-full overflow-hidden border-2 border-white bg-surface relative">
                       {member.data.image ? <img src={`${baseUrl}${member.data.image}`} alt={member.data.name} class="w-full h-full object-cover member-img" onerror="this.style.display='none'" /> : <div class="w-full h-full flex items-center justify-center member-img-fallback"><svg width="32" height="32" class="text-brand-blue-deep/30" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>}
@@ -419,10 +420,10 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
           </div>
 
           <div>
-            <h3 class="text-xl font-bold text-gray-900 mb-8 pb-4 border-b border-gray-200" data-group="recruitment">Recruitment & Operations</h3>
+            <h3 class="text-xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-200" data-group="recruitment">Recruitment & Operations</h3>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
               {sortedTeam.filter(m => m.data.group === 'recruitment').map(member => (
-                <div class="team-card group cursor-pointer relative" tabindex="0">
+                <div class="team-card group cursor-pointer relative outline-none" tabindex="0">
                   <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full mx-auto mb-4 p-[3px] bg-white group-hover:logo-gradient transition-all duration-500 shadow-md group-hover:shadow-xl group-hover:scale-105 relative">
                     <div class="w-full h-full rounded-full overflow-hidden border-2 border-white bg-surface relative">
                       {member.data.image ? <img src={`${baseUrl}${member.data.image}`} alt={member.data.name} class="w-full h-full object-cover member-img" onerror="this.style.display='none'" /> : <div class="w-full h-full flex items-center justify-center member-img-fallback"><svg width="32" height="32" class="text-brand-blue-deep/30" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>}
@@ -444,15 +445,17 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
         </div>
 
         <div class="hidden lg:block lg:w-5/12 sticky top-32">
-          <div class="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-brand-dark/5 border border-gray-100 min-h-[420px] relative overflow-hidden group">
-            <div class="absolute -top-24 -right-24 w-96 h-96 bg-gradient-to-bl from-brand-orange-mid/20 via-brand-green-bright/10 to-brand-blue-deep/20 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-brand-dark/5 border border-gray-100 min-h-[420px] relative overflow-hidden group flex flex-col justify-center">
+            <div class="absolute -top-24 -right-24 w-96 h-96 bg-gradient-to-bl from-brand-orange-mid/10 via-brand-green-bright/5 to-brand-blue-deep/10 rounded-full blur-3xl pointer-events-none"></div>
 
             <div id="spotlight-content" class="transition-opacity duration-300 opacity-100 relative z-10 flex flex-col h-full justify-center">
-              <div class="w-16 h-16 bg-surface rounded-full mb-6 flex items-center justify-center text-brand-blue-deep/30 border-2 border-gray-50 shadow-inner">
-                <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+              <div class="w-14 h-14 bg-brand-blue-deep/10 rounded-full mb-6 flex items-center justify-center text-brand-blue-deep border border-brand-blue-deep/20 shadow-sm">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
               </div>
-              <h3 class="text-2xl font-bold text-gray-900 mb-3 tracking-tight">Interactive Roster</h3>
-              <p class="text-gray-500 leading-relaxed">Hover over any team member's portrait on the left to read their full biography and role within the BioPortal initiative.</p>
+              <h3 class="text-2xl font-black text-brand-dark mb-3 tracking-tight">Institutional Stewardship</h3>
+              <p class="text-gray-500 text-sm leading-relaxed font-medium">
+                Our initiative is steered by leading clinical data privacy experts and medical investigators. Hover over any portfolio profile on the left to review their scientific background and governance mandate.
+              </p>
             </div>
           </div>
         </div>
@@ -465,8 +468,8 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
       const teamCards = document.querySelectorAll('.team-card');
       const spotlightContent = document.getElementById('spotlight-content');
 
-      let activeHoverTarget = null;
-      let currentDisplayedCard = null;
+      let activeHoverTarget: any = null;
+      let currentDisplayedCard: any = null;
 
       teamCards.forEach(card => {
         card.addEventListener('mouseenter', () => {
@@ -474,19 +477,18 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
           if (currentDisplayedCard === card) return;
 
           activeHoverTarget = card;
-          const name = card.querySelector('.member-name').textContent;
-          const role = card.querySelector('.member-role').textContent;
-          const bio = card.querySelector('.member-bio').textContent;
+          const name = card.querySelector('.member-name')!.textContent;
+          const role = card.querySelector('.member-role')!.textContent;
+          const bio = card.querySelector('.member-bio')!.textContent;
           const imgEl = card.querySelector('.member-img');
           const imgSrc = imgEl ? imgEl.getAttribute('src') : null;
 
-          // Uniform Brand Blue for all spotlight tags
           const themeColorClass = 'text-brand-blue-deep';
 
-          spotlightContent.style.opacity = '0';
+          if (spotlightContent) spotlightContent.style.opacity = '0';
 
           setTimeout(() => {
-            if (activeHoverTarget !== card) return;
+            if (activeHoverTarget !== card || !spotlightContent) return;
             currentDisplayedCard = card;
 
             spotlightContent.innerHTML = `
@@ -496,11 +498,11 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
                   <p class="text-xs font-bold ${themeColorClass} uppercase tracking-widest">${role}</p>
                 </div>
                 ${imgSrc
-                  ? `<img src="${imgSrc}" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl bg-surface shrink-0" />`
-                  : `<div class="w-28 h-28 bg-surface rounded-full border-4 border-white shadow-xl shrink-0"></div>`
+                  ? `<img src="${imgSrc}" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-xl bg-surface shrink-0" />`
+                  : `<div class="w-24 h-24 bg-surface rounded-full border-4 border-white shadow-xl shrink-0 flex items-center justify-center text-brand-blue-deep/30"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>`
                 }
               </div>
-              <div class="text-gray-600 leading-relaxed text-sm space-y-4 pr-2">${bio}</div>
+              <div class="text-gray-600 leading-relaxed text-sm space-y-4 pr-2 font-medium">${bio}</div>
             `;
 
             spotlightContent.style.opacity = '1';
@@ -509,12 +511,14 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
 
         card.addEventListener('click', () => {
           if (window.innerWidth >= 1024) return;
-          const mobileContainer = card.querySelector('.mobile-bio-container');
+          const mobileContainer = card.querySelector('.mobile-bio-container') as HTMLElement;
           const isOpen = mobileContainer.style.maxHeight && mobileContainer.style.maxHeight !== '0px';
+
           document.querySelectorAll('.mobile-bio-container').forEach(c => {
-            c.style.maxHeight = '0px';
-            c.style.opacity = '0';
+            (c as HTMLElement).style.maxHeight = '0px';
+            (c as HTMLElement).style.opacity = '0';
           });
+
           if (!isOpen) {
             mobileContainer.style.maxHeight = mobileContainer.scrollHeight + 'px';
             mobileContainer.style.opacity = '1';
@@ -532,86 +536,139 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
 ---
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import TrustBar from '../components/TrustBar.astro';
 
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Fetch content
 const pageData = await getEntry('pages', 'participants');
-const { hero, steps, benefit } = pageData.data;
+const homeData = await getEntry('pages', 'home'); // Fetching home data to reuse the global TrustBar data
+
+// Robust fallbacks
+const hero = pageData?.data?.hero || {
+  tagline: "Participant Portal",
+  headline: "Advance Medicine Through",
+  gradientText: "Genetic Insight",
+  description: "Safely contribute to groundbreaking healthcare insights right here in Montreal."
+};
+const steps = pageData?.data?.steps || [];
 ---
 <Layout title="Join BioPortal | Advancing Diabetes Research" navType="minimal">
   <div class="fixed top-0 inset-x-0 h-[600px] bg-gradient-to-br from-brand-green-bright/5 via-brand-teal/5 to-transparent -z-10"></div>
 
-  <main class="max-w-6xl mx-auto px-6 py-12 lg:py-16">
-    <div class="flex flex-col lg:flex-row gap-16 items-start">
-      <div class="lg:w-7/12">
-        <span class="text-brand-green-bright font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
-        <h1 class="text-4xl lg:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight leading-[1.1]">
-          {hero.headline}<br/>
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-green-bright to-brand-teal">{hero.gradientText}</span>
-        </h1>
-        <p class="text-lg text-gray-600 leading-relaxed mb-12">{hero.description}</p>
+  <main class="relative z-10 -mt-16 pt-0">
+    <header class="pt-28 pb-12 px-6 max-w-5xl mx-auto text-center">
+      <span class="text-brand-green-bright font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
+      <h1 class="text-5xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-6">
+        {hero.headline} <br/>
+        <span class="bg-gradient-to-r from-brand-green-bright to-brand-teal bg-clip-text text-transparent pb-2">{hero.gradientText}</span>
+      </h1>
+      <p class="text-lg lg:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
+        {hero.description}
+      </p>
+    </header>
 
-        <div class="mb-12">
-          <h3 class="text-xl font-bold text-gray-900 mb-6">How participation works:</h3>
-          <div class="space-y-6">
-            {steps.map((step: any, index: number) => (
-              <div class="flex items-start gap-4">
-                <div class="w-10 h-10 rounded-full bg-brand-green-bright/10 text-brand-green-bright flex items-center justify-center font-black shrink-0">{index + 1}</div>
+    {homeData?.data?.trustBar && <TrustBar content={homeData.data.trustBar} />}
+
+    <div class="max-w-6xl mx-auto px-6 py-16">
+      <div class="flex flex-col lg:flex-row gap-12 lg:gap-20 items-start">
+
+        <div class="lg:w-7/12 space-y-16">
+
+          <div>
+            <h3 class="text-xs font-extrabold text-gray-400 uppercase tracking-widest mb-8">Why Join BioPortal</h3>
+            <div class="space-y-10">
+
+              <div class="flex gap-6 items-start group">
+                <div class="w-14 h-14 bg-brand-green-bright/10 text-brand-green-bright rounded-2xl flex items-center justify-center shrink-0 mt-1 transition-all duration-300 group-hover:scale-110 group-hover:bg-brand-green-bright group-hover:text-white shadow-sm">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                </div>
                 <div>
-                  <h4 class="font-bold text-gray-900">{step.title}</h4>
-                  <p class="text-sm text-gray-500">{step.desc}</p>
+                  <h4 class="text-xl font-bold text-gray-900 mb-2 tracking-tight">Your Data Returned to You</h4>
+                  <p class="text-gray-600 leading-relaxed">Gain exclusive, secure portal access to view your complete processed clinical datasets and multi-omics metabolic mapping insights. Your biology, back in your hands.</p>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
 
-        <div class="bg-white border-2 border-brand-green-bright/20 rounded-[2rem] p-8 shadow-xl shadow-brand-green-bright/5 relative overflow-hidden group">
-          <div class="absolute top-0 left-0 w-2 h-full bg-brand-green-bright group-hover:w-3 transition-all"></div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-2">{benefit.title}</h3>
-          <p class="text-gray-600 leading-relaxed">{benefit.desc}</p>
-        </div>
-      </div>
-
-      <div class="lg:w-5/12 w-full lg:sticky lg:top-32">
-        <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-brand-green-bright/10 border border-gray-100 p-8 lg:p-10 relative overflow-hidden">
-          <div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-teal/10 rounded-full blur-3xl"></div>
-          <div class="relative z-10">
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">Eligibility Check</h3>
-            <p class="text-gray-500 mb-8 text-sm">Answer 3 quick questions to see if you can join our current Montreal study.</p>
-
-            <form class="space-y-5">
-              <label class="group flex items-center justify-between p-4 rounded-2xl border-2 border-gray-50 bg-surface hover:border-brand-green-bright/30 hover:bg-white transition-all cursor-pointer">
-                <span class="text-sm font-semibold text-gray-700">Are you 18 years or older?</span>
-                <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-green-bright focus:ring-brand-green-bright" />
-              </label>
-              <label class="group flex items-center justify-between p-4 rounded-2xl border-2 border-gray-50 bg-surface hover:border-brand-green-bright/30 hover:bg-white transition-all cursor-pointer">
-                <span class="text-sm font-semibold text-gray-700">Do you live in the Greater Montreal area?</span>
-                <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-green-bright focus:ring-brand-green-bright" />
-              </label>
-              <label class="group flex items-center justify-between p-4 rounded-2xl border-2 border-gray-50 bg-surface hover:border-brand-green-bright/30 hover:bg-white transition-all cursor-pointer">
-                <span class="text-sm font-semibold text-gray-700">Have you been diagnosed with Type 1 or Type 2 Diabetes?</span>
-                <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-green-bright focus:ring-brand-green-bright" />
-              </label>
-
-              <div class="pt-4">
-                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Your Email Address</label>
-                <input type="email" placeholder="name@email.com" class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-green-bright focus:bg-white focus:ring-0 transition-all outline-none text-sm" />
+              <div class="flex gap-6 items-start group">
+                <div class="w-14 h-14 bg-brand-teal/10 text-brand-teal rounded-2xl flex items-center justify-center shrink-0 mt-1 transition-all duration-300 group-hover:scale-110 group-hover:bg-brand-teal group-hover:text-white shadow-sm">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <div>
+                  <h4 class="text-xl font-bold text-gray-900 mb-2 tracking-tight">Direct Localized Health Impact</h4>
+                  <p class="text-gray-600 leading-relaxed">Your voluntary contributions directly empower localized scientific researchers across Montreal clinical pipelines to crack complex tracking signals in diabetes care models.</p>
+                </div>
               </div>
-              <button type="button" class="w-full py-5 rounded-2xl bg-brand-green-bright text-white font-bold text-lg shadow-lg shadow-brand-green-bright/30 hover:bg-brand-green-mid hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 mt-4">
-                Check My Eligibility
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
-              </button>
-            </form>
 
-            <p class="mt-6 text-[11px] text-gray-400 text-center leading-relaxed">
-              By clicking "Check My Eligibility", you agree to be contacted by our clinical team regarding research opportunities. Review our dedicated <a href={`${baseUrl}/privacy`} class="text-brand-green-bright underline hover:text-brand-dark transition-colors">Privacy and Data Protection Policy</a>.
-            </p>
+              <div class="flex gap-6 items-start group">
+                <div class="w-14 h-14 bg-brand-dark/5 text-brand-dark rounded-2xl flex items-center justify-center shrink-0 mt-1 transition-all duration-300 group-hover:scale-110 group-hover:bg-brand-dark group-hover:text-white shadow-sm">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                </div>
+                <div>
+                  <h4 class="text-xl font-bold text-gray-900 mb-2 tracking-tight">Rigorous Security Safeguards</h4>
+                  <p class="text-gray-600 leading-relaxed">Data custody operates under premium double-anonymization protocols. Your dynamic identity is split from biological materials, giving you complete safety and peace of mind.</p>
+                </div>
+              </div>
+
+            </div>
           </div>
+
+          <div class="pt-8 border-t border-gray-100">
+            <h3 class="text-xs font-extrabold text-gray-400 uppercase tracking-widest mb-8">How Participation Works</h3>
+            <div class="space-y-8 relative pl-4 border-l-2 border-brand-green-bright/20 ml-5">
+              {steps.map((step: any, index: number) => (
+                <div class="relative group">
+                  <div class="absolute -left-[37px] top-0 w-8 h-8 rounded-full bg-surface border-2 border-brand-green-bright text-brand-green-bright font-extrabold text-xs flex items-center justify-center transition-all group-hover:bg-brand-green-bright group-hover:text-white group-hover:scale-110 shadow-sm">
+                    {index + 1}
+                  </div>
+                  <div class="pl-4 pb-2">
+                    <h4 class="font-bold text-gray-900 text-lg mb-1 tracking-tight">{step.title}</h4>
+                    <p class="text-base text-gray-500 leading-relaxed">{step.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
 
-        <div class="mt-8 flex justify-center items-center gap-6 opacity-30 grayscale pointer-events-none">
-          <img src={`${baseUrl}/logos/jgh-logo.png`} alt="JGH" class="h-8" onerror="this.style.display='none'" />
-          <img src={`${baseUrl}/logos/cqdm-logo.png`} alt="CQDM" class="h-6" onerror="this.style.display='none'" />
+        <div class="lg:w-5/12 w-full lg:sticky lg:top-28">
+          <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-brand-green-bright/10 border border-gray-100 p-8 lg:p-10 relative overflow-hidden">
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-teal/10 rounded-full blur-3xl"></div>
+
+            <div class="relative z-10">
+              <h3 class="text-2xl font-black text-brand-dark mb-2 tracking-tight">Request to Join</h3>
+              <p class="text-gray-500 mb-8 text-sm font-medium">Answer 3 quick questions to see if you qualify for our current Montreal study.</p>
+
+              <form class="space-y-4">
+                <label class="group flex items-center justify-between p-4 rounded-xl border border-gray-200 bg-surface/50 hover:border-brand-green-bright/50 hover:bg-white transition-all cursor-pointer shadow-sm">
+                  <span class="text-sm font-bold text-gray-700 pr-2">Are you 18 years or older?</span>
+                  <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-green-bright focus:ring-brand-green-bright cursor-pointer shrink-0" />
+                </label>
+                <label class="group flex items-center justify-between p-4 rounded-xl border border-gray-200 bg-surface/50 hover:border-brand-green-bright/50 hover:bg-white transition-all cursor-pointer shadow-sm">
+                  <span class="text-sm font-bold text-gray-700 pr-2">Do you live in the Greater Montreal area?</span>
+                  <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-green-bright focus:ring-brand-green-bright cursor-pointer shrink-0" />
+                </label>
+                <label class="group flex items-center justify-between p-4 rounded-xl border border-gray-200 bg-surface/50 hover:border-brand-green-bright/50 hover:bg-white transition-all cursor-pointer shadow-sm">
+                  <span class="text-sm font-bold text-gray-700 pr-2">Diagnosed with Type 1 or Type 2 Diabetes?</span>
+                  <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-green-bright focus:ring-brand-green-bright cursor-pointer shrink-0" />
+                </label>
+
+                <div class="pt-4">
+                  <label class="block text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2 ml-1">Your Email Address</label>
+                  <input type="email" placeholder="name@email.com" class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-green-bright focus:bg-white focus:ring-2 focus:ring-brand-green-bright/20 transition-all outline-none text-sm font-medium shadow-inner" />
+                </div>
+
+                <button type="button" class="w-full py-4 rounded-xl bg-brand-dark text-white font-bold text-sm uppercase tracking-widest shadow-lg shadow-brand-dark/20 hover:bg-gray-900 hover:shadow-2xl hover:shadow-brand-dark/40 hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-3 mt-6 cursor-pointer group/btn">
+                  Check My Eligibility
+                  <svg class="w-4 h-4 text-brand-green-bright group-hover/btn:text-white transform transition-transform duration-300 group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </button>
+              </form>
+
+              <p class="mt-6 text-[11px] text-gray-400 text-center leading-relaxed font-medium">
+                By validating, you authorize secure operations contact loops. Read our global open science <a href={`${baseUrl}/privacy`} class="text-brand-green-bright underline hover:text-brand-dark transition-colors font-bold">Privacy Policy</a>.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -619,10 +676,10 @@ const { hero, steps, benefit } = pageData.data;
 </Layout>
 
 <style>
-  @reference "../styles/global.css";
   label:focus-within {
-    border-color: color-mix(in srgb, var(--color-brand-green-bright) 50%, transparent);
-    @apply bg-white shadow-sm;
+    border-color: var(--color-brand-green-bright) !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05) !important;
   }
 </style>
 
@@ -681,7 +738,10 @@ import Layout from '../layouts/Layout.astro';
 
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pageData = await getEntry('pages', 'data');
-const { hero, stats } = pageData.data;
+
+// Safety fallbacks ensuring structure protection if content models fail verification
+const hero = pageData?.data?.hero || { tagline: 'Data', headline: 'BioPortal Datasets', description: 'Loading data...' };
+const stats = pageData?.data?.stats || [];
 ---
 <Layout title="Data Access & Cohorts | BioPortal" navType="minimal" backText="Back to Home">
   <div class="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue-deep/10 via-brand-teal/5 to-transparent -z-10"></div>
@@ -693,51 +753,92 @@ const { hero, stats } = pageData.data;
       <p class="text-xl text-gray-600 leading-relaxed">{hero.description}</p>
     </header>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-      {stats.map((stat: any) => (
-        <div class="bg-white rounded-3xl p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50">
-            <h3 class="text-5xl font-black text-gray-900 mb-2 tracking-tighter">{stat.value}</h3>
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{stat.label}</p>
+    <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 mb-16 items-stretch">
+
+      <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {stats.map((stat: any) => (
+          <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
+              <h3
+                id={`metric-value-${stat.label.toLowerCase().replace(/ /g, '-')}`}
+                class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep"
+              >
+                {stat.value}
+              </h3>
+              <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{stat.label}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="lg:col-span-5 bp-frosted-gradient rounded-[2rem] p-10 border border-white/60 shadow-2xl shadow-brand-blue-deep/5 flex flex-col justify-between relative overflow-hidden group">
+
+        <div class="relative z-10 mb-10">
+          <span class="px-3 py-1.5 rounded-lg bg-brand-blue-deep/10 text-brand-blue-deep font-bold text-[10px] uppercase tracking-[0.15em] mb-6 inline-block">Interactive Platform</span>
+          <h2 class="text-4xl font-black tracking-tight text-gray-900 mb-4">Live Data Explorer</h2>
+          <p class="text-gray-600 text-sm leading-relaxed font-medium opacity-90">
+            Visualize real-time clinical cohorts, demographic distributions, and sample metrics immediately through our zero-latency gateway. Filter and export aggregates on the fly.
+          </p>
         </div>
-      ))}
+
+        <a
+          href={`${baseUrl}/data/explorer/`}
+          class="relative z-10 w-full py-4 rounded-xl bg-brand-dark text-white text-sm font-bold shadow-lg shadow-brand-dark/20 hover:shadow-2xl hover:shadow-brand-dark/40 hover:scale-[1.02] hover:bg-gray-900 transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer group/btn border border-brand-dark/50"
+        >
+          Launch Explorer
+          <svg class="w-5 h-5 text-brand-teal group-hover/btn:text-white transform transition-all duration-300 group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+        </a>
+      </div>
+
     </div>
 
     <div class="grid lg:grid-cols-12 gap-8 items-start">
-      <div class="lg:col-span-7">
-        <div class="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-brand-blue-deep/5 border border-gray-100">
-          
-          <div class="mb-10 p-6 rounded-2xl border-2 border-dashed border-brand-blue-deep/20 bg-brand-blue-deep/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              <h4 class="font-bold text-slate-800 text-sm">Interactive Data Explorer Available</h4>
-              <p class="text-xs text-gray-500 mt-0.5">Visualize real-time clinical cohorts and sample metrics immediately.</p>
-            </div>
-            <a 
-              href={`${baseUrl}/data/explorer/`} 
-              class="px-5 py-2.5 rounded-xl bg-brand-blue-deep text-white text-xs font-bold shadow-md hover:bg-brand-dark transition-all inline-flex items-center gap-2 shrink-0"
-            >
-              Launch Live Explorer
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-          </div>
 
-          <h2 class="text-3xl font-bold text-gray-900 mb-2">Request Data Access</h2>
-          <p class="text-gray-500 mb-8">Inquire about specific cohorts or request structural credentials for the comprehensive exploration portal.</p>
+      <div class="lg:col-span-5 space-y-6">
+        <div class="bg-brand-dark rounded-[2.5rem] p-8 text-white shadow-xl">
+          <h3 class="text-xl font-bold mb-5 flex items-center gap-3">
+            <span class="w-8 h-8 rounded-full bg-brand-teal/20 flex items-center justify-center">
+              <svg class="w-4 h-4 text-brand-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            </span>
+            Access Requirements
+          </h3>
+          <ul class="space-y-4 text-sm text-gray-300 font-medium">
+            <li class="flex items-start gap-3"><span class="text-brand-teal font-black mt-0.5">01</span><span class="leading-relaxed">Institutionally-approved REB/IRB documentation matching the target request.</span></li>
+            <li class="flex items-start gap-3"><span class="text-brand-teal font-black mt-0.5">02</span><span class="leading-relaxed">Executed Data Transfer Agreement (DTA) or institutional alignment contracts.</span></li>
+            <li class="flex items-start gap-3"><span class="text-brand-teal font-black mt-0.5">03</span><span class="leading-relaxed">Compliance with the BioPortal open science attribution framework.</span></li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-soft">
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Infrastructure Vetting</h3>
+          <p class="text-sm text-gray-500 leading-relaxed mb-6">
+            The infrastructure utilizes our custom-built interactive discovery platform and leverages high-performance computing networks provided by the <strong>Digital Research Alliance of Canada (AllianceCan)</strong> alongside a secure, private compute cluster at the <strong>Lady Davis Institute (LDI)</strong> for downstream processing operations.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1.5 rounded-lg bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-widest">LDI Private Cluster</span>
+            <span class="px-3 py-1.5 rounded-lg bg-brand-teal/10 text-brand-dark font-bold text-[10px] uppercase tracking-widest">AllianceCan</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7">
+        <div class="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-brand-blue-deep/5 border border-gray-100 h-full">
+          <h2 class="text-3xl font-black text-brand-dark mb-2">Request Data Access</h2>
+          <p class="text-gray-500 mb-8 text-sm leading-relaxed font-medium">Inquire about specific cohorts or request structural credentials to access full genomic and clinical datasets.</p>
 
           <form class="space-y-6">
             <div class="grid md:grid-cols-2 gap-6">
               <div>
                 <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Full Name</label>
-                <input type="text" placeholder="Dr. Jane Smith" class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-blue-deep focus:bg-white outline-none transition-all text-sm" />
+                <input type="text" placeholder="Dr. Jane Smith" class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-inner" />
               </div>
               <div>
                 <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Institutional Email</label>
-                <input type="email" placeholder="jane.smith@mcgill.ca" class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-blue-deep focus:bg-white outline-none transition-all text-sm" />
+                <input type="email" placeholder="jane.smith@mcgill.ca" class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-inner" />
               </div>
             </div>
 
             <div>
               <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Research Interest</label>
-              <select class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-blue-deep focus:bg-white outline-none transition-all text-sm appearance-none cursor-pointer">
+              <select class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium appearance-none cursor-pointer shadow-inner">
                 <option>Diabetes & Endocrinology</option>
                 <option>Proteomics & Biomarkers</option>
                 <option>Genomics & Rare Variants</option>
@@ -747,42 +848,66 @@ const { hero, stats } = pageData.data;
 
             <div>
               <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Brief Project Overview</label>
-              <textarea rows="3" placeholder="Describe your intended scientific use of BioPortal datasets..." class="w-full px-5 py-4 rounded-2xl bg-surface border-2 border-gray-50 focus:border-brand-blue-deep focus:bg-white outline-none transition-all text-sm resize-none"></textarea>
+              <textarea rows="4" placeholder="Describe your intended scientific use of BioPortal datasets..." class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium resize-none shadow-inner"></textarea>
             </div>
 
-            <button type="button" class="w-full py-5 rounded-2xl bg-brand-blue-deep text-white font-bold text-lg shadow-lg shadow-brand-blue-deep/20 hover:bg-brand-dark hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3">
+            <button type="button" class="w-full py-4 rounded-xl bg-brand-blue-deep text-white font-bold text-sm uppercase tracking-widest shadow-lg shadow-brand-blue-deep/20 hover:bg-brand-dark hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3 cursor-pointer mt-4">
               Submit Access Inquiry
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </button>
           </form>
         </div>
       </div>
 
-      <div class="lg:col-span-5 space-y-6">
-        <div class="bg-brand-dark rounded-[2rem] p-8 text-white shadow-xl">
-          <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-            <svg class="w-5 h-5 text-brand-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-            Access Requirements
-          </h3>
-          <ul class="space-y-4 text-sm text-gray-300">
-            <li class="flex items-start gap-3"><span class="text-brand-teal font-bold">01</span><span>Institutionally-approved REB/IRB documentation matching the target request.</span></li>
-            <li class="flex items-start gap-3"><span class="text-brand-teal font-bold">02</span><span>Executed Data Transfer Agreement (DTA) or institutional alignment contracts.</span></li>
-            <li class="flex items-start gap-3"><span class="text-brand-teal font-bold">03</span><span>Compliance with the BioPortal open science attribution framework.</span></li>
-          </ul>
-        </div>
-
-        <div class="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-soft">
-          <h3 class="text-xl font-bold text-gray-900 mb-4">Infrastructure Vetting</h3>
-          <p class="text-sm text-gray-500 leading-relaxed mb-6">The infrastructure utilizes standardized metadata schemas for discovery and leverages computing networks configured by <strong>C3G</strong> for down-stream processing operations.</p>
-          <div class="flex gap-2">
-            <span class="px-3 py-1 rounded-full bg-brand-teal/10 text-brand-dark font-bold text-[10px] uppercase tracking-wider">GA4GH Standard</span>
-            <span class="px-3 py-1 rounded-full bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-wider">C3G Powered</span>
-          </div>
-        </div>
-      </div>
     </div>
   </main>
 </Layout>
+
+<style>
+  .bp-frosted-gradient {
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    background: linear-gradient(
+      135deg,
+      rgba(14, 165, 233, 0.05) 0%,
+      rgba(0, 164, 144, 0.05) 25%,
+      rgba(161, 208, 68, 0.04) 50%,
+      rgba(246, 194, 68, 0.04) 75%,
+      rgba(255, 124, 67, 0.05) 100%
+    ), rgba(255, 255, 255, 0.55);
+  }
+</style>
+
+<script>
+  const API_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats";
+
+  async function syncLandingMetrics() {
+    try {
+      const response = await fetch(`${API_GATEWAY}?filter=baseline&_cb=${new Date().getTime()}`);
+      if (!response.ok) return;
+
+      const statsArray = await response.json();
+
+      const sexStat = statsArray.find((s: any) => s.chart_id === 'sex');
+      if (sexStat && sexStat.data) {
+        const liveTotalCount = sexStat.data.reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0);
+
+        const patientContainer = document.getElementById('metric-value-total-phenopackets');
+        if (patientContainer) {
+          patientContainer.innerText = liveTotalCount.toLocaleString();
+        }
+      }
+    } catch (err) {
+      console.warn("API metrics synchronization skipped, defaulting to static manifests:", err);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncLandingMetrics);
+  } else {
+    syncLandingMetrics();
+  }
+</script>
 
 ```
 
@@ -842,7 +967,7 @@ const {
   <body class="flex flex-col min-h-screen bg-surface">
     <Navbar type={navType} ctaMode={ctaMode} backLink={backLink} backText={backText} />
 
-    <div class="flex-grow pt-20">
+    <div class="flex-grow pt-10">
       <slot />
     </div>
 
@@ -861,7 +986,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 <header class="pt-28 pb-8 px-6 max-w-5xl mx-auto text-center relative z-10">
   <h1 class="text-5xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-6">
     {content.headline} <br/>
-    <span class="bg-gradient-to-r from-brand-orange-deep via-brand-green-bright to-brand-blue-deep bg-clip-text text-transparent pb-2">{content.gradientText}</span>
+    <span class="bg-gradient-to-r from-brand-blue-deep to-brand-teal bg-clip-text text-transparent pb-2">{content.gradientText}</span>
   </h1>
 
   <p class="text-lg lg:text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -870,22 +995,28 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   <div id="hero-button-group" class="flex flex-col sm:flex-row justify-center items-center gap-6 z-20">
 
-    <div class="relative group/btn w-full sm:w-auto">
-      <a href={`${baseUrl}/participants`} class="w-full sm:w-auto px-10 py-4 rounded-full border-2 border-brand-green-bright text-brand-green-bright font-bold text-lg transition-all hover:-translate-y-1 hover:bg-brand-green-bright hover:text-white flex items-center justify-center gap-3">
+    <div class="relative group/tooltip w-full sm:w-auto">
+      <a
+        href={`${baseUrl}/participants`}
+        class="w-full sm:w-64 h-16 rounded-full bg-brand-green-bright text-white font-extrabold text-lg shadow-xl shadow-brand-green-bright/30 transition-all duration-300 hover:scale-105 hover:bg-brand-green-mid hover:shadow-2xl hover:shadow-brand-green-bright/40 flex items-center justify-center gap-3 cursor-pointer select-none group"
+      >
         Join Study
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        <svg class="w-5 h-5 shrink-0 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
       </a>
-      <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 p-4 bg-white border border-gray-100 text-gray-600 text-xs text-left leading-relaxed rounded-2xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none z-50 hidden sm:block">
+      <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 p-4 bg-white border border-gray-100 text-gray-600 text-xs text-left leading-relaxed rounded-2xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/tooltip:opacity-100 transition-all duration-300 pointer-events-none z-50 hidden sm:block">
         Register your interest to safely contribute biospecimens and clinical data to our Montreal-based research cohorts.
       </div>
     </div>
 
-    <div class="relative group/btn w-full sm:w-auto">
-      <a href={`${baseUrl}/data`} class="w-full sm:w-auto px-10 py-4 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep font-bold text-lg transition-all hover:-translate-y-1 hover:bg-brand-blue-deep hover:text-white flex items-center justify-center gap-3">
+    <div class="relative group/tooltip w-full sm:w-auto">
+      <a
+        href={`${baseUrl}/data`}
+        class="w-full sm:w-64 h-16 rounded-full bg-brand-blue-deep text-white font-extrabold text-lg shadow-xl shadow-brand-blue-deep/30 transition-all duration-300 hover:scale-105 hover:bg-brand-blue-mid hover:shadow-2xl hover:shadow-brand-blue-deep/40 flex items-center justify-center gap-3 cursor-pointer select-none group"
+      >
         Request Data
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        <svg class="w-5 h-5 shrink-0 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
       </a>
-      <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 p-4 bg-white border border-gray-100 text-gray-600 text-xs text-left leading-relaxed rounded-2xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none z-50 hidden sm:block">
+      <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 p-4 bg-white border border-gray-100 text-gray-600 text-xs text-left leading-relaxed rounded-2xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/tooltip:opacity-100 transition-all duration-300 pointer-events-none z-50 hidden sm:block">
         Access our secure portal to explore de-identified datasets and request biological materials for your research.
       </div>
     </div>
@@ -1063,48 +1194,48 @@ const {
 ---
 ---
 <aside class="w-[360px] bg-white border-r border-gray-200 flex-shrink-0 sticky top-20 h-[calc(100vh-80px)] flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-20">
-      
+
   <div class="p-6 border-b border-gray-100 bg-surface/30">
     <div class="flex gap-3 mb-5">
-      <button onclick="changeFilter('baseline')" class="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-600 hover:border-brand-blue-deep hover:text-brand-blue-deep transition-all shadow-sm">
+      <button onclick="changeFilter('baseline')" class="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-600 hover:border-brand-blue-deep hover:text-brand-blue-deep transition-all shadow-sm cursor-pointer">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
         Reset All
       </button>
-      <button onclick="exportCohortCSV()" class="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-brand-dark border border-brand-dark text-white rounded-xl text-xs font-bold hover:bg-brand-blue-deep hover:border-brand-blue-deep transition-all shadow-md hover:shadow-lg">
+      <button onclick="exportCohortCSV()" class="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-brand-dark border border-brand-dark text-white rounded-xl text-xs font-bold hover:bg-brand-blue-deep hover:border-brand-blue-deep transition-all shadow-md hover:shadow-lg cursor-pointer">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
         Export
       </button>
     </div>
 
     <div class="relative w-full">
-      <input type="text" id="global-search" placeholder="Search cohorts or charts..." 
+      <input type="text" id="global-search" placeholder="Search cohorts or charts..."
              class="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-gray-200 focus:border-brand-blue-deep focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-sm placeholder:text-gray-400" />
       <svg class="w-4 h-4 absolute left-4 top-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
     </div>
   </div>
 
   <div class="flex border-b border-gray-200 shrink-0">
-    <button onclick="switchTab('filters')" id="tab-btn-filters" class="flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-brand-blue-deep border-b-[3px] border-brand-blue-deep transition-colors bg-brand-blue-deep/5">Filters</button>
-    <button onclick="switchTab('charts')" id="tab-btn-charts" class="flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-gray-400 border-b-[3px] border-transparent hover:text-gray-600 hover:bg-gray-50 transition-colors">Charts</button>
+    <button onclick="switchTab('filters')" id="tab-btn-filters" class="flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-brand-blue-deep border-b-[3px] border-brand-blue-deep transition-all bg-brand-blue-deep/5 cursor-pointer">Filters</button>
+    <button onclick="switchTab('charts')" id="tab-btn-charts" class="flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-gray-400 border-b-[3px] border-transparent hover:text-gray-600 hover:bg-gray-50 transition-all cursor-pointer">Charts</button>
   </div>
 
   <div class="flex-1 overflow-y-auto custom-scrollbar p-6">
-    
+
     <div id="tab-content-filters" class="block">
-      <button id="btn-baseline" onclick="changeFilter('baseline')" class="w-full text-left px-4 py-3 rounded-xl text-brand-dark hover:bg-brand-blue-deep/5 transition-colors text-[15px] font-bold flex justify-between items-center filter-active border border-transparent shadow-sm mb-4">
+      <button id="btn-baseline" onclick="changeFilter('baseline')" class="w-full text-left px-4 py-3 rounded-xl text-brand-dark hover:bg-brand-blue-deep/5 transition-colors text-[15px] font-bold flex justify-between items-center filter-active border border-transparent shadow-sm mb-4 cursor-pointer">
         <span>Baseline (Total)</span>
         <span id="size-baseline" class="text-[11px] bg-white px-2.5 py-1 rounded-lg text-brand-blue-deep shadow-sm border border-gray-100 font-black">...</span>
       </button>
-      <div id="filter-list" class="space-y-2 filter-search-target">
+      <div id="filter-list" class="space-y-0 filter-search-target">
         </div>
     </div>
 
     <div id="tab-content-charts" class="hidden">
-      <div class="flex gap-2 mb-6 pb-4 border-b border-gray-100 justify-between items-center px-1">
+      <div class="flex gap-2 mb-4 pb-4 border-b border-gray-100 justify-between items-center px-1">
         <span class="text-[11px] font-extrabold text-gray-400 uppercase tracking-widest">Visibility Controls</span>
         <div class="space-x-3">
-          <button onclick="toggleAllCharts(true)" class="text-[11px] font-bold text-brand-blue-deep hover:text-brand-dark transition-colors">Select All</button>
-          <button onclick="toggleAllCharts(false)" class="text-[11px] font-bold text-gray-400 hover:text-brand-dark transition-colors">Clear</button>
+          <button onclick="toggleAllCharts(true)" class="text-[11px] font-bold text-brand-blue-deep hover:text-brand-dark transition-colors cursor-pointer">Select All</button>
+          <button onclick="toggleAllCharts(false)" class="text-[11px] font-bold text-gray-400 hover:text-brand-dark transition-colors cursor-pointer">Clear</button>
         </div>
       </div>
       <div id="chart-toggles" class="space-y-2 filter-search-target">
@@ -1124,21 +1255,59 @@ const {
 </aside>
 
 <style>
-  :global(.filter-active) { 
-    border-color: var(--color-brand-blue-deep) !important; 
-    background-color: color-mix(in srgb, var(--color-brand-blue-deep) 8%, transparent) !important; 
-    color: var(--color-brand-dark) !important; 
+  /* Global active tracking token states mapping layout elements */
+  :global(.filter-active) {
+    border-color: var(--color-brand-blue-deep) !important;
+    background-color: color-mix(in srgb, var(--color-brand-blue-deep) 8%, transparent) !important;
+    color: var(--color-brand-dark) !important;
   }
-  
+
   :global(details > summary) { list-style: none; }
   :global(details > summary::-webkit-details-marker) { display: none; }
-  
+
+  /* 🌟 MASTER REFINEMENT: Edge-to-Edge block row selection logic overrides for injected accordions */
+  :global(.filter-group) {
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
+
+  :global(.filter-group summary) {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    font-size: 0.75rem !important; /* 12px text size */
+    font-weight: 800 !important;
+    color: #4b5563 !important; /* Legible deep gray */
+    text-transform: uppercase !important;
+    letter-spacing: 0.15em !important;
+    cursor: pointer !important;
+    padding: 1rem 0.5rem !important; /* Generous vertical target surface padding box */
+    margin: 0 -1.5rem !important; /* Negative out margins pull container boundaries edge-to-edge */
+    padding-left: 2rem !important; /* Align text layout inset offsets beautifully */
+    padding-right: 2rem !important;
+    width: calc(100% + 3rem) !important; /* Calibrated block math width extensions */
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    user-select: none !important;
+  }
+
+  :global(.filter-group summary:hover) {
+    color: var(--color-brand-blue-deep) !important;
+    background-color: color-mix(in srgb, var(--color-brand-blue-deep) 5%, transparent) !important;
+  }
+
+  /* Retain structured bottom padding space clearance for internal expanded options checklists */
+  :global(.filter-group[open] > div) {
+    padding-bottom: 1rem !important;
+    margin-top: 0.5rem !important;
+  }
+
+  /* Custom Premium Layout Matrix Scrollbars Configuration styles */
   .custom-scrollbar::-webkit-scrollbar { width: 6px; }
   .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
   .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--color-brand-blue-deep); }
 
-  /* Apple-Style Toggle Switch CSS */
+  /* Premium Apple-Style Toggle Switch Form Inputs layout layer rules */
   :global(.apple-switch) {
     position: relative;
     display: inline-block;
@@ -1146,7 +1315,7 @@ const {
     height: 24px;
     flex-shrink: 0;
   }
-  :global(.apple-switch input) { 
+  :global(.apple-switch input) {
     opacity: 0;
     width: 0;
     height: 0;
@@ -1156,7 +1325,7 @@ const {
     cursor: pointer;
     top: 0; left: 0; right: 0; bottom: 0;
     background-color: #e2e8f0;
-    transition: .4s;
+    transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 24px;
   }
   :global(.slider:before) {
@@ -1167,7 +1336,7 @@ const {
     left: 3px;
     bottom: 3px;
     background-color: white;
-    transition: .4s;
+    transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 50%;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
@@ -1203,12 +1372,20 @@ const {
 ```astro
 ---
 ---
-<div id="dashboard-grid" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8">
+<div class="relative w-full min-h-[500px]">
+
+  <div id="loading-overlay" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-surface/40 backdrop-blur-md transition-all duration-300 opacity-100 pointer-events-auto rounded-[2.5rem]">
+    <p class="text-[11px] font-black text-brand-dark uppercase tracking-[0.2em] animate-pulse">Syncing Cohort Data</p>
   </div>
 
-<div id="search-fallback" class="hidden flex-col items-center justify-center py-32 text-gray-400 bg-white/50 border border-gray-100 rounded-[2.5rem] mt-6 shadow-sm">
-  <svg class="w-14 h-14 mb-6 opacity-50 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-  <p class="text-base font-bold text-gray-500 uppercase tracking-[0.15em]">No matching metrics</p>
+  <div id="dashboard-grid" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 transition-all duration-500 transform scale-[0.98] opacity-20 blur-sm origin-top">
+    </div>
+
+  <div id="search-fallback" class="hidden flex-col items-center justify-center py-32 text-gray-400 bg-white/50 border border-gray-100 rounded-[2.5rem] mt-6 shadow-sm">
+    <svg class="w-14 h-14 mb-6 opacity-50 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+    <p class="text-base font-bold text-gray-500 uppercase tracking-[0.15em]">No matching metrics</p>
+  </div>
+
 </div>
 
 <style>
@@ -1219,12 +1396,12 @@ const {
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  :global(.glass-card:hover) { 
-    transform: translateY(-4px); 
-    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); 
+  :global(.glass-card:hover) {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     border-color: var(--color-brand-blue-deep);
   }
-  
+
   :global(.custom-scrollbar::-webkit-scrollbar) { width: 6px; }
   :global(.custom-scrollbar::-webkit-scrollbar-track) { background: transparent; }
   :global(.custom-scrollbar::-webkit-scrollbar-thumb) { background: #cbd5e1; border-radius: 10px; }

@@ -11,32 +11,19 @@ const {
 <nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300" data-cta-mode={ctaMode}>
   <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
 
-    <a href={`${baseUrl}/`} class="flex items-center shrink-0">
-      <img src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`} alt="BioPortal Logo" class="w-40 h-auto shrink-0 hover:-translate-y-0.5 transition-transform" onerror="this.style.display='none'" />
+    <a href={`${baseUrl}/`} class="flex items-center shrink-0 z-50">
+      <img src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`} alt="BioPortal Logo" class="w-36 md:w-40 h-auto shrink-0 hover:-translate-y-0.5 transition-transform" onerror="this.style.display='none'" />
     </a>
 
     {type === 'main' ? (
       <>
-        <div id="nav-cta-group" class={`absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-4 transition-all duration-500 ease-out ${ctaMode === 'scroll' ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}>
-
-          <div class="relative group/btn">
-            <a href={`${baseUrl}/participants`} class="px-5 py-2 rounded-full border-2 border-brand-green-bright text-brand-green-bright text-xs font-bold hover:bg-brand-green-bright hover:text-white transition-all bg-white">
-              Join Study
-            </a>
-            <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-56 p-3 bg-white border border-gray-100 text-gray-500 text-[11px] leading-relaxed rounded-xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none">
-              Contribute clinical data to advance Montreal-based genomic research.
-            </div>
-          </div>
-
-          <div class="relative group/btn">
-            <a href={`${baseUrl}/data`} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white">
-              Request Data
-            </a>
-            <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-56 p-3 bg-white border border-gray-100 text-gray-500 text-[11px] leading-relaxed rounded-xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none">
-              Explore de-identified datasets and request cohort materials for approved research.
-            </div>
-          </div>
-
+        <div id="nav-cta-group" class={`absolute left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-4 transition-all duration-500 ease-out ${ctaMode === 'scroll' ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}>
+          <a href={`${baseUrl}/participants`} class="px-5 py-2 rounded-full border-2 border-brand-green-bright text-brand-green-bright text-xs font-bold hover:bg-brand-green-bright hover:text-white transition-all bg-white">
+            Join Study
+          </a>
+          <a href={`${baseUrl}/data`} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white">
+            Request Data
+          </a>
         </div>
 
         <div class="hidden lg:flex items-center space-x-8 font-medium text-sm ml-auto">
@@ -44,9 +31,24 @@ const {
           <a href={`${baseUrl}/#team`} class="text-gray-500 hover:text-brand-dark transition-colors">Our Team</a>
           <a href={`${baseUrl}/privacy`} class="text-gray-500 hover:text-brand-dark transition-colors">Data Security</a>
         </div>
+
+        <button id="mobile-menu-toggle" class="lg:hidden text-brand-dark p-2 -mr-2 focus:outline-none z-50">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+
+        <div id="mobile-menu-panel" class="absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-2xl hidden flex-col px-6 py-8 space-y-6 lg:hidden">
+          <a href={`${baseUrl}/#insights`} class="mobile-link text-brand-dark font-extrabold text-xl">Insights</a>
+          <a href={`${baseUrl}/#team`} class="mobile-link text-brand-dark font-extrabold text-xl">Our Team</a>
+          <a href={`${baseUrl}/privacy`} class="mobile-link text-brand-dark font-extrabold text-xl">Data Security</a>
+          <hr class="border-gray-100" />
+          <div class="flex flex-col gap-3">
+            <a href={`${baseUrl}/participants`} class="w-full text-center py-4 rounded-xl bg-brand-green-bright text-white font-bold shadow-md shadow-brand-green-bright/20">Join Study</a>
+            <a href={`${baseUrl}/data`} class="w-full text-center py-4 rounded-xl bg-brand-blue-deep text-white font-bold shadow-md shadow-brand-blue-deep/20">Request Data</a>
+          </div>
+        </div>
       </>
     ) : (
-      <a href={`${baseUrl}${backLink}`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2 ml-auto">
+      <a href={`${baseUrl}${backLink}`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2 ml-auto z-50">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
         {backText}
       </a>
@@ -56,40 +58,51 @@ const {
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    // Scroll logic for Desktop CTA
     const nav = document.querySelector('nav[data-cta-mode="scroll"]');
-    if (!nav) return;
+    if (nav) {
+      const navCtaGroup = nav.querySelector('#nav-cta-group');
+      const heroButtons = document.getElementById('hero-button-group');
 
-    const navCtaGroup = nav.querySelector('#nav-cta-group');
-    const heroButtons = document.getElementById('hero-button-group');
-
-    const handleScroll = () => {
-      let shouldShow = false;
-
-      if (heroButtons) {
-        // Get precise coordinates of the hero buttons on the screen
-        const rect = heroButtons.getBoundingClientRect();
-
-        // The navbar is exactly 80 pixels tall (h-20).
-        // If the bottom edge of the hero buttons is less than 80px from the top of the screen,
-        // it means they have physically slid underneath the navbar. Time to reveal!
-        if (rect.bottom < 80) {
-          shouldShow = true;
+      const handleScroll = () => {
+        let shouldShow = false;
+        if (heroButtons) {
+          const rect = heroButtons.getBoundingClientRect();
+          if (rect.bottom < 80) shouldShow = true;
+        } else {
+          if (window.scrollY > 400) shouldShow = true;
         }
-      } else {
-        // Safe fallback if for some reason the hero buttons aren't on the page
-        if (window.scrollY > 400) shouldShow = true;
-      }
 
-      if (shouldShow) {
-        navCtaGroup.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
-        navCtaGroup.classList.add('opacity-100', 'translate-y-0');
-      } else {
-        navCtaGroup.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none');
-        navCtaGroup.classList.remove('opacity-100', 'translate-y-0');
-      }
-    };
+        if (shouldShow) {
+          navCtaGroup?.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
+          navCtaGroup?.classList.add('opacity-100', 'translate-y-0');
+        } else {
+          navCtaGroup?.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none');
+          navCtaGroup?.classList.remove('opacity-100', 'translate-y-0');
+        }
+      };
+      window.addEventListener('scroll', handleScroll);
+      handleScroll();
+    }
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
+    // 🌟 NEW: Mobile Menu Toggle Logic
+    const mobileToggle = document.getElementById('mobile-menu-toggle');
+    const mobilePanel = document.getElementById('mobile-menu-panel');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    if (mobileToggle && mobilePanel) {
+      mobileToggle.addEventListener('click', () => {
+        mobilePanel.classList.toggle('hidden');
+        mobilePanel.classList.toggle('flex');
+      });
+
+      // Close menu when a link is clicked
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobilePanel.classList.add('hidden');
+          mobilePanel.classList.remove('flex');
+        });
+      });
+    }
   });
 </script>
