@@ -18,12 +18,12 @@ let visibleCharts = new Set<string>();
 (window as any).exportCohortCSV = exportCohortCSV;
 (window as any).toggleAllCharts = toggleAllCharts;
 (window as any).switchTab = switchTab;
-(window as any).toggleMobileSidebar = toggleMobileSidebar; // NEW BINDING
+(window as any).toggleMobileSidebar = toggleMobileSidebar;
 
-// NEW: Mobile Sidebar Toggle Logic
+// FIXED: Unified the element variable targeting to match your layout overlay ID
 function toggleMobileSidebar() {
   const sidebar = document.getElementById('explorer-sidebar');
-  const backdrop = document.getElementById('mobile-sidebar-backdrop');
+  const backdrop = document.getElementById('mobile-sidebar-overlay');
 
   if (sidebar && backdrop) {
     const isClosed = sidebar.classList.contains('-translate-x-full');
@@ -78,7 +78,6 @@ function switchTab(tabName: string) {
   handleUnifiedSearch();
 }
 
-
 function showLoadingState() {
   const overlay = document.getElementById('loading-overlay');
   const grid = document.getElementById('dashboard-grid');
@@ -89,13 +88,12 @@ function showLoadingState() {
     overlay.classList.add('opacity-100', 'pointer-events-auto');
   }
   if (grid) {
-    grid.classList.add('scale-[0.98]');
-    grid.classList.remove('scale-100');
+    grid.classList.add('scale-[0.99]', 'opacity-40');
+    grid.classList.remove('scale-100', 'opacity-100');
   }
   if (header) {
-    // We only scale it. The global overlay handles the blur perfectly now.
-    header.classList.add('scale-[0.99]');
-    header.classList.remove('scale-100');
+    header.classList.add('scale-[0.995]', 'opacity-40');
+    header.classList.remove('scale-100', 'opacity-100');
   }
 }
 
@@ -109,15 +107,14 @@ function hideLoadingState() {
     overlay.classList.remove('opacity-100', 'pointer-events-auto');
   }
   if (grid) {
-    grid.classList.remove('scale-[0.98]');
-    grid.classList.add('scale-100');
+    grid.classList.remove('scale-[0.99]', 'opacity-40');
+    grid.classList.add('scale-100', 'opacity-100');
   }
   if (header) {
-    header.classList.remove('scale-[0.99]');
-    header.classList.add('scale-100');
+    header.classList.remove('scale-[0.995]', 'opacity-40');
+    header.classList.add('scale-100', 'opacity-100');
   }
 }
-
 
 // ==========================================
 // DATA FETCHING & INITIALIZATION
@@ -135,8 +132,6 @@ async function fetchFromPortal(queryString: string) {
   }
   return await response.json();
 }
-
-
 
 async function initializeEngine() {
   try {
@@ -157,7 +152,6 @@ async function initializeEngine() {
     renderFilterMenu();
     renderDashboard();
 
-    // DELAYED TEXT UPDATE: Populates the empty HTML elements after data loads
     const titleEl = document.getElementById('view-title');
     if (titleEl) titleEl.innerText = 'Cohort Overview';
     updateCohortSizeCounters();
@@ -166,20 +160,25 @@ async function initializeEngine() {
     if (searchInput) searchInput.addEventListener('keyup', handleUnifiedSearch);
 
     const elapsed = Date.now() - startTime;
-    if (elapsed < 800) await new Promise(r => setTimeout(r, 800 - elapsed));
+    if (elapsed < 900) await new Promise(r => setTimeout(r, 900 - elapsed));
 
     hideLoadingState();
 
   } catch (err) {
     console.error(err);
     hideLoadingState();
+
+    // FIXED: Formulate title safety state to let users know the system crashed instead of remaining blank
+    const titleEl = document.getElementById('view-title');
+    if (titleEl) titleEl.innerText = 'Service Unavailable';
+
     const grid = document.getElementById('dashboard-grid');
     if (grid) grid.innerHTML = `<div class="col-span-full p-8 text-center bg-red-50 text-red-700 rounded-2xl border border-red-100 font-bold">API Connection Failed. Please reload.</div>`;
   }
 }
 
 function calculateCohortSizes() {
-  cohortSizesDictionary = {}; // Reset
+  cohortSizesDictionary = {};
 
   summaryStatistics.forEach(stat => {
      const prefix = stat.chart_id.toLowerCase().replace(/ /g, '_');
@@ -323,14 +322,13 @@ async function changeFilter(filterKey: string) {
 
     summaryStatistics = await fetchFromPortal(`filter=${encodeURIComponent(filterKey)}`);
 
-    // DELAYED TEXT UPDATE: Update header text ONLY after data successfully resolves
     const titleEl = document.getElementById('view-title');
     if (titleEl) {
       titleEl.innerText = filterKey === 'baseline' ? 'Cohort Overview' : filterKey.replace(/_/g, ' ').replace(/(^|\s)\S/g, l => l.toUpperCase());
     }
 
     renderDashboard();
-    updateCohortSizeCounters(); // Updates "Total Patients" box simultaneously
+    updateCohortSizeCounters();
 
     const elapsed = Date.now() - startTime;
     if (elapsed < 600) await new Promise(r => setTimeout(r, 600 - elapsed));
@@ -363,7 +361,6 @@ function handleUnifiedSearch() {
 
   const query = searchInput.value.toLowerCase().trim();
 
-  // Quick helper to toggle display based on search
   const toggleDisplay = (element: HTMLElement, show: boolean) => {
     element.style.display = show ? 'flex' : 'none';
   };
@@ -431,6 +428,8 @@ function renderDashboard() {
   chartInstances = {};
   grid.innerHTML = '';
 
+  let cardCount = 0;
+
   variableMetadata.forEach(meta => {
     if (!visibleCharts.has(meta.chart_id)) return;
 
@@ -448,7 +447,7 @@ function renderDashboard() {
     const dynamicCanvasHeight = isHorizontalBar ? Math.max(minContainerHeight, filteredData.length * HEIGHT_PER_BAR) : minContainerHeight;
 
     const card = document.createElement('div');
-    card.className = "chart-card glass-card p-7 flex flex-col group relative overflow-hidden";
+    card.className = "chart-card glass-card p-7 flex flex-col group relative overflow-hidden opacity-0 translate-y-3 transition-all duration-700 ease-out";
     card.setAttribute('data-title', meta.display_name);
 
     card.innerHTML = `
@@ -466,6 +465,12 @@ function renderDashboard() {
 
     grid.appendChild(card);
     renderChartInstance(meta, filteredData);
+
+    setTimeout(() => {
+      card.classList.remove('opacity-0', 'translate-y-3');
+      card.classList.add('opacity-100', 'translate-y-0');
+    }, cardCount * 60);
+    cardCount++;
   });
   handleUnifiedSearch();
 }
@@ -491,8 +496,8 @@ function renderChartInstance(meta: any, data: any[]) {
         data: values,
         backgroundColor: colorArray,
         borderWidth: 0,
-        borderRadius: isPie ? 0 : 4,
-        hoverBackgroundColor: PALETTE[8], // dark
+        borderRadius: isPie ? 0 : 6,
+        hoverBackgroundColor: PALETTE[8],
         minBarLength: isPie ? undefined : 8
       }]
     },
@@ -500,6 +505,13 @@ function renderChartInstance(meta: any, data: any[]) {
       responsive: true,
       maintainAspectRatio: false,
       indexAxis: isHorizontalBar ? 'y' : 'x',
+      transitions: {
+        active: { animation: { duration: 400 } }
+      },
+      animation: {
+        duration: 840,
+        easing: 'easeOutQuart'
+      },
       onClick: (event, elements) => {
         if (elements.length > 0) {
           const targetIndex = elements[0].index;
