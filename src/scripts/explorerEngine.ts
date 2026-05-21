@@ -59,26 +59,37 @@ function switchTab(tabName: string) {
 }
 
 function showLoadingState() {
+  const overlay = document.getElementById('loading-overlay');
   const grid = document.getElementById('dashboard-grid');
   const header = document.getElementById('explorer-header');
 
+  if (overlay) {
+    overlay.classList.remove('opacity-0', 'pointer-events-none');
+    overlay.classList.add('opacity-100', 'pointer-events-auto');
+  }
   if (grid) {
-    grid.classList.add('opacity-30', 'blur-sm', 'scale-[0.98]');
-    grid.classList.remove('opacity-100', 'blur-none', 'scale-100');
+    grid.classList.add('scale-[0.98]');
+    grid.classList.remove('scale-100');
   }
   if (header) {
+    // Only frost/blur the header, don't mess with the grid's blur!
     header.classList.add('opacity-40', 'blur-sm', 'scale-[0.99]');
     header.classList.remove('opacity-100', 'blur-none', 'scale-100');
   }
 }
 
 function hideLoadingState() {
+  const overlay = document.getElementById('loading-overlay');
   const grid = document.getElementById('dashboard-grid');
   const header = document.getElementById('explorer-header');
 
+  if (overlay) {
+    overlay.classList.add('opacity-0', 'pointer-events-none');
+    overlay.classList.remove('opacity-100', 'pointer-events-auto');
+  }
   if (grid) {
-    grid.classList.remove('opacity-30', 'blur-sm', 'scale-[0.98]');
-    grid.classList.add('opacity-100', 'blur-none', 'scale-100');
+    grid.classList.remove('scale-[0.98]');
+    grid.classList.add('scale-100');
   }
   if (header) {
     header.classList.remove('opacity-40', 'blur-sm', 'scale-[0.99]');
