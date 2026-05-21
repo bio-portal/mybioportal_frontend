@@ -2,196 +2,21 @@
 ---
 <aside id="explorer-sidebar" class="w-[300px] sm:w-[360px] bg-white border-r border-gray-200 flex-shrink-0 fixed lg:sticky top-20 h-[calc(100vh-80px)] flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.05)] z-40 transition-transform duration-300 -translate-x-full lg:translate-x-0">
 
-  <div class="p-6 border-b border-gray-100 bg-surface/30 flex justify-between items-center">
-    <span class="font-bold text-brand-dark tracking-tight">Explorer Controls</span>
-    <button id="mobile-close-sidebar" onclick="toggleMobileSidebar()" class="lg:hidden w-8 h-8 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-brand-dark transition-colors shadow-sm">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
-    </button>
-  </div>
+  <div class="p-6 border-b border-gray-100 bg-surface/30 flex justify-center items-center shrink-0 relative min-h-[73px]">
+    <span class="font-bold text-brand-dark tracking-tight">Command Center</span>
 
-  <div class="p-5 lg:p-6 border-b border-gray-100 bg-surface/30">
-    <div class="flex gap-3 mb-5">
-      <button onclick="changeFilter('baseline')" class="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-600 hover:border-brand-blue-deep hover:text-brand-blue-deep transition-all shadow-sm cursor-pointer group">
-        <svg class="w-4 h-4 text-gray-400 group-hover:text-brand-blue-deep transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
-        Reset Filters
-      </button>
-      <button onclick="exportCohortCSV()" class="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-brand-dark border border-brand-dark text-white rounded-xl text-xs font-bold hover:bg-brand-blue-deep hover:border-brand-blue-deep transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 cursor-pointer">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-        Export CSV
-      </button>
-    </div>
-
-    <div class="relative w-full">
-      <input type="text" id="global-search" placeholder="Search cohorts or metrics..."
-             class="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-gray-200 focus:border-brand-blue-deep focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-sm placeholder:text-gray-400" />
-      <svg class="w-4 h-4 absolute left-4 top-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-    </div>
-  </div>
-
-  <div class="flex p-2 bg-surface/30 border-b border-gray-100 shrink-0">
-    <div class="flex w-full bg-gray-100/80 p-1 rounded-xl">
-      <button onclick="switchTab('filters')" id="tab-btn-filters" class="flex-1 py-2 text-xs font-bold tracking-widest text-brand-dark bg-white rounded-lg shadow-sm transition-all cursor-pointer flex justify-center items-center gap-2">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
-        Filters
-      </button>
-      <button onclick="switchTab('charts')" id="tab-btn-charts" class="flex-1 py-2 text-xs font-bold tracking-widest text-gray-500 hover:text-brand-dark rounded-lg transition-all cursor-pointer flex justify-center items-center gap-2">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-        Charts
+    <div class="absolute right-6 top-1/2 -translate-y-1/2 lg:hidden">
+      <button id="mobile-close-sidebar" onclick="toggleMobileSidebar()" class="w-8 h-8 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-brand-dark transition-colors shadow-sm cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
       </button>
     </div>
   </div>
 
-  <div class="flex-1 overflow-y-auto custom-scrollbar p-6">
-
-<div id="tab-content-filters" class="block">
-      <button id="btn-baseline" onclick="changeFilter('baseline')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-brand-blue-deep/5 transition-colors text-[14px] flex justify-between items-center filter-active border border-transparent mb-2 cursor-pointer group">
-
-        <div class="flex items-center gap-3">
-          <span class="font-bold">Baseline (Total Cohort)</span>
-        </div>
-
-        <span id="size-baseline" class="text-[11px] bg-white px-2 py-0.5 rounded text-brand-blue-deep border border-gray-100 font-black shadow-sm">...</span>
-      </button>
-
-      <div id="filter-list" class="space-y-1 filter-search-target">
-        </div>
-    </div>
-    </div>
-
-    <div id="tab-content-charts" class="hidden">
-      <div class="flex gap-2 mb-4 pb-4 border-b border-gray-100 justify-between items-center px-1">
-        <span class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">Visibility Map</span>
-        <div class="space-x-3 bg-gray-50 px-2 py-1 rounded-lg">
-          <button onclick="toggleAllCharts(true)" class="text-[10px] font-bold text-brand-blue-deep hover:text-brand-dark transition-colors cursor-pointer">All</button>
-          <span class="text-gray-300">|</span>
-          <button onclick="toggleAllCharts(false)" class="text-[10px] font-bold text-gray-400 hover:text-brand-dark transition-colors cursor-pointer">None</button>
-        </div>
-      </div>
-      <div id="chart-toggles" class="space-y-2 filter-search-target">
-        </div>
-    </div>
-
+  <div class="px-6 py-4 bg-brand-blue-deep/5 border-b border-gray-100 shrink-0">
+    <p class="text-xs text-gray-600 leading-relaxed font-medium">
+      📊 <strong>Interactive Insights:</strong> Click on any chart segment or use the sidebar selectors below to filter data.
+    </p>
+    <p class="text-[11px] text-gray-400 mt-1.5 leading-normal">
+      The platform isolates metrics by executing one targeted filter partition at a time.
+    </p>
   </div>
-
-  <div class="p-5 border-t border-gray-100 bg-surface/50 shrink-0">
-    <div class="text-[10px] text-gray-400 font-bold uppercase tracking-widest flex justify-between items-center">
-      <span>Data Gateway</span>
-      <span id="cache-indicator" class="text-brand-green-bright flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-brand-green-bright animate-pulse shadow-[0_0_8px_rgba(127,195,66,0.8)]"></span> SYNCING
-      </span>
-    </div>
-  </div>
-</aside>
-
-<style>
-  /* 🌟 UPGRADED: High-end Radio Logic Styling */
-  :global(.filter-active) {
-    background-color: color-mix(in srgb, var(--color-brand-blue-deep) 6%, transparent) !important;
-    border-color: color-mix(in srgb, var(--color-brand-blue-deep) 20%, transparent) !important;
-  }
-
-  :global(.filter-active .font-bold) {
-    color: var(--color-brand-dark) !important;
-  }
-
-  /* Handle dynamic injected buttons to mimic the Baseline radio UI */
-  :global(#filter-list button) {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    width: 100% !important;
-    text-align: left !important;
-    padding: 0.75rem 1rem !important;
-    border-radius: 0.75rem !important;
-    border: 1px solid transparent !important;
-    font-size: 14px !important;
-    color: #4b5563 !important;
-    transition: all 0.2s ease !important;
-    cursor: pointer !important;
-  }
-  :global(#filter-list button:hover) {
-    background-color: #f8fafc !important;
-  }
-
-  /* Structural fixes for injected accordion elements */
-  :global(details > summary) { list-style: none; }
-  :global(details > summary::-webkit-details-marker) { display: none; }
-
-  :global(.filter-group) {
-    border-bottom: 1px solid #f1f5f9 !important;
-  }
-
-  :global(.filter-group summary) {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    width: 100% !important;
-    font-size: 0.70rem !important;
-    font-weight: 800 !important;
-    color: #94a3b8 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.15em !important;
-    cursor: pointer !important;
-    padding: 1.25rem 0.5rem !important;
-    margin: 0 -1.5rem !important;
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
-    width: calc(100% + 3rem) !important;
-    transition: all 0.2s ease !important;
-    user-select: none !important;
-  }
-
-  :global(.filter-group summary:hover) {
-    color: var(--color-brand-blue-deep) !important;
-    background-color: color-mix(in srgb, var(--color-brand-blue-deep) 3%, transparent) !important;
-  }
-
-  :global(.filter-group[open] > div) {
-    padding-bottom: 1rem !important;
-    margin-top: 0.5rem !important;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-  .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--color-brand-blue-deep); }
-
-  :global(.apple-switch) {
-    position: relative;
-    display: inline-block;
-    width: 36px;
-    height: 20px;
-    flex-shrink: 0;
-  }
-  :global(.apple-switch input) {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  :global(.slider) {
-    position: absolute;
-    cursor: pointer;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: #e2e8f0;
-    transition: .3s ease;
-    border-radius: 20px;
-  }
-  :global(.slider:before) {
-    position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    left: 2px;
-    bottom: 2px;
-    background-color: white;
-    transition: .3s ease;
-    border-radius: 50%;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-  }
-  :global(input:checked + .slider) {
-    background-color: var(--color-brand-green-bright);
-  }
-  :global(input:checked + .slider:before) {
-    transform: translateX(16px);
-  }
-</style>
