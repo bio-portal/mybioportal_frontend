@@ -59,38 +59,41 @@ function switchTab(tabName: string) {
 }
 
 
-
 // ==========================================
-// UI STATE MANAGEMENT
+// 🌟 UPGRADED: UNIVERSAL LOADING STATES
 // ==========================================
 
 function showLoadingState() {
-  const overlay = document.getElementById('loading-overlay');
-  const grid = document.getElementById('dashboard-grid');
+  // We now target the entire main content area, not just the grid
+  const overlay = document.getElementById('universal-loading-overlay');
+  const mainContent = document.getElementById('main-content-area');
 
-  if (overlay && grid) {
-    // Reveal frosted overlay
-    overlay.classList.remove('opacity-0', 'pointer-events-none');
-    overlay.classList.add('opacity-100', 'pointer-events-auto');
+  if (overlay && mainContent) {
+    // Reveal frosted overlay over the entire right panel
+    overlay.classList.remove('hidden');
+    // Minimal timeout allows the 'hidden' class removal to process before animating opacity
+    setTimeout(() => {
+      overlay.classList.remove('opacity-0', 'pointer-events-none');
+      overlay.classList.add('opacity-100', 'pointer-events-auto');
+    }, 10);
 
-    // Wash out the grid
-    grid.classList.add('opacity-20', 'blur-sm', 'scale-[0.98]');
-    grid.classList.remove('opacity-100', 'blur-none', 'scale-100');
+    // Wash out the entire content area (Header + Grid)
+    mainContent.classList.add('opacity-40', 'blur-sm', 'scale-[0.99]');
   }
 }
 
 function hideLoadingState() {
-  const overlay = document.getElementById('loading-overlay');
-  const grid = document.getElementById('dashboard-grid');
+  const overlay = document.getElementById('universal-loading-overlay');
+  const mainContent = document.getElementById('main-content-area');
 
-  if (overlay && grid) {
-    // Fade out frosted overlay immediately
-    overlay.classList.add('opacity-0', 'pointer-events-none');
+  if (overlay && mainContent) {
+    // Fade out frosted overlay
     overlay.classList.remove('opacity-100', 'pointer-events-auto');
+    overlay.classList.add('opacity-0', 'pointer-events-none');
+    setTimeout(() => overlay.classList.add('hidden'), 300);
 
-    // Snap grid back to full focus
-    grid.classList.remove('opacity-20', 'blur-sm', 'scale-[0.98]');
-    grid.classList.add('opacity-100', 'blur-none', 'scale-100');
+    // Snap main area back to full focus
+    mainContent.classList.remove('opacity-40', 'blur-sm', 'scale-[0.99]');
   }
 }
 
@@ -143,8 +146,9 @@ async function initializeEngine() {
   } catch (err) {
     console.error(err);
     hideLoadingState();
-    const grid = document.getElementById('dashboard-grid');
-    if (grid) grid.innerHTML = `<div class="col-span-full p-8 text-center bg-red-50 text-red-700 rounded-2xl border border-red-100 font-bold">API Connection Failed. Please reload.</div>`;
+    // Re-bind to the new main content wrapper for error displays
+    const mainContent = document.getElementById('main-content-area');
+    if (mainContent) mainContent.innerHTML = `<div class="w-full p-8 text-center bg-red-50 text-red-700 rounded-2xl border border-red-100 font-bold mt-10 shadow-sm">API Connection Failed. Please reload.</div>`;
   }
 }
 
@@ -203,14 +207,25 @@ function renderFilterMenu() {
         if (finalFilterKey) {
           const btn = document.createElement('button');
           btn.id = `btn-${finalFilterKey}`;
-          btn.className = "filter-btn w-full text-left px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-[13px] flex justify-between items-center font-medium border border-transparent cursor-pointer";
+
+          // 🌟 UPGRADED: Added Radio Dot UI to dynamic filters
+          btn.className = "filter-btn w-full text-left px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-[13px] flex justify-between items-center font-medium border border-transparent cursor-pointer group/item";
 
           let displayCount: string | number = item.count;
           if (displayCount !== '<10' && displayCount !== '<20') {
              displayCount = parseInt(displayCount as string).toLocaleString();
           }
 
-          btn.innerHTML = `<span class="searchable-text">${item.category}</span> <span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-md text-gray-500 font-black">${displayCount}</span>`;
+          btn.innerHTML = `
+            <div class="flex items-center gap-3">
+              <div class="w-3.5 h-3.5 rounded-full border border-gray-300 flex items-center justify-center shrink-0 radio-ring group-hover/item:border-brand-blue-deep transition-colors">
+                <div class="w-1.5 h-1.5 rounded-full bg-brand-blue-deep opacity-0 radio-dot transition-opacity"></div>
+              </div>
+              <span class="searchable-text">${item.category}</span>
+            </div>
+            <span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-md text-gray-500 font-black">${displayCount}</span>
+          `;
+
           btn.onclick = () => changeFilter(finalFilterKey!);
           itemsContainer.appendChild(btn);
         }
@@ -274,11 +289,30 @@ function toggleAllCharts(show: boolean) {
 }
 
 async function changeFilter(filterKey: string) {
-  document.querySelectorAll('.filter-btn, #btn-baseline').forEach(b => b.classList.remove('filter-active'));
+  // 🌟 UPGRADED: Reset all radio dots
+  document.querySelectorAll('.filter-btn, #btn-baseline').forEach(b => {
+    b.classList.remove('filter-active');
+    const ring = b.querySelector('.radio-ring');
+    const dot = b.querySelector('.radio-dot');
+    if (ring) {
+      ring.classList.remove('border-brand-blue-deep', 'border-2');
+      ring.classList.add('border-gray-300', 'border');
+    }
+    if (dot) dot.classList.remove('opacity-100');
+  });
 
+  // Activate new radio target
   const targetedButton = document.getElementById(filterKey === 'baseline' ? 'btn-baseline' : `btn-${filterKey}`);
   if (targetedButton) {
       targetedButton.classList.add('filter-active');
+      const ring = targetedButton.querySelector('.radio-ring');
+      const dot = targetedButton.querySelector('.radio-dot');
+      if (ring) {
+        ring.classList.remove('border-gray-300', 'border');
+        ring.classList.add('border-brand-blue-deep', 'border-2');
+      }
+      if (dot) dot.classList.add('opacity-100');
+
       if (filterKey !== 'baseline') {
           const parentDetails = targetedButton.closest('details');
           if (parentDetails) parentDetails.open = true;
