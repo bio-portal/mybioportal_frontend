@@ -11,7 +11,7 @@ const sortedTeam = allTeam.sort((a, b) => a.data.order - b.data.order);
 const allNews = await getCollection('news');
 const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
 ---
-<Layout title="BioPortal | Advancing Genomic Research" ctaMode="scroll">
+<Layout title="BioPortal | Advancing Human Research" ctaMode="scroll">
   <main class="relative">
 
     <Hero content={homeData.data.hero} />
