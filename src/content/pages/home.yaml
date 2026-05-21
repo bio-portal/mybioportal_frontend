@@ -10,9 +10,9 @@ trustBar:
     - name: "Jewish General Hospital"
       logo: "/logos/jgh-logo.png"
       url: "https://www.jgh.ca"
-    - name: "SciLoop"
-      logo: "/logos/sciloop-logo.png"
-      url: "https://sciloop.com"
+    - name: "Scikoop"
+      logo: "/logos/scikoop-logo.png"
+      url: "https://scikoop.com"
       scale: "1" # Custom scale to fix the "too small" issue
     - name: "CQDM"
       logo: "/logos/cqdm-logo.png"

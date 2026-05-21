@@ -58,39 +58,31 @@ function switchTab(tabName: string) {
   handleUnifiedSearch();
 }
 
-
-
-// ==========================================
-// UI STATE MANAGEMENT
-// ==========================================
-
 function showLoadingState() {
-  const overlay = document.getElementById('loading-overlay');
   const grid = document.getElementById('dashboard-grid');
+  const header = document.getElementById('explorer-header');
 
-  if (overlay && grid) {
-    // Reveal frosted overlay
-    overlay.classList.remove('opacity-0', 'pointer-events-none');
-    overlay.classList.add('opacity-100', 'pointer-events-auto');
-
-    // Wash out the grid
-    grid.classList.add('opacity-20', 'blur-sm', 'scale-[0.98]');
+  if (grid) {
+    grid.classList.add('opacity-30', 'blur-sm', 'scale-[0.98]');
     grid.classList.remove('opacity-100', 'blur-none', 'scale-100');
+  }
+  if (header) {
+    header.classList.add('opacity-40', 'blur-sm', 'scale-[0.99]');
+    header.classList.remove('opacity-100', 'blur-none', 'scale-100');
   }
 }
 
 function hideLoadingState() {
-  const overlay = document.getElementById('loading-overlay');
   const grid = document.getElementById('dashboard-grid');
+  const header = document.getElementById('explorer-header');
 
-  if (overlay && grid) {
-    // Fade out frosted overlay immediately
-    overlay.classList.add('opacity-0', 'pointer-events-none');
-    overlay.classList.remove('opacity-100', 'pointer-events-auto');
-
-    // Snap grid back to full focus
-    grid.classList.remove('opacity-20', 'blur-sm', 'scale-[0.98]');
+  if (grid) {
+    grid.classList.remove('opacity-30', 'blur-sm', 'scale-[0.98]');
     grid.classList.add('opacity-100', 'blur-none', 'scale-100');
+  }
+  if (header) {
+    header.classList.remove('opacity-40', 'blur-sm', 'scale-[0.99]');
+    header.classList.add('opacity-100', 'blur-none', 'scale-100');
   }
 }
 
@@ -286,10 +278,6 @@ async function changeFilter(filterKey: string) {
   }
 
   activeFilter = filterKey;
-  const titleEl = document.getElementById('view-title');
-  if (titleEl) {
-    titleEl.innerText = filterKey === 'baseline' ? 'Cohort Overview' : filterKey.replace(/_/g, ' ').replace(/(^|\s)\S/g, l => l.toUpperCase());
-  }
 
   try {
     showLoadingState();
@@ -297,8 +285,14 @@ async function changeFilter(filterKey: string) {
 
     summaryStatistics = await fetchFromPortal(`filter=${encodeURIComponent(filterKey)}`);
 
+    // DELAYED TEXT UPDATE: Update header text ONLY after data successfully resolves
+    const titleEl = document.getElementById('view-title');
+    if (titleEl) {
+      titleEl.innerText = filterKey === 'baseline' ? 'Cohort Overview' : filterKey.replace(/_/g, ' ').replace(/(^|\s)\S/g, l => l.toUpperCase());
+    }
+
     renderDashboard();
-    updateCohortSizeCounters();
+    updateCohortSizeCounters(); // Updates "Total Patients" box simultaneously
 
     const elapsed = Date.now() - startTime;
     if (elapsed < 600) await new Promise(r => setTimeout(r, 600 - elapsed));
