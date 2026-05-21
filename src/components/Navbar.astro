@@ -11,8 +11,13 @@ const {
 <nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300" data-cta-mode={ctaMode}>
   <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
 
-    <a href={`${baseUrl}/`} class="flex items-center shrink-0 z-50">
-      <img src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`} alt="BioPortal Logo" class="w-36 md:w-40 h-auto shrink-0 hover:-translate-y-0.5 transition-transform" onerror="this.style.display='none'" />
+    <a href={`${baseUrl}/`} class="flex items-center shrink-0 z-50 h-fit max-h-16 py-2 outline-none">
+      <img
+        src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
+        alt="BioPortal Logo"
+        class="h-10 md:h-11 w-auto shrink-0 hover:-translate-y-0.5 transition-transform object-contain"
+        onerror="this.style.display='none'"
+      />
     </a>
 
     {type === 'main' ? (
@@ -85,7 +90,7 @@ const {
       handleScroll();
     }
 
-    // 🌟 NEW: Mobile Menu Toggle Logic
+    // Mobile Menu Toggle Logic
     const mobileToggle = document.getElementById('mobile-menu-toggle');
     const mobilePanel = document.getElementById('mobile-menu-panel');
     const mobileLinks = document.querySelectorAll('.mobile-link');
@@ -96,7 +101,6 @@ const {
         mobilePanel.classList.toggle('flex');
       });
 
-      // Close menu when a link is clicked
       mobileLinks.forEach(link => {
         link.addEventListener('click', () => {
           mobilePanel.classList.add('hidden');
