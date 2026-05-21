@@ -1,5 +1,5 @@
 # BioPortal Astro Architectural Context
-Generated on: Thu 21 May 2026 09:14:40 AM EDT
+Generated on: Thu 21 May 2026 11:05:55 AM EDT
 
 ---
 
@@ -919,25 +919,56 @@ import ExplorerSidebar from '../../components/explorer/ExplorerSidebar.astro';
 import ExplorerHeader from '../../components/explorer/ExplorerHeader.astro';
 import ExplorerGrid from '../../components/explorer/ExplorerGrid.astro';
 ---
-<Layout
-  title="Interactive Data Explorer | BioPortal"
-  navType="minimal"
-  backLink="/data"
-  backText="Back to Data Request"
->
-  <div class="flex min-h-[calc(100vh-80px)] bg-surface font-sans">
+<Layout title="Interactive Data Explorer | BioPortal" navType="minimal" backLink="/data" backText="Back to Data Request">
+  <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-brand-dark/40 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300 lg:hidden"></div>
 
+  <div class="flex min-h-[calc(100vh-80px)] bg-surface font-sans relative">
     <ExplorerSidebar />
 
-    <main class="flex-1 p-8 lg:p-12 relative z-10 w-full overflow-x-hidden">
+    <main id="main-content-area" class="flex-1 p-6 lg:p-12 relative z-10 w-full overflow-x-hidden transition-all duration-500 origin-top">
+
+      <div id="universal-loading-overlay" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-surface/40 backdrop-blur-md transition-all duration-300 opacity-0 pointer-events-none rounded-[2.5rem] hidden">
+        <p class="text-[11px] font-black text-brand-dark uppercase tracking-[0.2em] animate-pulse">Syncing Cohort Data</p>
+      </div>
+
       <ExplorerHeader />
       <ExplorerGrid />
     </main>
-
   </div>
-</Layout>
+
+  </Layout>
 
 <script src="../../scripts/explorerEngine.ts"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('explorer-sidebar');
+    const overlay = document.getElementById('mobile-sidebar-overlay');
+    const openBtn = document.getElementById('mobile-filter-btn');
+    const closeBtn = document.getElementById('mobile-close-sidebar');
+
+    const toggleSidebar = (force?: boolean) => {
+      if (!sidebar || !overlay) return;
+      const isOpen = sidebar.classList.contains('translate-x-0');
+      const shouldOpen = force !== undefined ? force : !isOpen;
+
+      if (shouldOpen) {
+        overlay.classList.remove('hidden');
+        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+        sidebar.classList.remove('-translate-x-full');
+        sidebar.classList.add('translate-x-0');
+      } else {
+        overlay.classList.add('opacity-0');
+        sidebar.classList.remove('translate-x-0');
+        sidebar.classList.add('-translate-x-full');
+        setTimeout(() => overlay.classList.add('hidden'), 300);
+      }
+    };
+
+    if (openBtn) openBtn.addEventListener('click', () => toggleSidebar(true));
+    if (closeBtn) closeBtn.addEventListener('click', () => toggleSidebar(false));
+    if (overlay) overlay.addEventListener('click', () => toggleSidebar(false));
+  });
+</script>
 
 ```
 
@@ -998,7 +1029,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     <div class="relative group/tooltip w-full sm:w-auto">
       <a
         href={`${baseUrl}/participants`}
-        class="w-full sm:w-64 h-16 rounded-full bg-brand-green-bright text-white font-extrabold text-lg shadow-xl shadow-brand-green-bright/30 transition-all duration-300 hover:scale-105 hover:bg-brand-green-mid hover:shadow-2xl hover:shadow-brand-green-bright/40 flex items-center justify-center gap-3 cursor-pointer select-none group"
+        class="w-full sm:w-64 h-16 rounded-full bg-brand-green-bright text-white font-extrabold text-lg shadow-xl shadow-brand-green-bright/30 transition-all duration-300 hover:scale-105 hover:brightness-110 hover:shadow-2xl hover:shadow-brand-green-bright/40 flex items-center justify-center gap-3 cursor-pointer select-none group"
       >
         Join Study
         <svg class="w-5 h-5 shrink-0 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
@@ -1011,7 +1042,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     <div class="relative group/tooltip w-full sm:w-auto">
       <a
         href={`${baseUrl}/data`}
-        class="w-full sm:w-64 h-16 rounded-full bg-brand-blue-deep text-white font-extrabold text-lg shadow-xl shadow-brand-blue-deep/30 transition-all duration-300 hover:scale-105 hover:bg-brand-blue-mid hover:shadow-2xl hover:shadow-brand-blue-deep/40 flex items-center justify-center gap-3 cursor-pointer select-none group"
+        class="w-full sm:w-64 h-16 rounded-full bg-brand-blue-deep text-white font-extrabold text-lg shadow-xl shadow-brand-blue-deep/30 transition-all duration-300 hover:scale-105 hover:brightness-110 hover:shadow-2xl hover:shadow-brand-blue-deep/40 flex items-center justify-center gap-3 cursor-pointer select-none group"
       >
         Request Data
         <svg class="w-5 h-5 shrink-0 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
@@ -1104,32 +1135,19 @@ const {
 <nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300" data-cta-mode={ctaMode}>
   <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
 
-    <a href={`${baseUrl}/`} class="flex items-center shrink-0">
-      <img src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`} alt="BioPortal Logo" class="w-40 h-auto shrink-0 hover:-translate-y-0.5 transition-transform" onerror="this.style.display='none'" />
+    <a href={`${baseUrl}/`} class="flex items-center shrink-0 z-50">
+      <img src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`} alt="BioPortal Logo" class="w-36 md:w-40 h-auto shrink-0 hover:-translate-y-0.5 transition-transform" onerror="this.style.display='none'" />
     </a>
 
     {type === 'main' ? (
       <>
-        <div id="nav-cta-group" class={`absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-4 transition-all duration-500 ease-out ${ctaMode === 'scroll' ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}>
-
-          <div class="relative group/btn">
-            <a href={`${baseUrl}/participants`} class="px-5 py-2 rounded-full border-2 border-brand-green-bright text-brand-green-bright text-xs font-bold hover:bg-brand-green-bright hover:text-white transition-all bg-white">
-              Join Study
-            </a>
-            <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-56 p-3 bg-white border border-gray-100 text-gray-500 text-[11px] leading-relaxed rounded-xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none">
-              Contribute clinical data to advance Montreal-based genomic research.
-            </div>
-          </div>
-
-          <div class="relative group/btn">
-            <a href={`${baseUrl}/data`} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white">
-              Request Data
-            </a>
-            <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-56 p-3 bg-white border border-gray-100 text-gray-500 text-[11px] leading-relaxed rounded-xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/btn:opacity-100 transition-all duration-300 pointer-events-none">
-              Explore de-identified datasets and request cohort materials for approved research.
-            </div>
-          </div>
-
+        <div id="nav-cta-group" class={`absolute left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-4 transition-all duration-500 ease-out ${ctaMode === 'scroll' ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}>
+          <a href={`${baseUrl}/participants`} class="px-5 py-2 rounded-full border-2 border-brand-green-bright text-brand-green-bright text-xs font-bold hover:bg-brand-green-bright hover:text-white transition-all bg-white">
+            Join Study
+          </a>
+          <a href={`${baseUrl}/data`} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white">
+            Request Data
+          </a>
         </div>
 
         <div class="hidden lg:flex items-center space-x-8 font-medium text-sm ml-auto">
@@ -1137,9 +1155,24 @@ const {
           <a href={`${baseUrl}/#team`} class="text-gray-500 hover:text-brand-dark transition-colors">Our Team</a>
           <a href={`${baseUrl}/privacy`} class="text-gray-500 hover:text-brand-dark transition-colors">Data Security</a>
         </div>
+
+        <button id="mobile-menu-toggle" class="lg:hidden text-brand-dark p-2 -mr-2 focus:outline-none z-50">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+
+        <div id="mobile-menu-panel" class="absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-2xl hidden flex-col px-6 py-8 space-y-6 lg:hidden">
+          <a href={`${baseUrl}/#insights`} class="mobile-link text-brand-dark font-extrabold text-xl">Insights</a>
+          <a href={`${baseUrl}/#team`} class="mobile-link text-brand-dark font-extrabold text-xl">Our Team</a>
+          <a href={`${baseUrl}/privacy`} class="mobile-link text-brand-dark font-extrabold text-xl">Data Security</a>
+          <hr class="border-gray-100" />
+          <div class="flex flex-col gap-3">
+            <a href={`${baseUrl}/participants`} class="w-full text-center py-4 rounded-xl bg-brand-green-bright text-white font-bold shadow-md shadow-brand-green-bright/20">Join Study</a>
+            <a href={`${baseUrl}/data`} class="w-full text-center py-4 rounded-xl bg-brand-blue-deep text-white font-bold shadow-md shadow-brand-blue-deep/20">Request Data</a>
+          </div>
+        </div>
       </>
     ) : (
-      <a href={`${baseUrl}${backLink}`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2 ml-auto">
+      <a href={`${baseUrl}${backLink}`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2 ml-auto z-50">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
         {backText}
       </a>
@@ -1149,41 +1182,52 @@ const {
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    // Scroll logic for Desktop CTA
     const nav = document.querySelector('nav[data-cta-mode="scroll"]');
-    if (!nav) return;
+    if (nav) {
+      const navCtaGroup = nav.querySelector('#nav-cta-group');
+      const heroButtons = document.getElementById('hero-button-group');
 
-    const navCtaGroup = nav.querySelector('#nav-cta-group');
-    const heroButtons = document.getElementById('hero-button-group');
-
-    const handleScroll = () => {
-      let shouldShow = false;
-
-      if (heroButtons) {
-        // Get precise coordinates of the hero buttons on the screen
-        const rect = heroButtons.getBoundingClientRect();
-
-        // The navbar is exactly 80 pixels tall (h-20).
-        // If the bottom edge of the hero buttons is less than 80px from the top of the screen,
-        // it means they have physically slid underneath the navbar. Time to reveal!
-        if (rect.bottom < 80) {
-          shouldShow = true;
+      const handleScroll = () => {
+        let shouldShow = false;
+        if (heroButtons) {
+          const rect = heroButtons.getBoundingClientRect();
+          if (rect.bottom < 80) shouldShow = true;
+        } else {
+          if (window.scrollY > 400) shouldShow = true;
         }
-      } else {
-        // Safe fallback if for some reason the hero buttons aren't on the page
-        if (window.scrollY > 400) shouldShow = true;
-      }
 
-      if (shouldShow) {
-        navCtaGroup.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
-        navCtaGroup.classList.add('opacity-100', 'translate-y-0');
-      } else {
-        navCtaGroup.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none');
-        navCtaGroup.classList.remove('opacity-100', 'translate-y-0');
-      }
-    };
+        if (shouldShow) {
+          navCtaGroup?.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
+          navCtaGroup?.classList.add('opacity-100', 'translate-y-0');
+        } else {
+          navCtaGroup?.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none');
+          navCtaGroup?.classList.remove('opacity-100', 'translate-y-0');
+        }
+      };
+      window.addEventListener('scroll', handleScroll);
+      handleScroll();
+    }
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
+    // 🌟 NEW: Mobile Menu Toggle Logic
+    const mobileToggle = document.getElementById('mobile-menu-toggle');
+    const mobilePanel = document.getElementById('mobile-menu-panel');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    if (mobileToggle && mobilePanel) {
+      mobileToggle.addEventListener('click', () => {
+        mobilePanel.classList.toggle('hidden');
+        mobilePanel.classList.toggle('flex');
+      });
+
+      // Close menu when a link is clicked
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobilePanel.classList.add('hidden');
+          mobilePanel.classList.remove('flex');
+        });
+      });
+    }
   });
 </script>
 
@@ -1193,49 +1237,71 @@ const {
 ```astro
 ---
 ---
-<aside class="w-[360px] bg-white border-r border-gray-200 flex-shrink-0 sticky top-20 h-[calc(100vh-80px)] flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-20">
+<aside id="explorer-sidebar" class="w-[300px] sm:w-[360px] bg-white border-r border-gray-200 flex-shrink-0 fixed lg:sticky top-20 h-[calc(100vh-80px)] flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.05)] z-40 transition-transform duration-300 -translate-x-full lg:translate-x-0">
 
   <div class="p-6 border-b border-gray-100 bg-surface/30">
+    <span class="font-bold text-brand-dark tracking-tight">Explorer Controls</span>
+    <button id="mobile-close-sidebar" class="w-8 h-8 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-brand-dark transition-colors shadow-sm">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
+  </div>
+
+  <div class="p-5 lg:p-6 border-b border-gray-100 bg-surface/30">
     <div class="flex gap-3 mb-5">
-      <button onclick="changeFilter('baseline')" class="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-600 hover:border-brand-blue-deep hover:text-brand-blue-deep transition-all shadow-sm cursor-pointer">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
-        Reset All
+      <button onclick="changeFilter('baseline')" class="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-600 hover:border-brand-blue-deep hover:text-brand-blue-deep transition-all shadow-sm cursor-pointer group">
+        <svg class="w-4 h-4 text-gray-400 group-hover:text-brand-blue-deep transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
+        Reset Filters
       </button>
-      <button onclick="exportCohortCSV()" class="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-brand-dark border border-brand-dark text-white rounded-xl text-xs font-bold hover:bg-brand-blue-deep hover:border-brand-blue-deep transition-all shadow-md hover:shadow-lg cursor-pointer">
+      <button onclick="exportCohortCSV()" class="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-brand-dark border border-brand-dark text-white rounded-xl text-xs font-bold hover:bg-brand-blue-deep hover:border-brand-blue-deep transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 cursor-pointer">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-        Export
+        Export CSV
       </button>
     </div>
 
     <div class="relative w-full">
-      <input type="text" id="global-search" placeholder="Search cohorts or charts..."
+      <input type="text" id="global-search" placeholder="Search cohorts or metrics..."
              class="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-gray-200 focus:border-brand-blue-deep focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-sm placeholder:text-gray-400" />
       <svg class="w-4 h-4 absolute left-4 top-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
     </div>
   </div>
 
-  <div class="flex border-b border-gray-200 shrink-0">
-    <button onclick="switchTab('filters')" id="tab-btn-filters" class="flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-brand-blue-deep border-b-[3px] border-brand-blue-deep transition-all bg-brand-blue-deep/5 cursor-pointer">Filters</button>
-    <button onclick="switchTab('charts')" id="tab-btn-charts" class="flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-gray-400 border-b-[3px] border-transparent hover:text-gray-600 hover:bg-gray-50 transition-all cursor-pointer">Charts</button>
+  <div class="flex p-2 bg-surface/30 border-b border-gray-100 shrink-0">
+    <div class="flex w-full bg-gray-100/80 p-1 rounded-xl">
+      <button onclick="switchTab('filters')" id="tab-btn-filters" class="flex-1 py-2 text-xs font-bold tracking-widest text-brand-dark bg-white rounded-lg shadow-sm transition-all cursor-pointer flex justify-center items-center gap-2">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+        Filters
+      </button>
+      <button onclick="switchTab('charts')" id="tab-btn-charts" class="flex-1 py-2 text-xs font-bold tracking-widest text-gray-500 hover:text-brand-dark rounded-lg transition-all cursor-pointer flex justify-center items-center gap-2">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+        Charts
+      </button>
+    </div>
   </div>
 
   <div class="flex-1 overflow-y-auto custom-scrollbar p-6">
 
     <div id="tab-content-filters" class="block">
-      <button id="btn-baseline" onclick="changeFilter('baseline')" class="w-full text-left px-4 py-3 rounded-xl text-brand-dark hover:bg-brand-blue-deep/5 transition-colors text-[15px] font-bold flex justify-between items-center filter-active border border-transparent shadow-sm mb-4 cursor-pointer">
-        <span>Baseline (Total)</span>
-        <span id="size-baseline" class="text-[11px] bg-white px-2.5 py-1 rounded-lg text-brand-blue-deep shadow-sm border border-gray-100 font-black">...</span>
+      <button id="btn-baseline" onclick="changeFilter('baseline')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-brand-blue-deep/5 transition-colors text-[14px] flex justify-between items-center filter-active border border-transparent mb-2 cursor-pointer group">
+        <div class="flex items-center gap-3">
+          <div class="w-4 h-4 rounded-full border-2 border-brand-blue-deep flex items-center justify-center shrink-0 radio-ring">
+            <div class="w-2 h-2 rounded-full bg-brand-blue-deep opacity-100 radio-dot transition-opacity"></div>
+          </div>
+          <span class="font-bold">Baseline (Total Cohort)</span>
+        </div>
+        <span id="size-baseline" class="text-[11px] bg-white px-2 py-0.5 rounded text-brand-blue-deep border border-gray-100 font-black shadow-sm">...</span>
       </button>
-      <div id="filter-list" class="space-y-0 filter-search-target">
+
+      <div id="filter-list" class="space-y-1 filter-search-target">
         </div>
     </div>
 
     <div id="tab-content-charts" class="hidden">
       <div class="flex gap-2 mb-4 pb-4 border-b border-gray-100 justify-between items-center px-1">
-        <span class="text-[11px] font-extrabold text-gray-400 uppercase tracking-widest">Visibility Controls</span>
-        <div class="space-x-3">
-          <button onclick="toggleAllCharts(true)" class="text-[11px] font-bold text-brand-blue-deep hover:text-brand-dark transition-colors cursor-pointer">Select All</button>
-          <button onclick="toggleAllCharts(false)" class="text-[11px] font-bold text-gray-400 hover:text-brand-dark transition-colors cursor-pointer">Clear</button>
+        <span class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">Visibility Map</span>
+        <div class="space-x-3 bg-gray-50 px-2 py-1 rounded-lg">
+          <button onclick="toggleAllCharts(true)" class="text-[10px] font-bold text-brand-blue-deep hover:text-brand-dark transition-colors cursor-pointer">All</button>
+          <span class="text-gray-300">|</span>
+          <button onclick="toggleAllCharts(false)" class="text-[10px] font-bold text-gray-400 hover:text-brand-dark transition-colors cursor-pointer">None</button>
         </div>
       </div>
       <div id="chart-toggles" class="space-y-2 filter-search-target">
@@ -1244,30 +1310,52 @@ const {
 
   </div>
 
-  <div class="p-6 border-t border-gray-100 bg-surface/50 shrink-0">
+  <div class="p-5 border-t border-gray-100 bg-surface/50 shrink-0">
     <div class="text-[10px] text-gray-400 font-bold uppercase tracking-widest flex justify-between items-center">
       <span>Data Gateway</span>
       <span id="cache-indicator" class="text-brand-green-bright flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-brand-green-bright animate-pulse"></span> SYNCING
+        <span class="w-2 h-2 rounded-full bg-brand-green-bright animate-pulse shadow-[0_0_8px_rgba(127,195,66,0.8)]"></span> SYNCING
       </span>
     </div>
   </div>
 </aside>
 
 <style>
-  /* Global active tracking token states mapping layout elements */
+  /* 🌟 UPGRADED: High-end Radio Logic Styling */
   :global(.filter-active) {
-    border-color: var(--color-brand-blue-deep) !important;
-    background-color: color-mix(in srgb, var(--color-brand-blue-deep) 8%, transparent) !important;
+    background-color: color-mix(in srgb, var(--color-brand-blue-deep) 6%, transparent) !important;
+    border-color: color-mix(in srgb, var(--color-brand-blue-deep) 20%, transparent) !important;
+  }
+
+  :global(.filter-active .font-bold) {
     color: var(--color-brand-dark) !important;
   }
 
+  /* Handle dynamic injected buttons to mimic the Baseline radio UI */
+  :global(#filter-list button) {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    text-align: left !important;
+    padding: 0.75rem 1rem !important;
+    border-radius: 0.75rem !important;
+    border: 1px solid transparent !important;
+    font-size: 14px !important;
+    color: #4b5563 !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+  }
+  :global(#filter-list button:hover) {
+    background-color: #f8fafc !important;
+  }
+
+  /* Structural fixes for injected accordion elements */
   :global(details > summary) { list-style: none; }
   :global(details > summary::-webkit-details-marker) { display: none; }
 
-  /* 🌟 MASTER REFINEMENT: Edge-to-Edge block row selection logic overrides for injected accordions */
   :global(.filter-group) {
-    border-bottom: 1px solid #e2e8f0 !important;
+    border-bottom: 1px solid #f1f5f9 !important;
   }
 
   :global(.filter-group summary) {
@@ -1275,44 +1363,41 @@ const {
     justify-content: space-between !important;
     align-items: center !important;
     width: 100% !important;
-    font-size: 0.75rem !important; /* 12px text size */
+    font-size: 0.70rem !important;
     font-weight: 800 !important;
-    color: #4b5563 !important; /* Legible deep gray */
+    color: #94a3b8 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.15em !important;
     cursor: pointer !important;
-    padding: 1rem 0.5rem !important; /* Generous vertical target surface padding box */
-    margin: 0 -1.5rem !important; /* Negative out margins pull container boundaries edge-to-edge */
-    padding-left: 2rem !important; /* Align text layout inset offsets beautifully */
+    padding: 1.25rem 0.5rem !important;
+    margin: 0 -1.5rem !important;
+    padding-left: 2rem !important;
     padding-right: 2rem !important;
-    width: calc(100% + 3rem) !important; /* Calibrated block math width extensions */
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    width: calc(100% + 3rem) !important;
+    transition: all 0.2s ease !important;
     user-select: none !important;
   }
 
   :global(.filter-group summary:hover) {
     color: var(--color-brand-blue-deep) !important;
-    background-color: color-mix(in srgb, var(--color-brand-blue-deep) 5%, transparent) !important;
+    background-color: color-mix(in srgb, var(--color-brand-blue-deep) 3%, transparent) !important;
   }
 
-  /* Retain structured bottom padding space clearance for internal expanded options checklists */
   :global(.filter-group[open] > div) {
     padding-bottom: 1rem !important;
     margin-top: 0.5rem !important;
   }
 
-  /* Custom Premium Layout Matrix Scrollbars Configuration styles */
-  .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+  .custom-scrollbar::-webkit-scrollbar { width: 5px; }
   .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
   .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--color-brand-blue-deep); }
 
-  /* Premium Apple-Style Toggle Switch Form Inputs layout layer rules */
   :global(.apple-switch) {
     position: relative;
     display: inline-block;
-    width: 44px;
-    height: 24px;
+    width: 36px;
+    height: 20px;
     flex-shrink: 0;
   }
   :global(.apple-switch input) {
@@ -1325,26 +1410,26 @@ const {
     cursor: pointer;
     top: 0; left: 0; right: 0; bottom: 0;
     background-color: #e2e8f0;
-    transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 24px;
+    transition: .3s ease;
+    border-radius: 20px;
   }
   :global(.slider:before) {
     position: absolute;
     content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
     background-color: white;
-    transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: .3s ease;
     border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
   }
   :global(input:checked + .slider) {
     background-color: var(--color-brand-green-bright);
   }
   :global(input:checked + .slider:before) {
-    transform: translateX(20px);
+    transform: translateX(16px);
   }
 </style>
 
@@ -1354,15 +1439,22 @@ const {
 ```astro
 ---
 ---
-<header class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 gap-4 border-b border-gray-200 pb-8">
-  <div>
-    <h1 class="text-4xl font-black text-brand-dark tracking-tight mb-2" id="view-title">Cohort Overview</h1>
-    <p class="text-sm text-gray-500 font-medium tracking-wide">Aggregated population statistics.</p>
+<header id="explorer-header" class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 gap-4 border-b border-gray-200 pb-8 transition-all duration-500 ease-out origin-top">
+
+  <div class="w-full sm:w-auto flex justify-between items-start sm:items-center gap-4">
+    <div>
+      <h1 class="text-3xl sm:text-4xl font-black text-brand-dark tracking-tight mb-2 min-h-[40px]" id="view-title"></h1>
+      <p class="text-sm text-gray-500 font-medium tracking-wide">Aggregated population statistics.</p>
+    </div>
+
+    <button onclick="toggleMobileSidebar()" class="lg:hidden shrink-0 bg-white p-2.5 rounded-xl border border-gray-200 shadow-sm text-brand-blue-deep hover:bg-brand-blue-deep/10 transition-colors">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+    </button>
   </div>
-  
-  <div class="text-right bg-white px-6 py-3 rounded-2xl border border-gray-200 shadow-sm">
+
+  <div class="text-right bg-white px-6 py-3 rounded-2xl border border-gray-200 shadow-sm w-full sm:w-auto flex flex-row sm:flex-col justify-between sm:justify-center items-center sm:items-end">
     <span class="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] block mb-1">Total Patients</span>
-    <span id="top-cohort-size" class="text-3xl font-black text-brand-blue-deep leading-none">...</span>
+    <span id="top-cohort-size" class="text-2xl sm:text-3xl font-black text-brand-blue-deep leading-none min-h-[36px]"></span>
   </div>
 </header>
 
@@ -1372,20 +1464,18 @@ const {
 ```astro
 ---
 ---
-<div class="relative w-full min-h-[500px]">
+<div class="relative w-full">
 
-  <div id="loading-overlay" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-surface/40 backdrop-blur-md transition-all duration-300 opacity-100 pointer-events-auto rounded-[2.5rem]">
-    <p class="text-[11px] font-black text-brand-dark uppercase tracking-[0.2em] animate-pulse">Syncing Cohort Data</p>
+  <div id="loading-overlay" class="absolute inset-0 z-50 bg-surface/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-500 rounded-[2.5rem]"></div>
+
+  <div id="dashboard-grid" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 transition-all duration-500 ease-out origin-top">
   </div>
 
-  <div id="dashboard-grid" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 transition-all duration-500 transform scale-[0.98] opacity-20 blur-sm origin-top">
-    </div>
+</div>
 
-  <div id="search-fallback" class="hidden flex-col items-center justify-center py-32 text-gray-400 bg-white/50 border border-gray-100 rounded-[2.5rem] mt-6 shadow-sm">
-    <svg class="w-14 h-14 mb-6 opacity-50 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-    <p class="text-base font-bold text-gray-500 uppercase tracking-[0.15em]">No matching metrics</p>
-  </div>
-
+<div id="search-fallback" class="hidden flex-col items-center justify-center py-32 text-gray-400 bg-white/50 border border-gray-100 rounded-[2.5rem] mt-6 shadow-sm">
+  <svg class="w-14 h-14 mb-6 opacity-50 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+  <p class="text-base font-bold text-gray-500 uppercase tracking-[0.15em]">No matching metrics</p>
 </div>
 
 <style>

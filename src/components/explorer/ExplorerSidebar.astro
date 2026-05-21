@@ -1,10 +1,10 @@
 ---
 ---
-<aside id="explorer-sidebar" class="fixed inset-y-0 left-0 z-50 w-[85vw] max-w-[360px] bg-white border-r border-gray-200 flex flex-col shadow-2xl lg:shadow-[4px_0_24px_rgba(0,0,0,0.02)] transition-transform duration-300 -translate-x-full lg:translate-x-0 lg:sticky lg:top-20 lg:h-[calc(100vh-80px)]">
+<aside id="explorer-sidebar" class="w-[300px] sm:w-[360px] bg-white border-r border-gray-200 flex-shrink-0 fixed lg:sticky top-20 h-[calc(100vh-80px)] flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.05)] z-40 transition-transform duration-300 -translate-x-full lg:translate-x-0">
 
-  <div class="lg:hidden flex justify-between items-center p-4 border-b border-gray-100 bg-surface/50">
+  <div class="p-6 border-b border-gray-100 bg-surface/30 flex justify-between items-center">
     <span class="font-bold text-brand-dark tracking-tight">Explorer Controls</span>
-    <button id="mobile-close-sidebar" class="w-8 h-8 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-brand-dark transition-colors shadow-sm">
+    <button id="mobile-close-sidebar" onclick="toggleMobileSidebar()" class="lg:hidden w-8 h-8 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-brand-dark transition-colors shadow-sm">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
     </button>
   </div>

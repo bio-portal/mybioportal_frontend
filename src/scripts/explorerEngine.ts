@@ -18,6 +18,26 @@ let visibleCharts = new Set<string>();
 (window as any).exportCohortCSV = exportCohortCSV;
 (window as any).toggleAllCharts = toggleAllCharts;
 (window as any).switchTab = switchTab;
+(window as any).toggleMobileSidebar = toggleMobileSidebar; // NEW BINDING
+
+// NEW: Mobile Sidebar Toggle Logic
+function toggleMobileSidebar() {
+  const sidebar = document.getElementById('explorer-sidebar');
+  const backdrop = document.getElementById('mobile-sidebar-backdrop');
+
+  if (sidebar && backdrop) {
+    const isClosed = sidebar.classList.contains('-translate-x-full');
+    if (isClosed) {
+      sidebar.classList.remove('-translate-x-full');
+      backdrop.classList.remove('hidden');
+      setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+    } else {
+      sidebar.classList.add('-translate-x-full');
+      backdrop.classList.add('opacity-0');
+      setTimeout(() => backdrop.classList.add('hidden'), 300);
+    }
+  }
+}
 
 /**
  * Reads CSS tokens from global.css dynamically at runtime
@@ -115,6 +135,8 @@ async function fetchFromPortal(queryString: string) {
   return await response.json();
 }
 
+
+
 async function initializeEngine() {
   try {
     initializePalette();
@@ -133,6 +155,10 @@ async function initializeEngine() {
     buildChartToggleMenu();
     renderFilterMenu();
     renderDashboard();
+
+    // DELAYED TEXT UPDATE: Populates the empty HTML elements after data loads
+    const titleEl = document.getElementById('view-title');
+    if (titleEl) titleEl.innerText = 'Cohort Overview';
     updateCohortSizeCounters();
 
     const searchInput = document.getElementById('global-search');

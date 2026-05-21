@@ -139,13 +139,15 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
     </section>
   </main>
 
-  <script>
+<script>
     document.addEventListener("DOMContentLoaded", () => {
       const teamCards = document.querySelectorAll('.team-card');
       const spotlightContent = document.getElementById('spotlight-content');
 
       let activeHoverTarget: any = null;
       let currentDisplayedCard: any = null;
+
+      // FIXED: Removed the redundant handleScroll logic that was duplicating Navbar.astro
 
       teamCards.forEach(card => {
         card.addEventListener('mouseenter', () => {
@@ -203,4 +205,5 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
       });
     });
   </script>
+
 </Layout>
