@@ -1,11 +1,11 @@
 # BioPortal Astro Architectural Context
-Generated on: Thu 21 May 2026 11:05:55 AM EDT
+Generated on: Tue Jun  2 15:35:38 EDT 2026
 
 ---
 
 ## 📂 Project Directory Structure
 ```text
-[01;34m.[00m
+.
 ├── astro.config.mjs
 ├── astro_project_context.md
 ├── fixcolors.sh
@@ -14,11 +14,12 @@ Generated on: Thu 21 May 2026 11:05:55 AM EDT
 ├── organize_assets.sh
 ├── package.json
 ├── package-lock.json
-├── [00;32mproject_context.txt[00m
+├── project_context.txt
+├── README.html
 ├── README.md
-├── [01;34msrc[00m
-│   ├── [01;34mcomponents[00m
-│   │   ├── [01;34mexplorer[00m
+├── src
+│   ├── components
+│   │   ├── explorer
 │   │   │   ├── ExplorerGrid.astro
 │   │   │   ├── ExplorerHeader.astro
 │   │   │   └── ExplorerSidebar.astro
@@ -26,16 +27,16 @@ Generated on: Thu 21 May 2026 11:05:55 AM EDT
 │   │   ├── Hero.astro
 │   │   ├── Navbar.astro
 │   │   └── TrustBar.astro
-│   ├── [01;34mcontent[00m
-│   │   ├── [01;34mnews[00m
+│   ├── content
+│   │   ├── news
 │   │   │   └── kidney-project.md
-│   │   ├── [01;34mpages[00m
+│   │   ├── pages
 │   │   │   ├── data.yaml
 │   │   │   ├── home.yaml
 │   │   │   ├── news.yaml
 │   │   │   ├── participants.yaml
 │   │   │   └── privacy.yaml
-│   │   └── [01;34mteam[00m
+│   │   └── team
 │   │       ├── 01-brent-richards.yaml
 │   │       ├── 02-vincent-mooser.yaml
 │   │       ├── 03-jonathan-afilalo.yaml
@@ -54,27 +55,28 @@ Generated on: Thu 21 May 2026 11:05:55 AM EDT
 │   │       ├── 16-cesar-peralta.yaml
 │   │       ├── 17-byanca-liboni.yaml
 │   │       ├── 18-jonafe-daguplo.yaml
-│   │       └── 19-nadia-blostein.yaml
+│   │       ├── 19-nadia-blostein.yaml
+│   │       └── 20-jesse-islam.yaml
 │   ├── content.config.ts
-│   ├── [01;34mlayouts[00m
+│   ├── layouts
 │   │   └── Layout.astro
-│   ├── [01;34mpages[00m
-│   │   ├── [01;34mdata[00m
+│   ├── pages
+│   │   ├── data
 │   │   │   └── explorer.astro
 │   │   ├── data.astro
 │   │   ├── index.astro
-│   │   ├── [01;34mnews[00m
+│   │   ├── news
 │   │   │   ├── [id].astro
 │   │   │   └── index.astro
 │   │   ├── participants.astro
 │   │   └── privacy.astro
-│   ├── [01;34mscripts[00m
+│   ├── scripts
 │   │   └── explorerEngine.ts
-│   └── [01;34mstyles[00m
+│   └── styles
 │       └── global.css
 └── tsconfig.json
 
-13 directories, 54 files
+13 directories, 56 files
 ```
 
 ---
@@ -335,7 +337,7 @@ const sortedTeam = allTeam.sort((a, b) => a.data.order - b.data.order);
 const allNews = await getCollection('news');
 const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
 ---
-<Layout title="BioPortal | Advancing Genomic Research" ctaMode="scroll">
+<Layout title="BioPortal | Advancing Human Research" ctaMode="scroll">
   <main class="relative">
 
     <Hero content={homeData.data.hero} />
@@ -463,13 +465,15 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
     </section>
   </main>
 
-  <script>
+<script>
     document.addEventListener("DOMContentLoaded", () => {
       const teamCards = document.querySelectorAll('.team-card');
       const spotlightContent = document.getElementById('spotlight-content');
 
       let activeHoverTarget: any = null;
       let currentDisplayedCard: any = null;
+
+      // FIXED: Removed the redundant handleScroll logic that was duplicating Navbar.astro
 
       teamCards.forEach(card => {
         card.addEventListener('mouseenter', () => {
@@ -527,6 +531,7 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
       });
     });
   </script>
+
 </Layout>
 
 ```
@@ -927,16 +932,13 @@ import ExplorerGrid from '../../components/explorer/ExplorerGrid.astro';
 
     <main id="main-content-area" class="flex-1 p-6 lg:p-12 relative z-10 w-full overflow-x-hidden transition-all duration-500 origin-top">
 
-      <div id="universal-loading-overlay" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-surface/40 backdrop-blur-md transition-all duration-300 opacity-0 pointer-events-none rounded-[2.5rem] hidden">
-        <p class="text-[11px] font-black text-brand-dark uppercase tracking-[0.2em] animate-pulse">Syncing Cohort Data</p>
-      </div>
+      <div id="loading-overlay" class="absolute inset-0 z-50 bg-surface/80 backdrop-blur-md opacity-100 transition-all duration-700 ease-in-out"></div>
 
       <ExplorerHeader />
       <ExplorerGrid />
     </main>
   </div>
-
-  </Layout>
+</Layout>
 
 <script src="../../scripts/explorerEngine.ts"></script>
 <script>
@@ -998,7 +1000,7 @@ const {
   <body class="flex flex-col min-h-screen bg-surface">
     <Navbar type={navType} ctaMode={ctaMode} backLink={backLink} backText={backText} />
 
-    <div class="flex-grow pt-10">
+    <div class="flex-grow pt-20">
       <slot />
     </div>
 
@@ -1014,45 +1016,49 @@ const {
 const { content } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
-<header class="pt-28 pb-8 px-6 max-w-5xl mx-auto text-center relative z-10">
-  <h1 class="text-5xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-6">
-    {content.headline} <br/>
-    <span class="bg-gradient-to-r from-brand-blue-deep to-brand-teal bg-clip-text text-transparent pb-2">{content.gradientText}</span>
-  </h1>
+<header class="pt-12 pb-6 px-6 max-w-5xl mx-auto text-center relative z-10 flex flex-col justify-center min-h-[50vh] max-h-[680px]">
 
-  <p class="text-lg lg:text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
-    {content.description}
-  </p>
+  <div class="space-y-6">
+    <h1 class="text-5xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-4">
+      {content.headline} <br/>
+      <span class="bg-gradient-to-r from-brand-blue-deep to-brand-teal bg-clip-text text-transparent pb-2">{content.gradientText}</span>
+    </h1>
 
-  <div id="hero-button-group" class="flex flex-col sm:flex-row justify-center items-center gap-6 z-20">
+    <p class="text-lg lg:text-xl text-gray-500 max-w-2xl mx-auto mb-8 leading-relaxed">
+      {content.description}
+    </p>
 
-    <div class="relative group/tooltip w-full sm:w-auto">
-      <a
-        href={`${baseUrl}/participants`}
-        class="w-full sm:w-64 h-16 rounded-full bg-brand-green-bright text-white font-extrabold text-lg shadow-xl shadow-brand-green-bright/30 transition-all duration-300 hover:scale-105 hover:brightness-110 hover:shadow-2xl hover:shadow-brand-green-bright/40 flex items-center justify-center gap-3 cursor-pointer select-none group"
-      >
-        Join Study
-        <svg class="w-5 h-5 shrink-0 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-      </a>
-      <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 p-4 bg-white border border-gray-100 text-gray-600 text-xs text-left leading-relaxed rounded-2xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/tooltip:opacity-100 transition-all duration-300 pointer-events-none z-50 hidden sm:block">
-        Register your interest to safely contribute biospecimens and clinical data to our Montreal-based research cohorts.
+    <div id="hero-button-group" class="flex flex-col sm:flex-row justify-center items-center gap-6 z-20">
+
+      <div class="relative group/tooltip w-full sm:w-auto">
+        <a
+          href={`${baseUrl}/participants`}
+          class="w-full sm:w-64 h-16 rounded-full bg-brand-green-bright text-white font-extrabold text-lg shadow-xl shadow-brand-green-bright/30 transition-all duration-300 hover:scale-105 hover:brightness-110 hover:shadow-2xl hover:shadow-brand-green-bright/40 flex items-center justify-center gap-3 cursor-pointer select-none group"
+        >
+          Join Study
+          <svg class="w-5 h-5 shrink-0 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        </a>
+        <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 p-4 bg-white border border-gray-100 text-gray-600 text-xs text-left leading-relaxed rounded-2xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/tooltip:opacity-100 transition-all duration-300 pointer-events-none z-50 hidden sm:block">
+          Register your interest to safely contribute biospecimens and clinical data to our Montreal-based research cohorts.
+        </div>
       </div>
-    </div>
 
-    <div class="relative group/tooltip w-full sm:w-auto">
-      <a
-        href={`${baseUrl}/data`}
-        class="w-full sm:w-64 h-16 rounded-full bg-brand-blue-deep text-white font-extrabold text-lg shadow-xl shadow-brand-blue-deep/30 transition-all duration-300 hover:scale-105 hover:brightness-110 hover:shadow-2xl hover:shadow-brand-blue-deep/40 flex items-center justify-center gap-3 cursor-pointer select-none group"
-      >
-        Request Data
-        <svg class="w-5 h-5 shrink-0 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-      </a>
-      <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 p-4 bg-white border border-gray-100 text-gray-600 text-xs text-left leading-relaxed rounded-2xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/tooltip:opacity-100 transition-all duration-300 pointer-events-none z-50 hidden sm:block">
-        Access our secure portal to explore de-identified datasets and request biological materials for your research.
+      <div class="relative group/tooltip w-full sm:w-auto">
+        <a
+          href={`${baseUrl}/data`}
+          class="w-full sm:w-64 h-16 rounded-full bg-brand-blue-deep text-white font-extrabold text-lg shadow-xl shadow-brand-blue-deep/30 transition-all duration-300 hover:scale-105 hover:brightness-110 hover:shadow-2xl hover:shadow-brand-blue-deep/40 flex items-center justify-center gap-3 cursor-pointer select-none group"
+        >
+          Request Data
+          <svg class="w-5 h-5 shrink-0 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        </a>
+        <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 p-4 bg-white border border-gray-100 text-gray-600 text-xs text-left leading-relaxed rounded-2xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/tooltip:opacity-100 transition-all duration-300 pointer-events-none z-50 hidden sm:block">
+          Access our secure portal to explore de-identified datasets and request biological materials for your research.
+        </div>
       </div>
-    </div>
 
+    </div>
   </div>
+
 </header>
 
 ```
@@ -1062,45 +1068,77 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 const { content } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Duplicate the partners array to create a flawless, unbroken infinite loop
+const doublePartners = [...content.partners, ...content.partners];
 ---
 
-<section class="border-y border-gray-100 bg-white/50 py-10 mb-12">
-  <div class="max-w-6xl mx-auto px-6 text-center">
-    <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-10">{content.label}</p>
+<section class="border-y border-gray-100 bg-white/50 py-8 mb-12 overflow-hidden">
+  <div class="max-w-6xl mx-auto text-center">
+    <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-6 px-6">{content.label}</p>
 
-    <div class="flex flex-wrap justify-center items-center gap-x-12 gap-y-10 md:gap-x-20 transition-all duration-500 mb-12">
-      {content.partners.map((partner: any) => (
-        <a
-          href={partner.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="hover:scale-110 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center drop-shadow-sm hover:drop-shadow-md"
-          title={partner.name}
-        >
-          {partner.logo ? (
-            <img
-              src={`${baseUrl}${partner.logo}`}
-              alt={partner.name}
-              class="h-10 md:h-12 w-auto object-contain"
-              style={partner.scale ? `transform: scale(${partner.scale});` : ''}
-              onerror="this.style.display='none'"
-            />
-          ) : (
-            <span class="text-lg font-black text-gray-800 tracking-tighter">{partner.name}</span>
-          )}
-        </a>
-      ))}
+    <div class="relative w-full overflow-hidden marquee-mask mb-6">
+      <div class="flex w-max items-center gap-x-16 md:gap-x-24 animate-marquee py-2 px-4">
+        {doublePartners.map((partner: any) => (
+          <a
+            href={partner.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:scale-105 transition-transform duration-300 flex items-center justify-center shrink-0"
+            title={partner.name}
+          >
+            {partner.logo ? (
+              <img
+                src={`${baseUrl}${partner.logo}`}
+                alt={partner.name}
+                class="h-9 md:h-11 w-auto object-contain"
+                style={partner.scale ? `transform: scale(${partner.scale});` : ''}
+                onerror="this.style.display='none'"
+              />
+            ) : (
+              <span class="text-base font-black text-gray-800 tracking-tighter whitespace-nowrap">{partner.name}</span>
+            )}
+          </a>
+        ))}
+      </div>
     </div>
 
     {content.acknowledgments && (
-      <div class="max-w-3xl mx-auto pt-8 border-t border-gray-100/60">
-        <p class="text-sm text-gray-500 leading-relaxed italic">
+      <div class="max-w-3xl mx-auto pt-4 px-6 border-t border-gray-100/60">
+        <p class="text-xs md:text-sm text-gray-400 leading-relaxed italic font-medium">
           {content.acknowledgments}
         </p>
       </div>
     )}
   </div>
 </section>
+
+<style>
+  /* Infinite linear sliding translation */
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee 35s linear infinite;
+  }
+
+  /* Pauses the slider when a user hovers over a partner link */
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
+
+  /* Blends the edges out transparently so logos don't clip abruptly at the borders */
+  .marquee-mask {
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  }
+</style>
 
 ```
 
@@ -1135,8 +1173,13 @@ const {
 <nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300" data-cta-mode={ctaMode}>
   <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
 
-    <a href={`${baseUrl}/`} class="flex items-center shrink-0 z-50">
-      <img src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`} alt="BioPortal Logo" class="w-36 md:w-40 h-auto shrink-0 hover:-translate-y-0.5 transition-transform" onerror="this.style.display='none'" />
+    <a href={`${baseUrl}/`} class="flex items-center shrink-0 z-50 h-fit max-h-16 py-2 outline-none">
+      <img
+        src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
+        alt="BioPortal Logo"
+        class="h-10 md:h-11 w-auto shrink-0 hover:-translate-y-0.5 transition-transform object-contain"
+        onerror="this.style.display='none'"
+      />
     </a>
 
     {type === 'main' ? (
@@ -1209,7 +1252,7 @@ const {
       handleScroll();
     }
 
-    // 🌟 NEW: Mobile Menu Toggle Logic
+    // Mobile Menu Toggle Logic
     const mobileToggle = document.getElementById('mobile-menu-toggle');
     const mobilePanel = document.getElementById('mobile-menu-panel');
     const mobileLinks = document.querySelectorAll('.mobile-link');
@@ -1220,7 +1263,6 @@ const {
         mobilePanel.classList.toggle('flex');
       });
 
-      // Close menu when a link is clicked
       mobileLinks.forEach(link => {
         link.addEventListener('click', () => {
           mobilePanel.classList.add('hidden');
@@ -1239,14 +1281,33 @@ const {
 ---
 <aside id="explorer-sidebar" class="w-[300px] sm:w-[360px] bg-white border-r border-gray-200 flex-shrink-0 fixed lg:sticky top-20 h-[calc(100vh-80px)] flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.05)] z-40 transition-transform duration-300 -translate-x-full lg:translate-x-0">
 
-  <div class="p-6 border-b border-gray-100 bg-surface/30">
-    <span class="font-bold text-brand-dark tracking-tight">Explorer Controls</span>
-    <button id="mobile-close-sidebar" class="w-8 h-8 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-brand-dark transition-colors shadow-sm">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
-    </button>
+  <div class="p-6 border-b border-gray-100 bg-surface/30 flex justify-center items-center shrink-0 relative min-h-[73px] group/info">
+
+    <div class="flex items-center gap-2 cursor-help select-none bg-gray-50 hover:bg-brand-blue-deep/10 px-3 py-1 rounded-full transition-colors" tabindex="0">
+      <span class="font-bold text-brand-dark tracking-tight">Command Center</span>
+      <svg class="w-4 h-4 text-brand-blue-deep shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 111.063 1.06l-.041.02a.75.75 0 01-1.063-1.06zm0 4.5h.008v.008h-.008v-.008zm-9-3.75a9 9 0 1118 0 9 9 0 01-18 0z" />
+      </svg>
+    </div>
+
+    <div class="absolute right-6 top-1/2 -translate-y-1/2 lg:hidden">
+      <button id="mobile-close-sidebar" onclick="toggleMobileSidebar()" class="w-8 h-8 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-brand-dark transition-colors shadow-sm cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
+
+    <div class="absolute top-[calc(100%-8px)] left-4 right-4 z-50 bg-white border border-gray-100 rounded-2xl shadow-2xl p-5 transition-all duration-300 transform origin-top opacity-0 scale-95 pointer-events-none group-hover/info:opacity-100 group-hover/info:scale-100 group-hover/info:pointer-events-auto focus-within:opacity-100 focus-within:scale-100 focus-within:pointer-events-auto">
+      <div class="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-t border-l border-gray-100 rotate-45"></div>
+      <p class="text-xs text-gray-600 leading-relaxed font-medium mb-2">
+        <strong>Cohort Discovery:</strong> Click directly on any chart segment or sidebar attribute to isolate a sub-population. You can refine pie chart layouts by clicking legend labels to toggle specific variables.
+      </p>
+      <p class="text-[11px] text-gray-400 leading-normal border-t border-gray-50 pt-2">
+        To ensure precision and maintain privacy, the explorer updates population metrics using one active filter condition at a time.
+      </p>
+    </div>
   </div>
 
-  <div class="p-5 lg:p-6 border-b border-gray-100 bg-surface/30">
+  <div class="p-5 lg:p-6 border-b border-gray-100 bg-surface/30 shrink-0">
     <div class="flex gap-3 mb-5">
       <button onclick="changeFilter('baseline')" class="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-600 hover:border-brand-blue-deep hover:text-brand-blue-deep transition-all shadow-sm cursor-pointer group">
         <svg class="w-4 h-4 text-gray-400 group-hover:text-brand-blue-deep transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
@@ -1283,16 +1344,12 @@ const {
     <div id="tab-content-filters" class="block">
       <button id="btn-baseline" onclick="changeFilter('baseline')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-brand-blue-deep/5 transition-colors text-[14px] flex justify-between items-center filter-active border border-transparent mb-2 cursor-pointer group">
         <div class="flex items-center gap-3">
-          <div class="w-4 h-4 rounded-full border-2 border-brand-blue-deep flex items-center justify-center shrink-0 radio-ring">
-            <div class="w-2 h-2 rounded-full bg-brand-blue-deep opacity-100 radio-dot transition-opacity"></div>
-          </div>
           <span class="font-bold">Baseline (Total Cohort)</span>
         </div>
         <span id="size-baseline" class="text-[11px] bg-white px-2 py-0.5 rounded text-brand-blue-deep border border-gray-100 font-black shadow-sm">...</span>
       </button>
 
-      <div id="filter-list" class="space-y-1 filter-search-target">
-        </div>
+      <div id="filter-list" class="space-y-1 filter-search-target"></div>
     </div>
 
     <div id="tab-content-charts" class="hidden">
@@ -1304,8 +1361,7 @@ const {
           <button onclick="toggleAllCharts(false)" class="text-[10px] font-bold text-gray-400 hover:text-brand-dark transition-colors cursor-pointer">None</button>
         </div>
       </div>
-      <div id="chart-toggles" class="space-y-2 filter-search-target">
-        </div>
+      <div id="chart-toggles" class="space-y-2 filter-search-target"></div>
     </div>
 
   </div>
@@ -1321,7 +1377,6 @@ const {
 </aside>
 
 <style>
-  /* 🌟 UPGRADED: High-end Radio Logic Styling */
   :global(.filter-active) {
     background-color: color-mix(in srgb, var(--color-brand-blue-deep) 6%, transparent) !important;
     border-color: color-mix(in srgb, var(--color-brand-blue-deep) 20%, transparent) !important;
@@ -1331,7 +1386,6 @@ const {
     color: var(--color-brand-dark) !important;
   }
 
-  /* Handle dynamic injected buttons to mimic the Baseline radio UI */
   :global(#filter-list button) {
     display: flex !important;
     justify-content: space-between !important;
@@ -1350,7 +1404,6 @@ const {
     background-color: #f8fafc !important;
   }
 
-  /* Structural fixes for injected accordion elements */
   :global(details > summary) { list-style: none; }
   :global(details > summary::-webkit-details-marker) { display: none; }
 
@@ -1443,12 +1496,11 @@ const {
 
   <div class="w-full sm:w-auto flex justify-between items-start sm:items-center gap-4">
     <div>
-      <h1 class="text-3xl sm:text-4xl font-black text-brand-dark tracking-tight mb-2 min-h-[40px]" id="view-title"></h1>
-      <p class="text-sm text-gray-500 font-medium tracking-wide">Aggregated population statistics.</p>
+      <h1 class="text-3xl sm:text-4xl font-black text-brand-dark tracking-tight min-h-[40px]" id="view-title"></h1>
     </div>
 
     <button onclick="toggleMobileSidebar()" class="lg:hidden shrink-0 bg-white p-2.5 rounded-xl border border-gray-200 shadow-sm text-brand-blue-deep hover:bg-brand-blue-deep/10 transition-colors">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
     </button>
   </div>
 
@@ -1464,13 +1516,7 @@ const {
 ```astro
 ---
 ---
-<div class="relative w-full">
-
-  <div id="loading-overlay" class="absolute inset-0 z-50 bg-surface/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-500 rounded-[2.5rem]"></div>
-
-  <div id="dashboard-grid" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 transition-all duration-500 ease-out origin-top">
-  </div>
-
+<div id="dashboard-grid" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 transition-all duration-500 ease-out origin-top">
 </div>
 
 <div id="search-fallback" class="hidden flex-col items-center justify-center py-32 text-gray-400 bg-white/50 border border-gray-100 rounded-[2.5rem] mt-6 shadow-sm">

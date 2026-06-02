@@ -1,8 +1,12 @@
-import Chart from 'chart.js/auto';
+import { Chart, registerables } from 'chart.js';
+import { TreemapController, TreemapElement } from 'chartjs-chart-treemap';
+
+// Register standard controllers plus the specialized Treemap elements
+Chart.register(...registerables, TreemapController, TreemapElement);
 
 const API_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats";
 
-// Populated dynamically from global.css overrides at runtime
+// Populated dynamically from global.css tokens at runtime
 let PALETTE: string[] = [];
 
 let variableMetadata: any[] = [];
@@ -13,14 +17,16 @@ let chartInstances: Record<string, Chart> = {};
 let cohortSizesDictionary: Record<string, string | number> = {};
 let visibleCharts = new Set<string>();
 
-// Expose bindings to window for static Astro HTML onclick attributes
+// Expose explicit template bindings to the window for static Astro component onclick macros
 (window as any).changeFilter = changeFilter;
 (window as any).exportCohortCSV = exportCohortCSV;
 (window as any).toggleAllCharts = toggleAllCharts;
 (window as any).switchTab = switchTab;
 (window as any).toggleMobileSidebar = toggleMobileSidebar;
 
-// FIXED: Unified the element variable targeting to match your layout overlay ID
+/**
+ * Toggles responsive layout views on mobile viewpoints
+ */
 function toggleMobileSidebar() {
   const sidebar = document.getElementById('explorer-sidebar');
   const backdrop = document.getElementById('mobile-sidebar-overlay');
@@ -40,7 +46,7 @@ function toggleMobileSidebar() {
 }
 
 /**
- * Reads CSS tokens from global.css dynamically at runtime
+ * Reads core design engine CSS theme tokens dynamically at runtime
  */
 function initializePalette() {
   const rootStyle = getComputedStyle(document.documentElement);
@@ -122,7 +128,7 @@ function hideLoadingState() {
 
 async function fetchFromPortal(queryString: string) {
   const response = await fetch(`${API_GATEWAY}?${queryString}&_cb=${new Date().getTime()}`);
-  if (!response.ok) throw new Error("API performance timeout exception");
+  if (!response.ok) throw new Error("API infrastructure connection exception");
 
   const cacheHeader = response.headers.get("X-Cache");
   const indicator = document.getElementById("cache-indicator");
@@ -160,7 +166,7 @@ async function initializeEngine() {
     if (searchInput) searchInput.addEventListener('keyup', handleUnifiedSearch);
 
     const elapsed = Date.now() - startTime;
-    if (elapsed < 900) await new Promise(r => setTimeout(r, 900 - elapsed));
+    if (elapsed < 700) await new Promise(r => setTimeout(r, 700 - elapsed));
 
     hideLoadingState();
 
@@ -168,12 +174,11 @@ async function initializeEngine() {
     console.error(err);
     hideLoadingState();
 
-    // FIXED: Formulate title safety state to let users know the system crashed instead of remaining blank
     const titleEl = document.getElementById('view-title');
     if (titleEl) titleEl.innerText = 'Service Unavailable';
 
     const grid = document.getElementById('dashboard-grid');
-    if (grid) grid.innerHTML = `<div class="col-span-full p-8 text-center bg-red-50 text-red-700 rounded-2xl border border-red-100 font-bold">API Connection Failed. Please reload.</div>`;
+    if (grid) grid.innerHTML = `<div class="col-span-full p-8 text-center bg-red-50 text-red-700 rounded-2xl border border-red-100 font-bold">API Access Sync Failed. Please refresh.</div>`;
   }
 }
 
@@ -195,7 +200,7 @@ function calculateCohortSizes() {
 }
 
 // ==========================================
-// RENDERERS
+// RENDERING ENGINES
 // ==========================================
 
 function renderFilterMenu() {
@@ -235,8 +240,8 @@ function renderFilterMenu() {
           btn.className = "filter-btn w-full text-left px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-[13px] flex justify-between items-center font-medium border border-transparent cursor-pointer";
 
           let displayCount: string | number = item.count;
-          if (displayCount !== '<10' && displayCount !== '<20') {
-             displayCount = parseInt(displayCount as string).toLocaleString();
+          if (typeof displayCount === 'string' && !displayCount.startsWith('<')) {
+             displayCount = parseInt(displayCount).toLocaleString();
           }
 
           btn.innerHTML = `<span class="searchable-text">${item.category}</span> <span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-md text-gray-500 font-black">${displayCount}</span>`;
@@ -331,7 +336,7 @@ async function changeFilter(filterKey: string) {
     updateCohortSizeCounters();
 
     const elapsed = Date.now() - startTime;
-    if (elapsed < 600) await new Promise(r => setTimeout(r, 600 - elapsed));
+    if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed));
 
     hideLoadingState();
 
@@ -347,8 +352,8 @@ function updateCohortSizeCounters() {
   const sizeEl = document.getElementById('top-cohort-size');
   const baselineSidebarSize = document.getElementById('size-baseline');
 
-  const displayVal = (selectedSize !== '<10' && selectedSize !== '<20' && selectedSize !== '...')
-      ? parseInt(selectedSize as string).toLocaleString()
+  const displayVal = (typeof selectedSize === 'string' && !selectedSize.startsWith('<') && selectedSize !== '...')
+      ? parseInt(selectedSize).toLocaleString()
       : selectedSize;
 
   if (sizeEl) sizeEl.innerText = displayVal as string;
@@ -371,7 +376,7 @@ function handleUnifiedSearch() {
   });
 
   document.querySelectorAll('.filter-group').forEach(group => {
-    const title = (group.querySelector('summary .searchable-text') as HTMLElement).innerText.toLowerCase();
+    const title = (group.querySelector('summary searchable-text') as HTMLElement).innerText.toLowerCase();
     let hasVisibleChild = false;
 
     group.querySelectorAll('.filter-btn').forEach(btn => {
@@ -392,15 +397,15 @@ function handleUnifiedSearch() {
   document.querySelectorAll('.chart-card').forEach(card => {
     const title = card.getAttribute('data-title')?.toLowerCase() || "";
     if (title.includes(query)) {
-      toggleDisplay(card as HTMLElement, true);
+      card.classList.remove('hidden');
       foundCards++;
     } else {
-      toggleDisplay(card as HTMLElement, false);
+      card.classList.add('hidden');
     }
   });
 
   const fallbackEl = document.getElementById('search-fallback');
-  if (fallbackEl) toggleDisplay(fallbackEl, foundCards === 0);
+  if (fallbackEl) fallbackEl.style.display = foundCards === 0 ? 'flex' : 'none';
 }
 
 function exportCohortCSV() {
@@ -440,14 +445,21 @@ function renderDashboard() {
     if (filteredData.length === 0) return;
 
     const isPie = meta.chart_type === 'pie';
-    const isHorizontalBar = !isPie;
+    const isTreemap = meta.chart_type === 'treemap';
+    const isBar = meta.chart_type === 'bar';
 
-    const HEIGHT_PER_BAR = 36;
+    const HEIGHT_PER_BAR = 38;
     const minContainerHeight = 240;
-    const dynamicCanvasHeight = isHorizontalBar ? Math.max(minContainerHeight, filteredData.length * HEIGHT_PER_BAR) : minContainerHeight;
+
+    // Dynamic vertical canvas spacing tailored specifically for extensive lists like multi-modality intersections
+    let dynamicCanvasHeight = minContainerHeight;
+    if (isBar) {
+      dynamicCanvasHeight = Math.max(minContainerHeight, filteredData.length * HEIGHT_PER_BAR);
+    }
 
     const card = document.createElement('div');
-    card.className = "chart-card glass-card p-7 flex flex-col group relative overflow-hidden opacity-0 translate-y-3 transition-all duration-700 ease-out";
+    // UPGRADE: Treemaps span across two responsive grid columns to ensure proportional spatial distribution
+    card.className = `chart-card glass-card p-7 flex flex-col group relative overflow-hidden opacity-0 translate-y-3 transition-all duration-700 ease-out ${isTreemap ? 'lg:col-span-2' : ''}`;
     card.setAttribute('data-title', meta.display_name);
 
     card.innerHTML = `
@@ -469,7 +481,7 @@ function renderDashboard() {
     setTimeout(() => {
       card.classList.remove('opacity-0', 'translate-y-3');
       card.classList.add('opacity-100', 'translate-y-0');
-    }, cardCount * 60);
+    }, cardCount * 50);
     cardCount++;
   });
   handleUnifiedSearch();
@@ -480,14 +492,83 @@ function renderChartInstance(meta: any, data: any[]) {
   if (!canvasElement) return;
 
   const ctx = (canvasElement as HTMLCanvasElement).getContext('2d');
+  if (!ctx) return;
+
+  // AUDIT: Sequential map allocation reads indices verbatim from the pipeline without alphabetizing core progressions
   const labels = data.map(d => d.category);
-  const values = data.map(d => d.count === '<10' || d.count === '<20' ? 0 : parseInt(d.count, 10));
+  const values = data.map(d => typeof d.count === 'string' && d.count.startsWith('<') ? 0 : parseInt(d.count, 10));
 
   const isPie = meta.chart_type === 'pie';
-  const isHorizontalBar = !isPie;
+  const isTreemap = meta.chart_type === 'treemap';
+  const isBar = meta.chart_type === 'bar';
 
   const colorArray = labels.map((_, i) => PALETTE[i % PALETTE.length]);
 
+  // UPGRADE: Full specialized execution factory block for human lineage Treemaps
+  if (isTreemap) {
+    chartInstances[meta.chart_id] = new Chart(ctx as any, {
+      type: 'treemap',
+      data: {
+        datasets: [{
+          tree: data,
+          key: 'count',
+          groups: ['category'],
+          spacing: 2,
+          borderWidth: 0,
+          borderRadius: 8,
+          backgroundColor: (context: any) => {
+            if (context.type !== 'data') return 'rgba(0,0,0,0.05)';
+            const rawItem = context.raw?._data;
+            if (!rawItem) return '#26abe2';
+            const paletteIndex = data.findIndex(d => d.category === rawItem.category);
+            return PALETTE[paletteIndex >= 0 ? paletteIndex % PALETTE.length : 0];
+          },
+          labels: {
+            display: true,
+            formatter: (context: any) => {
+              const rawItem = context.raw?._data;
+              if (!rawItem) return '';
+              const outCount = typeof rawItem.count === 'string' && rawItem.count.startsWith('<')
+                ? rawItem.count
+                : parseInt(rawItem.count, 10).toLocaleString();
+              return `${rawItem.category}\n(n=${outCount})`;
+            },
+            font: { size: 12, weight: 'bold', family: "'Outfit', sans-serif" },
+            color: '#ffffff'
+          }
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: PALETTE[8],
+            titleFont: { size: 12, family: "'Outfit', sans-serif", weight: '700' },
+            bodyFont: { size: 13, family: "'Outfit', sans-serif" },
+            padding: 12,
+            cornerRadius: 8,
+            callbacks: {
+              title: (tooltipItems: any) => {
+                const rawItem = tooltipItems[0]?.raw?._data;
+                return rawItem ? rawItem.category : '';
+              },
+              label: (context: any) => {
+                const rawItem = context.raw?._data;
+                if (!rawItem) return '';
+                const unitString = meta.units.toLowerCase() === 'patients' ? '' : ` ${meta.units}`;
+                return ` Count: ${rawItem.count}${unitString}`;
+              }
+            }
+          }
+        }
+      }
+    });
+    return;
+  }
+
+  // Standard processing matrix for standard categorical representations
   chartInstances[meta.chart_id] = new Chart(ctx as any, {
     type: isPie ? 'doughnut' : 'bar',
     data: {
@@ -504,7 +585,7 @@ function renderChartInstance(meta: any, data: any[]) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      indexAxis: isHorizontalBar ? 'y' : 'x',
+      indexAxis: isBar ? 'y' : 'x',
       transitions: {
         active: { animation: { duration: 400 } }
       },
