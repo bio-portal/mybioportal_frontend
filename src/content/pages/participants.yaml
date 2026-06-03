@@ -14,3 +14,22 @@ steps:
 benefit:
   title: "Free Diabetic Eye Assessment"
   desc: "We offer Health Canada-approved diabetic retinopathy imaging at no cost to participants. Within 5 minutes of the scan, your doctor receives a full diagnostic report."
+
+
+# Add to participants.yaml
+recruitmentData:
+  pageTitle: "Join BioPortal | Advancing Diabetes Research"
+  whyJoinTitle: "Why Join BioPortal"
+  howItWorksTitle: "How Participation Works"
+  formCard:
+    title: "Request to Join"
+    description: "Answer 3 quick questions to see if you qualify for our current Montreal study."
+    questions:
+      - "Are you 18 years or older?"
+      - "Do you live in the Greater Montreal area?"
+      - "Diagnosed with Type 1 or Type 2 Diabetes?"
+    emailLabel: "Your Email Address"
+    emailPlaceholder: "name@email.com"
+    buttonText: "Check My Eligibility"
+    disclaimer: "By validating, you authorize secure operations contact loops. Read our global open science"
+    privacyLinkText: "Privacy Policy"

@@ -3,12 +3,89 @@ hero:
   tagline: "Open Science & Cohort Analytics"
   headline: "BioPortal Population Datasets"
   description: "Access deep-phenotyped research cohorts, explore multi-omics sample distributions, and request secure biological materials for approved scientific inquiries."
-stats:
-  - value: "6,648"
-    label: "Total Phenopackets"
-  - value: "158"
-    label: "Clinical Variables"
-  - value: "887"
-    label: "Proteomic Profiles"
-  - value: "2,450"
-    label: "Matched Biosamples"
+# Replace the old `stats:` array with this:
+landingMetrics:
+  participantsLabel: "Total Participants"
+  clinicalVariablesLabel: "Clinical Variables"
+  proteomicsLabel: "Proteomic Profiles"
+  biosamplesLabel: "Matched Biosamples"
+  fallbackValues:
+    participants: "6,648"
+    clinicalVariables: "158"
+    proteomics: "887"
+    biosamples: "2,450"
+
+
+# Add this block to your existing data.yaml file
+explorer:
+  pageTitle: "Interactive Data Explorer | BioPortal"
+  backLink: "/data"
+  backText: "Back to Data Request"
+
+  header:
+    totalPatientsLabel: "Total Patients"
+
+  grid:
+    noResultsText: "No matching metrics"
+
+  sidebar:
+    title: "Command Center"
+    baseline: "Baseline (Total Cohort)"
+    searchPlaceholder: "Search cohorts or metrics..."
+
+    tooltip:
+      title: "Cohort Discovery"
+      description: "Click directly on any chart segment or sidebar attribute to isolate a sub-population. You can refine pie chart layouts by clicking legend labels to toggle specific variables."
+      warning: "To ensure precision and maintain privacy, the explorer updates population metrics using one active filter condition at a time."
+
+    buttons:
+      reset: "Reset Filters"
+      export: "Export CSV"
+
+    tabs:
+      filters: "Filters"
+      charts: "Charts"
+
+    visibility:
+      title: "Visibility Map"
+      all: "All"
+      none: "None"
+
+    status:
+      gateway: "Data Gateway"
+      syncing: "SYNCING"
+
+
+# Add to data.yaml
+dataRequest:
+  pageTitle: "Data Access & Cohorts | BioPortal"
+  backText: "Back to Home"
+  explorerCard:
+    tag: "Interactive Platform"
+    title: "Live Data Explorer"
+    description: "Visualize real-time clinical cohorts, demographic distributions, and sample metrics immediately through our zero-latency gateway. Filter and export aggregates on the fly."
+    buttonText: "Launch Explorer"
+  accessRequirements:
+    title: "Access Requirements"
+    items:
+      - "Institutionally-approved REB/IRB documentation matching the target request."
+      - "Executed Data Transfer Agreement (DTA) or institutional alignment contracts."
+      - "Compliance with the BioPortal open science attribution framework."
+  infrastructure:
+    title: "Infrastructure Vetting"
+    description: "The infrastructure utilizes our custom-built interactive discovery platform and leverages high-performance computing networks provided by the <strong>Digital Research Alliance of Canada (AllianceCan)</strong> alongside a secure, private compute cluster at the <strong>Lady Davis Institute (LDI)</strong> for downstream processing operations."
+    tags:
+      - "LDI Private Cluster"
+      - "AllianceCan"
+  form:
+    title: "Request Data Access"
+    description: "Inquire about specific cohorts or request structural credentials to access full genomic and clinical datasets."
+    fields:
+      nameLabel: "Full Name"
+      namePlaceholder: "Dr. Jane Smith"
+      emailLabel: "Institutional Email"
+      emailPlaceholder: "jane.smith@mcgill.ca"
+      interestLabel: "Research Interest"
+      overviewLabel: "Brief Project Overview"
+      overviewPlaceholder: "Describe your intended scientific use of BioPortal datasets..."
+    buttonText: "Submit Access Inquiry"

@@ -1,0 +1,26 @@
+id: global
+
+navigation:
+  logoAlt: "BioPortal Logo"
+  links:
+    - label: "Insights"
+      href: "/#insights"
+    - label: "Our Team"
+      href: "/#team"
+    - label: "Data Security"
+      href: "/privacy"
+  ctaButtons:
+    primary:
+      label: "Join Study"
+      href: "/participants"
+    secondary:
+      label: "Request Data"
+      href: "/data"
+
+footer:
+  title: "BioPortal"
+  titlePunctuation: "."
+  subtitle: "Jewish General Hospital & McGill University"
+  privacyLinkText: "Privacy Policy & Data Safeguards"
+  privacyLinkHref: "/privacy"
+  copyright: "© 2026 BioPortal Research Group"

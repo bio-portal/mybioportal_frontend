@@ -30,3 +30,24 @@ trustBar:
       logo: "/logos/fondation-leger-logo.svg"
       url: "https://leger.org/"
   acknowledgments: "BioPortal contributors also include the non-profits Mierins Family Foundation, Herbert S. Lang Family, Randi Greenberg, and the Tony & Betty Infilise Family Foundation."
+
+# Add this underneath your existing hero and trustBar blocks
+insights:
+  eyebrow: "Latest Insights"
+  title: "News & Discoveries"
+  readMoreText: "Read Insight"
+  viewAllButtonText: "View All Insights"
+  viewAllLink: "/news"
+  fallbackImageAlt: "BioPortal Mark"
+
+teamSection:
+  eyebrow: "Leadership & Operations"
+  title: "Our Team"
+  description: "The minds behind BioPortal. Our dedicated professionals work tirelessly to connect with participants and advance groundbreaking scientific research."
+  governingTitle: "Governing Committee"
+  recruitmentTitle: "Recruitment & Operations"
+  spotlight:
+    title: "Institutional Stewardship"
+    description: "Our initiative is steered by leading clinical data privacy experts and medical investigators. Hover over any portfolio profile on the left to review their scientific background and governance mandate."
+
+

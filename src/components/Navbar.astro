@@ -5,7 +5,8 @@ const {
   type = 'main',
   ctaMode = 'visible',
   backLink = '/',
-  backText = 'Back'
+  backText = 'Back',
+  navData
 } = Astro.props;
 ---
 <nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300" data-cta-mode={ctaMode}>
@@ -14,7 +15,7 @@ const {
     <a href={`${baseUrl}/`} class="flex items-center shrink-0 z-50 h-fit max-h-16 py-2 outline-none">
       <img
         src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
-        alt="BioPortal Logo"
+        alt={navData.logoAlt}
         class="h-10 md:h-11 w-auto shrink-0 hover:-translate-y-0.5 transition-transform object-contain"
         onerror="this.style.display='none'"
       />
@@ -23,18 +24,18 @@ const {
     {type === 'main' ? (
       <>
         <div id="nav-cta-group" class={`absolute left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-4 transition-all duration-500 ease-out ${ctaMode === 'scroll' ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}>
-          <a href={`${baseUrl}/participants`} class="px-5 py-2 rounded-full border-2 border-brand-green-bright text-brand-green-bright text-xs font-bold hover:bg-brand-green-bright hover:text-white transition-all bg-white">
-            Join Study
+          <a href={`${baseUrl}${navData.ctaButtons.primary.href}`} class="px-5 py-2 rounded-full border-2 border-brand-green-bright text-brand-green-bright text-xs font-bold hover:bg-brand-green-bright hover:text-white transition-all bg-white">
+            {navData.ctaButtons.primary.label}
           </a>
-          <a href={`${baseUrl}/data`} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white">
-            Request Data
+          <a href={`${baseUrl}${navData.ctaButtons.secondary.href}`} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white">
+            {navData.ctaButtons.secondary.label}
           </a>
         </div>
 
         <div class="hidden lg:flex items-center space-x-8 font-medium text-sm ml-auto">
-          <a href={`${baseUrl}/#insights`} class="text-gray-500 hover:text-brand-dark transition-colors">Insights</a>
-          <a href={`${baseUrl}/#team`} class="text-gray-500 hover:text-brand-dark transition-colors">Our Team</a>
-          <a href={`${baseUrl}/privacy`} class="text-gray-500 hover:text-brand-dark transition-colors">Data Security</a>
+          {navData.links.map((link: any) => (
+            <a href={`${baseUrl}${link.href}`} class="text-gray-500 hover:text-brand-dark transition-colors">{link.label}</a>
+          ))}
         </div>
 
         <button id="mobile-menu-toggle" class="lg:hidden text-brand-dark p-2 -mr-2 focus:outline-none z-50">
@@ -42,13 +43,13 @@ const {
         </button>
 
         <div id="mobile-menu-panel" class="absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-2xl hidden flex-col px-6 py-8 space-y-6 lg:hidden">
-          <a href={`${baseUrl}/#insights`} class="mobile-link text-brand-dark font-extrabold text-xl">Insights</a>
-          <a href={`${baseUrl}/#team`} class="mobile-link text-brand-dark font-extrabold text-xl">Our Team</a>
-          <a href={`${baseUrl}/privacy`} class="mobile-link text-brand-dark font-extrabold text-xl">Data Security</a>
+          {navData.links.map((link: any) => (
+            <a href={`${baseUrl}${link.href}`} class="mobile-link text-brand-dark font-extrabold text-xl">{link.label}</a>
+          ))}
           <hr class="border-gray-100" />
           <div class="flex flex-col gap-3">
-            <a href={`${baseUrl}/participants`} class="w-full text-center py-4 rounded-xl bg-brand-green-bright text-white font-bold shadow-md shadow-brand-green-bright/20">Join Study</a>
-            <a href={`${baseUrl}/data`} class="w-full text-center py-4 rounded-xl bg-brand-blue-deep text-white font-bold shadow-md shadow-brand-blue-deep/20">Request Data</a>
+            <a href={`${baseUrl}${navData.ctaButtons.primary.href}`} class="w-full text-center py-4 rounded-xl bg-brand-green-bright text-white font-bold shadow-md shadow-brand-green-bright/20">{navData.ctaButtons.primary.label}</a>
+            <a href={`${baseUrl}${navData.ctaButtons.secondary.href}`} class="w-full text-center py-4 rounded-xl bg-brand-blue-deep text-white font-bold shadow-md shadow-brand-blue-deep/20">{navData.ctaButtons.secondary.label}</a>
           </div>
         </div>
       </>
@@ -62,8 +63,8 @@ const {
 </nav>
 
 <script>
+  // Script remains exactly the same
   document.addEventListener("DOMContentLoaded", () => {
-    // Scroll logic for Desktop CTA
     const nav = document.querySelector('nav[data-cta-mode="scroll"]');
     if (nav) {
       const navCtaGroup = nav.querySelector('#nav-cta-group');
@@ -90,7 +91,6 @@ const {
       handleScroll();
     }
 
-    // Mobile Menu Toggle Logic
     const mobileToggle = document.getElementById('mobile-menu-toggle');
     const mobilePanel = document.getElementById('mobile-menu-panel');
     const mobileLinks = document.querySelectorAll('.mobile-link');

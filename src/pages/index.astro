@@ -10,6 +10,9 @@ const allTeam = await getCollection('team');
 const sortedTeam = allTeam.sort((a, b) => a.data.order - b.data.order);
 const allNews = await getCollection('news');
 const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
+
+// Extract the section text from our home.yaml
+const { insights, teamSection } = homeData.data;
 ---
 <Layout title="BioPortal | Advancing Human Research" ctaMode="scroll">
   <main class="relative">
@@ -21,8 +24,8 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
     <section id="insights" class="pt-2 pb-12 px-6 max-w-7xl mx-auto scroll-mt-20">
       <div class="mb-6 flex justify-between items-end">
         <div>
-          <span class="text-brand-blue-mid font-bold tracking-widest uppercase text-xs mb-2 block">Latest Insights</span>
-          <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight">News & Discoveries</h2>
+          <span class="text-brand-blue-mid font-bold tracking-widest uppercase text-xs mb-2 block">{insights.eyebrow}</span>
+          <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight">{insights.title}</h2>
         </div>
       </div>
 
@@ -34,7 +37,7 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
                 <img src={`${baseUrl}${post.data.image}`} alt={post.data.title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               ) : (
                 <div class="absolute inset-0 bg-gradient-to-br from-brand-orange-mid/10 via-brand-green-bright/5 to-brand-blue-deep/10 flex items-center justify-center transition-transform duration-700 group-hover:scale-105">
-                  <img src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`} alt="BioPortal Mark" class="w-32 h-auto opacity-30 grayscale" onerror="this.style.display='none'" />
+                  <img src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`} alt={insights.fallbackImageAlt} class="w-32 h-auto opacity-30 grayscale" onerror="this.style.display='none'" />
                 </div>
               )}
             </div>
@@ -47,7 +50,7 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
               <h3 class="text-xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-brand-blue-deep transition-colors">{post.data.title}</h3>
               <p class="text-sm text-gray-500 leading-relaxed mb-8 flex-grow line-clamp-3">{post.data.excerpt}</p>
               <a href={`${baseUrl}/news/${post.id}/`} class="text-brand-dark font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all mt-auto">
-                Read Insight <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                {insights.readMoreText} <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </a>
             </div>
           </article>
@@ -55,8 +58,8 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
       </div>
 
       <div class="mt-10 text-center">
-        <a href={`${baseUrl}/news`} class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-surface border-2 border-gray-100 text-brand-dark font-bold hover:border-brand-blue-deep hover:text-brand-blue-deep transition-colors shadow-sm cursor-pointer">
-          View All Insights
+        <a href={`${baseUrl}${insights.viewAllLink}`} class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-surface border-2 border-gray-100 text-brand-dark font-bold hover:border-brand-blue-deep hover:text-brand-blue-deep transition-colors shadow-sm cursor-pointer">
+          {insights.viewAllButtonText}
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
         </a>
       </div>
@@ -64,16 +67,16 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
 
     <section id="team" class="py-12 px-6 max-w-7xl mx-auto border-t border-gray-100 bg-surface/30 scroll-mt-20">
       <div class="mb-12">
-        <span class="text-brand-blue-mid font-bold tracking-widest uppercase text-xs mb-3 block">Leadership & Operations</span>
-        <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight mb-3">Our Team</h2>
-        <p class="text-lg text-gray-500 max-w-2xl">The minds behind BioPortal. Our dedicated professionals work tirelessly to connect with participants and advance groundbreaking scientific research.</p>
+        <span class="text-brand-blue-mid font-bold tracking-widest uppercase text-xs mb-3 block">{teamSection.eyebrow}</span>
+        <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight mb-3">{teamSection.title}</h2>
+        <p class="text-lg text-gray-500 max-w-2xl">{teamSection.description}</p>
       </div>
 
       <div class="flex flex-col lg:flex-row gap-12 relative items-start">
         <div class="lg:w-7/12 w-full space-y-12">
 
           <div>
-            <h3 class="text-xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-200" data-group="governing">Governing Committee</h3>
+            <h3 class="text-xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-200" data-group="governing">{teamSection.governingTitle}</h3>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
               {sortedTeam.filter(m => m.data.group === 'governing').map(member => (
                 <div class="team-card group cursor-pointer relative outline-none" tabindex="0">
@@ -96,7 +99,7 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
           </div>
 
           <div>
-            <h3 class="text-xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-200" data-group="recruitment">Recruitment & Operations</h3>
+            <h3 class="text-xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-200" data-group="recruitment">{teamSection.recruitmentTitle}</h3>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
               {sortedTeam.filter(m => m.data.group === 'recruitment').map(member => (
                 <div class="team-card group cursor-pointer relative outline-none" tabindex="0">
@@ -128,9 +131,9 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
               <div class="w-14 h-14 bg-brand-blue-deep/10 rounded-full mb-6 flex items-center justify-center text-brand-blue-deep border border-brand-blue-deep/20 shadow-sm">
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
               </div>
-              <h3 class="text-2xl font-black text-brand-dark mb-3 tracking-tight">Institutional Stewardship</h3>
+              <h3 class="text-2xl font-black text-brand-dark mb-3 tracking-tight">{teamSection.spotlight.title}</h3>
               <p class="text-gray-500 text-sm leading-relaxed font-medium">
-                Our initiative is steered by leading clinical data privacy experts and medical investigators. Hover over any portfolio profile on the left to review their scientific background and governance mandate.
+                {teamSection.spotlight.description}
               </p>
             </div>
           </div>
@@ -138,72 +141,4 @@ const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
       </div>
     </section>
   </main>
-
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const teamCards = document.querySelectorAll('.team-card');
-      const spotlightContent = document.getElementById('spotlight-content');
-
-      let activeHoverTarget: any = null;
-      let currentDisplayedCard: any = null;
-
-      // FIXED: Removed the redundant handleScroll logic that was duplicating Navbar.astro
-
-      teamCards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-          if (window.innerWidth < 1024) return;
-          if (currentDisplayedCard === card) return;
-
-          activeHoverTarget = card;
-          const name = card.querySelector('.member-name')!.textContent;
-          const role = card.querySelector('.member-role')!.textContent;
-          const bio = card.querySelector('.member-bio')!.textContent;
-          const imgEl = card.querySelector('.member-img');
-          const imgSrc = imgEl ? imgEl.getAttribute('src') : null;
-
-          const themeColorClass = 'text-brand-blue-deep';
-
-          if (spotlightContent) spotlightContent.style.opacity = '0';
-
-          setTimeout(() => {
-            if (activeHoverTarget !== card || !spotlightContent) return;
-            currentDisplayedCard = card;
-
-            spotlightContent.innerHTML = `
-              <div class="flex justify-between items-start mb-6 gap-4">
-                <div class="pt-2">
-                  <h3 class="text-2xl font-bold text-gray-900 mb-1 tracking-tight leading-tight">${name}</h3>
-                  <p class="text-xs font-bold ${themeColorClass} uppercase tracking-widest">${role}</p>
-                </div>
-                ${imgSrc
-                  ? `<img src="${imgSrc}" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-xl bg-surface shrink-0" />`
-                  : `<div class="w-24 h-24 bg-surface rounded-full border-4 border-white shadow-xl shrink-0 flex items-center justify-center text-brand-blue-deep/30"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>`
-                }
-              </div>
-              <div class="text-gray-600 leading-relaxed text-sm space-y-4 pr-2 font-medium">${bio}</div>
-            `;
-
-            spotlightContent.style.opacity = '1';
-          }, 150);
-        });
-
-        card.addEventListener('click', () => {
-          if (window.innerWidth >= 1024) return;
-          const mobileContainer = card.querySelector('.mobile-bio-container') as HTMLElement;
-          const isOpen = mobileContainer.style.maxHeight && mobileContainer.style.maxHeight !== '0px';
-
-          document.querySelectorAll('.mobile-bio-container').forEach(c => {
-            (c as HTMLElement).style.maxHeight = '0px';
-            (c as HTMLElement).style.opacity = '0';
-          });
-
-          if (!isOpen) {
-            mobileContainer.style.maxHeight = mobileContainer.scrollHeight + 'px';
-            mobileContainer.style.opacity = '1';
-          }
-        });
-      });
-    });
-  </script>
-
-</Layout>
+  </Layout>

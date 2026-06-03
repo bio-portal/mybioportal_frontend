@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
+import { getEntry } from 'astro:content';
 
 const {
   title,
@@ -11,6 +12,10 @@ const {
   backText = 'Back',
   hideFooter = false
 } = Astro.props;
+
+// Fetch global site configuration
+const globalData = await getEntry('pages', 'global');
+const siteConfig = globalData?.data.global;
 ---
 <!doctype html>
 <html lang="en">
@@ -20,12 +25,22 @@ const {
     <title>{title}</title>
   </head>
   <body class="flex flex-col min-h-screen bg-surface">
-    <Navbar type={navType} ctaMode={ctaMode} backLink={backLink} backText={backText} />
+    {siteConfig && (
+      <Navbar
+        type={navType}
+        ctaMode={ctaMode}
+        backLink={backLink}
+        backText={backText}
+        navData={siteConfig.navigation}
+      />
+    )}
 
     <div class="flex-grow pt-20">
       <slot />
     </div>
 
-    {!hideFooter && <Footer />}
+    {!hideFooter && siteConfig && (
+      <Footer footerData={siteConfig.footer} />
+    )}
   </body>
 </html>

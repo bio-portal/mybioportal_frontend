@@ -1,77 +1,579 @@
-import { Chart, registerables } from 'chart.js';
+import { Chart, registerables, type ChartConfiguration } from 'chart.js';
 import { TreemapController, TreemapElement } from 'chartjs-chart-treemap';
-
-// Register standard controllers plus the specialized Treemap elements
+import * as UpSetJS from '@upsetjs/bundle';
 Chart.register(...registerables, TreemapController, TreemapElement);
 
-const API_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats";
+// ==========================================
+// TYPES & CONFIGURATION
+// ==========================================
 
-// Populated dynamically from global.css tokens at runtime
-let PALETTE: string[] = [];
+interface CategoryCount {
+  category: string;
+  count: string | number;
+}
 
-let variableMetadata: any[] = [];
-let summaryStatistics: any[] = [];
-let availableFiltersList: string[] = [];
-let activeFilter = 'baseline';
-let chartInstances: Record<string, Chart> = {};
-let cohortSizesDictionary: Record<string, string | number> = {};
-let visibleCharts = new Set<string>();
+interface StatRow {
+  filter_key: string;
+  chart_id: string;
+  data: CategoryCount[];
+}
 
-// Expose explicit template bindings to the window for static Astro component onclick macros
-(window as any).changeFilter = changeFilter;
-(window as any).exportCohortCSV = exportCohortCSV;
-(window as any).toggleAllCharts = toggleAllCharts;
-(window as any).switchTab = switchTab;
-(window as any).toggleMobileSidebar = toggleMobileSidebar;
+interface VariableMeta {
+  chart_id: string;
+  display_name: string;
+  chart_type: 'pie' | 'bar' | 'treemap';
+  units: string;
+}
+
+const CONFIG = {
+  API_GATEWAY: "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats",
+  MASK_VALUE: 10, // Value to render when `<10` is encountered
+  DEBOUNCE_MS: 150,
+  MIN_TREEMAP_WEIGHT: 0.035, // Ensures tiny cohorts are accessible (3.5% of area)
+};
+
+// ==========================================
+// CORE MANAGERS
+// ==========================================
 
 /**
- * Toggles responsive layout views on mobile viewpoints
+ * DataManager: Handles API fetching, client-side caching, and data processing.
+ * Goal: Zero redundant network requests (Low Cost, High Speed).
  */
-function toggleMobileSidebar() {
-  const sidebar = document.getElementById('explorer-sidebar');
-  const backdrop = document.getElementById('mobile-sidebar-overlay');
+const DataManager = {
+  cache: new Map<string, any>(),
+  metadata: [] as VariableMeta[],
+  filters: [] as string[],
+  currentStats: [] as StatRow[],
+  cohortSizes: {} as Record<string, string | number>,
 
-  if (sidebar && backdrop) {
-    const isClosed = sidebar.classList.contains('-translate-x-full');
-    if (isClosed) {
-      sidebar.classList.remove('-translate-x-full');
-      backdrop.classList.remove('hidden');
-      setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
-    } else {
-      sidebar.classList.add('-translate-x-full');
-      backdrop.classList.add('opacity-0');
-      setTimeout(() => backdrop.classList.add('hidden'), 300);
-    }
+  async fetch(queryString: string, cacheKey: string) {
+    if (this.cache.has(cacheKey)) return this.cache.get(cacheKey);
+
+    const response = await fetch(`${CONFIG.API_GATEWAY}?${queryString}&_cb=${Date.now()}`);
+    if (!response.ok) throw new Error("API infrastructure connection exception");
+
+    const data = await response.json();
+    this.cache.set(cacheKey, data);
+    return data;
+  },
+
+  async initialize() {
+    [this.metadata, this.filters, this.currentStats] = await Promise.all([
+      this.fetch("type=metadata", "metadata"),
+      this.fetch("type=filters", "filters"),
+      this.fetch("filter=baseline", "stats_baseline")
+    ]);
+    this.calculateCohortSizes();
+  },
+
+  async loadFilter(filterKey: string) {
+    this.currentStats = await this.fetch(`filter=${encodeURIComponent(filterKey)}`, `stats_${filterKey}`);
+    return this.currentStats;
+  },
+
+  calculateCohortSizes() {
+    this.cohortSizes = {};
+    const baselineData = this.cache.get("stats_baseline") as StatRow[];
+    if (!baselineData) return;
+
+    baselineData.forEach(stat => {
+      const prefix = stat.chart_id.toLowerCase().replace(/ /g, '_');
+      if (stat.chart_id === 'sex') {
+        this.cohortSizes['baseline'] = stat.data.reduce((acc, curr) => acc + (parseInt(String(curr.count)) || 0), 0);
+      }
+      stat.data.forEach(item => {
+        const cleanCategory = String(item.category).toLowerCase().replace(/ /g, '_');
+        this.cohortSizes[`${prefix}_${cleanCategory}`] = item.count;
+      });
+    });
   }
-}
+};
 
 /**
- * Reads core design engine CSS theme tokens dynamically at runtime
+ * ThemeManager: Extracts CSS tokens for A11Y-compliant styling.
  */
-function initializePalette() {
-  const rootStyle = getComputedStyle(document.documentElement);
-  const getColor = (varName: string, fallback: string) => rootStyle.getPropertyValue(varName).trim() || fallback;
+const ThemeManager = {
+  palette: [] as string[],
+  init() {
+    const rootStyle = getComputedStyle(document.documentElement);
+    const getColor = (v: string, fb: string) => rootStyle.getPropertyValue(v).trim() || fb;
+    this.palette = [
+      getColor('--color-brand-blue-deep', '#26abe2'),
+      getColor('--color-brand-green-bright', '#7fc342'),
+      getColor('--color-brand-orange-mid', '#f89a19'),
+      getColor('--color-brand-teal', '#96d6c2'),
+      getColor('--color-brand-blue-mid', '#56bee7'),
+      getColor('--color-brand-green-mid', '#99c43c'),
+      getColor('--color-brand-orange-deep', '#f37a21'),
+      getColor('--color-brand-yellow', '#fdbb10'),
+      getColor('--color-brand-dark', '#003f5e')
+    ];
+  },
+  getColor(index: number) {
+    return this.palette[index % this.palette.length];
+  }
+};
 
-  PALETTE = [
-    getColor('--color-brand-blue-deep', '#26abe2'),
-    getColor('--color-brand-green-bright', '#7fc342'),
-    getColor('--color-brand-orange-mid', '#f89a19'),
-    getColor('--color-brand-teal', '#96d6c2'),
-    getColor('--color-brand-blue-mid', '#56bee7'),
-    getColor('--color-brand-green-mid', '#99c43c'),
-    getColor('--color-brand-orange-deep', '#f37a21'),
-    getColor('--color-brand-yellow', '#fdbb10'),
-    getColor('--color-brand-dark', '#003f5e')
-  ];
-}
+/**
+ * ChartFactory: Creates and destroys Chart.js and UpSet.js instances.
+ */
+const ChartFactory = {
+  instances: {} as Record<string, Chart>,
+  visibleCharts: new Set<string>(),
+
+  destroyAll() {
+    Object.values(this.instances).forEach(chart => chart.destroy());
+    this.instances = {};
+  },
+
+  parseData(data: CategoryCount[], isTreemap: boolean) {
+    let totalCount = 0;
+    const parsed = data.map(d => {
+      const isMasked = typeof d.count === 'string' && d.count.startsWith('<');
+      const numericVal = isMasked ? CONFIG.MASK_VALUE : parseInt(String(d.count), 10);
+      totalCount += isNaN(numericVal) ? 0 : numericVal;
+      return { category: String(d.category), numericVal, displayVal: d.count };
+    });
+
+    if (isTreemap) {
+      const minWeight = Math.max(10, totalCount * CONFIG.MIN_TREEMAP_WEIGHT);
+      parsed.forEach(d => { d.numericVal = Math.max(d.numericVal, minWeight); });
+    }
+    return parsed;
+  },
+
+  build(meta: VariableMeta, rawData: CategoryCount[], ctx: HTMLCanvasElement) {
+    // 🌟 INTERCEPT FOR UPSET PLOT
+    if (meta.chart_id === 'sample_intersections') {
+      this.buildUpSetPlot(meta, rawData, ctx);
+      return;
+    }
+
+    const isPie = meta.chart_type === 'pie';
+    const isTreemap = meta.chart_type === 'treemap';
+    const isBar = meta.chart_type === 'bar';
+
+    // Best Practice: Sort horizontal bar charts (like Cancer) by frequency
+    if (isBar && meta.chart_id === 'cancer_types') {
+      rawData.sort((a, b) => {
+        const valA = String(a.count).startsWith('<') ? 0 : parseInt(String(a.count), 10);
+        const valB = String(b.count).startsWith('<') ? 0 : parseInt(String(b.count), 10);
+        return valB - valA;
+      });
+    }
+
+    const data = this.parseData(rawData, isTreemap);
+    const labels = data.map(d => d.category);
+    const bgColors = data.map((_, i) => ThemeManager.getColor(i));
+
+    let config: ChartConfiguration;
+
+    if (isTreemap) {
+      config = this.getTreemapConfig(meta, data, bgColors);
+    } else {
+      config = this.getStandardConfig(meta, data, labels, bgColors, isPie);
+    }
+
+    this.instances[meta.chart_id] = new Chart(ctx, config);
+  },
+
+  buildUpSetPlot(meta: VariableMeta, rawData: CategoryCount[], canvasCtx: HTMLCanvasElement) {
+    const wrapperDiv = document.createElement('div');
+    wrapperDiv.style.width = '100%';
+    wrapperDiv.style.height = '100%';
+
+    const parent = canvasCtx.parentElement;
+    if (parent) {
+       parent.innerHTML = '';
+       parent.appendChild(wrapperDiv);
+    }
+
+    const combinations = rawData.map(item => {
+      const sets = String(item.category).replace("Only ", "").split(" + ");
+      const isMasked = typeof item.count === 'string' && item.count.startsWith('<');
+      const numericValue = isMasked ? CONFIG.MASK_VALUE : parseInt(String(item.count), 10);
+
+      return {
+          name: String(item.category),
+          sets: sets,
+          value: isNaN(numericValue) ? 0 : numericValue,
+          displayValue: item.count
+      };
+    });
+
+    // Use the native NPM module import directly!
+    const builder = UpSetJS.extractCombinations(combinations);
+
+    UpSetJS.render(wrapperDiv, {
+      sets: builder.sets,
+      combinations: builder.combinations,
+      width: wrapperDiv.clientWidth || 400,
+      height: wrapperDiv.clientHeight || 240,
+      color: ThemeManager.palette[0],
+      selection: null,
+      onClick: (intersection: any) => {
+          if (intersection && intersection.name) {
+              UIManager.handleChartClick(meta.chart_id, intersection.name);
+          }
+      }
+    });
+  },
+
+
+
+  getTreemapConfig(meta: VariableMeta, data: any[], bgColors: string[]): ChartConfiguration {
+    return {
+      type: 'treemap' as any,
+      data: {
+        datasets: [{
+          tree: data,
+          key: 'numericVal',
+          groups: ['category'],
+          spacing: 2,
+          borderWidth: 0,
+          borderRadius: 8,
+          backgroundColor: (ctx: any) => {
+            if (ctx.type !== 'data') return 'rgba(0,0,0,0.05)';
+            const cat = ctx.raw?.g;
+            const idx = data.findIndex(d => d.category === cat);
+            return idx >= 0 ? bgColors[idx] : ThemeManager.palette[0];
+          },
+          labels: {
+            display: true,
+            formatter: (ctx: any) => ctx.raw?.g || '',
+            font: { size: 12, weight: 'bold', family: "'Outfit', sans-serif" },
+            color: '#ffffff'
+          }
+        }] as any
+      },
+      options: this.getSharedOptions(meta, true, false)
+    };
+  },
+
+  getStandardConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string[], isPie: boolean): ChartConfiguration {
+    return {
+      type: isPie ? 'doughnut' : 'bar',
+      data: {
+        labels,
+        datasets: [{
+          data: data.map(d => d.numericVal),
+          backgroundColor: bgColors,
+          borderWidth: 0,
+          borderRadius: isPie ? 0 : 6,
+          hoverBackgroundColor: ThemeManager.palette[8],
+          maxBarThickness: isPie ? undefined : 48
+        }]
+      },
+      options: this.getSharedOptions(meta, false, isPie, data)
+    };
+  },
+
+  getSharedOptions(meta: VariableMeta, isTreemap: boolean, isPie: boolean, parsedData?: any[]): any {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: (!isPie && !isTreemap) ? 'y' : 'x',
+      animation: { duration: 600, easing: 'easeOutQuart' },
+      onClick: (event: any, elements: any[]) => {
+        if (!elements.length) return;
+        const targetIndex = elements[0].index;
+        const chart = this.instances[meta.chart_id];
+
+        let selectedCategory = '';
+        if (isTreemap) {
+           selectedCategory = chart.data.datasets[0].data[targetIndex] ? (chart.data.datasets[0].data[targetIndex] as any)._data.category : '';
+        } else {
+           selectedCategory = String(chart.data.labels![targetIndex]);
+        }
+
+        UIManager.handleChartClick(meta.chart_id, selectedCategory);
+      },
+      plugins: {
+        legend: {
+          display: isPie,
+          position: 'bottom',
+          labels: { boxWidth: 10, padding: 15, font: { size: 11, family: "'Outfit', sans-serif", weight: '600' }, color: '#4b5563' }
+        },
+        tooltip: {
+          backgroundColor: ThemeManager.palette[8],
+          titleFont: { size: 12, family: "'Outfit', sans-serif", weight: '700' },
+          bodyFont: { size: 13, family: "'Outfit', sans-serif" },
+          padding: 12,
+          cornerRadius: 8,
+          callbacks: {
+            title: (ctx: any) => isTreemap ? (ctx[0]?.raw?.g || '') : ctx[0].label,
+            label: (ctx: any) => {
+              const rawItem = isTreemap ? ctx.raw?._data[0] : parsedData![ctx.dataIndex];
+              if (!rawItem) return '';
+              const unit = meta.units === 'patients' ? '' : ` ${meta.units}`;
+              return ` Count: ${rawItem.displayVal || rawItem.displayCount}${unit}`;
+            }
+          }
+        }
+      },
+      scales: (isPie || isTreemap) ? undefined : {
+        y: { grid: { display: false }, ticks: { font: { size: 11, family: "'Outfit', sans-serif", weight: '600' }, color: '#64748b' } },
+        x: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { size: 11, family: "'Outfit', sans-serif", weight: '500' }, color: '#94a3b8' } }
+      }
+    };
+  }
+};
+
+/**
+ * UIManager: Handles all DOM mutations, debouncing, and event bindings safely.
+ */
+const UIManager = {
+  activeFilter: 'baseline',
+  searchTimeout: null as any,
+
+  init() {
+    DataManager.metadata.forEach(m => ChartFactory.visibleCharts.add(m.chart_id));
+    this.renderFilterMenu();
+    this.buildToggleMenu();
+    this.updateDashboard();
+    this.bindEvents();
+  },
+
+  bindEvents() {
+    const search = document.getElementById('global-search');
+    if (search) {
+      search.addEventListener('keyup', (e) => {
+        if (this.searchTimeout) clearTimeout(this.searchTimeout);
+        this.searchTimeout = setTimeout(() => this.executeSearch((e.target as HTMLInputElement).value), CONFIG.DEBOUNCE_MS);
+      });
+    }
+  },
+
+  async applyFilter(filterKey: string) {
+    document.querySelectorAll('.filter-btn, #btn-baseline').forEach(b => b.classList.remove('filter-active'));
+    const btn = document.getElementById(filterKey === 'baseline' ? 'btn-baseline' : `btn-${filterKey}`);
+    if (btn) {
+      btn.classList.add('filter-active');
+      const details = btn.closest('details');
+      if (details) details.open = true;
+    }
+
+    this.activeFilter = filterKey;
+    this.setLoading(true);
+
+    try {
+      await DataManager.loadFilter(filterKey);
+
+      const titleEl = document.getElementById('view-title');
+      if (titleEl) titleEl.innerText = filterKey === 'baseline' ? 'Cohort Overview' : filterKey.replace(/_/g, ' ').replace(/(^|\s)\S/g, l => l.toUpperCase());
+
+      this.updateDashboard();
+      this.updateSizeCounters();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      this.setLoading(false);
+    }
+  },
+
+  handleChartClick(chartId: string, categoryName: string) {
+    if (!categoryName) return;
+    const prefix = chartId.toLowerCase().replace(/ /g, '_');
+    const sanitized = String(categoryName).toLowerCase().replace(/ /g, '_');
+    const targetKey = `${prefix}_${sanitized}`;
+
+    const fallback = DataManager.filters.find(f => f.endsWith(`_${sanitized}`) || sanitized.endsWith(f.replace(`${prefix}_`, '')));
+    const finalKey = DataManager.filters.includes(targetKey) ? targetKey : fallback;
+
+    if (finalKey) this.applyFilter(finalKey);
+  },
+
+  updateDashboard() {
+    const grid = document.getElementById('dashboard-grid');
+    if (!grid) return;
+
+    ChartFactory.destroyAll();
+    grid.innerHTML = '';
+
+    let cardCount = 0;
+    DataManager.metadata.forEach(meta => {
+      if (!ChartFactory.visibleCharts.has(meta.chart_id)) return;
+
+      const stat = DataManager.currentStats.find(s => s.chart_id === meta.chart_id);
+      if (!stat) return;
+
+      const validData = stat.data.filter(d => d.count !== 0 && d.count !== "0");
+      if (!validData.length) return;
+
+      const isBar = meta.chart_type === 'bar';
+      const containerHeight = 240;
+      // Added slightly more room for upset plots
+      const isUpset = meta.chart_id === 'sample_intersections';
+      const canvasHeight = isBar ? Math.max(containerHeight, validData.length * 38) : (isUpset ? 300 : containerHeight);
+
+      const card = document.createElement('div');
+      card.className = "chart-card glass-card p-7 flex flex-col group relative overflow-hidden opacity-0 translate-y-3 transition-all duration-700 ease-out";
+      card.dataset.title = meta.display_name.toLowerCase();
+
+      card.innerHTML = `
+        <div class="absolute top-0 left-0 w-1.5 h-full bg-brand-blue-deep/20 group-hover:bg-brand-blue-deep transition-colors"></div>
+        <div class="flex justify-between items-start mb-6 border-b border-gray-100 pb-4 pl-3">
+          <h3 class="font-extrabold text-brand-dark text-lg tracking-tight leading-tight group-hover:text-brand-blue-deep transition-colors pr-2">${meta.display_name}</h3>
+          <span class="text-[10px] bg-gray-50 text-gray-400 px-2.5 py-1 rounded-md font-bold uppercase tracking-widest border border-gray-100 shrink-0">${meta.units}</span>
+        </div>
+        <div class="relative w-full pl-3 overflow-y-auto custom-scrollbar" style="height: ${containerHeight}px;">
+          <div style="height: ${canvasHeight}px; position: relative; width: 100%;">
+            <canvas id="chart-${meta.chart_id}"></canvas>
+          </div>
+        </div>
+      `;
+
+      grid.appendChild(card);
+      const ctx = document.getElementById(`chart-${meta.chart_id}`) as HTMLCanvasElement;
+      if (ctx) ChartFactory.build(meta, validData, ctx);
+
+      setTimeout(() => {
+        card.classList.remove('opacity-0', 'translate-y-3');
+        card.classList.add('opacity-100', 'translate-y-0');
+      }, cardCount * 40);
+      cardCount++;
+    });
+
+    const searchInput = document.getElementById('global-search') as HTMLInputElement;
+    if (searchInput && searchInput.value) this.executeSearch(searchInput.value);
+  },
+
+  updateSizeCounters() {
+    const size = DataManager.cohortSizes[this.activeFilter] || "...";
+    const displayVal = (typeof size === 'string' && !size.startsWith('<') && size !== '...')
+      ? parseInt(size).toLocaleString() : size.toLocaleString();
+
+    const topSize = document.getElementById('top-cohort-size');
+    const sideSize = document.getElementById('size-baseline');
+    if (topSize) topSize.innerText = displayVal;
+    if (sideSize && this.activeFilter === 'baseline') sideSize.innerText = displayVal;
+  },
+
+  renderFilterMenu() {
+    const list = document.getElementById('filter-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    DataManager.metadata.forEach(meta => {
+      const prefix = meta.chart_id.toLowerCase().replace(/ /g, '_');
+      const matches = DataManager.filters.filter(f => f.startsWith(`${prefix}_`));
+      if (!matches.length) return;
+
+      const details = document.createElement('details');
+      details.className = "group border-b border-gray-100 filter-group";
+      details.innerHTML = `<summary class="flex justify-between items-center w-full font-extrabold text-xs text-gray-600 uppercase tracking-widest cursor-pointer list-none py-4 px-2 hover:text-brand-blue-deep hover:bg-brand-blue-deep/5 transition-all select-none"><span class="searchable-text">${meta.display_name}</span> <span class="transition-transform duration-300 group-open:rotate-180 text-brand-blue-deep">▼</span></summary>`;
+
+      const container = document.createElement('div');
+      container.className = "space-y-1.5 pl-3 border-l-[3px] border-gray-100 ml-1.5 mb-4";
+
+      const baseData = DataManager.cache.get("stats_baseline")?.find((s: StatRow) => s.chart_id === meta.chart_id);
+      if (baseData) {
+        baseData.data.forEach((item: CategoryCount) => {
+          const clean = String(item.category).toLowerCase().replace(/ /g, '_');
+          let finalKey = `${prefix}_${clean}`;
+          if (!DataManager.filters.includes(finalKey)) {
+             finalKey = matches.find(f => f.endsWith(`_${clean}`)) || "";
+          }
+
+          if (finalKey) {
+            const btn = document.createElement('button');
+            btn.id = `btn-${finalKey}`;
+            btn.className = "filter-btn w-full text-left px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-[13px] flex justify-between items-center font-medium border border-transparent cursor-pointer";
+
+            let dCount = item.count;
+            if (typeof dCount === 'string' && !dCount.startsWith('<')) dCount = parseInt(dCount).toLocaleString();
+            else if (typeof dCount === 'number') dCount = dCount.toLocaleString();
+
+            btn.innerHTML = `<span class="searchable-text">${item.category}</span> <span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-md text-gray-500 font-black">${dCount}</span>`;
+            btn.onclick = () => this.applyFilter(finalKey);
+            container.appendChild(btn);
+          }
+        });
+      }
+      details.appendChild(container);
+      list.appendChild(details);
+    });
+  },
+
+  buildToggleMenu() {
+    const container = document.getElementById('chart-toggles');
+    if (!container) return;
+
+    DataManager.metadata.forEach(meta => {
+      const wrapper = document.createElement('label');
+      wrapper.className = "toggle-item flex justify-between items-center py-2.5 px-2 hover:bg-gray-50 rounded-xl cursor-pointer transition-colors";
+      wrapper.innerHTML = `<span class="searchable-text text-[13px] font-semibold text-gray-700 pr-2 leading-tight">${meta.display_name}</span>`;
+
+      const sw = document.createElement('div');
+      sw.className = "apple-switch";
+
+      const cb = document.createElement('input');
+      cb.type = "checkbox";
+      cb.checked = ChartFactory.visibleCharts.has(meta.chart_id);
+      cb.className = "toggle-checkbox";
+      cb.onchange = (e) => {
+        if ((e.target as HTMLInputElement).checked) ChartFactory.visibleCharts.add(meta.chart_id);
+        else ChartFactory.visibleCharts.delete(meta.chart_id);
+        this.updateDashboard();
+      };
+
+      sw.appendChild(cb);
+      sw.insertAdjacentHTML('beforeend', '<span class="slider"></span>');
+      wrapper.appendChild(sw);
+      container.appendChild(wrapper);
+    });
+  },
+
+  executeSearch(query: string) {
+    query = query.toLowerCase().trim();
+    const toggle = (el: HTMLElement, show: boolean) => el.style.display = show ? 'flex' : 'none';
+
+    document.querySelectorAll('.toggle-item').forEach(item => {
+      const txt = (item.querySelector('.searchable-text') as HTMLElement)?.innerText.toLowerCase() || "";
+      toggle(item as HTMLElement, txt.includes(query));
+    });
+
+    document.querySelectorAll('.filter-group').forEach(group => {
+      const title = (group.querySelector('summary .searchable-text') as HTMLElement)?.innerText.toLowerCase() || "";
+      let hasChild = false;
+      group.querySelectorAll('.filter-btn').forEach(btn => {
+        const btnTxt = (btn.querySelector('.searchable-text') as HTMLElement)?.innerText.toLowerCase() || "";
+        const match = btnTxt.includes(query) || title.includes(query);
+        toggle(btn as HTMLElement, match);
+        if (match) hasChild = true;
+      });
+      if (query && hasChild) (group as HTMLDetailsElement).open = true;
+      (group as HTMLElement).style.display = (title.includes(query) || hasChild) ? 'block' : 'none';
+    });
+
+    let count = 0;
+    document.querySelectorAll('.chart-card').forEach(card => {
+      const title = (card as HTMLElement).dataset.title || "";
+      if (title.includes(query)) {
+        card.classList.remove('hidden');
+        count++;
+      } else card.classList.add('hidden');
+    });
+
+    const fb = document.getElementById('search-fallback');
+    if (fb) fb.style.display = count === 0 ? 'flex' : 'none';
+  },
+
+  setLoading(isLoading: boolean) {
+    if (isLoading) showLoadingState();
+    else hideLoadingState();
+  }
+};
 
 // ==========================================
-// UI STATE MANAGEMENT
+// EXPORT BINDINGS & BOOTSTRAP
 // ==========================================
 
-function switchTab(tabName: string) {
+const g = window as any;
+g.changeFilter = (key: string) => UIManager.applyFilter(key);
+g.switchTab = (tabName: string) => {
   const isFilters = tabName === 'filters';
-
   const activeClass = "flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-brand-blue-deep border-b-[3px] border-brand-blue-deep transition-colors bg-brand-blue-deep/5";
   const inactiveClass = "flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-gray-400 border-b-[3px] border-transparent hover:text-gray-600 hover:bg-gray-50 transition-colors";
 
@@ -85,586 +587,54 @@ function switchTab(tabName: string) {
   if (contentFilters) contentFilters.style.display = isFilters ? 'block' : 'none';
   if (contentCharts) contentCharts.style.display = !isFilters ? 'block' : 'none';
 
-  handleUnifiedSearch();
-}
-
-function showLoadingState() {
-  const overlay = document.getElementById('loading-overlay');
-  const grid = document.getElementById('dashboard-grid');
-  const header = document.getElementById('explorer-header');
-
-  if (overlay) {
-    overlay.classList.remove('opacity-0', 'pointer-events-none');
-    overlay.classList.add('opacity-100', 'pointer-events-auto');
-  }
-  if (grid) {
-    grid.classList.add('scale-[0.99]', 'opacity-40');
-    grid.classList.remove('scale-100', 'opacity-100');
-  }
-  if (header) {
-    header.classList.add('scale-[0.995]', 'opacity-40');
-    header.classList.remove('scale-100', 'opacity-100');
-  }
-}
-
-function hideLoadingState() {
-  const overlay = document.getElementById('loading-overlay');
-  const grid = document.getElementById('dashboard-grid');
-  const header = document.getElementById('explorer-header');
-
-  if (overlay) {
-    overlay.classList.add('opacity-0', 'pointer-events-none');
-    overlay.classList.remove('opacity-100', 'pointer-events-auto');
-  }
-  if (grid) {
-    grid.classList.remove('scale-[0.99]', 'opacity-40');
-    grid.classList.add('scale-100', 'opacity-100');
-  }
-  if (header) {
-    header.classList.remove('scale-[0.995]', 'opacity-40');
-    header.classList.add('scale-100', 'opacity-100');
-  }
-}
-
-// ==========================================
-// DATA FETCHING & INITIALIZATION
-// ==========================================
-
-async function fetchFromPortal(queryString: string) {
-  const response = await fetch(`${API_GATEWAY}?${queryString}&_cb=${new Date().getTime()}`);
-  if (!response.ok) throw new Error("API infrastructure connection exception");
-
-  const cacheHeader = response.headers.get("X-Cache");
-  const indicator = document.getElementById("cache-indicator");
-  if (indicator && cacheHeader) {
-    indicator.innerHTML = `<span class="w-2 h-2 rounded-full ${cacheHeader === "HIT" ? 'bg-brand-green-bright' : 'bg-brand-blue-deep'}"></span> ${cacheHeader === "HIT" ? 'LIVE' : 'SYNCED'}`;
-    indicator.className = `flex items-center gap-2 ${cacheHeader === "HIT" ? 'text-brand-green-bright' : 'text-brand-blue-deep'}`;
-  }
-  return await response.json();
-}
-
-async function initializeEngine() {
-  try {
-    initializePalette();
-    showLoadingState();
-    const startTime = Date.now();
-
-    [variableMetadata, availableFiltersList, summaryStatistics] = await Promise.all([
-      fetchFromPortal("type=metadata"),
-      fetchFromPortal("type=filters"),
-      fetchFromPortal("filter=baseline")
-    ]);
-
-    variableMetadata.forEach(meta => visibleCharts.add(meta.chart_id));
-
-    calculateCohortSizes();
-    buildChartToggleMenu();
-    renderFilterMenu();
-    renderDashboard();
-
-    const titleEl = document.getElementById('view-title');
-    if (titleEl) titleEl.innerText = 'Cohort Overview';
-    updateCohortSizeCounters();
-
-    const searchInput = document.getElementById('global-search');
-    if (searchInput) searchInput.addEventListener('keyup', handleUnifiedSearch);
-
-    const elapsed = Date.now() - startTime;
-    if (elapsed < 700) await new Promise(r => setTimeout(r, 700 - elapsed));
-
-    hideLoadingState();
-
-  } catch (err) {
-    console.error(err);
-    hideLoadingState();
-
-    const titleEl = document.getElementById('view-title');
-    if (titleEl) titleEl.innerText = 'Service Unavailable';
-
-    const grid = document.getElementById('dashboard-grid');
-    if (grid) grid.innerHTML = `<div class="col-span-full p-8 text-center bg-red-50 text-red-700 rounded-2xl border border-red-100 font-bold">API Access Sync Failed. Please refresh.</div>`;
-  }
-}
-
-function calculateCohortSizes() {
-  cohortSizesDictionary = {};
-
-  summaryStatistics.forEach(stat => {
-     const prefix = stat.chart_id.toLowerCase().replace(/ /g, '_');
-
-     if (stat.chart_id === 'sex') {
-        cohortSizesDictionary['baseline'] = stat.data.reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0);
-     }
-
-     stat.data.forEach((item: any) => {
-        // VETTED: Added explicit String wrapper to prevent unbinned numeric type crashing
-        const cleanCategory = String(item.category).toLowerCase().replace(/ /g, '_');
-        cohortSizesDictionary[`${prefix}_${cleanCategory}`] = item.count;
-     });
-  });
-}
-
-// ==========================================
-// RENDERING ENGINES
-// ==========================================
-
-function renderFilterMenu() {
-  const listContainer = document.getElementById('filter-list');
-  if (!listContainer) return;
-  listContainer.innerHTML = '';
-
-  variableMetadata.forEach(meta => {
-    const prefix = meta.chart_id.toLowerCase().replace(/ /g, '_');
-    const matchedSlices = availableFiltersList.filter(fKey => fKey.startsWith(prefix + '_'));
-    if (matchedSlices.length === 0) return;
-
-    const detailsEl = document.createElement('details');
-    detailsEl.className = "group border-b border-gray-100 filter-group";
-    detailsEl.open = false;
-
-    const summaryEl = document.createElement('summary');
-    summaryEl.className = "flex justify-between items-center w-full font-extrabold text-xs text-gray-600 uppercase tracking-widest cursor-pointer list-none py-4 px-2 hover:text-brand-blue-deep hover:bg-brand-blue-deep/5 transition-all select-none";
-    summaryEl.innerHTML = `<span class="searchable-text">${meta.display_name}</span> <span class="transition-transform duration-300 group-open:rotate-180 text-brand-blue-deep">▼</span>`;
-    detailsEl.appendChild(summaryEl);
-
-    const itemsContainer = document.createElement('div');
-    itemsContainer.className = "space-y-1.5 pl-3 border-l-[3px] border-gray-100 ml-1.5 mb-4";
-
-    const baselineChart = summaryStatistics.find(s => s.chart_id === meta.chart_id);
-    if (baselineChart && baselineChart.data) {
-      baselineChart.data.forEach((item: any) => {
-        // VETTED: Safe category string casting
-        const cleanCat = String(item.category).toLowerCase().replace(/ /g, '_');
-        const composedFilterKey = prefix + '_' + cleanCat;
-        const directMatch = availableFiltersList.includes(composedFilterKey);
-        const fallbackKey = matchedSlices.find(fKey => fKey.endsWith('_' + cleanCat) || cleanCat.endsWith(fKey.replace(prefix + '_', '')));
-        const finalFilterKey = directMatch ? composedFilterKey : fallbackKey;
-
-        if (finalFilterKey) {
-          const btn = document.createElement('button');
-          btn.id = `btn-${finalFilterKey}`;
-          btn.className = "filter-btn w-full text-left px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-[13px] flex justify-between items-center font-medium border border-transparent cursor-pointer";
-
-          let displayCount: string | number = item.count;
-          if (typeof displayCount === 'string' && !displayCount.startsWith('<')) {
-             displayCount = parseInt(displayCount).toLocaleString();
-          } else if (typeof displayCount === 'number') {
-             displayCount = displayCount.toLocaleString();
-          }
-
-          btn.innerHTML = `<span class="searchable-text">${item.category}</span> <span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-md text-gray-500 font-black">${displayCount}</span>`;
-          btn.onclick = () => changeFilter(finalFilterKey!);
-          itemsContainer.appendChild(btn);
-        }
-      });
-    }
-    detailsEl.appendChild(itemsContainer);
-    listContainer.appendChild(detailsEl);
-  });
-}
-
-function buildChartToggleMenu() {
-  const container = document.getElementById('chart-toggles');
-  if (!container) return;
-  container.innerHTML = '';
-
-  variableMetadata.forEach(meta => {
-    const wrapper = document.createElement('label');
-    wrapper.className = "toggle-item flex justify-between items-center py-2.5 px-2 hover:bg-gray-50 rounded-xl cursor-pointer transition-colors";
-
-    const span = document.createElement('span');
-    span.className = "searchable-text text-[13px] font-semibold text-gray-700 pr-2 leading-tight";
-    span.innerText = meta.display_name;
-
-    const switchLabel = document.createElement('div');
-    switchLabel.className = "apple-switch";
-
-    const checkbox = document.createElement('input');
-    checkbox.type = "checkbox";
-    checkbox.checked = visibleCharts.has(meta.chart_id);
-    checkbox.className = "toggle-checkbox";
-    checkbox.dataset.chartId = meta.chart_id;
-    checkbox.onchange = (e) => {
-      if ((e.target as HTMLInputElement).checked) {
-        visibleCharts.add(meta.chart_id);
-      } else {
-        visibleCharts.delete(meta.chart_id);
-      }
-      renderDashboard();
-    };
-
-    const slider = document.createElement('span');
-    slider.className = "slider";
-
-    switchLabel.appendChild(checkbox);
-    switchLabel.appendChild(slider);
-
-    wrapper.appendChild(span);
-    wrapper.appendChild(switchLabel);
-    container.appendChild(wrapper);
-  });
-}
-
-function toggleAllCharts(show: boolean) {
-  const checkboxes = document.querySelectorAll('.toggle-checkbox');
-  checkboxes.forEach((cb: any) => {
-    cb.checked = show;
-    if (show) visibleCharts.add(cb.dataset.chartId);
-    else visibleCharts.delete(cb.dataset.chartId);
-  });
-  renderDashboard();
-}
-
-async function changeFilter(filterKey: string) {
-  document.querySelectorAll('.filter-btn, #btn-baseline').forEach(b => b.classList.remove('filter-active'));
-
-  const targetedButton = document.getElementById(filterKey === 'baseline' ? 'btn-baseline' : `btn-${filterKey}`);
-  if (targetedButton) {
-      targetedButton.classList.add('filter-active');
-      if (filterKey !== 'baseline') {
-          const parentDetails = targetedButton.closest('details');
-          if (parentDetails) parentDetails.open = true;
-      }
-  }
-
-  activeFilter = filterKey;
-
-  try {
-    showLoadingState();
-    const startTime = Date.now();
-
-    summaryStatistics = await fetchFromPortal(`filter=${encodeURIComponent(filterKey)}`);
-
-    const titleEl = document.getElementById('view-title');
-    if (titleEl) {
-      titleEl.innerText = filterKey === 'baseline' ? 'Cohort Overview' : filterKey.replace(/_/g, ' ').replace(/(^|\s)\S/g, l => l.toUpperCase());
-    }
-
-    renderDashboard();
-    updateCohortSizeCounters();
-
-    const elapsed = Date.now() - startTime;
-    if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed));
-
-    hideLoadingState();
-
-  } catch (err) {
-    console.error("Failed executing data matrix reload", err);
-    hideLoadingState();
-  }
-}
-
-function updateCohortSizeCounters() {
-  const selectedSize = cohortSizesDictionary[activeFilter] || "...";
-
-  const sizeEl = document.getElementById('top-cohort-size');
-  const baselineSidebarSize = document.getElementById('size-baseline');
-
-  const displayVal = (typeof selectedSize === 'string' && !selectedSize.startsWith('<') && selectedSize !== '...')
-      ? parseInt(selectedSize).toLocaleString()
-      : selectedSize.toString().toLocaleString(); // Fallback for pure numbers
-
-  if (sizeEl) sizeEl.innerText = displayVal;
-  if (baselineSidebarSize && activeFilter === 'baseline') baselineSidebarSize.innerText = displayVal;
-}
-
-function handleUnifiedSearch() {
-  const searchInput = document.getElementById('global-search') as HTMLInputElement;
-  if (!searchInput) return;
-
-  const query = searchInput.value.toLowerCase().trim();
-
-  const toggleDisplay = (element: HTMLElement, show: boolean) => {
-    element.style.display = show ? 'flex' : 'none';
-  };
-
-  document.querySelectorAll('.toggle-item').forEach(item => {
-    const textEl = item.querySelector('.searchable-text') as HTMLElement | null;
-    if (textEl) {
-      toggleDisplay(item as HTMLElement, textEl.innerText.toLowerCase().includes(query));
-    }
-  });
-
-  document.querySelectorAll('.filter-group').forEach(group => {
-    // VETTED: Safely select the title without crashing if missing
-    const titleEl = group.querySelector('summary .searchable-text') as HTMLElement | null;
-    const title = titleEl ? titleEl.innerText.toLowerCase() : "";
-    let hasVisibleChild = false;
-
-    group.querySelectorAll('.filter-btn').forEach(btn => {
-       const btnTextEl = btn.querySelector('.searchable-text') as HTMLElement | null;
-       const btnText = btnTextEl ? btnTextEl.innerText.toLowerCase() : "";
-       const isMatch = btnText.includes(query) || title.includes(query);
-       toggleDisplay(btn as HTMLElement, isMatch);
-       if (isMatch) hasVisibleChild = true;
-    });
-
-    if (query !== '' && hasVisibleChild) {
-       (group as HTMLDetailsElement).open = true;
-    }
-
-    (group as HTMLElement).style.display = (title.includes(query) || hasVisibleChild) ? 'block' : 'none';
-  });
-
-  let foundCards = 0;
-  document.querySelectorAll('.chart-card').forEach(card => {
-    const title = card.getAttribute('data-title')?.toLowerCase() || "";
-    if (title.includes(query)) {
-      card.classList.remove('hidden');
-      foundCards++;
+  UIManager.executeSearch((document.getElementById('global-search') as HTMLInputElement)?.value || '');
+};
+
+g.toggleMobileSidebar = () => {
+  const sidebar = document.getElementById('explorer-sidebar');
+  const backdrop = document.getElementById('mobile-sidebar-overlay');
+  if (sidebar && backdrop) {
+    const isClosed = sidebar.classList.contains('-translate-x-full');
+    if (isClosed) {
+      sidebar.classList.remove('-translate-x-full');
+      backdrop.classList.remove('hidden');
+      setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
     } else {
-      card.classList.add('hidden');
+      sidebar.classList.add('-translate-x-full');
+      backdrop.classList.add('opacity-0');
+      setTimeout(() => backdrop.classList.add('hidden'), 300);
     }
-  });
-
-  const fallbackEl = document.getElementById('search-fallback');
-  if (fallbackEl) fallbackEl.style.display = foundCards === 0 ? 'flex' : 'none';
-}
-
-function exportCohortCSV() {
-  let csvContent = "data:text/csv;charset=utf-8,Variable,Category,Count,Unit\n";
-  variableMetadata.forEach(meta => {
-    const stat = summaryStatistics.find(s => s.chart_id === meta.chart_id);
-    if(stat && stat.data) {
-      stat.data.forEach((d: any) => csvContent += `"${meta.display_name}","${d.category}","${d.count}","${meta.units}"\n`);
-    }
-  });
-  const encodedUri = encodeURI(csvContent);
-  const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", `BioPortal_${activeFilter}.csv`);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
-function renderDashboard() {
-  const grid = document.getElementById('dashboard-grid');
-  if (!grid) return;
-
-  Object.values(chartInstances).forEach(chart => chart.destroy());
-  chartInstances = {};
-  grid.innerHTML = '';
-
-  let cardCount = 0;
-
-  variableMetadata.forEach(meta => {
-    if (!visibleCharts.has(meta.chart_id)) return;
-
-    const statEntry = summaryStatistics.find(s => s.chart_id === meta.chart_id);
-    if (!statEntry) return;
-
-    const filteredData = statEntry.data.filter((d: any) => d.count !== 0 && d.count !== "0");
-    if (filteredData.length === 0) return;
-
-    const isPie = meta.chart_type === 'pie';
-    const isTreemap = meta.chart_type === 'treemap';
-    const isBar = meta.chart_type === 'bar';
-
-    const HEIGHT_PER_BAR = 38;
-    const minContainerHeight = 240;
-
-    let dynamicCanvasHeight = minContainerHeight;
-    if (isBar) {
-      dynamicCanvasHeight = Math.max(minContainerHeight, filteredData.length * HEIGHT_PER_BAR);
-    }
-
-    const card = document.createElement('div');
-    card.className = `chart-card glass-card p-7 flex flex-col group relative overflow-hidden opacity-0 translate-y-3 transition-all duration-700 ease-out ${isTreemap ? 'lg:col-span-2' : ''}`;
-    card.setAttribute('data-title', meta.display_name);
-
-    card.innerHTML = `
-      <div class="absolute top-0 left-0 w-1.5 h-full bg-brand-blue-deep/20 group-hover:bg-brand-blue-deep transition-colors"></div>
-      <div class="flex justify-between items-start mb-6 border-b border-gray-100 pb-4 pl-3">
-        <h3 class="font-extrabold text-brand-dark text-lg tracking-tight leading-tight group-hover:text-brand-blue-deep transition-colors pr-2">${meta.display_name}</h3>
-        <span class="text-[10px] bg-gray-50 text-gray-400 px-2.5 py-1 rounded-md font-bold uppercase tracking-widest border border-gray-100 shrink-0">${meta.units}</span>
-      </div>
-      <div class="relative w-full pl-3 overflow-y-auto custom-scrollbar" style="height: ${minContainerHeight}px;">
-        <div style="height: ${dynamicCanvasHeight}px; position: relative; width: 100%;">
-          <canvas id="chart-${meta.chart_id}"></canvas>
-        </div>
-      </div>
-    `;
-
-    grid.appendChild(card);
-    renderChartInstance(meta, filteredData);
-
-    setTimeout(() => {
-      card.classList.remove('opacity-0', 'translate-y-3');
-      card.classList.add('opacity-100', 'translate-y-0');
-    }, cardCount * 50);
-    cardCount++;
-  });
-  handleUnifiedSearch();
-}
-
-function renderChartInstance(meta: any, data: any[]) {
-  const canvasElement = document.getElementById(`chart-${meta.chart_id}`);
-  if (!canvasElement) return;
-
-  const ctx = (canvasElement as HTMLCanvasElement).getContext('2d');
-  if (!ctx) return;
-
-  const labels = data.map(d => d.category);
-  const values = data.map(d => typeof d.count === 'string' && d.count.startsWith('<') ? 10 : parseInt(d.count, 10));
-
-  const isPie = meta.chart_type === 'pie';
-  const isTreemap = meta.chart_type === 'treemap';
-  const isBar = meta.chart_type === 'bar';
-
-  const colorArray = labels.map((_, i) => PALETTE[i % PALETTE.length]);
-
-  if (isTreemap) {
-    // VETTED: Mathematical safety wrapper to prevent Treemap NaN crashes on string masks
-    const treeData = data.map(d => ({
-        category: d.category,
-        numericCount: (typeof d.count === 'string' && d.count.startsWith('<')) ? 0 : parseInt(d.count, 10),
-        displayCount: d.count
-    }));
-
-    chartInstances[meta.chart_id] = new Chart(ctx as any, {
-      type: 'treemap',
-      data: {
-        datasets: [{
-          tree: treeData,
-          key: 'numericCount',
-          groups: ['category'],
-          spacing: 2,
-          borderWidth: 0,
-          borderRadius: 8,
-          backgroundColor: (context: any) => {
-            if (context.type !== 'data') return 'rgba(0,0,0,0.05)';
-            const rawItem = context.raw?._data;
-            if (!rawItem) return '#26abe2';
-            const paletteIndex = treeData.findIndex(d => d.category === rawItem.category);
-            return PALETTE[paletteIndex >= 0 ? paletteIndex % PALETTE.length : 0];
-          },
-          labels: {
-            display: true,
-            formatter: (context: any) => {
-              const rawItem = context.raw?._data;
-              if (!rawItem) return '';
-              const outCount = rawItem.displayCount;
-              const formattedCount = (typeof outCount === 'string' && outCount.startsWith('<'))
-                ? outCount
-                : parseInt(outCount, 10).toLocaleString();
-              return `${rawItem.category}\n(n=${formattedCount})`;
-            },
-            font: { size: 12, weight: 'bold', family: "'Outfit', sans-serif" },
-            color: '#ffffff'
-          }
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: PALETTE[8],
-            titleFont: { size: 12, family: "'Outfit', sans-serif", weight: '700' },
-            bodyFont: { size: 13, family: "'Outfit', sans-serif" },
-            padding: 12,
-            cornerRadius: 8,
-            callbacks: {
-              title: (tooltipItems: any) => {
-                const rawItem = tooltipItems[0]?.raw?._data;
-                return rawItem ? rawItem.category : '';
-              },
-              label: (context: any) => {
-                const rawItem = context.raw?._data;
-                if (!rawItem) return '';
-                const unitString = meta.units.toLowerCase() === 'patients' ? '' : ` ${meta.units}`;
-                return ` Count: ${rawItem.displayCount}${unitString}`;
-              }
-            }
-          }
-        }
-      }
-    });
-    return;
   }
+};
 
-  // Standard processing matrix for standard categorical representations
-  chartInstances[meta.chart_id] = new Chart(ctx as any, {
-    type: isPie ? 'doughnut' : 'bar',
-    data: {
-      labels: labels,
-      datasets: [{
-        data: values,
-        backgroundColor: colorArray,
-        borderWidth: 0,
-        borderRadius: isPie ? 0 : 6,
-        hoverBackgroundColor: PALETTE[8],
-        minBarLength: isPie ? undefined : 8,
-        // VETTED: Constrains bar chart scaling if there are only 1-2 elements
-        maxBarThickness: isPie ? undefined : 48
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      indexAxis: isBar ? 'y' : 'x',
-      transitions: {
-        active: { animation: { duration: 400 } }
-      },
-      animation: {
-        duration: 840,
-        easing: 'easeOutQuart'
-      },
-      onClick: (event, elements) => {
-        if (elements.length > 0) {
-          const targetIndex = elements[0].index;
-          const selectedLabel = chartInstances[meta.chart_id].data.labels![targetIndex] as string;
+g.toggleAllCharts = (show: boolean) => {
+  document.querySelectorAll('.toggle-checkbox').forEach((cb: any) => cb.checked = show);
+  if (show) DataManager.metadata.forEach(m => ChartFactory.visibleCharts.add(m.chart_id));
+  else ChartFactory.visibleCharts.clear();
+  UIManager.updateDashboard();
+};
 
-          const targetPrefix = meta.chart_id.toLowerCase().replace(/ /g, '_');
-          const sanitizedCategory = String(selectedLabel).toLowerCase().replace(/ /g, '_');
-          const targetFilterKey = targetPrefix + '_' + sanitizedCategory;
-
-          const fallbackKey = availableFiltersList.find(fKey => fKey.endsWith('_' + sanitizedCategory) || sanitizedCategory.endsWith(fKey.replace(targetPrefix + '_', '')));
-          const finalKey = availableFiltersList.includes(targetFilterKey) ? targetFilterKey : fallbackKey;
-
-          if (finalKey) changeFilter(finalKey);
-        }
-      },
-      plugins: {
-        legend: {
-          display: isPie,
-          position: 'bottom',
-          labels: { boxWidth: 10, padding: 15, font: { size: 11, family: "'Outfit', sans-serif", weight: '600' }, color: '#4b5563' }
-        },
-        tooltip: {
-          backgroundColor: PALETTE[8],
-          titleFont: { size: 12, family: "'Outfit', sans-serif", weight: '700' },
-          bodyFont: { size: 13, family: "'Outfit', sans-serif" },
-          padding: 12,
-          cornerRadius: 8,
-          callbacks: {
-            label: (context) => {
-              const rawDisplayCount = data[context.dataIndex].count;
-              const unitString = meta.units.toLowerCase() === 'patients' ? '' : ` ${meta.units}`;
-              return ` Count: ${rawDisplayCount}${unitString}`;
-            }
-          }
-        }
-      },
-      scales: isPie ? undefined : {
-        y: {
-          grid: { display: false },
-          ticks: { font: { size: 11, family: "'Outfit', sans-serif", weight: '600' }, color: '#64748b' }
-        },
-        x: {
-          beginAtZero: true,
-          grid: { color: '#f1f5f9' },
-          ticks: { font: { size: 11, family: "'Outfit', sans-serif", weight: '500' }, color: '#94a3b8' }
-        }
-      }
+g.exportCohortCSV = () => {
+  let csv = "data:text/csv;charset=utf-8,Variable,Category,Count,Unit\n";
+  DataManager.metadata.forEach(meta => {
+    const stat = DataManager.currentStats.find(s => s.chart_id === meta.chart_id);
+    if(stat && stat.data) {
+      stat.data.forEach(d => csv += `"${meta.display_name}","${d.category}","${d.count}","${meta.units}"\n`);
     }
   });
-}
+  const link = document.createElement("a");
+  link.href = encodeURI(csv);
+  link.download = `BioPortal_${UIManager.activeFilter}.csv`;
+  link.click();
+};
+
+const boot = () => {
+  ThemeManager.init();
+  DataManager.initialize().then(() => UIManager.init()).catch(console.error);
+};
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeEngine);
+  document.addEventListener('DOMContentLoaded', boot);
 } else {
-  initializeEngine();
+  boot();
 }

@@ -5,11 +5,11 @@ import Layout from '../layouts/Layout.astro';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pageData = await getEntry('pages', 'data');
 
-// Safety fallbacks ensuring structure protection if content models fail verification
 const hero = pageData?.data?.hero || { tagline: 'Data', headline: 'BioPortal Datasets', description: 'Loading data...' };
-const stats = pageData?.data?.stats || [];
+const metrics = pageData?.data?.landingMetrics;
+const content = pageData?.data?.dataRequest;
 ---
-<Layout title="Data Access & Cohorts | BioPortal" navType="minimal" backText="Back to Home">
+<Layout title={content.pageTitle} navType="minimal" backText={content.backText}>
   <div class="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue-deep/10 via-brand-teal/5 to-transparent -z-10"></div>
 
   <main class="max-w-7xl mx-auto px-6 pt-12 pb-24 relative z-10">
@@ -20,90 +20,101 @@ const stats = pageData?.data?.stats || [];
     </header>
 
     <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 mb-16 items-stretch">
-
       <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
-        {stats.map((stat: any) => (
-          <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
-              <h3
-                id={`metric-value-${stat.label.toLowerCase().replace(/ /g, '-')}`}
-                class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep"
-              >
-                {stat.value}
-              </h3>
-              <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{stat.label}</p>
-          </div>
-        ))}
+
+        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
+            <h3 id="metric-participants" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep">
+              <span class="live-stat-loader inline-block w-16 h-8 bg-gray-100 rounded animate-pulse"></span>
+              <span class="live-stat-value hidden">{metrics.fallbackValues.participants}</span>
+            </h3>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.participantsLabel}</p>
+        </div>
+
+        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
+            <h3 id="metric-variables" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep">
+              <span class="live-stat-loader inline-block w-16 h-8 bg-gray-100 rounded animate-pulse"></span>
+              <span class="live-stat-value hidden">{metrics.fallbackValues.clinicalVariables}</span>
+            </h3>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.clinicalVariablesLabel}</p>
+        </div>
+
+        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
+            <h3 id="metric-proteomics" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep">
+              <span class="live-stat-loader inline-block w-16 h-8 bg-gray-100 rounded animate-pulse"></span>
+              <span class="live-stat-value hidden">{metrics.fallbackValues.proteomics}</span>
+            </h3>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.proteomicsLabel}</p>
+        </div>
+
+        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
+            <h3 id="metric-biosamples" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep">
+              <span class="live-stat-loader inline-block w-16 h-8 bg-gray-100 rounded animate-pulse"></span>
+              <span class="live-stat-value hidden">{metrics.fallbackValues.biosamples}</span>
+            </h3>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.biosamplesLabel}</p>
+        </div>
+
       </div>
 
       <div class="lg:col-span-5 bp-frosted-gradient rounded-[2rem] p-10 border border-white/60 shadow-2xl shadow-brand-blue-deep/5 flex flex-col justify-between relative overflow-hidden group">
-
         <div class="relative z-10 mb-10">
-          <span class="px-3 py-1.5 rounded-lg bg-brand-blue-deep/10 text-brand-blue-deep font-bold text-[10px] uppercase tracking-[0.15em] mb-6 inline-block">Interactive Platform</span>
-          <h2 class="text-4xl font-black tracking-tight text-gray-900 mb-4">Live Data Explorer</h2>
-          <p class="text-gray-600 text-sm leading-relaxed font-medium opacity-90">
-            Visualize real-time clinical cohorts, demographic distributions, and sample metrics immediately through our zero-latency gateway. Filter and export aggregates on the fly.
-          </p>
+          <span class="px-3 py-1.5 rounded-lg bg-brand-blue-deep/10 text-brand-blue-deep font-bold text-[10px] uppercase tracking-[0.15em] mb-6 inline-block">{content.explorerCard.tag}</span>
+          <h2 class="text-4xl font-black tracking-tight text-gray-900 mb-4">{content.explorerCard.title}</h2>
+          <p class="text-gray-600 text-sm leading-relaxed font-medium opacity-90">{content.explorerCard.description}</p>
         </div>
-
-        <a
-          href={`${baseUrl}/data/explorer/`}
-          class="relative z-10 w-full py-4 rounded-xl bg-brand-dark text-white text-sm font-bold shadow-lg shadow-brand-dark/20 hover:shadow-2xl hover:shadow-brand-dark/40 hover:scale-[1.02] hover:bg-gray-900 transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer group/btn border border-brand-dark/50"
-        >
-          Launch Explorer
+        <a href={`${baseUrl}/data/explorer/`} class="relative z-10 w-full py-4 rounded-xl bg-brand-dark text-white text-sm font-bold shadow-lg shadow-brand-dark/20 hover:shadow-2xl hover:shadow-brand-dark/40 hover:scale-[1.02] hover:bg-gray-900 transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer group/btn border border-brand-dark/50">
+          {content.explorerCard.buttonText}
           <svg class="w-5 h-5 text-brand-teal group-hover/btn:text-white transform transition-all duration-300 group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
         </a>
       </div>
-
     </div>
 
     <div class="grid lg:grid-cols-12 gap-8 items-start">
-
       <div class="lg:col-span-5 space-y-6">
         <div class="bg-brand-dark rounded-[2.5rem] p-8 text-white shadow-xl">
           <h3 class="text-xl font-bold mb-5 flex items-center gap-3">
             <span class="w-8 h-8 rounded-full bg-brand-teal/20 flex items-center justify-center">
               <svg class="w-4 h-4 text-brand-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
             </span>
-            Access Requirements
+            {content.accessRequirements.title}
           </h3>
           <ul class="space-y-4 text-sm text-gray-300 font-medium">
-            <li class="flex items-start gap-3"><span class="text-brand-teal font-black mt-0.5">01</span><span class="leading-relaxed">Institutionally-approved REB/IRB documentation matching the target request.</span></li>
-            <li class="flex items-start gap-3"><span class="text-brand-teal font-black mt-0.5">02</span><span class="leading-relaxed">Executed Data Transfer Agreement (DTA) or institutional alignment contracts.</span></li>
-            <li class="flex items-start gap-3"><span class="text-brand-teal font-black mt-0.5">03</span><span class="leading-relaxed">Compliance with the BioPortal open science attribution framework.</span></li>
+            {content.accessRequirements.items.map((item: string, index: number) => (
+              <li class="flex items-start gap-3"><span class="text-brand-teal font-black mt-0.5">0{index + 1}</span><span class="leading-relaxed">{item}</span></li>
+            ))}
           </ul>
         </div>
 
         <div class="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-soft">
-          <h3 class="text-xl font-bold text-gray-900 mb-4">Infrastructure Vetting</h3>
-          <p class="text-sm text-gray-500 leading-relaxed mb-6">
-            The infrastructure utilizes our custom-built interactive discovery platform and leverages high-performance computing networks provided by the <strong>Digital Research Alliance of Canada (AllianceCan)</strong> alongside a secure, private compute cluster at the <strong>Lady Davis Institute (LDI)</strong> for downstream processing operations.
-          </p>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">{content.infrastructure.title}</h3>
+          <p class="text-sm text-gray-500 leading-relaxed mb-6" set:html={content.infrastructure.description}></p>
           <div class="flex flex-wrap gap-2">
-            <span class="px-3 py-1.5 rounded-lg bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-widest">LDI Private Cluster</span>
-            <span class="px-3 py-1.5 rounded-lg bg-brand-teal/10 text-brand-dark font-bold text-[10px] uppercase tracking-widest">AllianceCan</span>
+            {content.infrastructure.tags.map((tag: string) => (
+              <span class="px-3 py-1.5 rounded-lg bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-widest">{tag}</span>
+            ))}
           </div>
         </div>
       </div>
 
       <div class="lg:col-span-7">
         <div class="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-brand-blue-deep/5 border border-gray-100 h-full">
-          <h2 class="text-3xl font-black text-brand-dark mb-2">Request Data Access</h2>
-          <p class="text-gray-500 mb-8 text-sm leading-relaxed font-medium">Inquire about specific cohorts or request structural credentials to access full genomic and clinical datasets.</p>
+          <h2 class="text-3xl font-black text-brand-dark mb-2">{content.form.title}</h2>
+          <p class="text-gray-500 mb-8 text-sm leading-relaxed font-medium">{content.form.description}</p>
 
           <form class="space-y-6">
             <div class="grid md:grid-cols-2 gap-6">
               <div>
-                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Full Name</label>
-                <input type="text" placeholder="Dr. Jane Smith" class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-inner" />
+                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields.nameLabel}</label>
+                <input type="text" placeholder={content.form.fields.namePlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-inner" />
               </div>
               <div>
-                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Institutional Email</label>
-                <input type="email" placeholder="jane.smith@mcgill.ca" class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-inner" />
+                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields.emailLabel}</label>
+                <input type="email" placeholder={content.form.fields.emailPlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-inner" />
               </div>
             </div>
 
             <div>
-              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Research Interest</label>
+              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields.interestLabel}</label>
               <select class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium appearance-none cursor-pointer shadow-inner">
                 <option>Diabetes & Endocrinology</option>
                 <option>Proteomics & Biomarkers</option>
@@ -113,58 +124,81 @@ const stats = pageData?.data?.stats || [];
             </div>
 
             <div>
-              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">Brief Project Overview</label>
-              <textarea rows="4" placeholder="Describe your intended scientific use of BioPortal datasets..." class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium resize-none shadow-inner"></textarea>
+              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields.overviewLabel}</label>
+              <textarea rows="4" placeholder={content.form.fields.overviewPlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium resize-none shadow-inner"></textarea>
             </div>
 
             <button type="button" class="w-full py-4 rounded-xl bg-brand-blue-deep text-white font-bold text-sm uppercase tracking-widest shadow-lg shadow-brand-blue-deep/20 hover:bg-brand-dark hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3 cursor-pointer mt-4">
-              Submit Access Inquiry
+              {content.form.buttonText}
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </button>
           </form>
         </div>
       </div>
-
     </div>
   </main>
 </Layout>
 
-<style>
-  .bp-frosted-gradient {
-    backdrop-filter: blur(24px) saturate(140%);
-    -webkit-backdrop-filter: blur(24px) saturate(140%);
-    background: linear-gradient(
-      135deg,
-      rgba(14, 165, 233, 0.05) 0%,
-      rgba(0, 164, 144, 0.05) 25%,
-      rgba(161, 208, 68, 0.04) 50%,
-      rgba(246, 194, 68, 0.04) 75%,
-      rgba(255, 124, 67, 0.05) 100%
-    ), rgba(255, 255, 255, 0.55);
-  }
-</style>
-
 <script>
   const API_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats";
+  // The API doesn't spit out the number of clinical variables, so we calculate the unique chart_ids from the metadata.
+  const METADATA_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats?type=metadata";
 
   async function syncLandingMetrics() {
     try {
-      const response = await fetch(`${API_GATEWAY}?filter=baseline&_cb=${new Date().getTime()}`);
-      if (!response.ok) return;
+      const [statsRes, metaRes] = await Promise.all([
+        fetch(`${API_GATEWAY}?filter=baseline&_cb=${new Date().getTime()}`),
+        fetch(`${METADATA_GATEWAY}&_cb=${new Date().getTime()}`)
+      ]);
 
-      const statsArray = await response.json();
+      if (!statsRes.ok || !metaRes.ok) throw new Error("API failed");
 
+      const statsArray = await statsRes.json();
+      const metaArray = await metaRes.json();
+
+      // 1. Total Participants
       const sexStat = statsArray.find((s: any) => s.chart_id === 'sex');
-      if (sexStat && sexStat.data) {
-        const liveTotalCount = sexStat.data.reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0);
+      const liveParticipants = sexStat?.data.reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
 
-        const patientContainer = document.getElementById('metric-value-total-phenopackets');
-        if (patientContainer) {
-          patientContainer.innerText = liveTotalCount.toLocaleString();
+      // 2. Clinical Variables (Count the number of unique tracking variables defined in your backend)
+      const liveVariables = metaArray.length || 0;
+
+      // 3. Proteomic Profiles
+      const proteomicStat = statsArray.find((s: any) => s.chart_id === 'n_proteomics');
+      // Sum all the patients who *do* have proteomics data (ignoring the "No" column)
+      const liveProteomics = proteomicStat?.data
+        .filter(d => d.category !== 'No')
+        .reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
+
+      // 4. Biosamples
+      const sampleStat = statsArray.find((s: any) => s.chart_id === 'sample_type');
+      // Sum the "Single" + "Multiple" columns
+      const liveBiosamples = sampleStat?.data
+        .filter(d => d.category !== 'None')
+        .reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
+
+
+      const updateDom = (id: string, value: number) => {
+        const container = document.getElementById(`metric-${id}`);
+        if (container && value > 0) {
+          container.querySelector('.live-stat-loader')?.classList.add('hidden');
+          const valElement = container.querySelector('.live-stat-value');
+          if (valElement) {
+              valElement.classList.remove('hidden');
+              valElement.innerHTML = value.toLocaleString();
+          }
         }
-      }
+      };
+
+      updateDom('participants', liveParticipants);
+      updateDom('variables', liveVariables);
+      updateDom('proteomics', liveProteomics);
+      updateDom('biosamples', liveBiosamples);
+
     } catch (err) {
-      console.warn("API metrics synchronization skipped, defaulting to static manifests:", err);
+      console.warn("API metrics synchronization skipped, showing static defaults.");
+      document.querySelectorAll('.live-stat-loader').forEach(loader => loader.classList.add('hidden'));
+      document.querySelectorAll('.live-stat-value').forEach(val => val.classList.remove('hidden'));
     }
   }
 

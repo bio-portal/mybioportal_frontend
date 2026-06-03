@@ -1,21 +1,49 @@
 ---
+import { getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import ExplorerSidebar from '../../components/explorer/ExplorerSidebar.astro';
 import ExplorerHeader from '../../components/explorer/ExplorerHeader.astro';
 import ExplorerGrid from '../../components/explorer/ExplorerGrid.astro';
+
+// 1. Fetch all dynamic text for the explorer from your data.yaml file
+const dataPage = await getEntry('pages', 'data');
+const explorerContent = dataPage.data.explorer;
 ---
-<Layout title="Interactive Data Explorer | BioPortal" navType="minimal" backLink="/data" backText="Back to Data Request">
+<Layout
+  title={explorerContent.pageTitle}
+  navType="minimal"
+  backLink={explorerContent.backLink}
+  backText={explorerContent.backText}
+>
   <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-brand-dark/40 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300 lg:hidden"></div>
 
   <div class="flex min-h-[calc(100vh-80px)] bg-surface font-sans relative">
-    <ExplorerSidebar />
+
+    <ExplorerSidebar
+      sidebarTitle={explorerContent.sidebar.title}
+      tooltipTitle={explorerContent.sidebar.tooltip.title}
+      tooltipDescription={explorerContent.sidebar.tooltip.description}
+      tooltipWarning={explorerContent.sidebar.tooltip.warning}
+      resetButtonText={explorerContent.sidebar.buttons.reset}
+      exportButtonText={explorerContent.sidebar.buttons.export}
+      searchPlaceholder={explorerContent.sidebar.searchPlaceholder}
+      tabFiltersText={explorerContent.sidebar.tabs.filters}
+      tabChartsText={explorerContent.sidebar.tabs.charts}
+      baselineText={explorerContent.sidebar.baseline}
+      visibilityTitle={explorerContent.sidebar.visibility.title}
+      visibilityAllText={explorerContent.sidebar.visibility.all}
+      visibilityNoneText={explorerContent.sidebar.visibility.none}
+      statusGatewayText={explorerContent.sidebar.status.gateway}
+      statusSyncingText={explorerContent.sidebar.status.syncing}
+    />
 
     <main id="main-content-area" class="flex-1 p-6 lg:p-12 relative z-10 w-full overflow-x-hidden transition-all duration-500 origin-top">
 
       <div id="loading-overlay" class="absolute inset-0 z-50 bg-surface/80 backdrop-blur-md opacity-100 transition-all duration-700 ease-in-out"></div>
 
-      <ExplorerHeader />
-      <ExplorerGrid />
+      <ExplorerHeader totalCountLabel={explorerContent.header.totalPatientsLabel} />
+      <ExplorerGrid noResultsText={explorerContent.grid.noResultsText} />
+
     </main>
   </div>
 </Layout>

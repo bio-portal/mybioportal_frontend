@@ -47,13 +47,13 @@ const doublePartners = [...content.partners, ...content.partners];
 </section>
 
 <style>
-  /* Infinite linear sliding translation */
+  /* Infinite linear sliding translation with Hardware Acceleration */
   @keyframes marquee {
     0% {
-      transform: translateX(0);
+      transform: translate3d(0, 0, 0);
     }
     100% {
-      transform: translateX(-50%);
+      transform: translate3d(-50%, 0, 0);
     }
   }
 
