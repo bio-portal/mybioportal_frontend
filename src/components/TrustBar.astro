@@ -52,7 +52,6 @@ const triplePartners = [...content.partners, ...content.partners, ...content.par
 </section>
 
 <script>
-  // This runs entirely on the client side without any NPM packages
   const containers = document.querySelectorAll('.trustbar-container');
 
   containers.forEach((containerElement) => {
@@ -64,7 +63,6 @@ const triplePartners = [...content.partners, ...content.partners, ...content.par
     const totalItems = links.length;
     const itemsPerSet = totalItems / 3;
 
-    // Calculates the exact pixel width of a single loop iteration
     function getSetWidth() {
       if (totalItems === 0) return 0;
       const firstItem = links[0] as HTMLElement;
@@ -74,97 +72,93 @@ const triplePartners = [...content.partners, ...content.partners, ...content.par
     }
 
     let setWidthPx = getSetWidth();
-
-    // Position scroll baseline perfectly in the middle set
-    // so users can immediately drag backwards or forwards seamlessly
     container.scrollLeft = setWidthPx;
+    let exactScrollLeft = container.scrollLeft;
 
     window.addEventListener('resize', () => {
       setWidthPx = getSetWidth();
     });
 
-    // State & Physics values
+    // States
     let isDown = false;
+    let isHovered = false;
+    let isDragging = false;
     let startX: number;
     let scrollLeftStart: number;
-    let isDragging = false;
-    let isHovered = false;
 
-    let velocity = 0;
+    // Physics variables
+    const autoScrollSpeed = 0.75;
+    let velocity = autoScrollSpeed;
     let lastX = 0;
     let lastTime = 0;
-    const autoScrollSpeed = 0.75; // Adjust this number to change normal rolling speed
 
-    // Main animation loop
     function update() {
-      // 1. Seamless wrapping check
+      // 1. Seamless wrapper loop
       if (exactScrollLeft >= setWidthPx * 2) {
         exactScrollLeft -= setWidthPx;
       } else if (exactScrollLeft <= 0) {
         exactScrollLeft += setWidthPx;
       }
 
-      // 2. Movement logic (The Physics Fix)
+      // 2. Physics Engine
       if (!isDown) {
-        // If hovering, target speed is 0 (stop).
-        // If not hovering, target speed is the auto-scroll.
-        // (We use a negative value because subtracting a negative moves it right).
-        const targetVelocity = isHovered ? 0 : -autoScrollSpeed;
+        // Gravity targets
+        const targetVelocity = isHovered ? 0 : autoScrollSpeed;
 
-        // This single line smoothly blends your drag momentum into the target speed.
-        // It acts as friction when stopping, and gentle acceleration when reversing.
-        velocity += (targetVelocity - velocity) * 0.05;
+        // Decreased friction from 0.05 to 0.035 for a longer, more satisfying glide
+        velocity += (targetVelocity - velocity) * 0.035;
 
-        exactScrollLeft -= velocity;
+        exactScrollLeft += velocity;
       }
 
-      // 3. Apply exact math back to the DOM
+      // 3. Apply math to the DOM
       container.scrollLeft = exactScrollLeft;
-
       requestAnimationFrame(update);
     }
 
-    // Start engine
     requestAnimationFrame(update);
 
-    // Hover listeners
     container.addEventListener('mouseenter', () => isHovered = true);
     container.addEventListener('mouseleave', () => {
       isHovered = false;
       isDown = false;
     });
 
-    // Mouse Drag Listeners
     container.addEventListener('mousedown', (e: MouseEvent) => {
       isDown = true;
       isDragging = false;
       startX = e.pageX - container.offsetLeft;
-      scrollLeftStart = container.scrollLeft;
+      scrollLeftStart = exactScrollLeft;
 
       lastX = e.pageX;
       lastTime = performance.now();
-      velocity = 0;
+
+      // We don't force velocity to 0 here anymore so catching it mid-glide feels natural
     });
 
     container.addEventListener('mousemove', (e: MouseEvent) => {
       if (!isDown) return;
+      e.preventDefault();
 
       const x = e.pageX - container.offsetLeft;
       const walk = x - startX;
 
-      // Filter out micro-movements to avoid breaking genuine click intents
       if (Math.abs(walk) > 5) {
         isDragging = true;
       }
 
-      container.scrollLeft = scrollLeftStart - walk;
+      exactScrollLeft = scrollLeftStart - walk;
 
-      // Track drag momentum
+      // MOMENTUM SMOOTHING FIX:
       const now = performance.now();
       const dt = now - lastTime;
       if (dt > 0) {
-        velocity = (e.pageX - lastX) / (dt / 16);
+        const instantVelocity = -(e.pageX - lastX) / (dt / 16);
+        // Blend 60% of previous momentum with 40% of instant movement
+        // This ensures a final micro-stutter doesn't kill the throw velocity
+        velocity = (velocity * 0.6) + (instantVelocity * 0.4);
       }
+
       lastX = e.pageX;
       lastTime = now;
     });
@@ -173,16 +167,6 @@ const triplePartners = [...content.partners, ...content.partners, ...content.par
       isDown = false;
     });
 
-    // Safety fallback: ensure native mobile touch scrolling wraps correctly too
-    container.addEventListener('scroll', () => {
-      if (container.scrollLeft >= setWidthPx * 2) {
-        container.scrollLeft -= setWidthPx;
-      } else if (container.scrollLeft <= 0) {
-        container.scrollLeft += setWidthPx;
-      }
-    });
-
-    // Intercept clicks to ensure drags don't trigger link navigations
     const anchorLinks = container.querySelectorAll('.trustbar-link');
     anchorLinks.forEach(link => {
       link.addEventListener('click', (e) => {
