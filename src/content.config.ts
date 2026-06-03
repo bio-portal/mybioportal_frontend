@@ -26,6 +26,7 @@ const pages = defineCollection({
 
     // --- GLOBAL SITE CONFIG (Navbar & Footer) ---
     global: z.object({
+      // --- GLOBAL SITE CONFIG (Navbar & Footer at root level) ---
       navigation: z.object({
         logoAlt: z.string(),
         links: z.array(z.object({
@@ -36,7 +37,8 @@ const pages = defineCollection({
           primary: z.object({ label: z.string(), href: z.string() }),
           secondary: z.object({ label: z.string(), href: z.string() }),
         })
-      }),
+      }).optional(),
+
       footer: z.object({
         title: z.string(),
         titlePunctuation: z.string(),
@@ -44,8 +46,7 @@ const pages = defineCollection({
         privacyLinkText: z.string(),
         privacyLinkHref: z.string(),
         copyright: z.string(),
-      })
-    }).optional(),
+      }).optional(),
 
     // --- HOME PAGE SPECIFIC ---
     insights: z.object({

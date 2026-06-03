@@ -15,7 +15,10 @@ const {
 
 // Fetch global site configuration
 const globalData = await getEntry('pages', 'global');
-const siteConfig = globalData?.data.global;
+
+// FIX: Pull directly from the root of data, where they actually live!
+const navigation = globalData?.data?.navigation;
+const footer = globalData?.data?.footer;
 ---
 <!doctype html>
 <html lang="en">
@@ -25,13 +28,13 @@ const siteConfig = globalData?.data.global;
     <title>{title}</title>
   </head>
   <body class="flex flex-col min-h-screen bg-surface">
-    {siteConfig && (
+    {navigation && (
       <Navbar
         type={navType}
         ctaMode={ctaMode}
         backLink={backLink}
         backText={backText}
-        navData={siteConfig.navigation}
+        navData={navigation}
       />
     )}
 
@@ -39,8 +42,8 @@ const siteConfig = globalData?.data.global;
       <slot />
     </div>
 
-    {!hideFooter && siteConfig && (
-      <Footer footerData={siteConfig.footer} />
+    {!hideFooter && footer && (
+      <Footer footerData={footer} />
     )}
   </body>
 </html>
