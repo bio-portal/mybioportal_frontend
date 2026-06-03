@@ -27,10 +27,10 @@ interface VariableMeta {
 
 const CONFIG = {
   API_GATEWAY: "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats",
-  MASK_VALUE: 10, // Value to render when `<10` is encountered
+  MASK_VALUE: 10,
   DEBOUNCE_MS: 150,
-  MIN_TREEMAP_WEIGHT: 0.035, // Ensures tiny cohorts are accessible (3.5% of area)
-  FROSTING_DELAY_MS: 150, // Time to hold the blur effect to simulate "calculation"
+  MIN_TREEMAP_WEIGHT: 0.035,
+  FROSTING_DELAY_MS: 150,
 };
 
 // ==========================================
@@ -164,11 +164,9 @@ const ChartFactory = {
       config = this.getStandardConfig(meta, data, labels, bgColors, isPie);
     }
 
-    // NEW LOGIC: Update instead of destroy if possible to prevent janky UI redraws
     if (this.instances[meta.chart_id]) {
       const chart = this.instances[meta.chart_id];
       chart.data = config.data;
-      // Provide a smooth inner-chart animation when data swaps
       chart.update({ duration: 400, easing: 'easeOutQuart' });
     } else {
       this.instances[meta.chart_id] = new Chart(ctx, config);
@@ -176,7 +174,6 @@ const ChartFactory = {
   },
 
   buildUpSetPlot(meta: VariableMeta, rawData: CategoryCount[], canvasCtx: HTMLCanvasElement) {
-    // Check if the wrapper already exists
     let wrapperDiv = canvasCtx.parentElement?.querySelector('.upset-wrapper') as HTMLDivElement;
 
     if (!wrapperDiv) {
@@ -207,12 +204,16 @@ const ChartFactory = {
 
     const builder = UpSetJS.extractCombinations(combinations);
 
+    // 🌟 ISSUE 1 OVERRIDE: Generate dynamic premium brand tracks
+    const isMultiOmic = (name: string) => name.includes('+');
+
     UpSetJS.render(wrapperDiv, {
       sets: builder.sets,
       combinations: builder.combinations,
       width: wrapperDiv.clientWidth || 400,
       height: wrapperDiv.clientHeight || 240,
-      color: ThemeManager.palette[0],
+      // Single tracks utilize BioPortal Blue, combinations flag dynamic orange tracking
+      color: (d: any) => isMultiOmic(d.name) ? ThemeManager.palette[6] : ThemeManager.palette[0],
       selection: null,
       onClick: (intersection: any) => {
           if (intersection && intersection.name) {
@@ -230,7 +231,7 @@ const ChartFactory = {
           tree: data,
           key: 'numericVal',
           groups: ['category'],
-          spacing: 2,
+          spacing: 1.5,
           borderWidth: 0,
           borderRadius: 8,
           backgroundColor: (ctx: any) => {
@@ -241,13 +242,31 @@ const ChartFactory = {
           },
           labels: {
             display: true,
-            formatter: (ctx: any) => ctx.raw?.g || '',
-            font: { size: 12, weight: 'bold', family: "'Outfit', sans-serif" },
-            color: '#ffffff'
+            // 🌟 ISSUE 3 OVERRIDE: Explicit multi-line label auto-wrapping text split loop
+            formatter: (ctx: any) => {
+              const bounds = ctx.type === 'data' ? ctx.raw?.v : null;
+              if (!bounds || bounds.w < 60 || bounds.h < 35) return '';
+
+              const labelText = ctx.raw?.g || '';
+              const countText = `(${ctx.raw?._data?.displayVal || 0})`;
+
+              // Split labels containing words into structural arrays to cause vertical canvas wrapping
+              if (labelText.includes(' or ')) {
+                return [...labelText.split(' or '), countText];
+              }
+              return labelText.split(' ').concat([countText]);
+            },
+            font: { size: 11, weight: '700', family: "'Outfit', sans-serif" },
+            // Swap text shade dynamically to pass strict WCAG AA contrast criteria
+            color: (ctx: any) => {
+              const cat = ctx.raw?.g;
+              const idx = data.findIndex(d => d.category === cat);
+              return [2, 3, 7].includes(idx % 9) ? '#003f5e' : '#ffffff';
+            }
           }
         }] as any
       },
-      options: this.getSharedOptions(meta, true, false)
+      options: this.getSharedOptions(meta, true, false, data)
     };
   },
 
@@ -269,7 +288,7 @@ const ChartFactory = {
     };
   },
 
-  getSharedOptions(meta: VariableMeta, isTreemap: boolean, isPie: boolean, parsedData?: any[]): any {
+  getSharedOptions(meta: VariableMeta, isTreemap: boolean, isPie: boolean, parsedData: any[]): any {
     return {
       responsive: true,
       maintainAspectRatio: false,
@@ -296,22 +315,25 @@ const ChartFactory = {
           labels: { boxWidth: 10, padding: 15, font: { size: 11, family: "'Outfit', sans-serif", weight: '600' }, color: '#4b5563' }
         },
         tooltip: {
+          enabled: true,
           backgroundColor: ThemeManager.palette[8],
           titleFont: { size: 12, family: "'Outfit', sans-serif", weight: '700' },
           bodyFont: { size: 13, family: "'Outfit', sans-serif" },
           padding: 12,
           cornerRadius: 8,
           callbacks: {
+            // 🌟 FIX: Force treemaps and bar components to cleanly compute metric values on hover
             title: (ctx: any) => isTreemap ? (ctx[0]?.raw?.g || '') : ctx[0].label,
             label: (ctx: any) => {
-              const rawItem = isTreemap ? ctx.raw?._data[0] : parsedData![ctx.dataIndex];
+              const rawItem = isTreemap ? ctx[0].raw?._data : parsedData[ctx[0].dataIndex];
               if (!rawItem) return '';
               const unit = meta.units === 'patients' ? '' : ` ${meta.units}`;
-              return ` Count: ${rawItem.displayVal || rawItem.displayCount}${unit}`;
+              return ` Count: ${rawItem.displayVal || rawItem.numericVal}${unit}`;
             }
           }
         }
       },
+      // Clean scales elimination explicitly required for non-linear layout matrices (Treemaps)
       scales: (isPie || isTreemap) ? undefined : {
         y: { grid: { display: false }, ticks: { font: { size: 11, family: "'Outfit', sans-serif", weight: '600' }, color: '#64748b' } },
         x: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { size: 11, family: "'Outfit', sans-serif", weight: '500' }, color: '#94a3b8' } }
@@ -343,12 +365,9 @@ const UIManager = {
     }
   },
 
-  // 🌟 NEW: Frosting implementation logic
   setFrosting(active: boolean) {
     const grid = document.getElementById('dashboard-grid');
     const header = document.getElementById('explorer-header');
-
-    // We create an inline transition so we don't have to pollute the global CSS
     const frostingClasses = ['opacity-40', 'blur-[2px]', 'grayscale-[50%]'];
 
     if (grid && header) {
@@ -365,7 +384,6 @@ const UIManager = {
   },
 
   async applyFilter(filterKey: string) {
-    // 1. Instantly update UI active states on sidebar
     document.querySelectorAll('.filter-btn, #btn-baseline').forEach(b => b.classList.remove('filter-active'));
     const btn = document.getElementById(filterKey === 'baseline' ? 'btn-baseline' : `btn-${filterKey}`);
     if (btn) {
@@ -374,32 +392,23 @@ const UIManager = {
       if (details) details.open = true;
     }
 
-    if (this.activeFilter === filterKey) return; // Prevent double-clicking the same filter
+    if (this.activeFilter === filterKey) return;
     this.activeFilter = filterKey;
 
-    // 2. Apply the Frosting blur effect
     this.setFrosting(true);
 
     try {
-      // 3. Load the data (nearly instant if cached)
       await DataManager.loadFilter(filterKey);
-
-      // 4. Force a tiny artificial delay so the user physically registers the blur
-      //    (This ensures they *feel* the change happening even on 2ms cache hits)
       await new Promise(resolve => setTimeout(resolve, CONFIG.FROSTING_DELAY_MS));
 
-      // 5. Update the text strings (Behind the blur)
       const titleEl = document.getElementById('view-title');
       if (titleEl) titleEl.innerText = filterKey === 'baseline' ? 'Cohort Overview' : filterKey.replace(/_/g, ' ').replace(/(^|\s)\S/g, l => l.toUpperCase());
       this.updateSizeCounters();
-
-      // 6. Tell Chart.js to recalculate its canvases (Behind the blur)
       this.updateDashboard();
 
     } catch (e) {
       console.error(e);
     } finally {
-      // 7. Remove the blur!
       this.setFrosting(false);
     }
   },
@@ -423,7 +432,6 @@ const UIManager = {
     let cardCount = 0;
     DataManager.metadata.forEach(meta => {
       if (!ChartFactory.visibleCharts.has(meta.chart_id)) {
-        // If a chart exists but was toggled off, hide its card
         const existingCard = document.querySelector(`.chart-card[data-title="${meta.display_name.toLowerCase()}"]`);
         if (existingCard) (existingCard as HTMLElement).style.display = 'none';
         return;
@@ -440,11 +448,9 @@ const UIManager = {
       const isUpset = meta.chart_id === 'sample_intersections';
       const canvasHeight = isBar ? Math.max(containerHeight, validData.length * 38) : (isUpset ? 300 : containerHeight);
 
-      // 🌟 NEW: Instead of tearing down the grid, check if the card already exists!
       let card = document.querySelector(`.chart-card[data-title="${meta.display_name.toLowerCase()}"]`) as HTMLElement;
 
       if (!card) {
-          // If it doesn't exist (initial load), build the HTML
           card = document.createElement('div');
           card.className = "chart-card glass-card p-7 flex flex-col group relative overflow-hidden transition-all duration-700 ease-out";
           if (this.isInitialRender) card.classList.add('opacity-0', 'translate-y-3');
@@ -471,10 +477,15 @@ const UIManager = {
              }, cardCount * 40);
           }
       } else {
-         // Card already exists, just make sure it's visible and heights are correct
          card.style.display = 'flex';
          const wrapper = card.querySelector('.chart-canvas-wrapper') as HTMLElement;
          if (wrapper) wrapper.style.height = `${canvasHeight}px`;
+      }
+
+      // Automatically cause full horizontal rows adjustments if the target item is our UpSet plot
+      if (isUpset) {
+        card.classList.remove('lg:col-span-1', '2xl:col-span-1');
+        card.classList.add('lg:col-span-2', '2xl:col-span-3');
       }
 
       const ctx = document.getElementById(`chart-${meta.chart_id}`) as HTMLCanvasElement;
@@ -675,14 +686,11 @@ g.exportCohortCSV = () => {
 
 const boot = () => {
   ThemeManager.init();
-
   DataManager.initialize()
     .then(() => {
-      // If data loaded perfectly, build the UI
       UIManager.init();
     })
     .catch((err) => {
-      // If data failed to load, log it but don't leave the user trapped!
       console.error("BioPortal Dashboard Error:", err);
       const grid = document.getElementById('dashboard-grid');
       if (grid) {
@@ -690,7 +698,6 @@ const boot = () => {
       }
     })
     .finally(() => {
-      // THIS RUNS NO MATTER WHAT: Safely locate and dismiss the initial full-screen frost
       const overlay = document.getElementById('loading-overlay');
       if (overlay) {
         overlay.classList.remove('opacity-100');
