@@ -35,3 +35,20 @@
   display: none !important;
   pointer-events: none !important;
 }
+
+/* Core Grid Dots & Matrix Row Recoloring */
+.upset-matrix-dot[data-set="blood"] { fill: var(--color-brand-blue-deep) !important; }
+.upset-matrix-dot[data-set="retinal"] { fill: var(--color-brand-green-bright) !important; }
+.upset-matrix-dot[data-set="urine"] { fill: var(--color-brand-teal) !important; }
+
+/* Highlight the Triple Overlap Intersection Column Bar */
+.upset-bar[data-intersection="retinal-blood-urine"] {
+  fill: var(--color-brand-orange-deep) !important;
+  transition: fill 0.2s ease-in-out;
+}
+
+/* Ensure the fill property state changes gracefully on hover */
+.upset-bar[data-intersection="retinal-blood-urine"]:hover {
+  fill: var(--color-brand-yellow) !important;
+  transition: fill 0.15s ease-in-out;
+}

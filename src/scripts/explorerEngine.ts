@@ -126,7 +126,7 @@ const ChartFactory = {
     this.instances = {};
   },
 
-  parseData(data: CategoryCount[], isTreemap: boolean) {
+  parseData(data: CategoryCount[], isTreemap: boolean, isPie: boolean) {
     let totalCount = 0;
     const parsed = data.map(d => {
       const isMasked = typeof d.count === 'string' && d.count.startsWith('<');
@@ -137,6 +137,9 @@ const ChartFactory = {
 
     if (isTreemap) {
       const minWeight = Math.max(10, totalCount * CONFIG.MIN_TREEMAP_WEIGHT);
+      parsed.forEach(d => { d.numericVal = Math.max(d.numericVal, minWeight); });
+    } else if (isPie) {
+      const minWeight = Math.max(5, totalCount * 0.035);
       parsed.forEach(d => { d.numericVal = Math.max(d.numericVal, minWeight); });
     }
     return parsed;
@@ -160,7 +163,7 @@ const ChartFactory = {
       });
     }
 
-    const data = this.parseData(rawData, isTreemap);
+    const data = this.parseData(rawData, isTreemap, isPie);
     const labels = data.map(d => d.category);
     const bgColors = data.map((_, i) => ThemeManager.getColor(i));
 
@@ -193,14 +196,10 @@ const ChartFactory = {
     if (!wrapperDiv) {
       wrapperDiv = document.createElement('div');
       wrapperDiv.className = 'upset-wrapper w-full h-full';
-      wrapperDiv.style.maxWidth = '520px';
-      wrapperDiv.style.margin = '0 auto';
-
       wrapperElement.innerHTML = '';
       wrapperElement.appendChild(wrapperDiv);
     }
 
-    // CRITICAL FIX: Explicitly flush historic children tree to stop node pile-up on redraw
     wrapperDiv.innerHTML = '';
 
     const combinations = rawData.map(item => {
@@ -219,19 +218,17 @@ const ChartFactory = {
     });
 
     const builder = UpSetJS.extractCombinations(combinations);
-    const computedWidth = Math.max(wrapperDiv.clientWidth || 400, combinations.length * 64);
+    const computedWidth = Math.max(wrapperDiv.clientWidth || 340, combinations.length * 44);
 
     UpSetJS.render(wrapperDiv, {
       sets: builder.sets,
       combinations: builder.combinations,
       width: computedWidth,
       height: wrapperDiv.clientHeight || 240,
-      // CRITICAL FIX: Strict string token alignment eliminates fallback black rendering
       color: ThemeManager.palette[0] || '#26abe2',
       selection: null,
-      // CRITICAL FIX: Strip native toolbar out of DOM hierarchy completely
       exportButtons: false,
-      barPadding: 0.35,
+      barPadding: 0.4,
       numericalScale: true,
       onClick: (intersection: any) => {
           if (intersection && intersection.name) UIManager.handleChartClick(meta.chart_id, intersection.name);
@@ -343,7 +340,6 @@ const ChartFactory = {
               if (!tooltipItems || !tooltipItems.length) return '';
               return isTreemap ? (tooltipItems[0].raw?.g || '') : tooltipItems[0].label;
             },
-            // CRITICAL FIX: Decouple index parameter parsing maps to match Chart.js v4 single item protocols
             label: (context: any) => {
               const categoryName = isTreemap ? context.raw?.g : context.label;
               const dataset = context.dataset;
@@ -380,6 +376,7 @@ const UIManager = {
     DataManager.metadata.forEach(m => ChartFactory.visibleCharts.add(m.chart_id));
     this.renderFilterMenu();
     this.buildToggleMenu();
+    this.updateSizeCounters(); // 🌟 FIX: Instantly paint metrics on startup baseline
     this.updateDashboard();
     this.bindEvents();
   },
@@ -459,7 +456,18 @@ const UIManager = {
     if (!grid) return;
 
     let cardCount = 0;
-    DataManager.metadata.forEach(meta => {
+
+    const priorityIds = ['sample_intersections', 'Ethnicity'];
+    const sortedMetadata = [...DataManager.metadata].sort((a, b) => {
+      const aIdx = priorityIds.indexOf(a.chart_id);
+      const bIdx = priorityIds.indexOf(b.chart_id);
+      if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+      if (aIdx !== -1) return -1;
+      if (bIdx !== -1) return 1;
+      return a.display_name.localeCompare(b.display_name);
+    });
+
+    sortedMetadata.forEach(meta => {
       if (!ChartFactory.visibleCharts.has(meta.chart_id)) {
         const existingCard = document.querySelector(`.chart-card[data-title="${meta.display_name.toLowerCase()}"]`);
         if (existingCard) (existingCard as HTMLElement).style.display = 'none';
@@ -516,11 +524,13 @@ const UIManager = {
          card.style.display = 'flex';
          const wrapper = card.querySelector('.chart-canvas-wrapper') as HTMLElement;
          if (wrapper) wrapper.style.height = `${canvasHeight}px`;
+
+         grid.appendChild(card);
       }
 
       if (isUpset) {
-        card.classList.remove('lg:col-span-1', '2xl:col-span-1');
-        card.classList.add('lg:col-span-2', '2xl:col-span-2');
+        card.classList.remove('lg:col-span-2', '2xl:col-span-2');
+        card.classList.add('lg:col-span-1', '2xl:col-span-1');
       }
 
       if (isUpset) {
