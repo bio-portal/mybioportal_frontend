@@ -142,3 +142,79 @@ const { insights, teamSection } = homeData.data;
     </section>
   </main>
   </Layout>
+
+
+<!-- Append this script block right before the final </Layout> tag -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const teamCards = document.querySelectorAll('.team-card');
+      const spotlightContent = document.getElementById('spotlight-content');
+
+      let activeHoverTarget: any = null;
+      let currentDisplayedCard: any = null;
+
+      teamCards.forEach(card => {
+        // --- DESKTOP HOVER LOGIC ---
+        card.addEventListener('mouseenter', () => {
+          if (window.innerWidth < 1024) return;
+          if (currentDisplayedCard === card) return;
+
+          activeHoverTarget = card;
+          const name = card.querySelector('.member-name')?.textContent || '';
+          const role = card.querySelector('.member-role')?.textContent || '';
+          const bio = card.querySelector('.member-bio')?.textContent || '';
+          const imgEl = card.querySelector('.member-img');
+          const imgSrc = imgEl ? imgEl.getAttribute('src') : null;
+
+          const themeColorClass = 'text-brand-blue-deep';
+
+          // Fade out existing spotlight content smoothly
+          if (spotlightContent) spotlightContent.style.opacity = '0';
+
+          // Debounce the spotlight card generation to ensure smooth cursor sweeping
+          setTimeout(() => {
+            if (activeHoverTarget !== card || !spotlightContent) return;
+            currentDisplayedCard = card;
+
+            spotlightContent.innerHTML = `
+              <div class="flex justify-between items-start mb-6 gap-4">
+                <div class="pt-2">
+                  <h3 class="text-2xl font-bold text-gray-900 mb-1 tracking-tight leading-tight">${name}</h3>
+                  <p class="text-xs font-bold ${themeColorClass} uppercase tracking-widest">${role}</p>
+                </div>
+                ${imgSrc
+                  ? `<img src="${imgSrc}" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-xl bg-surface shrink-0" />`
+                  : `<div class="w-24 h-24 bg-surface rounded-full border-4 border-white shadow-xl shrink-0 flex items-center justify-center text-brand-blue-deep/30"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>`
+                }
+              </div>
+              <div class="text-gray-600 leading-relaxed text-sm space-y-4 pr-2 font-medium">${bio}</div>
+            `;
+
+            spotlightContent.style.opacity = '1';
+          }, 150);
+        });
+
+        // --- MOBILE TOGGLE LOGIC ---
+        card.addEventListener('click', () => {
+          if (window.innerWidth >= 1024) return;
+          const mobileContainer = card.querySelector('.mobile-bio-container') as HTMLElement;
+          if (!mobileContainer) return;
+
+          const isOpen = mobileContainer.style.maxHeight && mobileContainer.style.maxHeight !== '0px';
+
+          // Close any other open biography panels
+          document.querySelectorAll('.mobile-bio-container').forEach(c => {
+            (c as HTMLElement).style.maxHeight = '0px';
+            (c as HTMLElement).style.opacity = '0';
+          });
+
+          // Toggle our current element smoothly
+          if (!isOpen) {
+            mobileContainer.style.maxHeight = mobileContainer.scrollHeight + 'px';
+            mobileContainer.style.opacity = '1';
+          }
+        });
+      });
+    });
+  </script>
+</Layout>

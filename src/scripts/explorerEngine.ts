@@ -675,7 +675,23 @@ g.exportCohortCSV = () => {
 
 const boot = () => {
   ThemeManager.init();
-  DataManager.initialize().then(() => UIManager.init()).catch(console.error);
+  DataManager.initialize().then(() => {
+    // 1. Initialize the charts, menus, and layout managers
+    UIManager.init();
+
+    // 2. Safely locate and dismiss the initial full-screen loading curtain
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) {
+      // Fade out smoothly and allow user inputs/hovers to pass straight through
+      overlay.classList.remove('opacity-100');
+      overlay.classList.add('opacity-0', 'pointer-events-none');
+
+      // Allow your Tailwind transition duration (700ms) to complete, then drop from the render tree
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 700);
+    }
+  }).catch(console.error);
 };
 
 if (document.readyState === 'loading') {

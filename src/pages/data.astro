@@ -6,18 +6,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pageData = await getEntry('pages', 'data');
 
 const hero = pageData?.data?.hero || { tagline: 'Data', headline: 'BioPortal Datasets', description: 'Loading data...' };
-const metrics = pageData?.data?.landingMetrics || {
-  participantsLabel: "Total Participants",
-  clinicalVariablesLabel: "Clinical Variables",
-  proteomicsLabel: "Proteomic Profiles",
-  biosamplesLabel: "Matched Biosamples",
-  fallbackValues: {
-    participants: "...",
-    clinicalVariables: "...",
-    proteomics: "...",
-    biosamples: "..."
-  }
-};
+const stats = pageData?.data?.stats || [];
 const content = pageData?.data?.dataRequest;
 ---
 <Layout title={content.pageTitle} navType="minimal" backText={content.backText}>
@@ -32,39 +21,24 @@ const content = pageData?.data?.dataRequest;
 
     <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 mb-16 items-stretch">
       <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {stats.map((stat: any) => {
+          const domId = stat.id ? `metric-value-${stat.id}` : `metric-value-${stat.label.toLowerCase().replace(/ /g, '-')}`;
+          return (
+            <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
+                <h3 id={domId} class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep h-12 lg:h-14 flex items-center">
 
-        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
-            <h3 id="metric-participants" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep">
-              <span class="live-stat-loader inline-block w-16 h-8 bg-gray-100 rounded animate-pulse"></span>
-              <span class="live-stat-value hidden">{metrics.fallbackValues.participants}</span>
-            </h3>
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.participantsLabel}</p>
-        </div>
+                  <div class="live-stat-loader flex items-center gap-1.5 pt-2">
+                    <div class="w-3 h-3 bg-brand-blue-deep/40 rounded-full animate-bounce" style="animation-delay: -0.3s"></div>
+                    <div class="w-3 h-3 bg-brand-blue-deep/60 rounded-full animate-bounce" style="animation-delay: -0.15s"></div>
+                    <div class="w-3 h-3 bg-brand-blue-deep/90 rounded-full animate-bounce"></div>
+                  </div>
 
-        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
-            <h3 id="metric-variables" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep">
-              <span class="live-stat-loader inline-block w-16 h-8 bg-gray-100 rounded animate-pulse"></span>
-              <span class="live-stat-value hidden">{metrics.fallbackValues.clinicalVariables}</span>
-            </h3>
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.clinicalVariablesLabel}</p>
-        </div>
-
-        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
-            <h3 id="metric-proteomics" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep">
-              <span class="live-stat-loader inline-block w-16 h-8 bg-gray-100 rounded animate-pulse"></span>
-              <span class="live-stat-value hidden">{metrics.fallbackValues.proteomics}</span>
-            </h3>
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.proteomicsLabel}</p>
-        </div>
-
-        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
-            <h3 id="metric-biosamples" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep">
-              <span class="live-stat-loader inline-block w-16 h-8 bg-gray-100 rounded animate-pulse"></span>
-              <span class="live-stat-value hidden">{metrics.fallbackValues.biosamples}</span>
-            </h3>
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.biosamplesLabel}</p>
-        </div>
-
+                  <span class="live-stat-value hidden">{stat.value}</span>
+                </h3>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{stat.label}</p>
+            </div>
+          );
+        })}
       </div>
 
       <div class="lg:col-span-5 bp-frosted-gradient rounded-[2rem] p-10 border border-white/60 shadow-2xl shadow-brand-blue-deep/5 flex flex-col justify-between relative overflow-hidden group">
@@ -152,7 +126,6 @@ const content = pageData?.data?.dataRequest;
 
 <script>
   const API_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats";
-  // The API doesn't spit out the number of clinical variables, so we calculate the unique chart_ids from the metadata.
   const METADATA_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats?type=metadata";
 
   async function syncLandingMetrics() {
@@ -176,21 +149,18 @@ const content = pageData?.data?.dataRequest;
 
       // 3. Proteomic Profiles
       const proteomicStat = statsArray.find((s: any) => s.chart_id === 'n_proteomics');
-      // Sum all the patients who *do* have proteomics data (ignoring the "No" column)
       const liveProteomics = proteomicStat?.data
         .filter(d => d.category !== 'No')
         .reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
 
       // 4. Biosamples
       const sampleStat = statsArray.find((s: any) => s.chart_id === 'sample_type');
-      // Sum the "Single" + "Multiple" columns
       const liveBiosamples = sampleStat?.data
         .filter(d => d.category !== 'None')
         .reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
 
-
       const updateDom = (id: string, value: number) => {
-        const container = document.getElementById(`metric-${id}`);
+        const container = document.getElementById(`metric-value-${id}`);
         if (container && value > 0) {
           container.querySelector('.live-stat-loader')?.classList.add('hidden');
           const valElement = container.querySelector('.live-stat-value');
@@ -201,10 +171,10 @@ const content = pageData?.data?.dataRequest;
         }
       };
 
-      updateDom('participants', liveParticipants);
-      updateDom('variables', liveVariables);
-      updateDom('proteomics', liveProteomics);
-      updateDom('biosamples', liveBiosamples);
+      updateDom('total-participants', liveParticipants);
+      updateDom('clinical-variables', liveVariables);
+      updateDom('proteomic-profiles', liveProteomics);
+      updateDom('matched-biosamples', liveBiosamples);
 
     } catch (err) {
       console.warn("API metrics synchronization skipped, showing static defaults.");
