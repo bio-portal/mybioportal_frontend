@@ -166,7 +166,12 @@ const ChartFactory = {
 
     if (this.instances[meta.chart_id]) {
       const chart = this.instances[meta.chart_id];
-      chart.data = config.data;
+      chart.data.labels = config.data.labels;
+      chart.data.datasets[0].data = config.data.datasets[0].data;
+      (chart.data.datasets[0] as any).customData = data;
+      if (isTreemap) {
+        (chart.data.datasets[0] as any).tree = (config.data.datasets[0] as any).tree;
+      }
       chart.update({ duration: 400, easing: 'easeOutQuart' });
     } else {
       this.instances[meta.chart_id] = new Chart(ctx, config);
@@ -198,13 +203,12 @@ const ChartFactory = {
           name: String(item.category),
           sets: sets,
           value: isNaN(numericValue) ? 0 : numericValue,
-          displayValue: item.count
+          displayValue: item.count,
+          label: `${String(item.category)}: ${item.count}`
       };
     });
 
     const builder = UpSetJS.extractCombinations(combinations);
-
-    // 🌟 ISSUE 1 OVERRIDE: Generate dynamic premium brand tracks
     const isMultiOmic = (name: string) => name.includes('+');
 
     UpSetJS.render(wrapperDiv, {
@@ -212,7 +216,6 @@ const ChartFactory = {
       combinations: builder.combinations,
       width: wrapperDiv.clientWidth || 400,
       height: wrapperDiv.clientHeight || 240,
-      // Single tracks utilize BioPortal Blue, combinations flag dynamic orange tracking
       color: (d: any) => isMultiOmic(d.name) ? ThemeManager.palette[6] : ThemeManager.palette[0],
       selection: null,
       onClick: (intersection: any) => {
@@ -234,6 +237,7 @@ const ChartFactory = {
           spacing: 1.5,
           borderWidth: 0,
           borderRadius: 8,
+          customData: data,
           backgroundColor: (ctx: any) => {
             if (ctx.type !== 'data') return 'rgba(0,0,0,0.05)';
             const cat = ctx.raw?.g;
@@ -242,22 +246,17 @@ const ChartFactory = {
           },
           labels: {
             display: true,
-            // 🌟 ISSUE 3 OVERRIDE: Explicit multi-line label auto-wrapping text split loop
             formatter: (ctx: any) => {
               const bounds = ctx.type === 'data' ? ctx.raw?.v : null;
               if (!bounds || bounds.w < 60 || bounds.h < 35) return '';
 
               const labelText = ctx.raw?.g || '';
-              const countText = `(${ctx.raw?._data?.displayVal || 0})`;
-
-              // Split labels containing words into structural arrays to cause vertical canvas wrapping
               if (labelText.includes(' or ')) {
-                return [...labelText.split(' or '), countText];
+                return labelText.split(' or ');
               }
-              return labelText.split(' ').concat([countText]);
+              return labelText.split(' ');
             },
             font: { size: 11, weight: '700', family: "'Outfit', sans-serif" },
-            // Swap text shade dynamically to pass strict WCAG AA contrast criteria
             color: (ctx: any) => {
               const cat = ctx.raw?.g;
               const idx = data.findIndex(d => d.category === cat);
@@ -277,6 +276,7 @@ const ChartFactory = {
         labels,
         datasets: [{
           data: data.map(d => d.numericVal),
+          customData: data,
           backgroundColor: bgColors,
           borderWidth: 0,
           borderRadius: isPie ? 0 : 6,
@@ -288,7 +288,7 @@ const ChartFactory = {
     };
   },
 
-  getSharedOptions(meta: VariableMeta, isTreemap: boolean, isPie: boolean, parsedData: any[]): any {
+  getSharedOptions(meta: VariableMeta, isTreemap: boolean, isPie: boolean, initialData: any[]): any {
     return {
       responsive: true,
       maintainAspectRatio: false,
@@ -322,18 +322,25 @@ const ChartFactory = {
           padding: 12,
           cornerRadius: 8,
           callbacks: {
-            // 🌟 FIX: Force treemaps and bar components to cleanly compute metric values on hover
-            title: (ctx: any) => isTreemap ? (ctx[0]?.raw?.g || '') : ctx[0].label,
-            label: (ctx: any) => {
-              const rawItem = isTreemap ? ctx[0].raw?._data : parsedData[ctx[0].dataIndex];
+            title: (tooltipItems: any[]) => {
+              if (!tooltipItems || !tooltipItems.length) return '';
+              return isTreemap ? (tooltipItems[0].raw?.g || '') : tooltipItems[0].label;
+            },
+            label: (context: any) => {
+              const categoryName = isTreemap ? context.raw?.g : context.label;
+              const dataset = context.dataset;
+              const customData = dataset?.customData || initialData;
+
+              const rawItem = customData?.find((d: any) => String(d.category) === String(categoryName));
               if (!rawItem) return '';
+
+              const countVal = rawItem.displayVal !== undefined ? rawItem.displayVal : rawItem.numericVal;
               const unit = meta.units === 'patients' ? '' : ` ${meta.units}`;
-              return ` Count: ${rawItem.displayVal || rawItem.numericVal}${unit}`;
+              return ` Count: ${countVal}${unit}`;
             }
           }
         }
       },
-      // Clean scales elimination explicitly required for non-linear layout matrices (Treemaps)
       scales: (isPie || isTreemap) ? undefined : {
         y: { grid: { display: false }, ticks: { font: { size: 11, family: "'Outfit', sans-serif", weight: '600' }, color: '#64748b' } },
         x: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { size: 11, family: "'Outfit', sans-serif", weight: '500' }, color: '#94a3b8' } }
@@ -457,7 +464,6 @@ const UIManager = {
 
           card.dataset.title = meta.display_name.toLowerCase();
 
-          // Replace the card.innerHTML line inside updateDashboard() with this:
           card.innerHTML = `
             <div class="absolute top-0 left-0 w-1.5 h-full bg-brand-blue-deep/20 group-hover:bg-brand-blue-deep transition-colors"></div>
             <div class="flex justify-between items-start mb-6 border-b border-gray-100 pb-4 pl-3">
@@ -480,9 +486,9 @@ const UIManager = {
           grid.appendChild(card);
 
           if (this.isInitialRender) {
-             setTimeout(() => {
-               card.classList.remove('opacity-0', 'translate-y-3');
-             }, cardCount * 40);
+              setTimeout(() => {
+                card.classList.remove('opacity-0', 'translate-y-3');
+              }, cardCount * 40);
           }
       } else {
          card.style.display = 'flex';
@@ -490,10 +496,9 @@ const UIManager = {
          if (wrapper) wrapper.style.height = `${canvasHeight}px`;
       }
 
-      // Automatically cause full horizontal rows adjustments if the target item is our UpSet plot
       if (isUpset) {
         card.classList.remove('lg:col-span-1', '2xl:col-span-1');
-        card.classList.add('lg:col-span-2', '2xl:col-span-3');
+        card.classList.add('lg:col-span-2', '2xl:col-span-2');
       }
 
       const ctx = document.getElementById(`chart-${meta.chart_id}`) as HTMLCanvasElement;
@@ -696,14 +701,12 @@ g.downloadCardImage = (chartId: string, displayName: string) => {
   const chartInstance = ChartFactory.instances[chartId];
 
   if (chartInstance) {
-    // 1. Export standard Chart.js configurations (Bar, Pie, Treemaps) to crisp PNGs
     const imgUrl = chartInstance.toBase64Image();
     const link = document.createElement('a');
     link.download = `${displayName.replace(/\s+/g, '_')}_BioPortal.png`;
     link.href = imgUrl;
     link.click();
   } else if (chartId === 'sample_intersections') {
-    // 2. Export the UpSet Plot SVG vector graphic flawlessly
     const svgElement = document.querySelector('.upset-wrapper svg');
     if (svgElement) {
       const svgString = new XMLSerializer().serializeToString(svgElement);
@@ -750,5 +753,3 @@ if (document.readyState === 'loading') {
 } else {
   boot();
 }
-
-
