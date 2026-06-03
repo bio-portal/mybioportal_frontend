@@ -675,23 +675,31 @@ g.exportCohortCSV = () => {
 
 const boot = () => {
   ThemeManager.init();
-  DataManager.initialize().then(() => {
-    // 1. Initialize the charts, menus, and layout managers
-    UIManager.init();
 
-    // 2. Safely locate and dismiss the initial full-screen loading curtain
-    const overlay = document.getElementById('loading-overlay');
-    if (overlay) {
-      // Fade out smoothly and allow user inputs/hovers to pass straight through
-      overlay.classList.remove('opacity-100');
-      overlay.classList.add('opacity-0', 'pointer-events-none');
-
-      // Allow your Tailwind transition duration (700ms) to complete, then drop from the render tree
-      setTimeout(() => {
-        overlay.style.display = 'none';
-      }, 700);
-    }
-  }).catch(console.error);
+  DataManager.initialize()
+    .then(() => {
+      // If data loaded perfectly, build the UI
+      UIManager.init();
+    })
+    .catch((err) => {
+      // If data failed to load, log it but don't leave the user trapped!
+      console.error("BioPortal Dashboard Error:", err);
+      const grid = document.getElementById('dashboard-grid');
+      if (grid) {
+        grid.innerHTML = `<div class="col-span-full p-8 text-center bg-red-50 text-red-600 rounded-2xl border border-red-100 font-bold">Failed to connect to the BioPortal Data Gateway. Please check your network connection or the console for details.</div>`;
+      }
+    })
+    .finally(() => {
+      // THIS RUNS NO MATTER WHAT: Safely locate and dismiss the initial full-screen frost
+      const overlay = document.getElementById('loading-overlay');
+      if (overlay) {
+        overlay.classList.remove('opacity-100');
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => {
+          overlay.style.display = 'none';
+        }, 700);
+      }
+    });
 };
 
 if (document.readyState === 'loading') {
