@@ -2,8 +2,7 @@
 const { content } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-// Tripling the array ensures we have enough overflow content to create
-// a perfectly seamless wrapper loop when dragging backwards or forwards.
+// Tripling ensures there is always enough content off-screen for Embla to seamlessly loop
 const triplePartners = [...content.partners, ...content.partners, ...content.partners];
 ---
 
@@ -11,33 +10,41 @@ const triplePartners = [...content.partners, ...content.partners, ...content.par
   <div class="max-w-6xl mx-auto text-center">
     <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-6 px-6">{content.label}</p>
 
-    <div class="trustbar-container marquee-mask relative w-full overflow-x-auto scrollbar-none cursor-grab active:cursor-grabbing select-none">
-      <div class="trustbar-track flex w-max items-center gap-x-16 md:gap-x-24 py-2 px-4">
+    <!-- 1. Embla Viewport (must have overflow-hidden) -->
+    <div class="embla trustbar-viewport marquee-mask relative w-full overflow-hidden cursor-grab active:cursor-grabbing select-none mb-6">
+
+      <!-- 2. Embla Container -->
+      <div class="embla__container flex touch-pan-y py-2 px-4">
+
         {triplePartners.map((partner: any) => (
-          <a
-            href={partner.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="trustbar-link hover:scale-105 transition-transform duration-300 flex items-center justify-center shrink-0"
-            title={partner.name}
-            draggable="false"
-          >
-            {partner.logo ? (
-              <img
-                src={`${baseUrl}${partner.logo}`}
-                alt={partner.name}
-                class="h-9 md:h-11 w-auto object-contain pointer-events-none"
-                style={partner.scale ? `transform: scale(${partner.scale});` : ''}
-                onerror="this.style.display='none'"
-                draggable="false"
-              />
-            ) : (
-              <span class="text-base font-black text-gray-800 tracking-tighter whitespace-nowrap pointer-events-none">
-                {partner.name}
-              </span>
-            )}
-          </a>
+          <!-- 3. Embla Slide (must have flex shrink/grow rules and min-width 0) -->
+          <div class="embla__slide flex-[0_0_auto] min-w-0 flex items-center justify-center mr-16 md:mr-24">
+            <a
+              href={partner.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="trustbar-link hover:scale-105 transition-transform duration-300 block"
+              title={partner.name}
+              draggable="false"
+            >
+              {partner.logo ? (
+                <img
+                  src={`${baseUrl}${partner.logo}`}
+                  alt={partner.name}
+                  class="h-9 md:h-11 w-auto object-contain pointer-events-none"
+                  style={partner.scale ? `transform: scale(${partner.scale});` : ''}
+                  onerror="this.style.display='none'"
+                  draggable="false"
+                />
+              ) : (
+                <span class="text-base font-black text-gray-800 tracking-tighter whitespace-nowrap pointer-events-none">
+                  {partner.name}
+                </span>
+              )}
+            </a>
+          </div>
         ))}
+
       </div>
     </div>
 
@@ -52,145 +59,37 @@ const triplePartners = [...content.partners, ...content.partners, ...content.par
 </section>
 
 <script>
-  const containers = document.querySelectorAll('.trustbar-container');
+  import EmblaCarousel from 'embla-carousel';
+  import AutoScroll from 'embla-carousel-auto-scroll';
 
-  containers.forEach((containerElement) => {
-    const container = containerElement as HTMLElement;
-    const track = container.querySelector('.trustbar-track') as HTMLElement;
-    if (!track) return;
+  // Initialize on client load
+  const viewports = document.querySelectorAll('.trustbar-viewport');
 
-    const links = track.children;
-    const totalItems = links.length;
-    const itemsPerSet = totalItems / 3;
-
-    function getSetWidth() {
-      if (totalItems === 0) return 0;
-      const firstItem = links[0] as HTMLElement;
-      const targetItem = links[itemsPerSet] as HTMLElement;
-      if (!targetItem) return track.scrollWidth / 3;
-      return targetItem.offsetLeft - firstItem.offsetLeft;
-    }
-
-    let setWidthPx = getSetWidth();
-    container.scrollLeft = setWidthPx;
-    let exactScrollLeft = container.scrollLeft;
-
-    window.addEventListener('resize', () => {
-      setWidthPx = getSetWidth();
-    });
-
-    // States
-    let isDown = false;
-    let isHovered = false;
-    let isDragging = false;
-    let startX: number;
-    let scrollLeftStart: number;
-
-    // Physics variables
-    const autoScrollSpeed = 0.75;
-    let velocity = autoScrollSpeed;
-    let lastX = 0;
-    let lastTime = 0;
-
-    function update() {
-      // 1. Seamless wrapper loop
-      if (exactScrollLeft >= setWidthPx * 2) {
-        exactScrollLeft -= setWidthPx;
-      } else if (exactScrollLeft <= 0) {
-        exactScrollLeft += setWidthPx;
-      }
-
-      // 2. Physics Engine
-      if (!isDown) {
-        // Gravity targets
-        const targetVelocity = isHovered ? 0 : autoScrollSpeed;
-
-        // Decreased friction from 0.05 to 0.035 for a longer, more satisfying glide
-        velocity += (targetVelocity - velocity) * 0.035;
-
-        exactScrollLeft += velocity;
-      }
-
-      // 3. Apply math to the DOM
-      container.scrollLeft = exactScrollLeft;
-      requestAnimationFrame(update);
-    }
-
-    requestAnimationFrame(update);
-
-    container.addEventListener('mouseenter', () => isHovered = true);
-    container.addEventListener('mouseleave', () => {
-      isHovered = false;
-      isDown = false;
-    });
-
-    container.addEventListener('mousedown', (e: MouseEvent) => {
-      isDown = true;
-      isDragging = false;
-      startX = e.pageX - container.offsetLeft;
-      scrollLeftStart = exactScrollLeft;
-
-      lastX = e.pageX;
-      lastTime = performance.now();
-
-      // We don't force velocity to 0 here anymore so catching it mid-glide feels natural
-    });
-
-    container.addEventListener('mousemove', (e: MouseEvent) => {
-      if (!isDown) return;
-      e.preventDefault();
-
-      const x = e.pageX - container.offsetLeft;
-      const walk = x - startX;
-
-      if (Math.abs(walk) > 5) {
-        isDragging = true;
-      }
-
-      exactScrollLeft = scrollLeftStart - walk;
-
-      // MOMENTUM SMOOTHING FIX:
-      const now = performance.now();
-      const dt = now - lastTime;
-      if (dt > 0) {
-        const instantVelocity = -(e.pageX - lastX) / (dt / 16);
-        // Blend 60% of previous momentum with 40% of instant movement
-        // This ensures a final micro-stutter doesn't kill the throw velocity
-        velocity = (velocity * 0.6) + (instantVelocity * 0.4);
-      }
-
-      lastX = e.pageX;
-      lastTime = now;
-    });
-
-    container.addEventListener('mouseup', () => {
-      isDown = false;
-    });
-
-    const anchorLinks = container.querySelectorAll('.trustbar-link');
-    anchorLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        if (isDragging) {
-          e.preventDefault();
-        }
-      });
-    });
+  viewports.forEach((viewportNode) => {
+    const emblaApi = EmblaCarousel(
+      viewportNode as HTMLElement,
+      {
+        loop: true,
+        dragFree: true // Enables the fluid, momentum-based throwing/dragging
+      },
+      [
+        AutoScroll({
+          playOnInit: true,
+          speed: 1, // Adjust this to change the cruising speed
+          stopOnMouseEnter: true, // Flawless pausing on hover
+          stopOnInteraction: false // Crucial: Resumes auto-scrolling after a user lets go of a drag
+        })
+      ]
+    );
   });
 </script>
 
 <style>
-  /* Beautiful side fade transitions */
+  /* Keeps the beautiful side fade transitions */
   .marquee-mask {
     mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
     -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
   }
 
-  /* Completely strip standard scrollbars across browsers */
-  .scrollbar-none::-webkit-scrollbar {
-    display: none;
-  }
-  .scrollbar-none {
-    -ms-overflow-style: none;  /* IE/Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
+  /* We no longer need the custom scrollbar hiding CSS because Embla uses a pure overflow-hidden wrapper! */
 </style>
