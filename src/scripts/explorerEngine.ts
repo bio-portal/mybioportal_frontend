@@ -75,11 +75,15 @@ function switchTab(tabName: string) {
   const activeClass = "flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-brand-blue-deep border-b-[3px] border-brand-blue-deep transition-colors bg-brand-blue-deep/5";
   const inactiveClass = "flex-1 py-4 text-xs font-extrabold uppercase tracking-[0.15em] text-gray-400 border-b-[3px] border-transparent hover:text-gray-600 hover:bg-gray-50 transition-colors";
 
-  document.getElementById('tab-btn-filters')!.className = isFilters ? activeClass : inactiveClass;
-  document.getElementById('tab-btn-charts')!.className = !isFilters ? activeClass : inactiveClass;
+  const btnFilters = document.getElementById('tab-btn-filters');
+  const btnCharts = document.getElementById('tab-btn-charts');
+  const contentFilters = document.getElementById('tab-content-filters');
+  const contentCharts = document.getElementById('tab-content-charts');
 
-  document.getElementById('tab-content-filters')!.style.display = isFilters ? 'block' : 'none';
-  document.getElementById('tab-content-charts')!.style.display = !isFilters ? 'block' : 'none';
+  if (btnFilters) btnFilters.className = isFilters ? activeClass : inactiveClass;
+  if (btnCharts) btnCharts.className = !isFilters ? activeClass : inactiveClass;
+  if (contentFilters) contentFilters.style.display = isFilters ? 'block' : 'none';
+  if (contentCharts) contentCharts.style.display = !isFilters ? 'block' : 'none';
 
   handleUnifiedSearch();
 }
@@ -193,7 +197,8 @@ function calculateCohortSizes() {
      }
 
      stat.data.forEach((item: any) => {
-        const cleanCategory = item.category.toLowerCase().replace(/ /g, '_');
+        // VETTED: Added explicit String wrapper to prevent unbinned numeric type crashing
+        const cleanCategory = String(item.category).toLowerCase().replace(/ /g, '_');
         cohortSizesDictionary[`${prefix}_${cleanCategory}`] = item.count;
      });
   });
@@ -228,7 +233,8 @@ function renderFilterMenu() {
     const baselineChart = summaryStatistics.find(s => s.chart_id === meta.chart_id);
     if (baselineChart && baselineChart.data) {
       baselineChart.data.forEach((item: any) => {
-        const cleanCat = item.category.toLowerCase().replace(/ /g, '_');
+        // VETTED: Safe category string casting
+        const cleanCat = String(item.category).toLowerCase().replace(/ /g, '_');
         const composedFilterKey = prefix + '_' + cleanCat;
         const directMatch = availableFiltersList.includes(composedFilterKey);
         const fallbackKey = matchedSlices.find(fKey => fKey.endsWith('_' + cleanCat) || cleanCat.endsWith(fKey.replace(prefix + '_', '')));
@@ -242,6 +248,8 @@ function renderFilterMenu() {
           let displayCount: string | number = item.count;
           if (typeof displayCount === 'string' && !displayCount.startsWith('<')) {
              displayCount = parseInt(displayCount).toLocaleString();
+          } else if (typeof displayCount === 'number') {
+             displayCount = displayCount.toLocaleString();
           }
 
           btn.innerHTML = `<span class="searchable-text">${item.category}</span> <span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-md text-gray-500 font-black">${displayCount}</span>`;
@@ -354,10 +362,10 @@ function updateCohortSizeCounters() {
 
   const displayVal = (typeof selectedSize === 'string' && !selectedSize.startsWith('<') && selectedSize !== '...')
       ? parseInt(selectedSize).toLocaleString()
-      : selectedSize;
+      : selectedSize.toString().toLocaleString(); // Fallback for pure numbers
 
-  if (sizeEl) sizeEl.innerText = displayVal as string;
-  if (baselineSidebarSize && activeFilter === 'baseline') baselineSidebarSize.innerText = displayVal as string;
+  if (sizeEl) sizeEl.innerText = displayVal;
+  if (baselineSidebarSize && activeFilter === 'baseline') baselineSidebarSize.innerText = displayVal;
 }
 
 function handleUnifiedSearch() {
@@ -371,16 +379,21 @@ function handleUnifiedSearch() {
   };
 
   document.querySelectorAll('.toggle-item').forEach(item => {
-    const text = (item.querySelector('.searchable-text') as HTMLElement).innerText.toLowerCase();
-    toggleDisplay(item as HTMLElement, text.includes(query));
+    const textEl = item.querySelector('.searchable-text') as HTMLElement | null;
+    if (textEl) {
+      toggleDisplay(item as HTMLElement, textEl.innerText.toLowerCase().includes(query));
+    }
   });
 
   document.querySelectorAll('.filter-group').forEach(group => {
-    const title = (group.querySelector('summary searchable-text') as HTMLElement).innerText.toLowerCase();
+    // VETTED: Safely select the title without crashing if missing
+    const titleEl = group.querySelector('summary .searchable-text') as HTMLElement | null;
+    const title = titleEl ? titleEl.innerText.toLowerCase() : "";
     let hasVisibleChild = false;
 
     group.querySelectorAll('.filter-btn').forEach(btn => {
-       const btnText = (btn.querySelector('.searchable-text') as HTMLElement).innerText.toLowerCase();
+       const btnTextEl = btn.querySelector('.searchable-text') as HTMLElement | null;
+       const btnText = btnTextEl ? btnTextEl.innerText.toLowerCase() : "";
        const isMatch = btnText.includes(query) || title.includes(query);
        toggleDisplay(btn as HTMLElement, isMatch);
        if (isMatch) hasVisibleChild = true;
@@ -451,14 +464,12 @@ function renderDashboard() {
     const HEIGHT_PER_BAR = 38;
     const minContainerHeight = 240;
 
-    // Dynamic vertical canvas spacing tailored specifically for extensive lists like multi-modality intersections
     let dynamicCanvasHeight = minContainerHeight;
     if (isBar) {
       dynamicCanvasHeight = Math.max(minContainerHeight, filteredData.length * HEIGHT_PER_BAR);
     }
 
     const card = document.createElement('div');
-    // UPGRADE: Treemaps span across two responsive grid columns to ensure proportional spatial distribution
     card.className = `chart-card glass-card p-7 flex flex-col group relative overflow-hidden opacity-0 translate-y-3 transition-all duration-700 ease-out ${isTreemap ? 'lg:col-span-2' : ''}`;
     card.setAttribute('data-title', meta.display_name);
 
@@ -494,9 +505,8 @@ function renderChartInstance(meta: any, data: any[]) {
   const ctx = (canvasElement as HTMLCanvasElement).getContext('2d');
   if (!ctx) return;
 
-  // AUDIT: Sequential map allocation reads indices verbatim from the pipeline without alphabetizing core progressions
   const labels = data.map(d => d.category);
-  const values = data.map(d => typeof d.count === 'string' && d.count.startsWith('<') ? 0 : parseInt(d.count, 10));
+  const values = data.map(d => typeof d.count === 'string' && d.count.startsWith('<') ? 10 : parseInt(d.count, 10));
 
   const isPie = meta.chart_type === 'pie';
   const isTreemap = meta.chart_type === 'treemap';
@@ -504,14 +514,20 @@ function renderChartInstance(meta: any, data: any[]) {
 
   const colorArray = labels.map((_, i) => PALETTE[i % PALETTE.length]);
 
-  // UPGRADE: Full specialized execution factory block for human lineage Treemaps
   if (isTreemap) {
+    // VETTED: Mathematical safety wrapper to prevent Treemap NaN crashes on string masks
+    const treeData = data.map(d => ({
+        category: d.category,
+        numericCount: (typeof d.count === 'string' && d.count.startsWith('<')) ? 0 : parseInt(d.count, 10),
+        displayCount: d.count
+    }));
+
     chartInstances[meta.chart_id] = new Chart(ctx as any, {
       type: 'treemap',
       data: {
         datasets: [{
-          tree: data,
-          key: 'count',
+          tree: treeData,
+          key: 'numericCount',
           groups: ['category'],
           spacing: 2,
           borderWidth: 0,
@@ -520,7 +536,7 @@ function renderChartInstance(meta: any, data: any[]) {
             if (context.type !== 'data') return 'rgba(0,0,0,0.05)';
             const rawItem = context.raw?._data;
             if (!rawItem) return '#26abe2';
-            const paletteIndex = data.findIndex(d => d.category === rawItem.category);
+            const paletteIndex = treeData.findIndex(d => d.category === rawItem.category);
             return PALETTE[paletteIndex >= 0 ? paletteIndex % PALETTE.length : 0];
           },
           labels: {
@@ -528,10 +544,11 @@ function renderChartInstance(meta: any, data: any[]) {
             formatter: (context: any) => {
               const rawItem = context.raw?._data;
               if (!rawItem) return '';
-              const outCount = typeof rawItem.count === 'string' && rawItem.count.startsWith('<')
-                ? rawItem.count
-                : parseInt(rawItem.count, 10).toLocaleString();
-              return `${rawItem.category}\n(n=${outCount})`;
+              const outCount = rawItem.displayCount;
+              const formattedCount = (typeof outCount === 'string' && outCount.startsWith('<'))
+                ? outCount
+                : parseInt(outCount, 10).toLocaleString();
+              return `${rawItem.category}\n(n=${formattedCount})`;
             },
             font: { size: 12, weight: 'bold', family: "'Outfit', sans-serif" },
             color: '#ffffff'
@@ -558,7 +575,7 @@ function renderChartInstance(meta: any, data: any[]) {
                 const rawItem = context.raw?._data;
                 if (!rawItem) return '';
                 const unitString = meta.units.toLowerCase() === 'patients' ? '' : ` ${meta.units}`;
-                return ` Count: ${rawItem.count}${unitString}`;
+                return ` Count: ${rawItem.displayCount}${unitString}`;
               }
             }
           }
@@ -579,7 +596,9 @@ function renderChartInstance(meta: any, data: any[]) {
         borderWidth: 0,
         borderRadius: isPie ? 0 : 6,
         hoverBackgroundColor: PALETTE[8],
-        minBarLength: isPie ? undefined : 8
+        minBarLength: isPie ? undefined : 8,
+        // VETTED: Constrains bar chart scaling if there are only 1-2 elements
+        maxBarThickness: isPie ? undefined : 48
       }]
     },
     options: {
@@ -599,7 +618,7 @@ function renderChartInstance(meta: any, data: any[]) {
           const selectedLabel = chartInstances[meta.chart_id].data.labels![targetIndex] as string;
 
           const targetPrefix = meta.chart_id.toLowerCase().replace(/ /g, '_');
-          const sanitizedCategory = selectedLabel.toLowerCase().replace(/ /g, '_');
+          const sanitizedCategory = String(selectedLabel).toLowerCase().replace(/ /g, '_');
           const targetFilterKey = targetPrefix + '_' + sanitizedCategory;
 
           const fallbackKey = availableFiltersList.find(fKey => fKey.endsWith('_' + sanitizedCategory) || sanitizedCategory.endsWith(fKey.replace(targetPrefix + '_', '')));
