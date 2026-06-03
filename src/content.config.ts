@@ -11,6 +11,7 @@ const pages = defineCollection({
     trustBar: z.any().optional(),
     steps: z.any().optional(),
     benefit: z.any().optional(),
+
     landingMetrics: z.object({
       participantsLabel: z.string(),
       clinicalVariablesLabel: z.string(),
@@ -24,29 +25,27 @@ const pages = defineCollection({
       })
     }).optional(),
 
-    // --- GLOBAL SITE CONFIG (Navbar & Footer) ---
-    global: z.object({
-      // --- GLOBAL SITE CONFIG (Navbar & Footer at root level) ---
-      navigation: z.object({
-        logoAlt: z.string(),
-        links: z.array(z.object({
-          label: z.string(),
-          href: z.string()
-        })),
-        ctaButtons: z.object({
-          primary: z.object({ label: z.string(), href: z.string() }),
-          secondary: z.object({ label: z.string(), href: z.string() }),
-        })
-      }).optional(),
+    // --- GLOBAL SITE CONFIG (Navbar & Footer at root level) ---
+    navigation: z.object({
+      logoAlt: z.string(),
+      links: z.array(z.object({
+        label: z.string(),
+        href: z.string()
+      })),
+      ctaButtons: z.object({
+        primary: z.object({ label: z.string(), href: z.string() }),
+        secondary: z.object({ label: z.string(), href: z.string() }),
+      })
+    }).optional(),
 
-      footer: z.object({
-        title: z.string(),
-        titlePunctuation: z.string(),
-        subtitle: z.string(),
-        privacyLinkText: z.string(),
-        privacyLinkHref: z.string(),
-        copyright: z.string(),
-      }).optional(),
+    footer: z.object({
+      title: z.string(),
+      titlePunctuation: z.string(),
+      subtitle: z.string(),
+      privacyLinkText: z.string(),
+      privacyLinkHref: z.string(),
+      copyright: z.string(),
+    }).optional(),
 
     // --- HOME PAGE SPECIFIC ---
     insights: z.object({

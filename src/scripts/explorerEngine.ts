@@ -30,16 +30,13 @@ const CONFIG = {
   MASK_VALUE: 10, // Value to render when `<10` is encountered
   DEBOUNCE_MS: 150,
   MIN_TREEMAP_WEIGHT: 0.035, // Ensures tiny cohorts are accessible (3.5% of area)
+  FROSTING_DELAY_MS: 150, // Time to hold the blur effect to simulate "calculation"
 };
 
 // ==========================================
 // CORE MANAGERS
 // ==========================================
 
-/**
- * DataManager: Handles API fetching, client-side caching, and data processing.
- * Goal: Zero redundant network requests (Low Cost, High Speed).
- */
 const DataManager = {
   cache: new Map<string, any>(),
   metadata: [] as VariableMeta[],
@@ -90,9 +87,6 @@ const DataManager = {
   }
 };
 
-/**
- * ThemeManager: Extracts CSS tokens for A11Y-compliant styling.
- */
 const ThemeManager = {
   palette: [] as string[],
   init() {
@@ -115,9 +109,6 @@ const ThemeManager = {
   }
 };
 
-/**
- * ChartFactory: Creates and destroys Chart.js and UpSet.js instances.
- */
 const ChartFactory = {
   instances: {} as Record<string, Chart>,
   visibleCharts: new Set<string>(),
@@ -144,7 +135,6 @@ const ChartFactory = {
   },
 
   build(meta: VariableMeta, rawData: CategoryCount[], ctx: HTMLCanvasElement) {
-    // 🌟 INTERCEPT FOR UPSET PLOT
     if (meta.chart_id === 'sample_intersections') {
       this.buildUpSetPlot(meta, rawData, ctx);
       return;
@@ -154,7 +144,6 @@ const ChartFactory = {
     const isTreemap = meta.chart_type === 'treemap';
     const isBar = meta.chart_type === 'bar';
 
-    // Best Practice: Sort horizontal bar charts (like Cancer) by frequency
     if (isBar && meta.chart_id === 'cancer_types') {
       rawData.sort((a, b) => {
         const valA = String(a.count).startsWith('<') ? 0 : parseInt(String(a.count), 10);
@@ -175,18 +164,32 @@ const ChartFactory = {
       config = this.getStandardConfig(meta, data, labels, bgColors, isPie);
     }
 
-    this.instances[meta.chart_id] = new Chart(ctx, config);
+    // NEW LOGIC: Update instead of destroy if possible to prevent janky UI redraws
+    if (this.instances[meta.chart_id]) {
+      const chart = this.instances[meta.chart_id];
+      chart.data = config.data;
+      // Provide a smooth inner-chart animation when data swaps
+      chart.update({ duration: 400, easing: 'easeOutQuart' });
+    } else {
+      this.instances[meta.chart_id] = new Chart(ctx, config);
+    }
   },
 
   buildUpSetPlot(meta: VariableMeta, rawData: CategoryCount[], canvasCtx: HTMLCanvasElement) {
-    const wrapperDiv = document.createElement('div');
-    wrapperDiv.style.width = '100%';
-    wrapperDiv.style.height = '100%';
+    // Check if the wrapper already exists
+    let wrapperDiv = canvasCtx.parentElement?.querySelector('.upset-wrapper') as HTMLDivElement;
 
-    const parent = canvasCtx.parentElement;
-    if (parent) {
-       parent.innerHTML = '';
-       parent.appendChild(wrapperDiv);
+    if (!wrapperDiv) {
+      wrapperDiv = document.createElement('div');
+      wrapperDiv.className = 'upset-wrapper';
+      wrapperDiv.style.width = '100%';
+      wrapperDiv.style.height = '100%';
+
+      const parent = canvasCtx.parentElement;
+      if (parent) {
+         parent.innerHTML = '';
+         parent.appendChild(wrapperDiv);
+      }
     }
 
     const combinations = rawData.map(item => {
@@ -202,7 +205,6 @@ const ChartFactory = {
       };
     });
 
-    // Use the native NPM module import directly!
     const builder = UpSetJS.extractCombinations(combinations);
 
     UpSetJS.render(wrapperDiv, {
@@ -219,8 +221,6 @@ const ChartFactory = {
       }
     });
   },
-
-
 
   getTreemapConfig(meta: VariableMeta, data: any[], bgColors: string[]): ChartConfiguration {
     return {
@@ -320,12 +320,10 @@ const ChartFactory = {
   }
 };
 
-/**
- * UIManager: Handles all DOM mutations, debouncing, and event bindings safely.
- */
 const UIManager = {
   activeFilter: 'baseline',
   searchTimeout: null as any,
+  isInitialRender: true,
 
   init() {
     DataManager.metadata.forEach(m => ChartFactory.visibleCharts.add(m.chart_id));
@@ -345,7 +343,29 @@ const UIManager = {
     }
   },
 
+  // 🌟 NEW: Frosting implementation logic
+  setFrosting(active: boolean) {
+    const grid = document.getElementById('dashboard-grid');
+    const header = document.getElementById('explorer-header');
+
+    // We create an inline transition so we don't have to pollute the global CSS
+    const frostingClasses = ['opacity-40', 'blur-[2px]', 'grayscale-[50%]'];
+
+    if (grid && header) {
+      if (active) {
+        grid.style.transition = 'all 0.15s ease-out';
+        header.style.transition = 'all 0.15s ease-out';
+        grid.classList.add(...frostingClasses);
+        header.classList.add(...frostingClasses);
+      } else {
+        grid.classList.remove(...frostingClasses);
+        header.classList.remove(...frostingClasses);
+      }
+    }
+  },
+
   async applyFilter(filterKey: string) {
+    // 1. Instantly update UI active states on sidebar
     document.querySelectorAll('.filter-btn, #btn-baseline').forEach(b => b.classList.remove('filter-active'));
     const btn = document.getElementById(filterKey === 'baseline' ? 'btn-baseline' : `btn-${filterKey}`);
     if (btn) {
@@ -354,21 +374,33 @@ const UIManager = {
       if (details) details.open = true;
     }
 
+    if (this.activeFilter === filterKey) return; // Prevent double-clicking the same filter
     this.activeFilter = filterKey;
-    this.setLoading(true);
+
+    // 2. Apply the Frosting blur effect
+    this.setFrosting(true);
 
     try {
+      // 3. Load the data (nearly instant if cached)
       await DataManager.loadFilter(filterKey);
 
+      // 4. Force a tiny artificial delay so the user physically registers the blur
+      //    (This ensures they *feel* the change happening even on 2ms cache hits)
+      await new Promise(resolve => setTimeout(resolve, CONFIG.FROSTING_DELAY_MS));
+
+      // 5. Update the text strings (Behind the blur)
       const titleEl = document.getElementById('view-title');
       if (titleEl) titleEl.innerText = filterKey === 'baseline' ? 'Cohort Overview' : filterKey.replace(/_/g, ' ').replace(/(^|\s)\S/g, l => l.toUpperCase());
-
-      this.updateDashboard();
       this.updateSizeCounters();
+
+      // 6. Tell Chart.js to recalculate its canvases (Behind the blur)
+      this.updateDashboard();
+
     } catch (e) {
       console.error(e);
     } finally {
-      this.setLoading(false);
+      // 7. Remove the blur!
+      this.setFrosting(false);
     }
   },
 
@@ -388,12 +420,14 @@ const UIManager = {
     const grid = document.getElementById('dashboard-grid');
     if (!grid) return;
 
-    ChartFactory.destroyAll();
-    grid.innerHTML = '';
-
     let cardCount = 0;
     DataManager.metadata.forEach(meta => {
-      if (!ChartFactory.visibleCharts.has(meta.chart_id)) return;
+      if (!ChartFactory.visibleCharts.has(meta.chart_id)) {
+        // If a chart exists but was toggled off, hide its card
+        const existingCard = document.querySelector(`.chart-card[data-title="${meta.display_name.toLowerCase()}"]`);
+        if (existingCard) (existingCard as HTMLElement).style.display = 'none';
+        return;
+      }
 
       const stat = DataManager.currentStats.find(s => s.chart_id === meta.chart_id);
       if (!stat) return;
@@ -403,37 +437,53 @@ const UIManager = {
 
       const isBar = meta.chart_type === 'bar';
       const containerHeight = 240;
-      // Added slightly more room for upset plots
       const isUpset = meta.chart_id === 'sample_intersections';
       const canvasHeight = isBar ? Math.max(containerHeight, validData.length * 38) : (isUpset ? 300 : containerHeight);
 
-      const card = document.createElement('div');
-      card.className = "chart-card glass-card p-7 flex flex-col group relative overflow-hidden opacity-0 translate-y-3 transition-all duration-700 ease-out";
-      card.dataset.title = meta.display_name.toLowerCase();
+      // 🌟 NEW: Instead of tearing down the grid, check if the card already exists!
+      let card = document.querySelector(`.chart-card[data-title="${meta.display_name.toLowerCase()}"]`) as HTMLElement;
 
-      card.innerHTML = `
-        <div class="absolute top-0 left-0 w-1.5 h-full bg-brand-blue-deep/20 group-hover:bg-brand-blue-deep transition-colors"></div>
-        <div class="flex justify-between items-start mb-6 border-b border-gray-100 pb-4 pl-3">
-          <h3 class="font-extrabold text-brand-dark text-lg tracking-tight leading-tight group-hover:text-brand-blue-deep transition-colors pr-2">${meta.display_name}</h3>
-          <span class="text-[10px] bg-gray-50 text-gray-400 px-2.5 py-1 rounded-md font-bold uppercase tracking-widest border border-gray-100 shrink-0">${meta.units}</span>
-        </div>
-        <div class="relative w-full pl-3 overflow-y-auto custom-scrollbar" style="height: ${containerHeight}px;">
-          <div style="height: ${canvasHeight}px; position: relative; width: 100%;">
-            <canvas id="chart-${meta.chart_id}"></canvas>
-          </div>
-        </div>
-      `;
+      if (!card) {
+          // If it doesn't exist (initial load), build the HTML
+          card = document.createElement('div');
+          card.className = "chart-card glass-card p-7 flex flex-col group relative overflow-hidden transition-all duration-700 ease-out";
+          if (this.isInitialRender) card.classList.add('opacity-0', 'translate-y-3');
 
-      grid.appendChild(card);
+          card.dataset.title = meta.display_name.toLowerCase();
+
+          card.innerHTML = `
+            <div class="absolute top-0 left-0 w-1.5 h-full bg-brand-blue-deep/20 group-hover:bg-brand-blue-deep transition-colors"></div>
+            <div class="flex justify-between items-start mb-6 border-b border-gray-100 pb-4 pl-3">
+              <h3 class="font-extrabold text-brand-dark text-lg tracking-tight leading-tight group-hover:text-brand-blue-deep transition-colors pr-2">${meta.display_name}</h3>
+              <span class="text-[10px] bg-gray-50 text-gray-400 px-2.5 py-1 rounded-md font-bold uppercase tracking-widest border border-gray-100 shrink-0">${meta.units}</span>
+            </div>
+            <div class="relative w-full pl-3 overflow-y-auto custom-scrollbar" style="height: ${containerHeight}px;">
+              <div class="chart-canvas-wrapper" style="height: ${canvasHeight}px; position: relative; width: 100%;">
+                <canvas id="chart-${meta.chart_id}"></canvas>
+              </div>
+            </div>
+          `;
+          grid.appendChild(card);
+
+          if (this.isInitialRender) {
+             setTimeout(() => {
+               card.classList.remove('opacity-0', 'translate-y-3');
+             }, cardCount * 40);
+          }
+      } else {
+         // Card already exists, just make sure it's visible and heights are correct
+         card.style.display = 'flex';
+         const wrapper = card.querySelector('.chart-canvas-wrapper') as HTMLElement;
+         if (wrapper) wrapper.style.height = `${canvasHeight}px`;
+      }
+
       const ctx = document.getElementById(`chart-${meta.chart_id}`) as HTMLCanvasElement;
       if (ctx) ChartFactory.build(meta, validData, ctx);
 
-      setTimeout(() => {
-        card.classList.remove('opacity-0', 'translate-y-3');
-        card.classList.add('opacity-100', 'translate-y-0');
-      }, cardCount * 40);
       cardCount++;
     });
+
+    this.isInitialRender = false;
 
     const searchInput = document.getElementById('global-search') as HTMLInputElement;
     if (searchInput && searchInput.value) this.executeSearch(searchInput.value);
@@ -551,18 +601,13 @@ const UIManager = {
     document.querySelectorAll('.chart-card').forEach(card => {
       const title = (card as HTMLElement).dataset.title || "";
       if (title.includes(query)) {
-        card.classList.remove('hidden');
+        card.style.display = 'flex';
         count++;
-      } else card.classList.add('hidden');
+      } else card.style.display = 'none';
     });
 
     const fb = document.getElementById('search-fallback');
     if (fb) fb.style.display = count === 0 ? 'flex' : 'none';
-  },
-
-  setLoading(isLoading: boolean) {
-    if (isLoading) showLoadingState();
-    else hideLoadingState();
   }
 };
 

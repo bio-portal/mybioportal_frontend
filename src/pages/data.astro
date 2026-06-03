@@ -6,7 +6,18 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pageData = await getEntry('pages', 'data');
 
 const hero = pageData?.data?.hero || { tagline: 'Data', headline: 'BioPortal Datasets', description: 'Loading data...' };
-const metrics = pageData?.data?.landingMetrics;
+const metrics = pageData?.data?.landingMetrics || {
+  participantsLabel: "Total Participants",
+  clinicalVariablesLabel: "Clinical Variables",
+  proteomicsLabel: "Proteomic Profiles",
+  biosamplesLabel: "Matched Biosamples",
+  fallbackValues: {
+    participants: "...",
+    clinicalVariables: "...",
+    proteomics: "...",
+    biosamples: "..."
+  }
+};
 const content = pageData?.data?.dataRequest;
 ---
 <Layout title={content.pageTitle} navType="minimal" backText={content.backText}>

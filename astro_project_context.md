@@ -1,11 +1,11 @@
 # BioPortal Astro Architectural Context
-Generated on: Wed Jun  3 09:32:36 EDT 2026
+Generated on: Wed 03 Jun 2026 10:30:53 AM EDT
 
 ---
 
 ## 📂 Project Directory Structure
 ```text
-.
+[01;34m.[00m
 ├── astro.config.mjs
 ├── astro_project_context.md
 ├── fixcolors.sh
@@ -14,12 +14,12 @@ Generated on: Wed Jun  3 09:32:36 EDT 2026
 ├── organize_assets.sh
 ├── package.json
 ├── package-lock.json
-├── project_context.txt
+├── [00;32mproject_context.txt[00m
 ├── README.html
 ├── README.md
-├── src
-│   ├── components
-│   │   ├── explorer
+├── [01;34msrc[00m
+│   ├── [01;34mcomponents[00m
+│   │   ├── [01;34mexplorer[00m
 │   │   │   ├── ExplorerGrid.astro
 │   │   │   ├── ExplorerHeader.astro
 │   │   │   └── ExplorerSidebar.astro
@@ -27,17 +27,17 @@ Generated on: Wed Jun  3 09:32:36 EDT 2026
 │   │   ├── Hero.astro
 │   │   ├── Navbar.astro
 │   │   └── TrustBar.astro
-│   ├── content
-│   │   ├── news
+│   ├── [01;34mcontent[00m
+│   │   ├── [01;34mnews[00m
 │   │   │   └── kidney-project.md
-│   │   ├── pages
+│   │   ├── [01;34mpages[00m
 │   │   │   ├── data.yaml
 │   │   │   ├── global.yaml
 │   │   │   ├── home.yaml
 │   │   │   ├── news.yaml
 │   │   │   ├── participants.yaml
 │   │   │   └── privacy.yaml
-│   │   └── team
+│   │   └── [01;34mteam[00m
 │   │       ├── 01-brent-richards.yaml
 │   │       ├── 02-vincent-mooser.yaml
 │   │       ├── 03-jonathan-afilalo.yaml
@@ -59,21 +59,21 @@ Generated on: Wed Jun  3 09:32:36 EDT 2026
 │   │       ├── 19-nadia-blostein.yaml
 │   │       └── 20-jesse-islam.yaml
 │   ├── content.config.ts
-│   ├── layouts
+│   ├── [01;34mlayouts[00m
 │   │   └── Layout.astro
-│   ├── pages
-│   │   ├── data
+│   ├── [01;34mpages[00m
+│   │   ├── [01;34mdata[00m
 │   │   │   └── explorer.astro
 │   │   ├── data.astro
 │   │   ├── index.astro
-│   │   ├── news
+│   │   ├── [01;34mnews[00m
 │   │   │   ├── [id].astro
 │   │   │   └── index.astro
 │   │   ├── participants.astro
 │   │   └── privacy.astro
-│   ├── scripts
+│   ├── [01;34mscripts[00m
 │   │   └── explorerEngine.ts
-│   ├── styles
+│   ├── [01;34mstyles[00m
 │   │   └── global.css
 │   └── types.d.ts
 └── tsconfig.json
@@ -101,6 +101,7 @@ Generated on: Wed Jun  3 09:32:36 EDT 2026
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.4",
+    "@upsetjs/bundle": "^1.11.0",
     "astro": "^6.2.2",
     "chart.js": "^4.4.2",
     "chartjs-chart-treemap": "^3.1.0",
@@ -150,10 +151,22 @@ const pages = defineCollection({
     trustBar: z.any().optional(),
     steps: z.any().optional(),
     benefit: z.any().optional(),
-    stats: z.any().optional(),
+    landingMetrics: z.object({
+      participantsLabel: z.string(),
+      clinicalVariablesLabel: z.string(),
+      proteomicsLabel: z.string(),
+      biosamplesLabel: z.string(),
+      fallbackValues: z.object({
+        participants: z.string(),
+        clinicalVariables: z.string(),
+        proteomics: z.string(),
+        biosamples: z.string()
+      })
+    }).optional(),
 
     // --- GLOBAL SITE CONFIG (Navbar & Footer) ---
     global: z.object({
+      // --- GLOBAL SITE CONFIG (Navbar & Footer at root level) ---
       navigation: z.object({
         logoAlt: z.string(),
         links: z.array(z.object({
@@ -164,7 +177,8 @@ const pages = defineCollection({
           primary: z.object({ label: z.string(), href: z.string() }),
           secondary: z.object({ label: z.string(), href: z.string() }),
         })
-      }),
+      }).optional(),
+
       footer: z.object({
         title: z.string(),
         titlePunctuation: z.string(),
@@ -172,8 +186,7 @@ const pages = defineCollection({
         privacyLinkText: z.string(),
         privacyLinkHref: z.string(),
         copyright: z.string(),
-      })
-    }).optional(),
+      }).optional(),
 
     // --- HOME PAGE SPECIFIC ---
     insights: z.object({
@@ -742,8 +755,8 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pageData = await getEntry('pages', 'data');
 
 const hero = pageData?.data?.hero || { tagline: 'Data', headline: 'BioPortal Datasets', description: 'Loading data...' };
-const stats = pageData?.data?.stats || [];
-const content = pageData?.data?.dataRequest; // From the new YAML block
+const metrics = pageData?.data?.landingMetrics;
+const content = pageData?.data?.dataRequest;
 ---
 <Layout title={content.pageTitle} navType="minimal" backText={content.backText}>
   <div class="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue-deep/10 via-brand-teal/5 to-transparent -z-10"></div>
@@ -757,14 +770,39 @@ const content = pageData?.data?.dataRequest; // From the new YAML block
 
     <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 mb-16 items-stretch">
       <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
-        {stats.map((stat: any) => (
-          <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
-              <h3 id={`metric-value-${stat.label.toLowerCase().replace(/ /g, '-')}`} class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep">
-                {stat.value}
-              </h3>
-              <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{stat.label}</p>
-          </div>
-        ))}
+
+        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
+            <h3 id="metric-participants" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep">
+              <span class="live-stat-loader inline-block w-16 h-8 bg-gray-100 rounded animate-pulse"></span>
+              <span class="live-stat-value hidden">{metrics.fallbackValues.participants}</span>
+            </h3>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.participantsLabel}</p>
+        </div>
+
+        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
+            <h3 id="metric-variables" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep">
+              <span class="live-stat-loader inline-block w-16 h-8 bg-gray-100 rounded animate-pulse"></span>
+              <span class="live-stat-value hidden">{metrics.fallbackValues.clinicalVariables}</span>
+            </h3>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.clinicalVariablesLabel}</p>
+        </div>
+
+        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
+            <h3 id="metric-proteomics" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep">
+              <span class="live-stat-loader inline-block w-16 h-8 bg-gray-100 rounded animate-pulse"></span>
+              <span class="live-stat-value hidden">{metrics.fallbackValues.proteomics}</span>
+            </h3>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.proteomicsLabel}</p>
+        </div>
+
+        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
+            <h3 id="metric-biosamples" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep">
+              <span class="live-stat-loader inline-block w-16 h-8 bg-gray-100 rounded animate-pulse"></span>
+              <span class="live-stat-value hidden">{metrics.fallbackValues.biosamples}</span>
+            </h3>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.biosamplesLabel}</p>
+        </div>
+
       </div>
 
       <div class="lg:col-span-5 bp-frosted-gradient rounded-[2rem] p-10 border border-white/60 shadow-2xl shadow-brand-blue-deep/5 flex flex-col justify-between relative overflow-hidden group">
@@ -849,6 +887,76 @@ const content = pageData?.data?.dataRequest; // From the new YAML block
     </div>
   </main>
 </Layout>
+
+<script>
+  const API_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats";
+  // The API doesn't spit out the number of clinical variables, so we calculate the unique chart_ids from the metadata.
+  const METADATA_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats?type=metadata";
+
+  async function syncLandingMetrics() {
+    try {
+      const [statsRes, metaRes] = await Promise.all([
+        fetch(`${API_GATEWAY}?filter=baseline&_cb=${new Date().getTime()}`),
+        fetch(`${METADATA_GATEWAY}&_cb=${new Date().getTime()}`)
+      ]);
+
+      if (!statsRes.ok || !metaRes.ok) throw new Error("API failed");
+
+      const statsArray = await statsRes.json();
+      const metaArray = await metaRes.json();
+
+      // 1. Total Participants
+      const sexStat = statsArray.find((s: any) => s.chart_id === 'sex');
+      const liveParticipants = sexStat?.data.reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
+
+      // 2. Clinical Variables (Count the number of unique tracking variables defined in your backend)
+      const liveVariables = metaArray.length || 0;
+
+      // 3. Proteomic Profiles
+      const proteomicStat = statsArray.find((s: any) => s.chart_id === 'n_proteomics');
+      // Sum all the patients who *do* have proteomics data (ignoring the "No" column)
+      const liveProteomics = proteomicStat?.data
+        .filter(d => d.category !== 'No')
+        .reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
+
+      // 4. Biosamples
+      const sampleStat = statsArray.find((s: any) => s.chart_id === 'sample_type');
+      // Sum the "Single" + "Multiple" columns
+      const liveBiosamples = sampleStat?.data
+        .filter(d => d.category !== 'None')
+        .reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
+
+
+      const updateDom = (id: string, value: number) => {
+        const container = document.getElementById(`metric-${id}`);
+        if (container && value > 0) {
+          container.querySelector('.live-stat-loader')?.classList.add('hidden');
+          const valElement = container.querySelector('.live-stat-value');
+          if (valElement) {
+              valElement.classList.remove('hidden');
+              valElement.innerHTML = value.toLocaleString();
+          }
+        }
+      };
+
+      updateDom('participants', liveParticipants);
+      updateDom('variables', liveVariables);
+      updateDom('proteomics', liveProteomics);
+      updateDom('biosamples', liveBiosamples);
+
+    } catch (err) {
+      console.warn("API metrics synchronization skipped, showing static defaults.");
+      document.querySelectorAll('.live-stat-loader').forEach(loader => loader.classList.add('hidden'));
+      document.querySelectorAll('.live-stat-value').forEach(val => val.classList.remove('hidden'));
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncLandingMetrics);
+  } else {
+    syncLandingMetrics();
+  }
+</script>
 
 ```
 
@@ -957,7 +1065,10 @@ const {
 
 // Fetch global site configuration
 const globalData = await getEntry('pages', 'global');
-const siteConfig = globalData?.data.global;
+
+// FIX: Pull directly from the root of data, where they actually live!
+const navigation = globalData?.data?.navigation;
+const footer = globalData?.data?.footer;
 ---
 <!doctype html>
 <html lang="en">
@@ -967,13 +1078,13 @@ const siteConfig = globalData?.data.global;
     <title>{title}</title>
   </head>
   <body class="flex flex-col min-h-screen bg-surface">
-    {siteConfig && (
+    {navigation && (
       <Navbar
         type={navType}
         ctaMode={ctaMode}
         backLink={backLink}
         backText={backText}
-        navData={siteConfig.navigation}
+        navData={navigation}
       />
     )}
 
@@ -981,8 +1092,8 @@ const siteConfig = globalData?.data.global;
       <slot />
     </div>
 
-    {!hideFooter && siteConfig && (
-      <Footer footerData={siteConfig.footer} />
+    {!hideFooter && footer && (
+      <Footer footerData={footer} />
     )}
   </body>
 </html>
@@ -1093,13 +1204,13 @@ const doublePartners = [...content.partners, ...content.partners];
 </section>
 
 <style>
-  /* Infinite linear sliding translation */
+  /* Infinite linear sliding translation with Hardware Acceleration */
   @keyframes marquee {
     0% {
-      transform: translateX(0);
+      transform: translate3d(0, 0, 0);
     }
     100% {
-      transform: translateX(-50%);
+      transform: translate3d(-50%, 0, 0);
     }
   }
 
