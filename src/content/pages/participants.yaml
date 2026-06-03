@@ -3,7 +3,7 @@ hero:
   tagline: "Participant Pathway"
   headline: "Your data. Your health."
   gradientText: "Our future."
-  description: "Every 3 minutes, a Canadian is diagnosed with Diabetes. Global biobanks currently lack diverse ethnic representation. By safely sharing a small amount of your time and health data, you become a critical part of the solution for Montreal and the world."
+  description: "Global biobanks currently lack diverse ethnic representation. By safely sharing a small amount of your time and health data, you become a critical part of the solution for Montreal and the world."
 steps:
   - title: "Check Eligibility"
     desc: "Fill out the brief secure form on this page to see if you qualify for our current diabetes studies."
@@ -26,8 +26,8 @@ recruitmentData:
     description: "Answer 3 quick questions to see if you qualify for our current Montreal study."
     questions:
       - "Are you 18 years or older?"
-      - "Do you live in the Greater Montreal area?"
-      - "Diagnosed with Type 1 or Type 2 Diabetes?"
+      - "Do you have a hospital card with a CUISSS hospital?"
+      - "Do ?"
     emailLabel: "Your Email Address"
     emailPlaceholder: "name@email.com"
     buttonText: "Check My Eligibility"

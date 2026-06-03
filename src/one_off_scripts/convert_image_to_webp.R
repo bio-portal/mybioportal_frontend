@@ -1,0 +1,14 @@
+# Install the magick package if you haven't already
+# install.packages("magick")
+
+library(magick)
+
+# 1. Read the JPEG image
+# Replace "input.jpg" with the path to your actual file
+img <- image_read("/scratch/richards/jesse.islam2/bioportal/mybioportal_website/mybioportal_frontend/public/team/Hind_Lerhcha_ClinicalResearchCoordinator.jpeg")
+
+# 2. Convert and save as WebP
+# You can adjust the quality (0-100) if you want to compress it further
+image_write(img, path = "/scratch/richards/jesse.islam2/bioportal/mybioportal_website/mybioportal_frontend/public/team/Hind_Lerhcha_ClinicalResearchCoordinator.webp", format = "webp", quality = 50)
+
+print("Conversion complete!")

@@ -2,34 +2,39 @@
 const { content } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-// Duplicate the partners array to create a flawless, unbroken infinite loop
-const doublePartners = [...content.partners, ...content.partners];
+// Tripling the array ensures we have enough overflow content to create
+// a perfectly seamless wrapper loop when dragging backwards or forwards.
+const triplePartners = [...content.partners, ...content.partners, ...content.partners];
 ---
 
 <section class="border-y border-gray-100 bg-white/50 py-8 mb-12 overflow-hidden">
   <div class="max-w-6xl mx-auto text-center">
     <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-6 px-6">{content.label}</p>
 
-    <div class="relative w-full overflow-hidden marquee-mask mb-6">
-      <div class="flex w-max items-center gap-x-16 md:gap-x-24 animate-marquee py-2 px-4">
-        {doublePartners.map((partner: any) => (
+    <div class="trustbar-container marquee-mask relative w-full overflow-x-auto scrollbar-none cursor-grab active:cursor-grabbing select-none">
+      <div class="trustbar-track flex w-max items-center gap-x-16 md:gap-x-24 py-2 px-4">
+        {triplePartners.map((partner: any) => (
           <a
             href={partner.url}
             target="_blank"
             rel="noopener noreferrer"
-            class="hover:scale-105 transition-transform duration-300 flex items-center justify-center shrink-0"
+            class="trustbar-link hover:scale-105 transition-transform duration-300 flex items-center justify-center shrink-0"
             title={partner.name}
+            draggable="false"
           >
             {partner.logo ? (
               <img
                 src={`${baseUrl}${partner.logo}`}
                 alt={partner.name}
-                class="h-9 md:h-11 w-auto object-contain"
+                class="h-9 md:h-11 w-auto object-contain pointer-events-none"
                 style={partner.scale ? `transform: scale(${partner.scale});` : ''}
                 onerror="this.style.display='none'"
+                draggable="false"
               />
             ) : (
-              <span class="text-base font-black text-gray-800 tracking-tighter whitespace-nowrap">{partner.name}</span>
+              <span class="text-base font-black text-gray-800 tracking-tighter whitespace-nowrap pointer-events-none">
+                {partner.name}
+              </span>
             )}
           </a>
         ))}
@@ -46,29 +51,159 @@ const doublePartners = [...content.partners, ...content.partners];
   </div>
 </section>
 
+<script>
+  // This runs entirely on the client side without any NPM packages
+  const containers = document.querySelectorAll('.trustbar-container');
+
+  containers.forEach((containerElement) => {
+    const container = containerElement as HTMLElement;
+    const track = container.querySelector('.trustbar-track') as HTMLElement;
+    if (!track) return;
+
+    const links = track.children;
+    const totalItems = links.length;
+    const itemsPerSet = totalItems / 3;
+
+    // Calculates the exact pixel width of a single loop iteration
+    function getSetWidth() {
+      if (totalItems === 0) return 0;
+      const firstItem = links[0] as HTMLElement;
+      const targetItem = links[itemsPerSet] as HTMLElement;
+      if (!targetItem) return track.scrollWidth / 3;
+      return targetItem.offsetLeft - firstItem.offsetLeft;
+    }
+
+    let setWidthPx = getSetWidth();
+
+    // Position scroll baseline perfectly in the middle set
+    // so users can immediately drag backwards or forwards seamlessly
+    container.scrollLeft = setWidthPx;
+
+    window.addEventListener('resize', () => {
+      setWidthPx = getSetWidth();
+    });
+
+    // State & Physics values
+    let isDown = false;
+    let startX: number;
+    let scrollLeftStart: number;
+    let isDragging = false;
+    let isHovered = false;
+
+    let velocity = 0;
+    let lastX = 0;
+    let lastTime = 0;
+    const autoScrollSpeed = 0.75; // Adjust this number to change normal rolling speed
+
+    // Main animation loop
+    function update() {
+      // Perfect seamless wrapping check
+      if (container.scrollLeft >= setWidthPx * 2) {
+        container.scrollLeft -= setWidthPx;
+      } else if (container.scrollLeft <= 0) {
+        container.scrollLeft += setWidthPx;
+      }
+
+      if (!isDown) {
+        if (Math.abs(velocity) > 0.1) {
+          // Apply drag inertia
+          container.scrollLeft -= velocity;
+          velocity *= 0.95; // Friction multiplier (closer to 1 = slides longer)
+        } else {
+          velocity = 0;
+          // Clean pixel-perfect auto scroll when mouse is not active/hovered
+          if (!isHovered) {
+            container.scrollLeft += autoScrollSpeed;
+          }
+        }
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    // Start engine
+    requestAnimationFrame(update);
+
+    // Hover listeners
+    container.addEventListener('mouseenter', () => isHovered = true);
+    container.addEventListener('mouseleave', () => {
+      isHovered = false;
+      isDown = false;
+    });
+
+    // Mouse Drag Listeners
+    container.addEventListener('mousedown', (e: MouseEvent) => {
+      isDown = true;
+      isDragging = false;
+      startX = e.pageX - container.offsetLeft;
+      scrollLeftStart = container.scrollLeft;
+
+      lastX = e.pageX;
+      lastTime = performance.now();
+      velocity = 0;
+    });
+
+    container.addEventListener('mousemove', (e: MouseEvent) => {
+      if (!isDown) return;
+
+      const x = e.pageX - container.offsetLeft;
+      const walk = x - startX;
+
+      // Filter out micro-movements to avoid breaking genuine click intents
+      if (Math.abs(walk) > 5) {
+        isDragging = true;
+      }
+
+      container.scrollLeft = scrollLeftStart - walk;
+
+      // Track drag momentum
+      const now = performance.now();
+      const dt = now - lastTime;
+      if (dt > 0) {
+        velocity = (e.pageX - lastX) / (dt / 16);
+      }
+      lastX = e.pageX;
+      lastTime = now;
+    });
+
+    container.addEventListener('mouseup', () => {
+      isDown = false;
+    });
+
+    // Safety fallback: ensure native mobile touch scrolling wraps correctly too
+    container.addEventListener('scroll', () => {
+      if (container.scrollLeft >= setWidthPx * 2) {
+        container.scrollLeft -= setWidthPx;
+      } else if (container.scrollLeft <= 0) {
+        container.scrollLeft += setWidthPx;
+      }
+    });
+
+    // Intercept clicks to ensure drags don't trigger link navigations
+    const anchorLinks = container.querySelectorAll('.trustbar-link');
+    anchorLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        if (isDragging) {
+          e.preventDefault();
+        }
+      });
+    });
+  });
+</script>
+
 <style>
-  /* Infinite linear sliding translation with Hardware Acceleration */
-  @keyframes marquee {
-    0% {
-      transform: translate3d(0, 0, 0);
-    }
-    100% {
-      transform: translate3d(-50%, 0, 0);
-    }
-  }
-
-  .animate-marquee {
-    animation: marquee 35s linear infinite;
-  }
-
-  /* Pauses the slider when a user hovers over a partner link */
-  .animate-marquee:hover {
-    animation-play-state: paused;
-  }
-
-  /* Blends the edges out transparently so logos don't clip abruptly at the borders */
+  /* Beautiful side fade transitions */
   .marquee-mask {
     mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
     -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  }
+
+  /* Completely strip standard scrollbars across browsers */
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;  /* IE/Edge */
+    scrollbar-width: none;  /* Firefox */
   }
 </style>

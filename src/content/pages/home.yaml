@@ -2,7 +2,7 @@ id: home
 hero:
   tagline: "JGH McGill Biobank Initiative"
   headline: "Accelerating the Future of"
-  gradientText: "Metabolic Medicine."
+  gradientText: "Precision Medicine and Omics Research."
   description: "BioPortal is a secure, world-class research infrastructure connecting global scientists with deep-phenotyped, multi-omic patient cohorts. From decoding population proteomics to executing targeted clinical trials, we provide the foundation to drive the next generation of precision healthcare."
 trustBar:
   label: "Our Partners"
