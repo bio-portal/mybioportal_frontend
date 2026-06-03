@@ -34,7 +34,7 @@ const CONFIG = {
 };
 
 // ==========================================
-// CORE MANAGERS
+// CORE DATA MANAGER
 // ==========================================
 
 const DataManager = {
@@ -87,6 +87,10 @@ const DataManager = {
   }
 };
 
+// ==========================================
+// CORE THEME MANAGER
+// ==========================================
+
 const ThemeManager = {
   palette: [] as string[],
   init() {
@@ -108,6 +112,10 @@ const ThemeManager = {
     return this.palette[index % this.palette.length];
   }
 };
+
+// ==========================================
+// GRAPH FACTORY ENGINE
+// ==========================================
 
 const ChartFactory = {
   instances: {} as Record<string, Chart>,
@@ -136,7 +144,7 @@ const ChartFactory = {
 
   build(meta: VariableMeta, rawData: CategoryCount[], ctx: HTMLCanvasElement) {
     if (meta.chart_id === 'sample_intersections') {
-      this.buildUpSetPlot(meta, rawData, ctx);
+      this.buildUpSetPlot(meta, rawData, ctx as any);
       return;
     }
 
@@ -168,6 +176,7 @@ const ChartFactory = {
       const chart = this.instances[meta.chart_id];
       chart.data.labels = config.data.labels;
       chart.data.datasets[0].data = config.data.datasets[0].data;
+      chart.data.datasets[0].backgroundColor = config.data.datasets[0].backgroundColor;
       (chart.data.datasets[0] as any).customData = data;
       if (isTreemap) {
         (chart.data.datasets[0] as any).tree = (config.data.datasets[0] as any).tree;
@@ -178,50 +187,54 @@ const ChartFactory = {
     }
   },
 
-  buildUpSetPlot(meta: VariableMeta, rawData: CategoryCount[], canvasCtx: HTMLCanvasElement) {
-    let wrapperDiv = canvasCtx.parentElement?.querySelector('.upset-wrapper') as HTMLDivElement;
+  buildUpSetPlot(meta: VariableMeta, rawData: CategoryCount[], wrapperElement: HTMLElement) {
+    let wrapperDiv = wrapperElement.querySelector('.upset-wrapper') as HTMLDivElement;
 
     if (!wrapperDiv) {
       wrapperDiv = document.createElement('div');
-      wrapperDiv.className = 'upset-wrapper';
-      wrapperDiv.style.width = '100%';
-      wrapperDiv.style.height = '100%';
+      wrapperDiv.className = 'upset-wrapper w-full h-full';
+      wrapperDiv.style.maxWidth = '520px';
+      wrapperDiv.style.margin = '0 auto';
 
-      const parent = canvasCtx.parentElement;
-      if (parent) {
-         parent.innerHTML = '';
-         parent.appendChild(wrapperDiv);
-      }
+      wrapperElement.innerHTML = '';
+      wrapperElement.appendChild(wrapperDiv);
     }
 
+    // CRITICAL FIX: Explicitly flush historic children tree to stop node pile-up on redraw
+    wrapperDiv.innerHTML = '';
+
     const combinations = rawData.map(item => {
-      const sets = String(item.category).replace("Only ", "").split(" + ");
+      const categoryStr = String(item.category);
+      const sets = categoryStr === 'No Modalities' ? [] : categoryStr.replace("Only ", "").split(" + ");
       const isMasked = typeof item.count === 'string' && item.count.startsWith('<');
       const numericValue = isMasked ? CONFIG.MASK_VALUE : parseInt(String(item.count), 10);
 
       return {
-          name: String(item.category),
+          name: categoryStr,
           sets: sets,
           value: isNaN(numericValue) ? 0 : numericValue,
           displayValue: item.count,
-          label: `${String(item.category)}: ${item.count}`
+          label: `${categoryStr}: ${item.count}`
       };
     });
 
     const builder = UpSetJS.extractCombinations(combinations);
-    const isMultiOmic = (name: string) => name.includes('+');
+    const computedWidth = Math.max(wrapperDiv.clientWidth || 400, combinations.length * 64);
 
     UpSetJS.render(wrapperDiv, {
       sets: builder.sets,
       combinations: builder.combinations,
-      width: wrapperDiv.clientWidth || 400,
+      width: computedWidth,
       height: wrapperDiv.clientHeight || 240,
-      color: (d: any) => isMultiOmic(d.name) ? ThemeManager.palette[6] : ThemeManager.palette[0],
+      // CRITICAL FIX: Strict string token alignment eliminates fallback black rendering
+      color: ThemeManager.palette[0] || '#26abe2',
       selection: null,
+      // CRITICAL FIX: Strip native toolbar out of DOM hierarchy completely
+      exportButtons: false,
+      barPadding: 0.35,
+      numericalScale: true,
       onClick: (intersection: any) => {
-          if (intersection && intersection.name) {
-              UIManager.handleChartClick(meta.chart_id, intersection.name);
-          }
+          if (intersection && intersection.name) UIManager.handleChartClick(meta.chart_id, intersection.name);
       }
     });
   },
@@ -238,11 +251,13 @@ const ChartFactory = {
           borderWidth: 0,
           borderRadius: 8,
           customData: data,
-          backgroundColor: (ctx: any) => {
-            if (ctx.type !== 'data') return 'rgba(0,0,0,0.05)';
-            const cat = ctx.raw?.g;
-            const idx = data.findIndex(d => d.category === cat);
-            return idx >= 0 ? bgColors[idx] : ThemeManager.palette[0];
+          backgroundColor: (context: any) => {
+            if (context.type !== 'data') return 'rgba(0,0,0,0.05)';
+            const dataset = context.dataset;
+            const liveCustomData = dataset?.customData || data;
+            const cat = context.raw?.g;
+            const idx = liveCustomData.findIndex((d: any) => d.category === cat);
+            return idx >= 0 ? ThemeManager.getColor(idx) : ThemeManager.palette[0];
           },
           labels: {
             display: true,
@@ -257,9 +272,11 @@ const ChartFactory = {
               return labelText.split(' ');
             },
             font: { size: 11, weight: '700', family: "'Outfit', sans-serif" },
-            color: (ctx: any) => {
-              const cat = ctx.raw?.g;
-              const idx = data.findIndex(d => d.category === cat);
+            color: (context: any) => {
+              const dataset = context.dataset;
+              const liveCustomData = dataset?.customData || data;
+              const cat = context.raw?.g;
+              const idx = liveCustomData.findIndex((d: any) => d.category === cat);
               return [2, 3, 7].includes(idx % 9) ? '#003f5e' : '#ffffff';
             }
           }
@@ -326,6 +343,7 @@ const ChartFactory = {
               if (!tooltipItems || !tooltipItems.length) return '';
               return isTreemap ? (tooltipItems[0].raw?.g || '') : tooltipItems[0].label;
             },
+            // CRITICAL FIX: Decouple index parameter parsing maps to match Chart.js v4 single item protocols
             label: (context: any) => {
               const categoryName = isTreemap ? context.raw?.g : context.label;
               const dataset = context.dataset;
@@ -348,6 +366,10 @@ const ChartFactory = {
     };
   }
 };
+
+// ==========================================
+// UI & ORCHESTRATION MANAGER
+// ==========================================
 
 const UIManager = {
   activeFilter: 'baseline',
@@ -477,7 +499,7 @@ const UIManager = {
                 </button>
               </div>
             </div>
-            <div class="relative w-full pl-3 overflow-y-auto custom-scrollbar" style="height: ${containerHeight}px;">
+            <div class="relative w-full pl-3 overflow-x-auto overflow-y-auto custom-scrollbar" style="height: ${containerHeight}px;">
               <div class="chart-canvas-wrapper" style="height: ${canvasHeight}px; position: relative; width: 100%;">
                 <canvas id="chart-${meta.chart_id}"></canvas>
               </div>
@@ -501,8 +523,13 @@ const UIManager = {
         card.classList.add('lg:col-span-2', '2xl:col-span-2');
       }
 
-      const ctx = document.getElementById(`chart-${meta.chart_id}`) as HTMLCanvasElement;
-      if (ctx) ChartFactory.build(meta, validData, ctx);
+      if (isUpset) {
+        const wrapper = card.querySelector('.chart-canvas-wrapper') as HTMLElement;
+        if (wrapper) ChartFactory.build(meta, validData, wrapper as any);
+      } else {
+        const ctx = document.getElementById(`chart-${meta.chart_id}`) as HTMLCanvasElement;
+        if (ctx) ChartFactory.build(meta, validData, ctx);
+      }
 
       cardCount++;
     });
@@ -636,7 +663,7 @@ const UIManager = {
 };
 
 // ==========================================
-// EXPORT BINDINGS & BOOTSTRAP
+// EXPORT SYSTEM INITIALIZATION BINDINGS
 // ==========================================
 
 const g = window as any;
