@@ -97,26 +97,29 @@ const triplePartners = [...content.partners, ...content.partners, ...content.par
 
     // Main animation loop
     function update() {
-      // Perfect seamless wrapping check
-      if (container.scrollLeft >= setWidthPx * 2) {
-        container.scrollLeft -= setWidthPx;
-      } else if (container.scrollLeft <= 0) {
-        container.scrollLeft += setWidthPx;
+      // 1. Seamless wrapping check
+      if (exactScrollLeft >= setWidthPx * 2) {
+        exactScrollLeft -= setWidthPx;
+      } else if (exactScrollLeft <= 0) {
+        exactScrollLeft += setWidthPx;
       }
 
+      // 2. Movement logic (The Physics Fix)
       if (!isDown) {
-        if (Math.abs(velocity) > 0.1) {
-          // Apply drag inertia
-          container.scrollLeft -= velocity;
-          velocity *= 0.95; // Friction multiplier (closer to 1 = slides longer)
-        } else {
-          velocity = 0;
-          // Clean pixel-perfect auto scroll when mouse is not active/hovered
-          if (!isHovered) {
-            container.scrollLeft += autoScrollSpeed;
-          }
-        }
+        // If hovering, target speed is 0 (stop).
+        // If not hovering, target speed is the auto-scroll.
+        // (We use a negative value because subtracting a negative moves it right).
+        const targetVelocity = isHovered ? 0 : -autoScrollSpeed;
+
+        // This single line smoothly blends your drag momentum into the target speed.
+        // It acts as friction when stopping, and gentle acceleration when reversing.
+        velocity += (targetVelocity - velocity) * 0.05;
+
+        exactScrollLeft -= velocity;
       }
+
+      // 3. Apply exact math back to the DOM
+      container.scrollLeft = exactScrollLeft;
 
       requestAnimationFrame(update);
     }
