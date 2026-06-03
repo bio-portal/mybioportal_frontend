@@ -457,11 +457,19 @@ const UIManager = {
 
           card.dataset.title = meta.display_name.toLowerCase();
 
+          // Replace the card.innerHTML line inside updateDashboard() with this:
           card.innerHTML = `
             <div class="absolute top-0 left-0 w-1.5 h-full bg-brand-blue-deep/20 group-hover:bg-brand-blue-deep transition-colors"></div>
             <div class="flex justify-between items-start mb-6 border-b border-gray-100 pb-4 pl-3">
-              <h3 class="font-extrabold text-brand-dark text-lg tracking-tight leading-tight group-hover:text-brand-blue-deep transition-colors pr-2">${meta.display_name}</h3>
-              <span class="text-[10px] bg-gray-50 text-gray-400 px-2.5 py-1 rounded-md font-bold uppercase tracking-widest border border-gray-100 shrink-0">${meta.units}</span>
+              <div class="pr-2">
+                <h3 class="font-extrabold text-brand-dark text-lg tracking-tight leading-tight group-hover:text-brand-blue-deep transition-colors">${meta.display_name}</h3>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="text-[10px] bg-gray-50 text-gray-400 px-2.5 py-1 rounded-md font-bold uppercase tracking-widest border border-gray-100">${meta.units}</span>
+                <button onclick="downloadCardImage('${meta.chart_id}', '${meta.display_name}')" class="p-1 rounded-md text-gray-400 hover:text-brand-blue-deep hover:bg-gray-50 transition-all cursor-pointer" title="Download Figure">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </button>
+              </div>
             </div>
             <div class="relative w-full pl-3 overflow-y-auto custom-scrollbar" style="height: ${containerHeight}px;">
               <div class="chart-canvas-wrapper" style="height: ${canvasHeight}px; position: relative; width: 100%;">
@@ -684,6 +692,34 @@ g.exportCohortCSV = () => {
   link.click();
 };
 
+g.downloadCardImage = (chartId: string, displayName: string) => {
+  const chartInstance = ChartFactory.instances[chartId];
+
+  if (chartInstance) {
+    // 1. Export standard Chart.js configurations (Bar, Pie, Treemaps) to crisp PNGs
+    const imgUrl = chartInstance.toBase64Image();
+    const link = document.createElement('a');
+    link.download = `${displayName.replace(/\s+/g, '_')}_BioPortal.png`;
+    link.href = imgUrl;
+    link.click();
+  } else if (chartId === 'sample_intersections') {
+    // 2. Export the UpSet Plot SVG vector graphic flawlessly
+    const svgElement = document.querySelector('.upset-wrapper svg');
+    if (svgElement) {
+      const svgString = new XMLSerializer().serializeToString(svgElement);
+      const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+      const blobUrl = URL.createObjectURL(svgBlob);
+
+      const link = document.createElement('a');
+      link.download = `Sample_Intersections_BioPortal.svg`;
+      link.href = blobUrl;
+      link.click();
+
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+    }
+  }
+};
+
 const boot = () => {
   ThemeManager.init();
   DataManager.initialize()
@@ -714,3 +750,5 @@ if (document.readyState === 'loading') {
 } else {
   boot();
 }
+
+

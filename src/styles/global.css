@@ -27,3 +27,11 @@
 @utility logo-gradient {
   background: linear-gradient(135deg, #f37a21, #fdbb10, #7fc342, #26abe2);
 }
+
+/* Add this at the bottom of src/styles/global.css */
+.upset-wrapper .upset-toolbar,
+.upset-wrapper svg g[class*="action"],
+.upset-wrapper .action-menu {
+  display: none !important;
+  pointer-events: none !important;
+}
