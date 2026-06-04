@@ -12,6 +12,7 @@ Chart.register(...registerables, TreemapController, TreemapElement, VennDiagramC
 interface CategoryCount {
   category: string;
   count: string | number;
+  inclusive_count?: string | number; // Added for Venn Diagram inclusive physics
 }
 
 interface StatRow {
@@ -23,7 +24,7 @@ interface StatRow {
 interface VariableMeta {
   chart_id: string;
   display_name: string;
-  chart_type: 'pie' | 'bar' | 'treemap' | 'venn'; // Venn added implicitly via intersections
+  chart_type: 'pie' | 'bar' | 'treemap' | 'venn';
   units: string;
 }
 
@@ -148,10 +149,10 @@ const ChartFactory = {
   },
 
   build(meta: VariableMeta, rawData: CategoryCount[], ctx: HTMLCanvasElement) {
-    const isUpset = meta.chart_id === 'sample_intersections'; // Keeping legacy label mapping
+    const isVenn = meta.chart_id === 'sample_intersections';
     const isPie = meta.chart_type === 'pie';
     const isTreemap = meta.chart_type === 'treemap';
-    const isBar = meta.chart_type === 'bar';
+    const isBar = meta.chart_type === 'bar' && !isVenn;
 
     if (isBar && meta.chart_id === 'cancer_types') {
       rawData.sort((a, b) => {
@@ -168,7 +169,7 @@ const ChartFactory = {
     let config: ChartConfiguration;
 
     // Route to appropriate native Chart.js builder
-    if (isUpset) {
+    if (isVenn) {
       config = this.getVennConfig(meta, rawData);
     } else if (isTreemap) {
       config = this.getTreemapConfig(meta, data, bgColors);
@@ -182,7 +183,7 @@ const ChartFactory = {
       chart.data.labels = config.data.labels;
       chart.data.datasets[0].data = config.data.datasets[0].data;
       chart.data.datasets[0].backgroundColor = config.data.datasets[0].backgroundColor;
-      (chart.data.datasets[0] as any).customData = isUpset ? (config.data.datasets[0] as any).customData : data;
+      (chart.data.datasets[0] as any).customData = isVenn ? (config.data.datasets[0] as any).customData : data;
 
       if (isTreemap) {
         (chart.data.datasets[0] as any).tree = (config.data.datasets[0] as any).tree;
@@ -193,34 +194,50 @@ const ChartFactory = {
     }
   },
 
-  getVennConfig(meta: VariableMeta, rawData: CategoryCount[]): ChartConfiguration {
-    // 1. Transform subset names into the standard native Venn Sets array format
+  getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
+    // Dynamically extract the unique base sets to map colors consistently
+    const baseSets = new Set<string>();
+    rawData.forEach(item => {
+      if (item.category !== 'No Modalities') {
+        item.category.replace("Only ", "").split(" + ").forEach((s: string) => baseSets.add(s.trim()));
+      }
+    });
+    const baseArr = Array.from(baseSets);
+
+    // Map the backend payload directly to the Venn structure
     const vennData = rawData.map(item => {
-      const categoryStr = String(item.category);
-      // 'chartjs-chart-venn' parses arrays of overlapping labels to build the structure
-      const sets = categoryStr === 'No Modalities' ? [] : categoryStr.replace("Only ", "").split(" + ");
-      const isMasked = typeof item.count === 'string' && item.count.startsWith('<');
-      const numericValue = isMasked ? CONFIG.MASK_VALUE : parseInt(String(item.count), 10);
+      const sets = item.category === 'No Modalities' ? [] : item.category.replace("Only ", "").split(" + ").map((s: string) => s.trim());
+
+      // Safely parse the backend inclusive_count for Venn circle radiuses
+      const isMaskedInclusive = typeof item.inclusive_count === 'string' && String(item.inclusive_count).startsWith('<');
+      const inclusiveNumeric = isMaskedInclusive ? CONFIG.MASK_VALUE : parseInt(String(item.inclusive_count), 10);
 
       return {
         sets: sets,
-        value: isNaN(numericValue) ? 0 : numericValue,
-        category: categoryStr, // Preserved for UI filtering clicks
-        displayVal: item.count
+        value: isNaN(inclusiveNumeric) ? 0 : inclusiveNumeric, // Physics engine size
+        exclusiveValue: item.count, // Tooltip display size (the raw `<10` or integer string)
+        category: item.category
       };
-    }).filter(d => d.sets.length > 0 && d.value > 0); // Ignore empty floating sets for cleaner Venn UI
+    }).filter(d => d.sets.length > 0 && d.value > 0);
 
-    // 2. Map transparent overlapping colors
-    const vennColors = vennData.map((_, i) => ThemeManager.getColor(i) + 'D9'); // Append 85% opacity hex
+    // Sort to ensure base circles (length 1) map solid colors first
+    vennData.sort((a, b) => a.sets.length - b.sets.length);
 
     return {
       type: 'venn' as any,
       data: {
-        labels: vennData.map(d => d.category),
         datasets: [{
           data: vennData,
           customData: vennData,
-          backgroundColor: vennColors,
+          backgroundColor: (context: any) => {
+            if (context.type !== 'data') return 'rgba(0,0,0,0.05)';
+            const row = context.raw;
+            if (row && row.sets && row.sets.length === 1) {
+              const idx = baseArr.indexOf(row.sets[0]);
+              return ThemeManager.getColor(idx) + 'B3'; // B3 = 70% opacity
+            }
+            return 'rgba(255,255,255,0)'; // Let overlaps blend naturally
+          },
           borderColor: '#ffffff',
           borderWidth: 2
         }] as any
@@ -340,16 +357,21 @@ const ChartFactory = {
             label: (context: any) => {
               const dataset = context.dataset;
               const customData = dataset?.customData || initialData;
+              const unit = meta.units === 'patients' ? '' : ` ${meta.units}`;
+
+              if (isVenn) {
+                const rawItem = customData[context.dataIndex];
+                if (!rawItem) return '';
+                return ` Count: ${rawItem.exclusiveValue}${unit}`;
+              }
 
               let categoryName = context.label;
               if (isTreemap) categoryName = context.raw?.g;
-              if (isVenn) categoryName = customData[context.dataIndex]?.category;
 
               const rawItem = customData?.find((d: any) => String(d.category) === String(categoryName));
               if (!rawItem) return '';
 
               const countVal = rawItem.displayVal !== undefined ? rawItem.displayVal : rawItem.numericVal;
-              const unit = meta.units === 'patients' ? '' : ` ${meta.units}`;
               return ` Count: ${countVal}${unit}`;
             }
           }
@@ -481,9 +503,11 @@ const UIManager = {
       if (!validData.length) return;
 
       const isBar = meta.chart_type === 'bar';
+      const isVenn = meta.chart_id === 'sample_intersections';
       const containerHeight = 240;
-      const isUpset = meta.chart_id === 'sample_intersections'; // Legacy mapping
-      const canvasHeight = isBar ? Math.max(containerHeight, validData.length * 38) : (isUpset ? 300 : containerHeight);
+
+      // Give the Venn diagram slightly more vertical breathing room to draw its circular bounds
+      const canvasHeight = isBar ? Math.max(containerHeight, validData.length * 38) : (isVenn ? 300 : containerHeight);
 
       let card = document.querySelector(`.chart-card[data-title="${meta.display_name.toLowerCase()}"]`) as HTMLElement;
 
@@ -528,12 +552,12 @@ const UIManager = {
          grid.appendChild(card);
       }
 
-      if (isUpset) {
+      // Constrain Venn diagrams to single column width like Pie/Treemap charts so it remains balanced
+      if (isVenn) {
         card.classList.remove('lg:col-span-2', '2xl:col-span-2');
         card.classList.add('lg:col-span-1', '2xl:col-span-1');
       }
 
-      // 🌟 FIXED: sample_intersections now directly builds onto the standard Chart.js canvas
       const ctx = document.getElementById(`chart-${meta.chart_id}`) as HTMLCanvasElement;
       if (ctx) ChartFactory.build(meta, validData, ctx);
 
@@ -730,7 +754,6 @@ g.exportCohortCSV = () => {
   link.click();
 };
 
-// 🌟 FIXED: Since the Venn is a native Canvas now, the download logic falls back into the standard Base64 flow
 g.downloadCardImage = (chartId: string, displayName: string) => {
   const chartInstance = ChartFactory.instances[chartId];
 
