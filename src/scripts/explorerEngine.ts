@@ -33,7 +33,6 @@ const CONFIG = {
   API_GATEWAY: "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats",
   MASK_VALUE: 10,
   DEBOUNCE_MS: 150,
-  // 🌟 FIX: Increased minimum area weight to 5% to guarantee larger blocks for rare ancestries
   MIN_TREEMAP_WEIGHT: 0.05,
   FROSTING_DELAY_MS: 150,
 };
@@ -114,14 +113,9 @@ const ThemeManager = {
     ];
   },
   getColor(index: number) {
-    // Restricts base colors to 0-7, reserving index 8 purely for hover states
     return this.palette[index % 8];
   }
 };
-
-// ==========================================
-// GRAPH FACTORY ENGINE
-// ==========================================
 
 // ==========================================
 // GRAPH FACTORY ENGINE
@@ -239,10 +233,14 @@ const ChartFactory = {
       },
       options: {
         ...sharedOptions,
-        color: '#1e293b',
+        color: '#4b5563',
         font: { weight: 'bold', size: 14, family: "'Outfit', sans-serif" },
         layout: {
             padding: 24
+        },
+        plugins: {
+            ...sharedOptions.plugins,
+            datalabels: { display: false }
         }
       }
     };
@@ -271,6 +269,22 @@ const ChartFactory = {
           hoverBackgroundColor: ThemeManager.palette[8],
           labels: {
             display: true,
+            color: '#ffffff',
+            font: (ctx: any) => {
+               const bounds = ctx.type === 'data' ? ctx.raw?.v : null;
+               if (!bounds) return { size: 11, weight: '700', family: "'Outfit', sans-serif" };
+
+               const boxWidth = bounds.w;
+               const boxHeight = bounds.h;
+
+               const sizeByWidth = Math.floor(boxWidth / 10);
+               const sizeByHeight = Math.floor(boxHeight / 4);
+
+               let calculatedSize = Math.min(sizeByWidth, sizeByHeight);
+               calculatedSize = Math.max(9, Math.min(14, calculatedSize));
+
+               return { size: calculatedSize, weight: '700', family: "'Outfit', sans-serif" };
+            },
             formatter: (ctx: any) => {
               const bounds = ctx.type === 'data' ? ctx.raw?.v : null;
               if (!bounds || bounds.w < 60 || bounds.h < 35) return [];
@@ -303,23 +317,7 @@ const ChartFactory = {
                   lines.push(`n = ${displayCount}`);
               }
               return lines;
-            },
-            font: (ctx: any) => {
-               const bounds = ctx.type === 'data' ? ctx.raw?.v : null;
-               if (!bounds) return { size: 11, weight: '700', family: "'Outfit', sans-serif" };
-
-               const boxWidth = bounds.w;
-               const boxHeight = bounds.h;
-
-               let sizeByWidth = Math.floor(boxWidth / 10);
-               let sizeByHeight = Math.floor(boxHeight / 4);
-
-               let calculatedSize = Math.min(sizeByWidth, sizeByHeight);
-               calculatedSize = Math.max(9, Math.min(14, calculatedSize));
-
-               return { size: calculatedSize, weight: '700', family: "'Outfit', sans-serif" };
-            },
-            color: '#ffffff'
+            }
           }
         }] as any
       },
@@ -350,6 +348,9 @@ const ChartFactory = {
   },
 
   getSharedOptions(meta: VariableMeta, isTreemap: boolean, isPie: boolean, initialData: any[], isVenn: boolean = false): any {
+    // 🌟 FIX: We explicitly calculate isBar here so it's available for the datalabels configuration
+    const isBar = !isPie && !isTreemap && !isVenn;
+
     return {
       responsive: true,
       maintainAspectRatio: false,
@@ -384,20 +385,21 @@ const ChartFactory = {
           position: 'bottom',
           labels: {
             boxWidth: 10,
-            padding: 20, // 🌟 FIX: Added padding to push legend down away from pie datalabels
+            padding: 20,
             font: { size: 11, family: "'Outfit', sans-serif", weight: '600' },
             color: '#4b5563'
           }
         },
         datalabels: {
-          display: (!isTreemap),
-          // 🌟 FIX: Use slate gray for pie AND bar charts, only white for Venns.
-          color: isVenn ? '#ffffff' : '#4b5563',
-          // 🌟 FIX: Use normal weight for bars, keep bold for Venns/Pies
+          display: (context: any) => {
+             if (isTreemap || isVenn) return false;
+             return true;
+          },
+          color: isPie ? '#4b5563' : ThemeManager.palette[8],
           font: {
               family: "'Outfit', sans-serif",
               weight: (!isBar) ? 'bold' : 'normal',
-              size: isVenn ? 15 : 12
+              size: 12
           },
           formatter: (value: any, context: any) => {
             const customData = context.dataset.customData || initialData;
@@ -406,15 +408,14 @@ const ChartFactory = {
 
             const displayVal = rawItem.displayVal !== undefined ? rawItem.displayVal : rawItem.numericVal;
 
-            // 🌟 FIX: Pie Charts now render raw count instead of calculated percentage
             if (isPie && typeof displayVal === 'string' && displayVal.startsWith('<')) {
                 return '<10';
             }
             return String(displayVal);
           },
-          anchor: isVenn ? 'center' : 'end',
-          align: isVenn ? 'center' : 'end',
-          offset: isVenn ? 0 : (isPie ? 12 : 6)
+          anchor: 'end',
+          align: 'end',
+          offset: isPie ? 12 : 6
         },
         tooltip: {
           enabled: true,
@@ -476,7 +477,6 @@ const ChartFactory = {
     };
   }
 };
-
 
 // ==========================================
 // UI & ORCHESTRATION MANAGER
