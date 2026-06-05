@@ -263,7 +263,43 @@ getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
   },
 
   getTreemapConfig(meta: VariableMeta, data: any[], bgColors: string[]): ChartConfiguration {
+    // Hidden local layout preprocessing pipeline to ensure zero global scope footprint
+    const TextEngine = {
+      getBalancedLines(cat: string, displayCount: string | number): string[] {
+        const labelText = cat || '';
+        if (!labelText) return [];
+
+        let lines: string[] = [];
+        const words = labelText.split(' ');
+
+        if (words.length <= 1) {
+          lines = [labelText];
+        } else {
+          let bestLines: string[] = [labelText];
+          let minDiff = Infinity;
+
+          // Evaluates string weight permutations to split text at the most visually balanced character midpoint
+          for (let i = 1; i < words.length; i++) {
+            const line1 = words.slice(0, i).join(' ');
+            const line2 = words.slice(i).join(' ');
+            const diff = Math.abs(line1.length - line2.length);
+            if (diff < minDiff) {
+              minDiff = diff;
+              bestLines = [line1, line2];
+            }
+          }
+          lines = bestLines;
+        }
+
+        if (displayCount) {
+          lines.push(`n = ${displayCount}`);
+        }
+        return lines;
+      }
+    };
+
     const sharedOptions = this.getSharedOptions(meta, data);
+
     return {
       type: 'treemap' as any,
       data: {
@@ -287,23 +323,41 @@ getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
           labels: {
             display: true,
             color: '#ffffff',
+            // 🌟 FIX: Content-Aware Heuristic Font Resizer
             font: (ctx: any) => {
                const boxWidth = ctx.raw?.w || 0;
                const boxHeight = ctx.raw?.h || 0;
-               if (boxWidth === 0) return { size: 11, weight: '700', family: "'Outfit', sans-serif" };
+               const cat = ctx.raw?.g;
+               if (boxWidth === 0 || !cat) return { size: 11, weight: '700', family: "'Outfit', sans-serif" };
 
-               const sizeByWidth = Math.floor(boxWidth / 10);
-               const sizeByHeight = Math.floor(boxHeight / 4);
+               const dataset = ctx.chart.data.datasets[0];
+               const liveCustomData = dataset?.customData || data;
+               const rawItem = liveCustomData.find((d: any) => String(d.category) === String(cat));
+               const displayCount = rawItem ? rawItem.displayVal : '';
 
+               // Extract the exact array layout compiled for this specific block
+               const lines = TextEngine.getBalancedLines(cat, displayCount);
+               if (!lines.length) return { size: 11, weight: '700', family: "'Outfit', sans-serif" };
+
+               const maxChars = Math.max(...lines.map(l => l.length));
+
+               // Horizontal constraint: average character width ratio is roughly 0.55 * fontSize
+               const sizeByWidth = Math.floor(boxWidth / (maxChars * 0.55));
+               // Vertical constraint: row bounding boxes require roughly 1.35 * fontSize per line
+               const sizeByHeight = Math.floor(boxHeight / (lines.length * 1.35));
+
+               // Dynamically bind font calculation bounds tightly between safe minimum and maximum scales
                let calculatedSize = Math.min(sizeByWidth, sizeByHeight);
                calculatedSize = Math.max(9, Math.min(14, calculatedSize));
 
                return { size: calculatedSize, weight: '700', family: "'Outfit', sans-serif" };
             },
+            // 🌟 FIX: Visually balanced character line breaker
             formatter: (ctx: any) => {
               const boxWidth = ctx.raw?.w || 0;
               const boxHeight = ctx.raw?.h || 0;
-              if (boxWidth < 40 || boxHeight < 25) return [];
+              // Hard floor cutoff: if box cannot fit minimal legible text elements, hide safely
+              if (boxWidth < 45 || boxHeight < 25) return [];
 
               const dataset = ctx.chart.data.datasets[0];
               const liveCustomData = dataset?.customData || data;
@@ -312,27 +366,7 @@ getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
               const rawItem = liveCustomData.find((d: any) => String(d.category) === String(cat));
               const displayCount = rawItem ? rawItem.displayVal : '';
 
-              const labelText = cat || '';
-              let lines = [];
-
-              if (labelText.includes(' or ')) {
-                  lines = labelText.split(' or ');
-              } else if (labelText.includes(' (')) {
-                  const parts = labelText.split(' (');
-                  lines = [parts[0], '(' + parts[1]];
-              } else {
-                  const words = labelText.split(' ');
-                  if (words.length > 2) {
-                      lines = [words.slice(0, 2).join(' '), words.slice(2).join(' ')];
-                  } else {
-                      lines = words;
-                  }
-              }
-
-              if (displayCount) {
-                  lines.push(`n = ${displayCount}`);
-              }
-              return lines;
+              return TextEngine.getBalancedLines(cat, displayCount);
             }
           }
         }] as any
@@ -341,13 +375,11 @@ getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
         ...sharedOptions,
         plugins: {
           ...sharedOptions.plugins,
-          // 🌟 FIX: Explicitly kill default legend badge generation on Treemaps
           legend: { display: false }
         }
       }
     };
   },
-
   getBarConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string[]): ChartConfiguration {
     return {
       type: 'bar',
@@ -395,6 +427,7 @@ getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
     };
   },
 
+
 getPieConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string[]): ChartConfiguration {
     return {
       type: 'doughnut',
@@ -411,17 +444,24 @@ getPieConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string
       options: {
         ...this.getSharedOptions(meta, data),
         indexAxis: 'x',
-        // Increased bottom padding to guarantee the floating label doesn't clip past canvas limits
-        layout: { padding: { top: 10, bottom: 25, left: 10, right: 10 } },
+        // 🌟 FIX: Asymmetric canvas margins provide massive clearance zones for top, left, and right floating labels
+        layout: {
+          padding: {
+            top: 35,    // Generous headspace to prevent top labels (like 77) from hitting the ceiling
+            bottom: 5,  // Tapered down since the legend title below handles the lower separation block
+            left: 45,   // Safe horizontal boundaries for wide 4-digit strings on the sides
+            right: 45
+          }
+        },
         plugins: {
           legend: {
             display: true,
             position: 'bottom',
-            // 🌟 NATIVE SPACHING FIX: Inserts an invisible layout spacer between chart arcs and legend rows
+            // Pushes the entire legend block safely down and out of range of lower slice numbers
             title: {
               display: true,
               text: '',
-              padding: { top: 15 }
+              padding: { top: 20 }
             },
             labels: {
               boxWidth: 10,
@@ -667,25 +707,29 @@ const UIManager = {
 
       if (!card) {
           card = document.createElement('div');
-          card.className = "chart-card glass-card p-7 flex flex-col group relative overflow-hidden transition-all duration-700 ease-out";
+          // 🌟 UX FIX: Compressed visual layout using asymmetric padding (pt-5 pb-4 px-6 instead of heavy p-7)
+          card.className = "chart-card glass-card pt-5 pb-4 px-6 flex flex-col group relative overflow-hidden transition-all duration-700 ease-out";
           if (this.isInitialRender) card.classList.add('opacity-0', 'translate-y-3');
 
           card.dataset.title = meta.display_name.toLowerCase();
 
           card.innerHTML = `
             <div class="absolute top-0 left-0 w-1.5 h-full bg-brand-blue-deep/20 group-hover:bg-brand-blue-deep transition-colors"></div>
-            <div class="flex justify-between items-start mb-6 border-b border-gray-100 pb-4 pl-3">
+
+            <div class="flex justify-between items-start mb-3 pl-1">
               <div class="pr-2">
                 <h3 class="font-extrabold text-brand-dark text-lg tracking-tight leading-tight group-hover:text-brand-blue-deep transition-colors">${meta.display_name}</h3>
               </div>
               <div class="flex items-center gap-2 shrink-0">
                 <span class="text-[10px] bg-gray-50 text-gray-400 px-2.5 py-1 rounded-md font-bold uppercase tracking-widest border border-gray-100">${meta.units}</span>
-                <button onclick="downloadCardImage('${meta.chart_id}', '${meta.display_name}')" class="p-1 rounded-md text-gray-400 hover:text-brand-blue-deep hover:bg-gray-50 transition-all cursor-pointer" title="Download Figure">
+
+                <button onclick="downloadCardImage('${meta.chart_id}', '${meta.display_name}')" class="p-1 rounded-md text-gray-400 opacity-25 group-hover:opacity-100 hover:text-brand-blue-deep hover:bg-gray-50 transition-all duration-300 cursor-pointer" title="Download Figure">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 </button>
               </div>
             </div>
-            <div class="relative w-full pl-3 overflow-x-auto overflow-y-auto custom-scrollbar" style="height: ${containerHeight}px;">
+
+            <div class="relative w-full pl-1 overflow-x-auto overflow-y-auto custom-scrollbar" style="height: ${containerHeight}px;">
               <div class="chart-canvas-wrapper" style="height: ${canvasHeight}px; position: relative; width: 100%;">
                 <canvas id="chart-${meta.chart_id}"></canvas>
               </div>
