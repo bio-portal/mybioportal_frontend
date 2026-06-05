@@ -196,6 +196,8 @@ const ChartFactory = {
 
   getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
     const baseSets = new Set<string>();
+
+    // 1. Gather all unique base modalities from the combinations
     rawData.forEach(item => {
       if (item.category !== 'No Modalities') {
         item.category.replace("Only ", "").split(" + ").forEach((s: string) => baseSets.add(s.trim()));
@@ -203,17 +205,16 @@ const ChartFactory = {
     });
     const baseArr = Array.from(baseSets);
 
+    // 2. Map the data
     const vennData = rawData.map(item => {
       const sets = item.category === 'No Modalities' ? [] : item.category.replace("Only ", "").split(" + ").map((s: string) => s.trim());
 
-      // Safely parse the backend inclusive_count and standard count
       const isMaskedInclusive = typeof item.inclusive_count === 'string' && String(item.inclusive_count).startsWith('<');
       const inclusiveNumeric = isMaskedInclusive ? CONFIG.MASK_VALUE : parseInt(String(item.inclusive_count), 10);
 
       const isMaskedExclusive = typeof item.count === 'string' && String(item.count).startsWith('<');
       const exclusiveNumeric = isMaskedExclusive ? CONFIG.MASK_VALUE : parseInt(String(item.count), 10);
 
-      // 🌟 VENN PHYSICS FIX: Base circles use Inclusive, Intersections use Exclusive
       const physicsSize = sets.length === 1 ? inclusiveNumeric : exclusiveNumeric;
 
       return {
@@ -222,11 +223,28 @@ const ChartFactory = {
         exclusiveValue: item.count,
         category: item.category
       };
-    }).filter(d => d.sets.length > 0 && d.value > 0);
+    }).filter(d => d.sets.length > 0); // 🌟 FIX 1: Keep items even if value is 0!
 
-    // ... rest of getVennConfig remains the same ...
+    // 🌟 FIX 2: Engine safety net.
+    // Ensure every base circle mentioned in any intersection explicitly exists as a standalone object,
+    // even if the API didn't return an "Only X" category for this specific cohort.
+    baseArr.forEach(baseName => {
+      const exists = vennData.find(d => d.sets.length === 1 && d.sets[0] === baseName);
+      if (!exists) {
+        vennData.push({
+          sets: [baseName],
+          value: CONFIG.MASK_VALUE, // Minimum safe geometric rendering size
+          exclusiveValue: "<10",
+          category: `Only ${baseName}`
+        });
+      }
+    });
 
-    // Sort to ensure base circles (length 1) map solid colors first
+    // 🌟 FIX 3: Prevent zero-geometry crash. The venn.js engine fails if a node literally has 0 area.
+    vennData.forEach(d => {
+        if (d.value <= 0) d.value = CONFIG.MASK_VALUE;
+    });
+
     vennData.sort((a, b) => a.sets.length - b.sets.length);
 
     return {
@@ -240,9 +258,9 @@ const ChartFactory = {
             const row = context.raw;
             if (row && row.sets && row.sets.length === 1) {
               const idx = baseArr.indexOf(row.sets[0]);
-              return ThemeManager.getColor(idx) + 'B3'; // B3 = 70% opacity
+              return ThemeManager.getColor(idx) + 'B3';
             }
-            return 'rgba(255,255,255,0)'; // Let overlaps blend naturally
+            return 'rgba(255,255,255,0)';
           },
           borderColor: '#ffffff',
           borderWidth: 2
@@ -251,6 +269,7 @@ const ChartFactory = {
       options: this.getSharedOptions(meta, false, false, vennData, true)
     };
   },
+
 
   getTreemapConfig(meta: VariableMeta, data: any[], bgColors: string[]): ChartConfiguration {
     return {
