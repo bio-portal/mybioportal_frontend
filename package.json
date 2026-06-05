@@ -17,6 +17,7 @@
     "chart.js": "^4.4.2",
     "chartjs-chart-treemap": "^3.1.0",
     "chartjs-chart-venn": "^4.3.7",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "embla-carousel": "^8.6.0",
     "embla-carousel-auto-scroll": "^8.6.0",
     "tailwindcss": "^4.2.4"
