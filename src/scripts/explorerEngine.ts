@@ -1,9 +1,10 @@
 import { Chart, registerables, type ChartConfiguration } from 'chart.js';
 import { TreemapController, TreemapElement } from 'chartjs-chart-treemap';
 import { VennDiagramController, ArcSlice } from 'chartjs-chart-venn';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-// Register standard elements alongside Treemap and Venn modules
-Chart.register(...registerables, TreemapController, TreemapElement, VennDiagramController, ArcSlice);
+// Register standard elements alongside Treemap, Venn, and DataLabels modules
+Chart.register(...registerables, TreemapController, TreemapElement, VennDiagramController, ArcSlice, ChartDataLabels);
 
 // ==========================================
 // TYPES & CONFIGURATION
@@ -121,11 +122,6 @@ const ThemeManager = {
 // GRAPH FACTORY ENGINE
 // ==========================================
 
-
-// ==========================================
-// GRAPH FACTORY ENGINE
-// ==========================================
-
 const ChartFactory = {
   instances: {} as Record<string, Chart>,
   visibleCharts: new Set<string>(),
@@ -158,15 +154,6 @@ const ChartFactory = {
     const isVenn = meta.chart_id === 'sample_intersections';
     const isPie = meta.chart_type === 'pie';
     const isTreemap = meta.chart_type === 'treemap';
-    const isBar = meta.chart_type === 'bar' && !isVenn;
-
-    if (isBar && meta.chart_id === 'cancer_types') {
-      rawData.sort((a, b) => {
-        const valA = String(a.count).startsWith('<') ? 0 : parseInt(String(a.count), 10);
-        const valB = String(b.count).startsWith('<') ? 0 : parseInt(String(b.count), 10);
-        return valB - valA;
-      });
-    }
 
     const data = this.parseData(rawData, isTreemap, isPie);
     const labels = data.map(d => d.category);
@@ -227,9 +214,8 @@ const ChartFactory = {
         datasets: [{
           data: vennData,
           customData: vennData,
-          // Controls text INSIDE the circles
-          color: '#ffffff',
-          font: { size: 14, weight: 'bold', family: "'Outfit', sans-serif" },
+          // Transparent hides the native venn number so DataLabels can take over cleanly
+          color: 'transparent',
           backgroundColor: (context: any) => {
             if (context.type !== 'data') return 'rgba(0,0,0,0.05)';
             return ThemeManager.getColor(context.dataIndex);
@@ -241,8 +227,7 @@ const ChartFactory = {
       },
       options: {
         ...sharedOptions,
-        // Controls text OUTSIDE the circles (the main category labels)
-        color: '#4b5563',
+        color: '#4b5563', // Bold Slate Gray for outside labels
         font: { weight: 'bold', family: "'Outfit', sans-serif" },
         layout: {
             padding: 24
@@ -276,16 +261,24 @@ const ChartFactory = {
             display: true,
             formatter: (ctx: any) => {
               const bounds = ctx.type === 'data' ? ctx.raw?.v : null;
-              if (!bounds || bounds.w < 60 || bounds.h < 35) return '';
+              // 🌟 FIX: Graceful Overflow Hiding. If box is too small, return empty array to hide text.
+              if (!bounds || bounds.w < 60 || bounds.h < 35) return [];
 
               const labelText = ctx.raw?.g || '';
-              if (labelText.includes(' or ')) {
-                return labelText.split(' or ');
+
+              // 🌟 FIX: Multiline Wrapping via Array Splitting
+              if (labelText.includes(' or ')) return labelText.split(' or ');
+              if (labelText.includes(' (')) {
+                  const parts = labelText.split(' (');
+                  return [parts[0], '(' + parts[1]];
               }
-              return labelText.split(' ');
+              const words = labelText.split(' ');
+              if (words.length > 2) {
+                  return [words.slice(0, 2).join(' '), words.slice(2).join(' ')];
+              }
+              return words;
             },
             font: { size: 11, weight: '700', family: "'Outfit', sans-serif" },
-            // Hardcoded to always be pure white
             color: '#ffffff'
           }
         }] as any
@@ -309,7 +302,11 @@ const ChartFactory = {
           maxBarThickness: isPie ? undefined : 48
         }]
       },
-      options: this.getSharedOptions(meta, false, isPie, data)
+      options: {
+        ...this.getSharedOptions(meta, false, isPie, data),
+        // 🌟 FIX: Prevent right-side datalabel cutoff on bar charts
+        layout: { padding: { right: isPie ? 0 : 45 } }
+      }
     };
   },
 
@@ -320,7 +317,6 @@ const ChartFactory = {
       indexAxis: (!isPie && !isTreemap && !isVenn) ? 'y' : 'x',
       animation: { duration: 600, easing: 'easeOutQuart' },
 
-      // 🌟 NEW: Handles the "Hand" Pointer Cursor on hover
       onHover: (event: any, elements: any[]) => {
         if (event.native && event.native.target) {
           event.native.target.style.cursor = elements.length ? 'pointer' : 'default';
@@ -348,6 +344,19 @@ const ChartFactory = {
           display: isPie,
           position: 'bottom',
           labels: { boxWidth: 10, padding: 15, font: { size: 11, family: "'Outfit', sans-serif", weight: '600' }, color: '#4b5563' }
+        },
+        // 🌟 FIX: Official DataLabels Plugin setup for Direct Chart Labeling
+        datalabels: {
+          display: (!isPie && !isTreemap), // Show strictly on Bars and Venns
+          color: isVenn ? '#ffffff' : ThemeManager.palette[8], // White in Venn, Brand Blue on Bars
+          font: { family: "'Outfit', sans-serif", weight: 'bold', size: isVenn ? 14 : 12 },
+          formatter: (value: any, context: any) => {
+            const raw = (context.dataset.customData as any[])[context.dataIndex];
+            return raw ? raw.displayVal : '';
+          },
+          anchor: isVenn ? 'center' : 'end',
+          align: isVenn ? 'center' : 'end',
+          offset: isVenn ? 0 : 6
         },
         tooltip: {
           enabled: true,
@@ -386,15 +395,18 @@ const ChartFactory = {
           }
         }
       },
+      // 🌟 FIX: Maximizing Data-to-Ink Ratio by stripping away redundant grids/axes
       scales: (isPie || isTreemap || isVenn) ? undefined : {
-        y: { grid: { display: false }, ticks: { font: { size: 11, family: "'Outfit', sans-serif", weight: '600' }, color: '#64748b' } },
-        x: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { size: 11, family: "'Outfit', sans-serif", weight: '500' }, color: '#94a3b8' } }
+        y: {
+            grid: { display: false },
+            border: { display: false },
+            ticks: { font: { size: 12, family: "'Outfit', sans-serif", weight: '600' }, color: '#4b5563' }
+        },
+        x: { display: false } // X-Axis completely removed
       }
     };
   }
 };
-
-
 
 // ==========================================
 // UI & ORCHESTRATION MANAGER
