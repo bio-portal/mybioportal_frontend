@@ -287,11 +287,22 @@ const ChartFactory = {
           legend: { display: false },
           datalabels: { display: false }
         },
+        // 🌟 NATIVE FIX: Intercept default tick generation to inject "<10" privacy labels
         scales: {
           x: {
             ticks: {
               color: '#ffffff',
-              font: { size: 14, weight: 'bold', family: "'Outfit', sans-serif" }
+              font: { size: 14, weight: 'bold', family: "'Outfit', sans-serif" },
+              callback: function(value: any, index: number) {
+                // The dataset lives inside the chart object bound to 'this' scale context
+                const dataset = this.chart.data.datasets[0] as any;
+                const rawItem = dataset.customData[index];
+
+                if (rawItem && typeof rawItem.displayVal === 'string' && rawItem.displayVal.startsWith('<')) {
+                    return '<10'; // Override numerical '10' placeholder with actual string
+                }
+                return value; // Otherwise, render the exact number
+              }
             }
           },
           y: {
