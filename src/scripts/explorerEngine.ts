@@ -117,6 +117,7 @@ const ThemeManager = {
   }
 };
 
+
 // ==========================================
 // GRAPH FACTORY ENGINE
 // ==========================================
@@ -169,7 +170,6 @@ const ChartFactory = {
 
     let config: ChartConfiguration;
 
-    // 🌟 ROUTING ENGINE: Completely isolated processors
     if (isVenn) {
       config = this.getVennConfig(meta, rawData);
     } else if (isTreemap) {
@@ -182,6 +182,8 @@ const ChartFactory = {
 
     if (this.instances[meta.chart_id]) {
       const chart = this.instances[meta.chart_id];
+      // 🌟 FIX: Force Chart.js to ingest the newly generated options rules on update updates
+      chart.options = config.options;
       chart.data.labels = config.data.labels;
       chart.data.datasets[0].data = config.data.datasets[0].data;
       chart.data.datasets[0].backgroundColor = config.data.datasets[0].backgroundColor;
@@ -244,9 +246,13 @@ const ChartFactory = {
       },
       options: {
         ...sharedOptions,
+        color: '#4b5563',
+        font: { size: 13, weight: 'bold', family: "'Outfit', sans-serif" },
         layout: { padding: 24 },
         plugins: {
             ...sharedOptions.plugins,
+            // 🌟 FIX: Explicitly block default legend mapping on Venn components
+            legend: { display: false },
             datalabels: { display: false }
         }
       }
@@ -254,6 +260,7 @@ const ChartFactory = {
   },
 
   getTreemapConfig(meta: VariableMeta, data: any[], bgColors: string[]): ChartConfiguration {
+    const sharedOptions = this.getSharedOptions(meta, data);
     return {
       type: 'treemap' as any,
       data: {
@@ -327,11 +334,17 @@ const ChartFactory = {
           }
         }] as any
       },
-      options: this.getSharedOptions(meta, data)
+      options: {
+        ...sharedOptions,
+        plugins: {
+          ...sharedOptions.plugins,
+          // 🌟 FIX: Explicitly kill default legend badge generation on Treemaps
+          legend: { display: false }
+        }
+      }
     };
   },
 
-  // 🌟 NEW: Completely isolated custom script configurations for Bar Charts
   getBarConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string[]): ChartConfiguration {
     return {
       type: 'bar',
@@ -352,10 +365,11 @@ const ChartFactory = {
         indexAxis: 'y',
         layout: { padding: { top: 20, bottom: 20, right: 45, left: 20 } },
         plugins: {
+          // 🌟 FIX: Explicitly disable legend displays on horizontal bars
           legend: { display: false },
           datalabels: {
             display: true,
-            color: '#4b5563', // Soft crisp slate gray matching axis targets
+            color: '#4b5563',
             font: { family: "'Outfit', sans-serif", weight: 'normal', size: 12 },
             anchor: 'end',
             align: 'end',
@@ -372,13 +386,12 @@ const ChartFactory = {
               border: { display: false },
               ticks: { font: { size: 12, family: "'Outfit', sans-serif", weight: '600' }, color: '#4b5563' }
           },
-          x: { display: false } // X-Axis numerical details hidden to maximize data-ink density
+          x: { display: false }
         }
       }
     };
   },
 
-  // 🌟 NEW: Completely isolated custom script configurations for Pie Charts
   getPieConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string[]): ChartConfiguration {
     return {
       type: 'doughnut',
@@ -416,7 +429,7 @@ const ChartFactory = {
             offset: 12,
             formatter: (value: any, context: any) => {
               const rawItem = context.dataset.customData?.[context.dataIndex];
-              if (!rawItem || (typeof rawItem.displayVal === 'string' && rawItem.displayVal.startsWith('<'))) return '<10';
+              if (!rawItem) return '';
               return String(rawItem.displayVal);
             }
           }
@@ -426,6 +439,10 @@ const ChartFactory = {
   },
 
   getSharedOptions(meta: VariableMeta, initialData: any[]): any {
+    const isPie = meta.chart_type === 'pie';
+    const isTreemap = meta.chart_type === 'treemap';
+    const isVenn = meta.chart_id === 'sample_intersections';
+
     return {
       responsive: true,
       maintainAspectRatio: false,
@@ -455,6 +472,8 @@ const ChartFactory = {
         UIManager.handleChartClick(meta.chart_id, selectedCategory);
       },
       plugins: {
+        legend: { display: isPie },
+        datalabels: { display: (!isTreemap && !isVenn) },
         tooltip: {
           enabled: true,
           backgroundColor: ThemeManager.palette[8],
@@ -509,6 +528,7 @@ const ChartFactory = {
     };
   }
 };
+
 
 // ==========================================
 // UI & ORCHESTRATION MANAGER
