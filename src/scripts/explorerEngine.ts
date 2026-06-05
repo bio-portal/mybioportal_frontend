@@ -117,6 +117,39 @@ const ThemeManager = {
   }
 };
 
+// ==========================================
+// DATA PARSING & TEXT ENGINES
+// ==========================================
+
+const TextEngine = {
+  getBalancedLines(cat: string, displayCount: string | number): string[] {
+    const labelText = cat || '';
+    if (!labelText) return [];
+
+    let lines: string[] = [];
+    const words = labelText.split(' ');
+
+    if (words.length <= 1) {
+      lines = [labelText];
+    } else {
+      let bestLines: string[] = [labelText];
+      let minDiff = Infinity;
+      for (let i = 1; i < words.length; i++) {
+        const line1 = words.slice(0, i).join(' ');
+        const line2 = words.slice(i).join(' ');
+        const diff = Math.abs(line1.length - line2.length);
+        if (diff < minDiff) {
+          minDiff = diff;
+          bestLines = [line1, line2];
+        }
+      }
+      lines = bestLines;
+    }
+
+    if (displayCount) lines.push(`n = ${displayCount}`);
+    return lines;
+  }
+};
 
 // ==========================================
 // GRAPH FACTORY ENGINE
@@ -131,12 +164,18 @@ const ChartFactory = {
     this.instances = {};
   },
 
+  // 🌟 ARCHITECTURE FIX: Parse data once, return parsed array AND the true numerical total for O(1) tooltips
   parseData(data: CategoryCount[], isTreemap: boolean, isPie: boolean) {
     let totalCount = 0;
+    let trueTotal = 0;
+
     const parsed = data.map(d => {
       const isMasked = typeof d.count === 'string' && d.count.startsWith('<');
       const numericVal = isMasked ? CONFIG.MASK_VALUE : parseInt(String(d.count), 10);
       totalCount += isNaN(numericVal) ? 0 : numericVal;
+
+      if (!isMasked && !isNaN(numericVal)) trueTotal += numericVal;
+
       return { category: String(d.category), numericVal, displayVal: d.count };
     });
 
@@ -147,7 +186,8 @@ const ChartFactory = {
       const minWeight = Math.max(5, totalCount * 0.07);
       parsed.forEach(d => { d.numericVal = Math.max(d.numericVal, minWeight); });
     }
-    return parsed;
+
+    return { parsed, trueTotal };
   },
 
   build(meta: VariableMeta, rawData: CategoryCount[], ctx: HTMLCanvasElement) {
@@ -164,7 +204,7 @@ const ChartFactory = {
       });
     }
 
-    const data = this.parseData(rawData, isTreemap, isPie);
+    const { parsed: data, trueTotal } = this.parseData(rawData, isTreemap, isPie);
     const labels = data.map(d => d.category);
     const bgColors = data.map((_, i) => ThemeManager.getColor(i));
 
@@ -173,21 +213,21 @@ const ChartFactory = {
     if (isVenn) {
       config = this.getVennConfig(meta, rawData);
     } else if (isTreemap) {
-      config = this.getTreemapConfig(meta, data, bgColors);
+      config = this.getTreemapConfig(meta, data, bgColors, trueTotal);
     } else if (isPie) {
-      config = this.getPieConfig(meta, data, labels, bgColors);
+      config = this.getPieConfig(meta, data, labels, bgColors, trueTotal);
     } else {
-      config = this.getBarConfig(meta, data, labels, bgColors);
+      config = this.getBarConfig(meta, data, labels, bgColors, trueTotal);
     }
 
     if (this.instances[meta.chart_id]) {
       const chart = this.instances[meta.chart_id];
-      // 🌟 FIX: Force Chart.js to ingest the newly generated options rules on update updates
       chart.options = config.options;
       chart.data.labels = config.data.labels;
       chart.data.datasets[0].data = config.data.datasets[0].data;
       chart.data.datasets[0].backgroundColor = config.data.datasets[0].backgroundColor;
       (chart.data.datasets[0] as any).customData = isVenn ? (config.data.datasets[0] as any).customData : data;
+      (chart.data.datasets[0] as any).trueTotal = isVenn ? (config.data.datasets[0] as any).trueTotal : trueTotal;
 
       if (isTreemap) {
         (chart.data.datasets[0] as any).tree = (config.data.datasets[0] as any).tree;
@@ -198,13 +238,16 @@ const ChartFactory = {
     }
   },
 
-getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
+  getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
+    let trueTotal = 0;
     const vennData = rawData
       .filter(item => item.category !== 'No Modalities')
       .map(item => {
         const sets = item.category.replace("Only ", "").split(" + ").map((s: string) => s.trim());
         const incStr = String(item.inclusive_count || item.count);
         const inclusiveVal = incStr.startsWith('<') ? CONFIG.MASK_VALUE : parseInt(incStr, 10);
+
+        if (!String(item.count).startsWith('<')) trueTotal += parseInt(String(item.count), 10) || 0;
 
         return {
           label: item.category,
@@ -217,7 +260,7 @@ getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
       });
 
     vennData.sort((a, b) => a.sets.length - b.sets.length);
-    const sharedOptions = this.getSharedOptions(meta, vennData);
+    const sharedOptions = this.getSharedOptions(meta);
 
     return {
       type: 'venn' as any,
@@ -226,6 +269,7 @@ getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
         datasets: [{
           data: vennData,
           customData: vennData,
+          trueTotal: trueTotal,
           backgroundColor: (context: any) => {
             if (context.type !== 'data') return 'rgba(0,0,0,0.05)';
             return ThemeManager.getColor(context.dataIndex);
@@ -243,17 +287,16 @@ getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
           legend: { display: false },
           datalabels: { display: false }
         },
-        // 🌟 NATIVE FIX: Enforcing strict coordinate ticks as per plugin rules
         scales: {
           x: {
             ticks: {
-              color: '#ffffff', // Inside numbers forced to Bold White
+              color: '#ffffff',
               font: { size: 14, weight: 'bold', family: "'Outfit', sans-serif" }
             }
           },
           y: {
             ticks: {
-              color: '#4b5563', // Outside labels mapped to your consistent Slate Gray
+              color: '#4b5563',
               font: { size: 13, weight: 'bold', family: "'Outfit', sans-serif" }
             }
           }
@@ -262,43 +305,8 @@ getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
     };
   },
 
-  getTreemapConfig(meta: VariableMeta, data: any[], bgColors: string[]): ChartConfiguration {
-    // Hidden local layout preprocessing pipeline to ensure zero global scope footprint
-    const TextEngine = {
-      getBalancedLines(cat: string, displayCount: string | number): string[] {
-        const labelText = cat || '';
-        if (!labelText) return [];
-
-        let lines: string[] = [];
-        const words = labelText.split(' ');
-
-        if (words.length <= 1) {
-          lines = [labelText];
-        } else {
-          let bestLines: string[] = [labelText];
-          let minDiff = Infinity;
-
-          // Evaluates string weight permutations to split text at the most visually balanced character midpoint
-          for (let i = 1; i < words.length; i++) {
-            const line1 = words.slice(0, i).join(' ');
-            const line2 = words.slice(i).join(' ');
-            const diff = Math.abs(line1.length - line2.length);
-            if (diff < minDiff) {
-              minDiff = diff;
-              bestLines = [line1, line2];
-            }
-          }
-          lines = bestLines;
-        }
-
-        if (displayCount) {
-          lines.push(`n = ${displayCount}`);
-        }
-        return lines;
-      }
-    };
-
-    const sharedOptions = this.getSharedOptions(meta, data);
+  getTreemapConfig(meta: VariableMeta, data: any[], bgColors: string[], trueTotal: number): ChartConfiguration {
+    const sharedOptions = this.getSharedOptions(meta);
 
     return {
       type: 'treemap' as any,
@@ -311,6 +319,7 @@ getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
           borderWidth: 0,
           borderRadius: 8,
           customData: data,
+          trueTotal: trueTotal,
           backgroundColor: (context: any) => {
             if (context.type !== 'data') return 'rgba(0,0,0,0.05)';
             const dataset = context.dataset;
@@ -323,7 +332,6 @@ getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
           labels: {
             display: true,
             color: '#ffffff',
-            // 🌟 FIX: Content-Aware Heuristic Font Resizer
             font: (ctx: any) => {
                const boxWidth = ctx.raw?.w || 0;
                const boxHeight = ctx.raw?.h || 0;
@@ -335,28 +343,22 @@ getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
                const rawItem = liveCustomData.find((d: any) => String(d.category) === String(cat));
                const displayCount = rawItem ? rawItem.displayVal : '';
 
-               // Extract the exact array layout compiled for this specific block
                const lines = TextEngine.getBalancedLines(cat, displayCount);
                if (!lines.length) return { size: 11, weight: '700', family: "'Outfit', sans-serif" };
 
                const maxChars = Math.max(...lines.map(l => l.length));
 
-               // Horizontal constraint: average character width ratio is roughly 0.55 * fontSize
                const sizeByWidth = Math.floor(boxWidth / (maxChars * 0.55));
-               // Vertical constraint: row bounding boxes require roughly 1.35 * fontSize per line
                const sizeByHeight = Math.floor(boxHeight / (lines.length * 1.35));
 
-               // Dynamically bind font calculation bounds tightly between safe minimum and maximum scales
                let calculatedSize = Math.min(sizeByWidth, sizeByHeight);
                calculatedSize = Math.max(9, Math.min(14, calculatedSize));
 
                return { size: calculatedSize, weight: '700', family: "'Outfit', sans-serif" };
             },
-            // 🌟 FIX: Visually balanced character line breaker
             formatter: (ctx: any) => {
               const boxWidth = ctx.raw?.w || 0;
               const boxHeight = ctx.raw?.h || 0;
-              // Hard floor cutoff: if box cannot fit minimal legible text elements, hide safely
               if (boxWidth < 45 || boxHeight < 25) return [];
 
               const dataset = ctx.chart.data.datasets[0];
@@ -375,12 +377,15 @@ getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
         ...sharedOptions,
         plugins: {
           ...sharedOptions.plugins,
-          legend: { display: false }
+          legend: { display: false },
+          datalabels: { display: false }
         }
       }
     };
   },
-  getBarConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string[]): ChartConfiguration {
+
+  getBarConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string[], trueTotal: number): ChartConfiguration {
+    const sharedOptions = this.getSharedOptions(meta);
     return {
       type: 'bar',
       data: {
@@ -388,6 +393,7 @@ getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
         datasets: [{
           data: data.map(d => d.numericVal),
           customData: data,
+          trueTotal: trueTotal,
           backgroundColor: bgColors,
           borderWidth: 0,
           borderRadius: 6,
@@ -396,11 +402,11 @@ getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
         }]
       },
       options: {
-        ...this.getSharedOptions(meta, data),
+        ...sharedOptions,
         indexAxis: 'y',
         layout: { padding: { top: 20, bottom: 20, right: 45, left: 20 } },
         plugins: {
-          // 🌟 FIX: Explicitly disable legend displays on horizontal bars
+          ...sharedOptions.plugins,
           legend: { display: false },
           datalabels: {
             display: true,
@@ -427,8 +433,8 @@ getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
     };
   },
 
-
-getPieConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string[]): ChartConfiguration {
+  getPieConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string[], trueTotal: number): ChartConfiguration {
+    const sharedOptions = this.getSharedOptions(meta);
     return {
       type: 'doughnut',
       data: {
@@ -436,28 +442,21 @@ getPieConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string
         datasets: [{
           data: data.map(d => d.numericVal),
           customData: data,
+          trueTotal: trueTotal,
           backgroundColor: bgColors,
           borderWidth: 0,
           hoverBackgroundColor: ThemeManager.palette[8]
         }]
       },
       options: {
-        ...this.getSharedOptions(meta, data),
+        ...sharedOptions,
         indexAxis: 'x',
-        // 🌟 FIX: Asymmetric canvas margins provide massive clearance zones for top, left, and right floating labels
-        layout: {
-          padding: {
-            top: 35,    // Generous headspace to prevent top labels (like 77) from hitting the ceiling
-            bottom: 5,  // Tapered down since the legend title below handles the lower separation block
-            left: 45,   // Safe horizontal boundaries for wide 4-digit strings on the sides
-            right: 45
-          }
-        },
+        layout: { padding: { top: 35, bottom: 5, left: 45, right: 45 } },
         plugins: {
+          ...sharedOptions.plugins,
           legend: {
             display: true,
             position: 'bottom',
-            // Pushes the entire legend block safely down and out of range of lower slice numbers
             title: {
               display: true,
               text: '',
@@ -488,11 +487,8 @@ getPieConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string
     };
   },
 
-  getSharedOptions(meta: VariableMeta, initialData: any[]): any {
-    const isPie = meta.chart_type === 'pie';
-    const isTreemap = meta.chart_type === 'treemap';
-    const isVenn = meta.chart_id === 'sample_intersections';
-
+  // 🌟 ARCHITECTURE FIX: Shared options stripped to purely universal event bounds and generic tooltip behavior
+  getSharedOptions(meta: VariableMeta): any {
     return {
       responsive: true,
       maintainAspectRatio: false,
@@ -522,8 +518,6 @@ getPieConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string
         UIManager.handleChartClick(meta.chart_id, selectedCategory);
       },
       plugins: {
-        legend: { display: isPie },
-        datalabels: { display: (!isTreemap && !isVenn) },
         tooltip: {
           enabled: true,
           backgroundColor: ThemeManager.palette[8],
@@ -539,37 +533,31 @@ getPieConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string
               if (type === 'venn') return (tooltipItems[0].dataset as any).customData[tooltipItems[0].dataIndex]?.category;
               return tooltipItems[0].label;
             },
+            // 🌟 ARCHITECTURE FIX: O(1) constant time percentage calculation
             label: (context: any) => {
               const dataset = context.dataset;
-              const customData = dataset?.customData || initialData;
+              const customData = dataset?.customData || [];
+              const trueTotal = dataset.trueTotal || 0;
               const unit = meta.units === 'patients' ? '' : ` ${meta.units}`;
               const type = context.chart.config.type;
 
               let rawItem;
-              if (type === 'venn') {
-                rawItem = customData[context.dataIndex];
+              if (type === 'treemap') {
+                const categoryName = context.raw?.g;
+                rawItem = customData.find((d: any) => String(d.category) === String(categoryName));
               } else {
-                let categoryName = context.label;
-                if (type === 'treemap') categoryName = context.raw?.g;
-                rawItem = customData?.find((d: any) => String(d.category) === String(categoryName));
+                rawItem = customData[context.dataIndex];
               }
 
               if (!rawItem) return '';
-              const displayVal = type === 'venn' ? rawItem.displayVal : (rawItem.displayVal !== undefined ? rawItem.displayVal : rawItem.numericVal);
 
-              let total = 0;
-              customData.forEach((d: any) => {
-                  const val = type === 'venn' ? d.displayVal : (d.displayVal !== undefined ? d.displayVal : d.numericVal);
-                  if (typeof val !== 'string' || !String(val).startsWith('<')) {
-                      total += Number(val);
-                  }
-              });
+              const displayVal = rawItem.displayVal !== undefined ? rawItem.displayVal : rawItem.numericVal;
 
               if (typeof displayVal === 'string' && displayVal.startsWith('<')) {
                   return ` Count: ${displayVal}${unit} (Rare)`;
               }
 
-              const percentage = total > 0 ? ((Number(displayVal) / total) * 100).toFixed(1) : '0.0';
+              const percentage = trueTotal > 0 ? ((Number(displayVal) / trueTotal) * 100).toFixed(1) : '0.0';
               return ` Count: ${displayVal}${unit} (${percentage}%)`;
             }
           }
@@ -578,7 +566,6 @@ getPieConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string
     };
   }
 };
-
 
 // ==========================================
 // UI & ORCHESTRATION MANAGER
@@ -707,7 +694,7 @@ const UIManager = {
 
       if (!card) {
           card = document.createElement('div');
-          // 🌟 UX FIX: Compressed visual layout using asymmetric padding (pt-5 pb-4 px-6 instead of heavy p-7)
+          // 🌟 ARCHITECTURE FIX: Tightened UX dimensions
           card.className = "chart-card glass-card pt-5 pb-4 px-6 flex flex-col group relative overflow-hidden transition-all duration-700 ease-out";
           if (this.isInitialRender) card.classList.add('opacity-0', 'translate-y-3');
 
@@ -715,20 +702,17 @@ const UIManager = {
 
           card.innerHTML = `
             <div class="absolute top-0 left-0 w-1.5 h-full bg-brand-blue-deep/20 group-hover:bg-brand-blue-deep transition-colors"></div>
-
             <div class="flex justify-between items-start mb-3 pl-1">
               <div class="pr-2">
                 <h3 class="font-extrabold text-brand-dark text-lg tracking-tight leading-tight group-hover:text-brand-blue-deep transition-colors">${meta.display_name}</h3>
               </div>
               <div class="flex items-center gap-2 shrink-0">
                 <span class="text-[10px] bg-gray-50 text-gray-400 px-2.5 py-1 rounded-md font-bold uppercase tracking-widest border border-gray-100">${meta.units}</span>
-
                 <button onclick="downloadCardImage('${meta.chart_id}', '${meta.display_name}')" class="p-1 rounded-md text-gray-400 opacity-25 group-hover:opacity-100 hover:text-brand-blue-deep hover:bg-gray-50 transition-all duration-300 cursor-pointer" title="Download Figure">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 </button>
               </div>
             </div>
-
             <div class="relative w-full pl-1 overflow-x-auto overflow-y-auto custom-scrollbar" style="height: ${containerHeight}px;">
               <div class="chart-canvas-wrapper" style="height: ${canvasHeight}px; position: relative; width: 100%;">
                 <canvas id="chart-${meta.chart_id}"></canvas>

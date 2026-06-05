@@ -22,7 +22,8 @@ const { noResultsText } = Astro.props;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   :global(.glass-card:hover) {
-    transform: translateY(-4px);
+    /* 🌟 UX FIX: Subtle scale outward prevents edge-jitter while highlighting */
+    transform: scale(1.015);
     box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     border-color: var(--color-brand-blue-deep);
   }
