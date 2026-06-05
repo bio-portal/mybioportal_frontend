@@ -195,7 +195,6 @@ const ChartFactory = {
   },
 
   getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
-    // Dynamically extract the unique base sets to map colors consistently
     const baseSets = new Set<string>();
     rawData.forEach(item => {
       if (item.category !== 'No Modalities') {
@@ -204,21 +203,28 @@ const ChartFactory = {
     });
     const baseArr = Array.from(baseSets);
 
-    // Map the backend payload directly to the Venn structure
     const vennData = rawData.map(item => {
       const sets = item.category === 'No Modalities' ? [] : item.category.replace("Only ", "").split(" + ").map((s: string) => s.trim());
 
-      // Safely parse the backend inclusive_count for Venn circle radiuses
+      // Safely parse the backend inclusive_count and standard count
       const isMaskedInclusive = typeof item.inclusive_count === 'string' && String(item.inclusive_count).startsWith('<');
       const inclusiveNumeric = isMaskedInclusive ? CONFIG.MASK_VALUE : parseInt(String(item.inclusive_count), 10);
 
+      const isMaskedExclusive = typeof item.count === 'string' && String(item.count).startsWith('<');
+      const exclusiveNumeric = isMaskedExclusive ? CONFIG.MASK_VALUE : parseInt(String(item.count), 10);
+
+      // 🌟 VENN PHYSICS FIX: Base circles use Inclusive, Intersections use Exclusive
+      const physicsSize = sets.length === 1 ? inclusiveNumeric : exclusiveNumeric;
+
       return {
         sets: sets,
-        value: isNaN(inclusiveNumeric) ? 0 : inclusiveNumeric, // Physics engine size
-        exclusiveValue: item.count, // Tooltip display size (the raw `<10` or integer string)
+        value: isNaN(physicsSize) ? 0 : physicsSize,
+        exclusiveValue: item.count,
         category: item.category
       };
     }).filter(d => d.sets.length > 0 && d.value > 0);
+
+    // ... rest of getVennConfig remains the same ...
 
     // Sort to ensure base circles (length 1) map solid colors first
     vennData.sort((a, b) => a.sets.length - b.sets.length);
