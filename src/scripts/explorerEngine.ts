@@ -121,6 +121,11 @@ const ThemeManager = {
 // GRAPH FACTORY ENGINE
 // ==========================================
 
+
+// ==========================================
+// GRAPH FACTORY ENGINE
+// ==========================================
+
 const ChartFactory = {
   instances: {} as Record<string, Chart>,
   visibleCharts: new Set<string>(),
@@ -194,7 +199,6 @@ const ChartFactory = {
   },
 
   getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
-    // Stripped down, clean data mapping. No fallback safety nets needed.
     const vennData = rawData
       .filter(item => item.category !== 'No Modalities')
       .map(item => {
@@ -207,9 +211,8 @@ const ChartFactory = {
           label: item.category,
           name: item.category,
           sets: sets,
-          // Venn Physics strictly require the inclusive area sum
           value: isNaN(inclusiveVal) ? 0 : inclusiveVal,
-          displayVal: item.count, // Tooltips display the unmasked exclusive string
+          displayVal: item.count,
           category: item.category
         };
       });
@@ -224,7 +227,8 @@ const ChartFactory = {
         datasets: [{
           data: vennData,
           customData: vennData,
-          color: '#ffffff', // Explicitly forces label text inside diagram to white
+          // Controls text INSIDE the circles
+          color: '#ffffff',
           font: { size: 14, weight: 'bold', family: "'Outfit', sans-serif" },
           backgroundColor: (context: any) => {
             if (context.type !== 'data') return 'rgba(0,0,0,0.05)';
@@ -237,9 +241,11 @@ const ChartFactory = {
       },
       options: {
         ...sharedOptions,
-        color: '#ffffff',
+        // Controls text OUTSIDE the circles (the main category labels)
+        color: '#4b5563',
+        font: { weight: 'bold', family: "'Outfit', sans-serif" },
         layout: {
-            padding: 24 // Prevents clipping at the canvas borders
+            padding: 24
         }
       }
     };
@@ -279,16 +285,8 @@ const ChartFactory = {
               return labelText.split(' ');
             },
             font: { size: 11, weight: '700', family: "'Outfit', sans-serif" },
-            color: (context: any) => {
-              // Immediately shifts text to white if the user hovers to maintain contrast
-              if (context.active) return '#ffffff';
-
-              const dataset = context.dataset;
-              const liveCustomData = dataset?.customData || data;
-              const cat = context.raw?.g;
-              const idx = liveCustomData.findIndex((d: any) => d.category === cat);
-              return [2, 3, 7].includes(idx % 8) ? '#003f5e' : '#ffffff';
-            }
+            // Hardcoded to always be pure white
+            color: '#ffffff'
           }
         }] as any
       },
@@ -321,6 +319,14 @@ const ChartFactory = {
       maintainAspectRatio: false,
       indexAxis: (!isPie && !isTreemap && !isVenn) ? 'y' : 'x',
       animation: { duration: 600, easing: 'easeOutQuart' },
+
+      // 🌟 NEW: Handles the "Hand" Pointer Cursor on hover
+      onHover: (event: any, elements: any[]) => {
+        if (event.native && event.native.target) {
+          event.native.target.style.cursor = elements.length ? 'pointer' : 'default';
+        }
+      },
+
       onClick: (event: any, elements: any[]) => {
         if (!elements.length) return;
         const targetIndex = elements[0].index;
@@ -365,7 +371,6 @@ const ChartFactory = {
               if (isVenn) {
                 const rawItem = customData[context.dataIndex];
                 if (!rawItem) return '';
-                // Maps correctly to the protected string to show exact counts or '<10'
                 return ` Count: ${rawItem.displayVal}${unit}`;
               }
 
@@ -388,6 +393,8 @@ const ChartFactory = {
     };
   }
 };
+
+
 
 // ==========================================
 // UI & ORCHESTRATION MANAGER
