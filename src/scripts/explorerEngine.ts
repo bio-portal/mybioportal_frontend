@@ -108,19 +108,14 @@ const ThemeManager = {
       getColor('--color-brand-green-mid', '#99c43c'),
       getColor('--color-brand-orange-deep', '#f37a21'),
       getColor('--color-brand-yellow', '#fdbb10'),
-      getColor('--color-brand-dark', '#003f5e')
+      getColor('--color-brand-dark', '#003f5e') // Hover Color (Index 8)
     ];
   },
   getColor(index: number) {
-    return this.palette[index % this.palette.length];
+    // Restricts base colors to 0-7, reserving index 8 purely for hover states
+    return this.palette[index % 8];
   }
 };
-
-// ==========================================
-// GRAPH FACTORY ENGINE
-// ==========================================
-
-
 
 // ==========================================
 // GRAPH FACTORY ENGINE
@@ -199,53 +194,25 @@ const ChartFactory = {
   },
 
   getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
-    const baseSets = new Set<string>();
+    // Stripped down, clean data mapping. No fallback safety nets needed.
+    const vennData = rawData
+      .filter(item => item.category !== 'No Modalities')
+      .map(item => {
+        const sets = item.category.replace("Only ", "").split(" + ").map((s: string) => s.trim());
 
-    rawData.forEach(item => {
-      if (item.category !== 'No Modalities') {
-        item.category.replace("Only ", "").split(" + ").forEach((s: string) => baseSets.add(s.trim()));
-      }
-    });
-    const baseArr = Array.from(baseSets);
+        const incStr = String(item.inclusive_count || item.count);
+        const inclusiveVal = incStr.startsWith('<') ? CONFIG.MASK_VALUE : parseInt(incStr, 10);
 
-    const vennData = rawData.map(item => {
-      const sets = item.category === 'No Modalities' ? [] : item.category.replace("Only ", "").split(" + ").map((s: string) => s.trim());
-
-      const isMaskedInclusive = typeof item.inclusive_count === 'string' && String(item.inclusive_count).startsWith('<');
-      const inclusiveNumeric = isMaskedInclusive ? CONFIG.MASK_VALUE : parseInt(String(item.inclusive_count), 10);
-
-      const isMaskedExclusive = typeof item.count === 'string' && String(item.count).startsWith('<');
-      const exclusiveNumeric = isMaskedExclusive ? CONFIG.MASK_VALUE : parseInt(String(item.count), 10);
-
-      const physicsSize = sets.length === 1 ? inclusiveNumeric : exclusiveNumeric;
-
-      return {
-        label: item.category,
-        name: item.category,
-        sets: sets,
-        value: isNaN(physicsSize) ? 0 : physicsSize,
-        exclusiveValue: item.count,
-        category: item.category
-      };
-    }).filter(d => d.sets.length > 0);
-
-    baseArr.forEach(baseName => {
-      const exists = vennData.find(d => d.sets.length === 1 && d.sets[0] === baseName);
-      if (!exists) {
-        vennData.push({
-          label: `Only ${baseName}`,
-          name: `Only ${baseName}`,
-          sets: [baseName],
-          value: CONFIG.MASK_VALUE,
-          exclusiveValue: "<10",
-          category: `Only ${baseName}`
-        });
-      }
-    });
-
-    vennData.forEach(d => {
-        if (d.value <= 0) d.value = CONFIG.MASK_VALUE;
-    });
+        return {
+          label: item.category,
+          name: item.category,
+          sets: sets,
+          // Venn Physics strictly require the inclusive area sum
+          value: isNaN(inclusiveVal) ? 0 : inclusiveVal,
+          displayVal: item.count, // Tooltips display the unmasked exclusive string
+          category: item.category
+        };
+      });
 
     vennData.sort((a, b) => a.sets.length - b.sets.length);
     const sharedOptions = this.getSharedOptions(meta, false, false, vennData, true);
@@ -257,11 +224,12 @@ const ChartFactory = {
         datasets: [{
           data: vennData,
           customData: vennData,
+          color: '#ffffff', // Explicitly forces label text inside diagram to white
+          font: { size: 14, weight: 'bold', family: "'Outfit', sans-serif" },
           backgroundColor: (context: any) => {
             if (context.type !== 'data') return 'rgba(0,0,0,0.05)';
             return ThemeManager.getColor(context.dataIndex);
           },
-          // 🌟 FIX: Unified Hover Color
           hoverBackgroundColor: ThemeManager.palette[8],
           borderColor: '#ffffff',
           borderWidth: 2
@@ -269,8 +237,9 @@ const ChartFactory = {
       },
       options: {
         ...sharedOptions,
+        color: '#ffffff',
         layout: {
-            padding: 24
+            padding: 24 // Prevents clipping at the canvas borders
         }
       }
     };
@@ -296,7 +265,6 @@ const ChartFactory = {
             const idx = liveCustomData.findIndex((d: any) => d.category === cat);
             return idx >= 0 ? ThemeManager.getColor(idx) : ThemeManager.palette[0];
           },
-          // 🌟 FIX: Unified Hover Color
           hoverBackgroundColor: ThemeManager.palette[8],
           labels: {
             display: true,
@@ -312,11 +280,14 @@ const ChartFactory = {
             },
             font: { size: 11, weight: '700', family: "'Outfit', sans-serif" },
             color: (context: any) => {
+              // Immediately shifts text to white if the user hovers to maintain contrast
+              if (context.active) return '#ffffff';
+
               const dataset = context.dataset;
               const liveCustomData = dataset?.customData || data;
               const cat = context.raw?.g;
               const idx = liveCustomData.findIndex((d: any) => d.category === cat);
-              return [2, 3, 7].includes(idx % 9) ? '#003f5e' : '#ffffff';
+              return [2, 3, 7].includes(idx % 8) ? '#003f5e' : '#ffffff';
             }
           }
         }] as any
@@ -336,7 +307,6 @@ const ChartFactory = {
           backgroundColor: bgColors,
           borderWidth: 0,
           borderRadius: isPie ? 0 : 6,
-          // ALREADY CORRECT: Hover Color
           hoverBackgroundColor: ThemeManager.palette[8],
           maxBarThickness: isPie ? undefined : 48
         }]
@@ -375,7 +345,6 @@ const ChartFactory = {
         },
         tooltip: {
           enabled: true,
-          // ALREADY CORRECT: Universal Tooltip Design
           backgroundColor: ThemeManager.palette[8],
           titleFont: { size: 12, family: "'Outfit', sans-serif", weight: '700' },
           bodyFont: { size: 13, family: "'Outfit', sans-serif" },
@@ -396,7 +365,8 @@ const ChartFactory = {
               if (isVenn) {
                 const rawItem = customData[context.dataIndex];
                 if (!rawItem) return '';
-                return ` Count: ${rawItem.exclusiveValue}${unit}`;
+                // Maps correctly to the protected string to show exact counts or '<10'
+                return ` Count: ${rawItem.displayVal}${unit}`;
               }
 
               let categoryName = context.label;
