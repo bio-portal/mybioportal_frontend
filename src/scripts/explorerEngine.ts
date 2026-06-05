@@ -238,7 +238,6 @@ const ChartFactory = {
     }
   },
 
-
   getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
     let trueTotal = 0;
     const vennData = rawData
@@ -282,30 +281,28 @@ const ChartFactory = {
       },
       options: {
         ...sharedOptions,
-        // 🌟 FIX: Tighter padding utilizes max card space to prevent scrolling and label clipping
+        // 🌟 FIX: Generous internal padding forces the circles to scale down, leaving a safe ring of whitespace for the outer text
         layout: {
-          padding: { top: 10, bottom: 10, left: 10, right: 10 }
+          padding: { top: 20, bottom: 20, left: 35, right: 35 }
         },
         plugins: {
           ...sharedOptions.plugins,
           legend: { display: false },
           datalabels: { display: false }
         },
-        // 🌟 NATIVE FIX: Intercept default tick generation to inject "<10" privacy labels
         scales: {
           x: {
             ticks: {
               color: '#ffffff',
               font: { size: 14, weight: 'bold', family: "'Outfit', sans-serif" },
               callback: function(value: any, index: number) {
-                // The dataset lives inside the chart object bound to 'this' scale context
                 const dataset = this.chart.data.datasets[0] as any;
                 const rawItem = dataset.customData[index];
 
                 if (rawItem && typeof rawItem.displayVal === 'string' && rawItem.displayVal.startsWith('<')) {
-                    return '<10'; // Override numerical '10' placeholder with actual string
+                    return '<10';
                 }
-                return value; // Otherwise, render the exact number
+                return value;
               }
             }
           },
@@ -319,6 +316,7 @@ const ChartFactory = {
       }
     };
   },
+
 
   getTreemapConfig(meta: VariableMeta, data: any[], bgColors: string[], trueTotal: number): ChartConfiguration {
     const sharedOptions = this.getSharedOptions(meta);
