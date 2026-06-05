@@ -33,7 +33,8 @@ const CONFIG = {
   API_GATEWAY: "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats",
   MASK_VALUE: 10,
   DEBOUNCE_MS: 150,
-  MIN_TREEMAP_WEIGHT: 0.035,
+  // 🌟 FIX: Increased minimum area weight to 5% to guarantee larger blocks for rare ancestries
+  MIN_TREEMAP_WEIGHT: 0.05,
   FROSTING_DELAY_MS: 150,
 };
 
@@ -122,6 +123,10 @@ const ThemeManager = {
 // GRAPH FACTORY ENGINE
 // ==========================================
 
+// ==========================================
+// GRAPH FACTORY ENGINE
+// ==========================================
+
 const ChartFactory = {
   instances: {} as Record<string, Chart>,
   visibleCharts: new Set<string>(),
@@ -144,7 +149,6 @@ const ChartFactory = {
       const minWeight = Math.max(10, totalCount * CONFIG.MIN_TREEMAP_WEIGHT);
       parsed.forEach(d => { d.numericVal = Math.max(d.numericVal, minWeight); });
     } else if (isPie) {
-      // 🌟 FIX: Bumped Pie Chart minimum slice to 7% to guarantee perfect label spacing
       const minWeight = Math.max(5, totalCount * 0.07);
       parsed.forEach(d => { d.numericVal = Math.max(d.numericVal, minWeight); });
     }
@@ -235,8 +239,8 @@ const ChartFactory = {
       },
       options: {
         ...sharedOptions,
-        color: '#4b5563',
-        font: { weight: 'bold', family: "'Outfit', sans-serif" },
+        color: '#1e293b',
+        font: { weight: 'bold', size: 14, family: "'Outfit', sans-serif" },
         layout: {
             padding: 24
         }
@@ -295,19 +299,25 @@ const ChartFactory = {
                   }
               }
 
-              // 🌟 FIX: Appending the exact 'n = ' count as the final line in the Treemap box
               if (displayCount) {
                   lines.push(`n = ${displayCount}`);
               }
-
               return lines;
             },
-            // 🌟 FIX: Dynamic Font Size driven by Treemap Box Width
             font: (ctx: any) => {
                const bounds = ctx.type === 'data' ? ctx.raw?.v : null;
-               const boxWidth = bounds ? bounds.w : 0;
-               const fontSize = boxWidth < 120 ? 10 : 13;
-               return { size: fontSize, weight: '700', family: "'Outfit', sans-serif" };
+               if (!bounds) return { size: 11, weight: '700', family: "'Outfit', sans-serif" };
+
+               const boxWidth = bounds.w;
+               const boxHeight = bounds.h;
+
+               let sizeByWidth = Math.floor(boxWidth / 10);
+               let sizeByHeight = Math.floor(boxHeight / 4);
+
+               let calculatedSize = Math.min(sizeByWidth, sizeByHeight);
+               calculatedSize = Math.max(9, Math.min(14, calculatedSize));
+
+               return { size: calculatedSize, weight: '700', family: "'Outfit', sans-serif" };
             },
             color: '#ffffff'
           }
@@ -334,7 +344,6 @@ const ChartFactory = {
       },
       options: {
         ...this.getSharedOptions(meta, false, isPie, data),
-        // Adding generous padding so external Pie datalabels aren't cut off by the canvas
         layout: { padding: isPie ? 30 : { right: 45 } }
       }
     };
@@ -373,36 +382,34 @@ const ChartFactory = {
         legend: {
           display: isPie,
           position: 'bottom',
-          labels: { boxWidth: 10, padding: 15, font: { size: 11, family: "'Outfit', sans-serif", weight: '600' }, color: '#4b5563' }
+          labels: {
+            boxWidth: 10,
+            padding: 20, // 🌟 FIX: Added padding to push legend down away from pie datalabels
+            font: { size: 11, family: "'Outfit', sans-serif", weight: '600' },
+            color: '#4b5563'
+          }
         },
-        // 🌟 FIX: Advanced DataLabels Implementation for Bar, Pie, and Venn
         datalabels: {
-          display: !isTreemap,
-          color: (context: any) => {
-             if (isVenn) return '#ffffff';
-             if (isPie) return '#4b5563'; // Pie labels outside slice -> bold slate
-             return ThemeManager.palette[8]; // Bar chart labels -> brand blue
+          display: (!isTreemap),
+          // 🌟 FIX: Use slate gray for pie AND bar charts, only white for Venns.
+          color: isVenn ? '#ffffff' : '#4b5563',
+          // 🌟 FIX: Use normal weight for bars, keep bold for Venns/Pies
+          font: {
+              family: "'Outfit', sans-serif",
+              weight: (!isBar) ? 'bold' : 'normal',
+              size: isVenn ? 15 : 12
           },
-          font: { family: "'Outfit', sans-serif", weight: 'bold', size: isVenn ? 14 : 12 },
           formatter: (value: any, context: any) => {
             const customData = context.dataset.customData || initialData;
             const rawItem = customData[context.dataIndex];
             if (!rawItem) return '';
 
-            const displayVal = isVenn ? rawItem.displayVal : (rawItem.displayVal !== undefined ? rawItem.displayVal : rawItem.numericVal);
+            const displayVal = rawItem.displayVal !== undefined ? rawItem.displayVal : rawItem.numericVal;
 
-            // Pie Charts Display the Percentages Directly Outside
-            if (isPie) {
-                let pieTotal = 0;
-                customData.forEach((d: any) => {
-                    const val = d.displayVal !== undefined ? d.displayVal : d.numericVal;
-                    if (typeof val !== 'string' || !String(val).startsWith('<')) pieTotal += Number(val);
-                });
-                if (typeof displayVal === 'string' && displayVal.startsWith('<')) return '<10';
-                const pct = pieTotal > 0 ? Math.round((Number(displayVal) / pieTotal) * 100) : 0;
-                return `${pct}%`;
+            // 🌟 FIX: Pie Charts now render raw count instead of calculated percentage
+            if (isPie && typeof displayVal === 'string' && displayVal.startsWith('<')) {
+                return '<10';
             }
-
             return String(displayVal);
           },
           anchor: isVenn ? 'center' : 'end',
@@ -423,7 +430,6 @@ const ChartFactory = {
               if (isVenn) return (tooltipItems[0].dataset as any).customData[tooltipItems[0].dataIndex]?.category;
               return tooltipItems[0].label;
             },
-            // 🌟 FIX: Universal Percentage Math Injection + Privacy Graceful Fallback
             label: (context: any) => {
               const dataset = context.dataset;
               const customData = dataset?.customData || initialData;
@@ -441,7 +447,6 @@ const ChartFactory = {
               if (!rawItem) return '';
               const displayVal = isVenn ? rawItem.displayVal : (rawItem.displayVal !== undefined ? rawItem.displayVal : rawItem.numericVal);
 
-              // Calculate total math for tooltips safely
               let total = 0;
               customData.forEach((d: any) => {
                   const val = isVenn ? d.displayVal : (d.displayVal !== undefined ? d.displayVal : d.numericVal);
@@ -460,7 +465,6 @@ const ChartFactory = {
           }
         }
       },
-      // 🌟 FIX: Maximum Data-to-Ink (Hiding all default grids/X-axis values since they are now drawn directly)
       scales: (isPie || isTreemap || isVenn) ? undefined : {
         y: {
             grid: { display: false },
@@ -472,6 +476,7 @@ const ChartFactory = {
     };
   }
 };
+
 
 // ==========================================
 // UI & ORCHESTRATION MANAGER
