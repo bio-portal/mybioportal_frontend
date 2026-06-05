@@ -221,7 +221,16 @@ const ChartFactory = {
         datasets: [{
           data: vennData,
           customData: vennData,
-          color: 'transparent',
+          // 🌟 FIX: Scriptable Color checks if it's an intersection (>1) or base set (1)
+          color: (context: any) => {
+            if (context.type !== 'data') return '#4b5563';
+            const row = context.dataset.customData[context.dataIndex];
+            return (row && row.sets.length > 1) ? '#ffffff' : '#4b5563';
+          },
+          font: (context: any) => {
+            const isInner = context.type === 'data' && context.dataset.customData[context.dataIndex]?.sets.length > 1;
+            return { size: isInner ? 15 : 13, weight: 'bold', family: "'Outfit', sans-serif" };
+          },
           backgroundColor: (context: any) => {
             if (context.type !== 'data') return 'rgba(0,0,0,0.05)';
             return ThemeManager.getColor(context.dataIndex);
@@ -233,8 +242,6 @@ const ChartFactory = {
       },
       options: {
         ...sharedOptions,
-        color: '#4b5563',
-        font: { weight: 'bold', size: 14, family: "'Outfit', sans-serif" },
         layout: {
             padding: 24
         },
@@ -271,11 +278,10 @@ const ChartFactory = {
             display: true,
             color: '#ffffff',
             font: (ctx: any) => {
-               const bounds = ctx.type === 'data' ? ctx.raw?.v : null;
-               if (!bounds) return { size: 11, weight: '700', family: "'Outfit', sans-serif" };
-
-               const boxWidth = bounds.w;
-               const boxHeight = bounds.h;
+               // 🌟 FIX: Directly reads the physical pixel width and height
+               const boxWidth = ctx.raw?.w || 0;
+               const boxHeight = ctx.raw?.h || 0;
+               if (boxWidth === 0) return { size: 11, weight: '700', family: "'Outfit', sans-serif" };
 
                const sizeByWidth = Math.floor(boxWidth / 10);
                const sizeByHeight = Math.floor(boxHeight / 4);
@@ -286,8 +292,10 @@ const ChartFactory = {
                return { size: calculatedSize, weight: '700', family: "'Outfit', sans-serif" };
             },
             formatter: (ctx: any) => {
-              const bounds = ctx.type === 'data' ? ctx.raw?.v : null;
-              if (!bounds || bounds.w < 60 || bounds.h < 35) return [];
+              // 🌟 FIX: Correct boundary check using raw pixel properties
+              const boxWidth = ctx.raw?.w || 0;
+              const boxHeight = ctx.raw?.h || 0;
+              if (boxWidth < 40 || boxHeight < 25) return [];
 
               const dataset = ctx.chart.data.datasets[0];
               const liveCustomData = dataset?.customData || data;
@@ -342,19 +350,18 @@ const ChartFactory = {
       },
       options: {
         ...this.getSharedOptions(meta, false, isPie, data),
-        layout: { padding: isPie ? 30 : { right: 45 } }
+        layout: { padding: { top: 20, bottom: 20, right: isPie ? 20 : 45, left: 20 } }
       }
     };
   },
 
   getSharedOptions(meta: VariableMeta, isTreemap: boolean, isPie: boolean, initialData: any[], isVenn: boolean = false): any {
-    // 🌟 FIX: We explicitly calculate isBar here so it's available for the datalabels configuration
     const isBar = !isPie && !isTreemap && !isVenn;
 
     return {
       responsive: true,
       maintainAspectRatio: false,
-      indexAxis: (!isPie && !isTreemap && !isVenn) ? 'y' : 'x',
+      indexAxis: isBar ? 'y' : 'x',
       animation: { duration: 600, easing: 'easeOutQuart' },
 
       onHover: (event: any, elements: any[]) => {
@@ -383,9 +390,11 @@ const ChartFactory = {
         legend: {
           display: isPie,
           position: 'bottom',
+          // 🌟 FIX: Clean padding explicitly separates the legend from the pie labels
+          padding: 24,
           labels: {
             boxWidth: 10,
-            padding: 20,
+            padding: 15,
             font: { size: 11, family: "'Outfit', sans-serif", weight: '600' },
             color: '#4b5563'
           }
@@ -395,10 +404,10 @@ const ChartFactory = {
              if (isTreemap || isVenn) return false;
              return true;
           },
-          color: isPie ? '#4b5563' : ThemeManager.palette[8],
+          color: '#4b5563', // Slate gray for both Pie outer labels and Bar labels
           font: {
               family: "'Outfit', sans-serif",
-              weight: (!isBar) ? 'bold' : 'normal',
+              weight: isBar ? 'normal' : 'bold',
               size: 12
           },
           formatter: (value: any, context: any) => {
