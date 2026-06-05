@@ -703,6 +703,9 @@ const UIManager = {
 
       const canvasHeight = isBar ? Math.max(containerHeight, validData.length * 38) : containerHeight;
 
+      // 🌟 FIX: Dynamic overflow control. Only Bar charts get scrollbars. Everything else is locked.
+      const overflowClass = isBar ? 'overflow-x-auto overflow-y-auto custom-scrollbar' : 'overflow-hidden flex items-center justify-center';
+
       let card = document.querySelector(`.chart-card[data-title="${meta.display_name.toLowerCase()}"]`) as HTMLElement;
 
       if (!card) {
@@ -726,7 +729,7 @@ const UIManager = {
                 </button>
               </div>
             </div>
-            <div class="relative w-full pl-1 overflow-x-auto overflow-y-auto custom-scrollbar" style="height: ${containerHeight}px;">
+            <div class="relative w-full pl-1 ${overflowClass}" style="height: ${containerHeight}px;">
               <div class="chart-canvas-wrapper" style="height: ${canvasHeight}px; position: relative; width: 100%;">
                 <canvas id="chart-${meta.chart_id}"></canvas>
               </div>
@@ -743,6 +746,9 @@ const UIManager = {
          card.style.display = 'flex';
          const wrapper = card.querySelector('.chart-canvas-wrapper') as HTMLElement;
          if (wrapper) wrapper.style.height = `${canvasHeight}px`;
+         // 🌟 FIX: Ensure the class updates cleanly on pre-existing cards if re-rendered
+         const scrollContainer = card.querySelector('.relative.w-full.pl-1') as HTMLElement;
+         if (scrollContainer) scrollContainer.className = `relative w-full pl-1 ${overflowClass}`;
 
          grid.appendChild(card);
       }
@@ -757,6 +763,8 @@ const UIManager = {
 
       cardCount++;
     });
+
+
 
     this.isInitialRender = false;
 
