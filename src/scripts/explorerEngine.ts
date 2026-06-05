@@ -198,7 +198,7 @@ const ChartFactory = {
     }
   },
 
-  getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
+getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
     const vennData = rawData
       .filter(item => item.category !== 'No Modalities')
       .map(item => {
@@ -232,28 +232,31 @@ const ChartFactory = {
           },
           hoverBackgroundColor: ThemeManager.palette[8],
           borderColor: '#ffffff',
-          borderWidth: 2,
-          color: (context: any) => {
-            if (context.type !== 'data') return '#4b5563';
-            const row = context.dataset.customData[context.dataIndex];
-            return (row && row.sets.length > 1) ? '#ffffff' : '#4b5563';
-          },
-          font: (context: any) => {
-            const isInner = context.type === 'data' && context.dataset.customData[context.dataIndex]?.sets.length > 1;
-            return { size: isInner ? 15 : 13, weight: 'bold', family: "'Outfit', sans-serif" };
-          }
+          borderWidth: 2
         }] as any
       },
       options: {
         ...sharedOptions,
-        color: '#4b5563',
-        font: { size: 13, weight: 'bold', family: "'Outfit', sans-serif" },
         layout: { padding: 24 },
         plugins: {
-            ...sharedOptions.plugins,
-            // 🌟 FIX: Explicitly block default legend mapping on Venn components
-            legend: { display: false },
-            datalabels: { display: false }
+          ...sharedOptions.plugins,
+          legend: { display: false },
+          datalabels: { display: false }
+        },
+        // 🌟 NATIVE FIX: Enforcing strict coordinate ticks as per plugin rules
+        scales: {
+          x: {
+            ticks: {
+              color: '#ffffff', // Inside numbers forced to Bold White
+              font: { size: 14, weight: 'bold', family: "'Outfit', sans-serif" }
+            }
+          },
+          y: {
+            ticks: {
+              color: '#4b5563', // Outside labels mapped to your consistent Slate Gray
+              font: { size: 13, weight: 'bold', family: "'Outfit', sans-serif" }
+            }
+          }
         }
       }
     };
@@ -392,7 +395,7 @@ const ChartFactory = {
     };
   },
 
-  getPieConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string[]): ChartConfiguration {
+getPieConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string[]): ChartConfiguration {
     return {
       type: 'doughnut',
       data: {
@@ -408,14 +411,21 @@ const ChartFactory = {
       options: {
         ...this.getSharedOptions(meta, data),
         indexAxis: 'x',
-        layout: { padding: 30 },
+        // Increased bottom padding to guarantee the floating label doesn't clip past canvas limits
+        layout: { padding: { top: 10, bottom: 25, left: 10, right: 10 } },
         plugins: {
           legend: {
             display: true,
             position: 'bottom',
+            // 🌟 NATIVE SPACHING FIX: Inserts an invisible layout spacer between chart arcs and legend rows
+            title: {
+              display: true,
+              text: '',
+              padding: { top: 15 }
+            },
             labels: {
               boxWidth: 10,
-              padding: 20,
+              padding: 15,
               font: { size: 11, family: "'Outfit', sans-serif", weight: '600' },
               color: '#4b5563'
             }
@@ -426,7 +436,7 @@ const ChartFactory = {
             font: { family: "'Outfit', sans-serif", weight: 'bold', size: 12 },
             anchor: 'end',
             align: 'end',
-            offset: 12,
+            offset: 10,
             formatter: (value: any, context: any) => {
               const rawItem = context.dataset.customData?.[context.dataIndex];
               if (!rawItem) return '';
