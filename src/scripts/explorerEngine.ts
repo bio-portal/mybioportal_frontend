@@ -12,7 +12,7 @@ Chart.register(...registerables, TreemapController, TreemapElement, VennDiagramC
 interface CategoryCount {
   category: string;
   count: string | number;
-  inclusive_count?: string | number; // Added for Venn Diagram inclusive physics
+  inclusive_count?: string | number;
 }
 
 interface StatRow {
@@ -120,6 +120,12 @@ const ThemeManager = {
 // GRAPH FACTORY ENGINE
 // ==========================================
 
+
+
+// ==========================================
+// GRAPH FACTORY ENGINE
+// ==========================================
+
 const ChartFactory = {
   instances: {} as Record<string, Chart>,
   visibleCharts: new Set<string>(),
@@ -168,7 +174,6 @@ const ChartFactory = {
 
     let config: ChartConfiguration;
 
-    // Route to appropriate native Chart.js builder
     if (isVenn) {
       config = this.getVennConfig(meta, rawData);
     } else if (isTreemap) {
@@ -177,7 +182,6 @@ const ChartFactory = {
       config = this.getStandardConfig(meta, data, labels, bgColors, isPie);
     }
 
-    // Update existing or build new
     if (this.instances[meta.chart_id]) {
       const chart = this.instances[meta.chart_id];
       chart.data.labels = config.data.labels;
@@ -197,7 +201,6 @@ const ChartFactory = {
   getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
     const baseSets = new Set<string>();
 
-    // 1. Gather all unique base modalities from the combinations
     rawData.forEach(item => {
       if (item.category !== 'No Modalities') {
         item.category.replace("Only ", "").split(" + ").forEach((s: string) => baseSets.add(s.trim()));
@@ -205,7 +208,6 @@ const ChartFactory = {
     });
     const baseArr = Array.from(baseSets);
 
-    // 2. Map the data
     const vennData = rawData.map(item => {
       const sets = item.category === 'No Modalities' ? [] : item.category.replace("Only ", "").split(" + ").map((s: string) => s.trim());
 
@@ -218,58 +220,61 @@ const ChartFactory = {
       const physicsSize = sets.length === 1 ? inclusiveNumeric : exclusiveNumeric;
 
       return {
+        label: item.category,
+        name: item.category,
         sets: sets,
         value: isNaN(physicsSize) ? 0 : physicsSize,
         exclusiveValue: item.count,
         category: item.category
       };
-    }).filter(d => d.sets.length > 0); // 🌟 FIX 1: Keep items even if value is 0!
+    }).filter(d => d.sets.length > 0);
 
-    // 🌟 FIX 2: Engine safety net.
-    // Ensure every base circle mentioned in any intersection explicitly exists as a standalone object,
-    // even if the API didn't return an "Only X" category for this specific cohort.
     baseArr.forEach(baseName => {
       const exists = vennData.find(d => d.sets.length === 1 && d.sets[0] === baseName);
       if (!exists) {
         vennData.push({
+          label: `Only ${baseName}`,
+          name: `Only ${baseName}`,
           sets: [baseName],
-          value: CONFIG.MASK_VALUE, // Minimum safe geometric rendering size
+          value: CONFIG.MASK_VALUE,
           exclusiveValue: "<10",
           category: `Only ${baseName}`
         });
       }
     });
 
-    // 🌟 FIX 3: Prevent zero-geometry crash. The venn.js engine fails if a node literally has 0 area.
     vennData.forEach(d => {
         if (d.value <= 0) d.value = CONFIG.MASK_VALUE;
     });
 
     vennData.sort((a, b) => a.sets.length - b.sets.length);
+    const sharedOptions = this.getSharedOptions(meta, false, false, vennData, true);
 
     return {
       type: 'venn' as any,
       data: {
+        labels: vennData.map(d => d.category),
         datasets: [{
           data: vennData,
           customData: vennData,
           backgroundColor: (context: any) => {
             if (context.type !== 'data') return 'rgba(0,0,0,0.05)';
-            const row = context.raw;
-            if (row && row.sets && row.sets.length === 1) {
-              const idx = baseArr.indexOf(row.sets[0]);
-              return ThemeManager.getColor(idx) + 'B3';
-            }
-            return 'rgba(255,255,255,0)';
+            return ThemeManager.getColor(context.dataIndex);
           },
+          // 🌟 FIX: Unified Hover Color
+          hoverBackgroundColor: ThemeManager.palette[8],
           borderColor: '#ffffff',
           borderWidth: 2
         }] as any
       },
-      options: this.getSharedOptions(meta, false, false, vennData, true)
+      options: {
+        ...sharedOptions,
+        layout: {
+            padding: 24
+        }
+      }
     };
   },
-
 
   getTreemapConfig(meta: VariableMeta, data: any[], bgColors: string[]): ChartConfiguration {
     return {
@@ -291,6 +296,8 @@ const ChartFactory = {
             const idx = liveCustomData.findIndex((d: any) => d.category === cat);
             return idx >= 0 ? ThemeManager.getColor(idx) : ThemeManager.palette[0];
           },
+          // 🌟 FIX: Unified Hover Color
+          hoverBackgroundColor: ThemeManager.palette[8],
           labels: {
             display: true,
             formatter: (ctx: any) => {
@@ -329,6 +336,7 @@ const ChartFactory = {
           backgroundColor: bgColors,
           borderWidth: 0,
           borderRadius: isPie ? 0 : 6,
+          // ALREADY CORRECT: Hover Color
           hoverBackgroundColor: ThemeManager.palette[8],
           maxBarThickness: isPie ? undefined : 48
         }]
@@ -361,12 +369,13 @@ const ChartFactory = {
       },
       plugins: {
         legend: {
-          display: isPie, // Venn diagrams label themselves visually; no legend needed
+          display: isPie,
           position: 'bottom',
           labels: { boxWidth: 10, padding: 15, font: { size: 11, family: "'Outfit', sans-serif", weight: '600' }, color: '#4b5563' }
         },
         tooltip: {
           enabled: true,
+          // ALREADY CORRECT: Universal Tooltip Design
           backgroundColor: ThemeManager.palette[8],
           titleFont: { size: 12, family: "'Outfit', sans-serif", weight: '700' },
           bodyFont: { size: 13, family: "'Outfit', sans-serif" },
@@ -531,7 +540,6 @@ const UIManager = {
       const isVenn = meta.chart_id === 'sample_intersections';
       const containerHeight = 240;
 
-      // Give the Venn diagram slightly more vertical breathing room to draw its circular bounds
       const canvasHeight = isBar ? Math.max(containerHeight, validData.length * 38) : (isVenn ? 300 : containerHeight);
 
       let card = document.querySelector(`.chart-card[data-title="${meta.display_name.toLowerCase()}"]`) as HTMLElement;
@@ -577,7 +585,6 @@ const UIManager = {
          grid.appendChild(card);
       }
 
-      // Constrain Venn diagrams to single column width like Pie/Treemap charts so it remains balanced
       if (isVenn) {
         card.classList.remove('lg:col-span-2', '2xl:col-span-2');
         card.classList.add('lg:col-span-1', '2xl:col-span-1');
