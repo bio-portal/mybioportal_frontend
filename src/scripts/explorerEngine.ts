@@ -169,12 +169,15 @@ const ChartFactory = {
 
     let config: ChartConfiguration;
 
+    // 🌟 ROUTING ENGINE: Completely isolated processors
     if (isVenn) {
       config = this.getVennConfig(meta, rawData);
     } else if (isTreemap) {
       config = this.getTreemapConfig(meta, data, bgColors);
+    } else if (isPie) {
+      config = this.getPieConfig(meta, data, labels, bgColors);
     } else {
-      config = this.getStandardConfig(meta, data, labels, bgColors, isPie);
+      config = this.getBarConfig(meta, data, labels, bgColors);
     }
 
     if (this.instances[meta.chart_id]) {
@@ -212,7 +215,7 @@ const ChartFactory = {
       });
 
     vennData.sort((a, b) => a.sets.length - b.sets.length);
-    const sharedOptions = this.getSharedOptions(meta, false, false, vennData, true);
+    const sharedOptions = this.getSharedOptions(meta, vennData);
 
     return {
       type: 'venn' as any,
@@ -221,7 +224,13 @@ const ChartFactory = {
         datasets: [{
           data: vennData,
           customData: vennData,
-          // 🌟 FIX: Scriptable Color checks if it's an intersection (>1) or base set (1)
+          backgroundColor: (context: any) => {
+            if (context.type !== 'data') return 'rgba(0,0,0,0.05)';
+            return ThemeManager.getColor(context.dataIndex);
+          },
+          hoverBackgroundColor: ThemeManager.palette[8],
+          borderColor: '#ffffff',
+          borderWidth: 2,
           color: (context: any) => {
             if (context.type !== 'data') return '#4b5563';
             const row = context.dataset.customData[context.dataIndex];
@@ -230,21 +239,12 @@ const ChartFactory = {
           font: (context: any) => {
             const isInner = context.type === 'data' && context.dataset.customData[context.dataIndex]?.sets.length > 1;
             return { size: isInner ? 15 : 13, weight: 'bold', family: "'Outfit', sans-serif" };
-          },
-          backgroundColor: (context: any) => {
-            if (context.type !== 'data') return 'rgba(0,0,0,0.05)';
-            return ThemeManager.getColor(context.dataIndex);
-          },
-          hoverBackgroundColor: ThemeManager.palette[8],
-          borderColor: '#ffffff',
-          borderWidth: 2
+          }
         }] as any
       },
       options: {
         ...sharedOptions,
-        layout: {
-            padding: 24
-        },
+        layout: { padding: 24 },
         plugins: {
             ...sharedOptions.plugins,
             datalabels: { display: false }
@@ -278,7 +278,6 @@ const ChartFactory = {
             display: true,
             color: '#ffffff',
             font: (ctx: any) => {
-               // 🌟 FIX: Directly reads the physical pixel width and height
                const boxWidth = ctx.raw?.w || 0;
                const boxHeight = ctx.raw?.h || 0;
                if (boxWidth === 0) return { size: 11, weight: '700', family: "'Outfit', sans-serif" };
@@ -292,7 +291,6 @@ const ChartFactory = {
                return { size: calculatedSize, weight: '700', family: "'Outfit', sans-serif" };
             },
             formatter: (ctx: any) => {
-              // 🌟 FIX: Correct boundary check using raw pixel properties
               const boxWidth = ctx.raw?.w || 0;
               const boxHeight = ctx.raw?.h || 0;
               if (boxWidth < 40 || boxHeight < 25) return [];
@@ -329,13 +327,14 @@ const ChartFactory = {
           }
         }] as any
       },
-      options: this.getSharedOptions(meta, true, false, data)
+      options: this.getSharedOptions(meta, data)
     };
   },
 
-  getStandardConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string[], isPie: boolean): ChartConfiguration {
+  // 🌟 NEW: Completely isolated custom script configurations for Bar Charts
+  getBarConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string[]): ChartConfiguration {
     return {
-      type: isPie ? 'doughnut' : 'bar',
+      type: 'bar',
       data: {
         labels,
         datasets: [{
@@ -343,25 +342,93 @@ const ChartFactory = {
           customData: data,
           backgroundColor: bgColors,
           borderWidth: 0,
-          borderRadius: isPie ? 0 : 6,
+          borderRadius: 6,
           hoverBackgroundColor: ThemeManager.palette[8],
-          maxBarThickness: isPie ? undefined : 48
+          maxBarThickness: 48
         }]
       },
       options: {
-        ...this.getSharedOptions(meta, false, isPie, data),
-        layout: { padding: { top: 20, bottom: 20, right: isPie ? 20 : 45, left: 20 } }
+        ...this.getSharedOptions(meta, data),
+        indexAxis: 'y',
+        layout: { padding: { top: 20, bottom: 20, right: 45, left: 20 } },
+        plugins: {
+          legend: { display: false },
+          datalabels: {
+            display: true,
+            color: '#4b5563', // Soft crisp slate gray matching axis targets
+            font: { family: "'Outfit', sans-serif", weight: 'normal', size: 12 },
+            anchor: 'end',
+            align: 'end',
+            offset: 6,
+            formatter: (value: any, context: any) => {
+              const rawItem = context.dataset.customData?.[context.dataIndex];
+              return rawItem ? String(rawItem.displayVal) : '';
+            }
+          }
+        },
+        scales: {
+          y: {
+              grid: { display: false },
+              border: { display: false },
+              ticks: { font: { size: 12, family: "'Outfit', sans-serif", weight: '600' }, color: '#4b5563' }
+          },
+          x: { display: false } // X-Axis numerical details hidden to maximize data-ink density
+        }
       }
     };
   },
 
-  getSharedOptions(meta: VariableMeta, isTreemap: boolean, isPie: boolean, initialData: any[], isVenn: boolean = false): any {
-    const isBar = !isPie && !isTreemap && !isVenn;
+  // 🌟 NEW: Completely isolated custom script configurations for Pie Charts
+  getPieConfig(meta: VariableMeta, data: any[], labels: string[], bgColors: string[]): ChartConfiguration {
+    return {
+      type: 'doughnut',
+      data: {
+        labels,
+        datasets: [{
+          data: data.map(d => d.numericVal),
+          customData: data,
+          backgroundColor: bgColors,
+          borderWidth: 0,
+          hoverBackgroundColor: ThemeManager.palette[8]
+        }]
+      },
+      options: {
+        ...this.getSharedOptions(meta, data),
+        indexAxis: 'x',
+        layout: { padding: 30 },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels: {
+              boxWidth: 10,
+              padding: 20,
+              font: { size: 11, family: "'Outfit', sans-serif", weight: '600' },
+              color: '#4b5563'
+            }
+          },
+          datalabels: {
+            display: true,
+            color: '#4b5563',
+            font: { family: "'Outfit', sans-serif", weight: 'bold', size: 12 },
+            anchor: 'end',
+            align: 'end',
+            offset: 12,
+            formatter: (value: any, context: any) => {
+              const rawItem = context.dataset.customData?.[context.dataIndex];
+              if (!rawItem || (typeof rawItem.displayVal === 'string' && rawItem.displayVal.startsWith('<'))) return '<10';
+              return String(rawItem.displayVal);
+            }
+          }
+        }
+      }
+    };
+  },
 
+  getSharedOptions(meta: VariableMeta, initialData: any[]): any {
     return {
       responsive: true,
       maintainAspectRatio: false,
-      indexAxis: isBar ? 'y' : 'x',
       animation: { duration: 600, easing: 'easeOutQuart' },
 
       onHover: (event: any, elements: any[]) => {
@@ -374,11 +441,12 @@ const ChartFactory = {
         if (!elements.length) return;
         const targetIndex = elements[0].index;
         const chart = this.instances[meta.chart_id];
+        const type = chart.config.type;
 
         let selectedCategory = '';
-        if (isTreemap) {
+        if (type === 'treemap') {
            selectedCategory = chart.data.datasets[0].data[targetIndex] ? (chart.data.datasets[0].data[targetIndex] as any)._data.category : '';
-        } else if (isVenn) {
+        } else if (type === 'venn') {
            selectedCategory = (chart.data.datasets[0] as any).customData[targetIndex]?.category || '';
         } else {
            selectedCategory = String(chart.data.labels![targetIndex]);
@@ -387,45 +455,6 @@ const ChartFactory = {
         UIManager.handleChartClick(meta.chart_id, selectedCategory);
       },
       plugins: {
-        legend: {
-          display: isPie,
-          position: 'bottom',
-          // 🌟 FIX: Clean padding explicitly separates the legend from the pie labels
-          padding: 24,
-          labels: {
-            boxWidth: 10,
-            padding: 15,
-            font: { size: 11, family: "'Outfit', sans-serif", weight: '600' },
-            color: '#4b5563'
-          }
-        },
-        datalabels: {
-          display: (context: any) => {
-             if (isTreemap || isVenn) return false;
-             return true;
-          },
-          color: '#4b5563', // Slate gray for both Pie outer labels and Bar labels
-          font: {
-              family: "'Outfit', sans-serif",
-              weight: isBar ? 'normal' : 'bold',
-              size: 12
-          },
-          formatter: (value: any, context: any) => {
-            const customData = context.dataset.customData || initialData;
-            const rawItem = customData[context.dataIndex];
-            if (!rawItem) return '';
-
-            const displayVal = rawItem.displayVal !== undefined ? rawItem.displayVal : rawItem.numericVal;
-
-            if (isPie && typeof displayVal === 'string' && displayVal.startsWith('<')) {
-                return '<10';
-            }
-            return String(displayVal);
-          },
-          anchor: 'end',
-          align: 'end',
-          offset: isPie ? 12 : 6
-        },
         tooltip: {
           enabled: true,
           backgroundColor: ThemeManager.palette[8],
@@ -436,30 +465,32 @@ const ChartFactory = {
           callbacks: {
             title: (tooltipItems: any[]) => {
               if (!tooltipItems || !tooltipItems.length) return '';
-              if (isTreemap) return tooltipItems[0].raw?.g || '';
-              if (isVenn) return (tooltipItems[0].dataset as any).customData[tooltipItems[0].dataIndex]?.category;
+              const type = tooltipItems[0].chart.config.type;
+              if (type === 'treemap') return tooltipItems[0].raw?.g || '';
+              if (type === 'venn') return (tooltipItems[0].dataset as any).customData[tooltipItems[0].dataIndex]?.category;
               return tooltipItems[0].label;
             },
             label: (context: any) => {
               const dataset = context.dataset;
               const customData = dataset?.customData || initialData;
               const unit = meta.units === 'patients' ? '' : ` ${meta.units}`;
+              const type = context.chart.config.type;
 
               let rawItem;
-              if (isVenn) {
+              if (type === 'venn') {
                 rawItem = customData[context.dataIndex];
               } else {
                 let categoryName = context.label;
-                if (isTreemap) categoryName = context.raw?.g;
+                if (type === 'treemap') categoryName = context.raw?.g;
                 rawItem = customData?.find((d: any) => String(d.category) === String(categoryName));
               }
 
               if (!rawItem) return '';
-              const displayVal = isVenn ? rawItem.displayVal : (rawItem.displayVal !== undefined ? rawItem.displayVal : rawItem.numericVal);
+              const displayVal = type === 'venn' ? rawItem.displayVal : (rawItem.displayVal !== undefined ? rawItem.displayVal : rawItem.numericVal);
 
               let total = 0;
               customData.forEach((d: any) => {
-                  const val = isVenn ? d.displayVal : (d.displayVal !== undefined ? d.displayVal : d.numericVal);
+                  const val = type === 'venn' ? d.displayVal : (d.displayVal !== undefined ? d.displayVal : d.numericVal);
                   if (typeof val !== 'string' || !String(val).startsWith('<')) {
                       total += Number(val);
                   }
@@ -474,14 +505,6 @@ const ChartFactory = {
             }
           }
         }
-      },
-      scales: (isPie || isTreemap || isVenn) ? undefined : {
-        y: {
-            grid: { display: false },
-            border: { display: false },
-            ticks: { font: { size: 12, family: "'Outfit', sans-serif", weight: '600' }, color: '#4b5563' }
-        },
-        x: { display: false }
       }
     };
   }
