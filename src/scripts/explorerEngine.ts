@@ -238,6 +238,7 @@ const ChartFactory = {
     }
   },
 
+
   getVennConfig(meta: VariableMeta, rawData: any[]): ChartConfiguration {
     let trueTotal = 0;
     const vennData = rawData
@@ -281,7 +282,10 @@ const ChartFactory = {
       },
       options: {
         ...sharedOptions,
-        layout: { padding: 24 },
+        // 🌟 FIX: Tighter padding utilizes max card space to prevent scrolling and label clipping
+        layout: {
+          padding: { top: 10, bottom: 10, left: 10, right: 10 }
+        },
         plugins: {
           ...sharedOptions.plugins,
           legend: { display: false },
@@ -699,7 +703,7 @@ const UIManager = {
       const isVenn = meta.chart_id === 'sample_intersections';
       const containerHeight = 240;
 
-      const canvasHeight = isBar ? Math.max(containerHeight, validData.length * 38) : (isVenn ? 300 : containerHeight);
+      const canvasHeight = isBar ? Math.max(containerHeight, validData.length * 38) : containerHeight;
 
       let card = document.querySelector(`.chart-card[data-title="${meta.display_name.toLowerCase()}"]`) as HTMLElement;
 
