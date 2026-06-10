@@ -23,13 +23,18 @@ const cleanRootPath = relativePath.replace(/^\/fr(\/|$)/, '/');
 // Calculate absolute target destinations for both buttons
 const enUrl = `${baseUrl}${cleanRootPath}`.replace(/\/+/g, '/');
 const frUrl = `${baseUrl}/fr${cleanRootPath === '/' ? '' : cleanRootPath}`.replace(/\/+/g, '/');
+
+// UTILITY: Safely concatenate and normalize any array of URL parts
+const buildUrl = (...parts: (string | undefined)[]) => {
+  return parts.filter(Boolean).join('/').replace(/\/+/g, '/');
+};
 ---
 <nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300" data-cta-mode={ctaMode}>
   <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
 
-    <a href={`${baseUrl}${langPrefix}/`} class="flex items-center shrink-0 z-50 h-fit max-h-16 py-2 outline-none">
+    <a href={buildUrl(baseUrl, langPrefix, '/')} class="flex items-center shrink-0 z-50 h-fit max-h-16 py-2 outline-none">
       <img
-        src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
+        src={buildUrl(baseUrl, '/logos/BioPortal_Primary_Color.svg')}
         alt={navData?.logoAlt || "BioPortal Logo"}
         class="h-10 md:h-11 w-auto shrink-0 hover:-translate-y-0.5 transition-transform object-contain"
         onerror="this.style.display='none'"
@@ -39,17 +44,17 @@ const frUrl = `${baseUrl}/fr${cleanRootPath === '/' ? '' : cleanRootPath}`.repla
     {type === 'main' ? (
       <>
         <div id="nav-cta-group" class={`absolute left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-4 transition-all duration-500 ease-out ${ctaMode === 'scroll' ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}>
-          <a href={`${baseUrl}${langPrefix}${navData.ctaButtons.primary.href}`} class="px-5 py-2 rounded-full border-2 border-brand-green-bright text-brand-green-bright text-xs font-bold hover:bg-brand-green-bright hover:text-white transition-all bg-white">
-            {navData.ctaButtons.primary.label}
+          <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.primary?.href)} class="px-5 py-2 rounded-full border-2 border-brand-green-bright text-brand-green-bright text-xs font-bold hover:bg-brand-green-bright hover:text-white transition-all bg-white">
+            {navData?.ctaButtons?.primary?.label}
           </a>
-          <a href={`${baseUrl}${langPrefix}${navData.ctaButtons.secondary.href}`} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white">
-            {navData.ctaButtons.secondary.label}
+          <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.secondary?.href)} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white">
+            {navData?.ctaButtons?.secondary?.label}
           </a>
         </div>
 
         <div class="hidden lg:flex items-center space-x-8 font-medium text-sm ml-auto">
-          {navData.links.map((link: any) => (
-            <a href={`${baseUrl}${langPrefix}${link.href}`} class="text-gray-500 hover:text-brand-dark transition-colors">{link.label}</a>
+          {navData?.links?.map((link: any) => (
+            <a href={buildUrl(baseUrl, langPrefix, link.href)} class="text-gray-500 hover:text-brand-dark transition-colors">{link.label}</a>
           ))}
 
           <div class="flex items-center gap-1 bg-gray-100/80 p-1 rounded-full border border-gray-200/40 shadow-inner select-none ml-4">
@@ -58,13 +63,14 @@ const frUrl = `${baseUrl}/fr${cleanRootPath === '/' ? '' : cleanRootPath}`.repla
           </div>
         </div>
 
-        <button id="mobile-menu-toggle" class="lg:hidden text-brand-dark p-2 -mr-2 focus:outline-none z-50">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        <button id="mobile-menu-toggle" aria-label="Toggle mobile menu" aria-expanded="false" class="lg:hidden text-brand-dark p-2 -mr-2 focus:outline-none z-50 transition-transform duration-300">
+           <svg id="icon-menu" class="w-6 h-6 transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          <svg id="icon-close" class="w-6 h-6 hidden transition-opacity duration-300 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
 
-        <div id="mobile-menu-panel" class="absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-2xl hidden flex-col px-6 py-8 space-y-6 lg:hidden">
-          {navData.links.map((link: any) => (
-            <a href={`${baseUrl}${langPrefix}${link.href}`} class="mobile-link text-brand-dark font-extrabold text-xl">{link.label}</a>
+        <div id="mobile-menu-panel" class="absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-2xl hidden flex-col px-6 py-8 space-y-6 lg:hidden opacity-0 translate-y-[-10px] transition-all duration-300 pointer-events-none">
+          {navData?.links?.map((link: any) => (
+            <a href={buildUrl(baseUrl, langPrefix, link.href)} class="mobile-link text-brand-dark font-extrabold text-xl">{link.label}</a>
           ))}
 
           <div class="flex items-center justify-between pt-2">
@@ -77,8 +83,8 @@ const frUrl = `${baseUrl}/fr${cleanRootPath === '/' ? '' : cleanRootPath}`.repla
 
           <hr class="border-gray-100" />
           <div class="flex flex-col gap-3">
-            <a href={`${baseUrl}${langPrefix}${navData.ctaButtons.primary.href}`} class="w-full text-center py-4 rounded-xl bg-brand-green-bright text-white font-bold shadow-md shadow-brand-green-bright/20">{navData.ctaButtons.primary.label}</a>
-            <a href={`${baseUrl}${langPrefix}${navData.ctaButtons.secondary.href}`} class="w-full text-center py-4 rounded-xl bg-brand-blue-deep text-white font-bold shadow-md shadow-brand-blue-deep/20">{navData.ctaButtons.secondary.label}</a>
+            <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.primary?.href)} class="w-full text-center py-4 rounded-xl bg-brand-green-bright text-white font-bold shadow-md shadow-brand-green-bright/20">{navData?.ctaButtons?.primary?.label}</a>
+            <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.secondary?.href)} class="w-full text-center py-4 rounded-xl bg-brand-blue-deep text-white font-bold shadow-md shadow-brand-blue-deep/20">{navData?.ctaButtons?.secondary?.label}</a>
           </div>
         </div>
       </>
@@ -91,7 +97,7 @@ const frUrl = `${baseUrl}/fr${cleanRootPath === '/' ? '' : cleanRootPath}`.repla
 
         <div class="h-4 w-px bg-gray-200"></div>
 
-        <a href={`${baseUrl}${langPrefix}${backLink}`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2">
+        <a href={buildUrl(baseUrl, langPrefix, backLink)} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
           {backText}
         </a>
@@ -102,6 +108,7 @@ const frUrl = `${baseUrl}/fr${cleanRootPath === '/' ? '' : cleanRootPath}`.repla
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    // --- Scroll CTA Logic ---
     const nav = document.querySelector('nav[data-cta-mode="scroll"]');
     if (nav) {
       const navCtaGroup = nav.querySelector('#nav-cta-group');
@@ -128,22 +135,50 @@ const frUrl = `${baseUrl}/fr${cleanRootPath === '/' ? '' : cleanRootPath}`.repla
       handleScroll();
     }
 
+    // --- Mobile Menu Toggle Logic with Animations ---
     const mobileToggle = document.getElementById('mobile-menu-toggle');
     const mobilePanel = document.getElementById('mobile-menu-panel');
+    const iconMenu = document.getElementById('icon-menu');
+    const iconClose = document.getElementById('icon-close');
     const mobileLinks = document.querySelectorAll('.mobile-link');
 
-    if (mobileToggle && mobilePanel) {
-      mobileToggle.addEventListener('click', () => {
-        mobilePanel.classList.toggle('hidden');
-        mobilePanel.classList.toggle('flex');
-      });
+    const toggleMenu = () => {
+      if(!mobilePanel || !mobileToggle || !iconMenu || !iconClose) return;
 
-      mobileLinks.forEach(link => {
-        link.addEventListener('click', () => {
-          mobilePanel.classList.add('hidden');
-          mobilePanel.classList.remove('flex');
-        });
-      });
+      const isExpanded = mobileToggle.getAttribute('aria-expanded') === 'true';
+      mobileToggle.setAttribute('aria-expanded', String(!isExpanded));
+
+      if (!isExpanded) {
+        // Open
+        mobilePanel.classList.remove('hidden');
+        // Force reflow for transition
+        void mobilePanel.offsetWidth;
+        mobilePanel.classList.remove('opacity-0', 'translate-y-[-10px]', 'pointer-events-none');
+        iconMenu.classList.add('hidden');
+        iconClose.classList.remove('hidden');
+        mobileToggle.classList.add('rotate-90');
+      } else {
+        // Close
+        mobilePanel.classList.add('opacity-0', 'translate-y-[-10px]', 'pointer-events-none');
+        iconClose.classList.add('hidden');
+        iconMenu.classList.remove('hidden');
+        mobileToggle.classList.remove('rotate-90');
+
+        // Wait for animation to finish before applying display:none
+        setTimeout(() => {
+          if(mobileToggle.getAttribute('aria-expanded') === 'false') {
+             mobilePanel.classList.add('hidden');
+          }
+        }, 300);
+      }
+    };
+
+    if (mobileToggle) {
+      mobileToggle.addEventListener('click', toggleMenu);
     }
+
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', toggleMenu);
+    });
   });
 </script>

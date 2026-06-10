@@ -15,8 +15,6 @@ export function getStaticPaths() {
 
 // 2. Destructure with a fallback assignment to 'en' when the path parameter is undefined
 const { lang = 'en' } = Astro.params;
-const langPrefix = lang === 'en' ? '' : '/fr';
-const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const dataPage = await getEntry('pages', `${lang}/data`);
 
@@ -42,7 +40,7 @@ const explorerContent = dataPage?.data?.explorer || {
 <Layout
   title={explorerContent.pageTitle}
   navType="minimal"
-  backLink={`${baseUrl}${langPrefix}${explorerContent.backLink}`}
+  backLink={explorerContent.backLink}
   backText={explorerContent.backText}
   lang={lang}
 >

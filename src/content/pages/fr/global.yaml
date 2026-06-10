@@ -5,16 +5,16 @@ navigation:
   links:
     - label: "Actualités"
       href: "/#insights"
-    - label: "Notre Équipe"
+    - label: "Équipe"
       href: "/#team"
-    - label: "Sécurité des données"
+    - label: "Sécurité"
       href: "/privacy"
   ctaButtons:
     primary:
-      label: "Rejoindre l'étude"
+      label: "Participer"
       href: "/participants"
     secondary:
-      label: "Demander des données"
+      label: "Accès données"
       href: "/data"
 
 footer:
