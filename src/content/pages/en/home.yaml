@@ -13,7 +13,7 @@ trustBar:
     - name: "Scikoop"
       logo: "/logos/scikoop-logo.png"
       url: "https://scikoop.com"
-      scale: "1" # Custom scale to fix the "too small" issue
+      scale: "1"
     - name: "CQDM"
       logo: "/logos/cqdm-logo.png"
       url: "https://cqdm.org/"
@@ -31,7 +31,6 @@ trustBar:
       url: "https://leger.org/"
   acknowledgments: "BioPortal contributors also include the non-profits Mierins Family Foundation, Herbert S. Lang Family, Randi Greenberg, and the Tony & Betty Infilise Family Foundation."
 
-# Add this underneath your existing hero and trustBar blocks
 insights:
   eyebrow: "Latest Insights"
   title: "News & Discoveries"
@@ -49,5 +48,3 @@ teamSection:
   spotlight:
     title: "Institutional Stewardship"
     description: "Our initiative is steered by leading clinical data privacy experts and medical investigators. Hover over any portfolio profile on the left to review their scientific background and governance mandate."
-
-

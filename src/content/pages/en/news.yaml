@@ -1,11 +1,8 @@
-# Add to your existing news.yaml file
 id: news
 seoTitle: "News & Discoveries"
 tagline: "Latest Insights"
 headline: "News & Discoveries"
 description: "Stay up to date with the latest advancements, clinical insights, and platform updates from the BioPortal research team."
-
-# Add these new keys to handle the UI text
 readMoreText: "Read Insight"
 backToNewsText: "Back to Insights"
 fallbackImageAlt: "BioPortal Mark"

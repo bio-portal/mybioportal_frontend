@@ -2,7 +2,7 @@
 
 # Configuration
 SOURCE_DIR="src/content"
-OUTPUT_FILE="fr_translation_dump.txt"
+OUTPUT_FILE="en_translation_dump.txt"
 
 # Initialize output file with metadata header
 echo "# BioPortal Source Content Translation Dump" > "$OUTPUT_FILE"
@@ -35,7 +35,7 @@ while read -r file; do
     echo "" >> "$OUTPUT_FILE"
 
     ((file_count++))
-done < <(find "$SOURCE_DIR" -type f -path "*/fr/*" \( -name "*.yaml" -o -name "*.yml" -o -name "*.md" \) | sort)
+done < <(find "$SOURCE_DIR" -type f -path "*/en/*" \( -name "*.yaml" -o -name "*.yml" -o -name "*.md" \) | sort)
 
 echo "----------------------------------------"
 echo "Success! Aggregated $file_count French files into '$OUTPUT_FILE'."

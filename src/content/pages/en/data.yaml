@@ -2,8 +2,7 @@ id: "data"
 hero:
   tagline: "Open Science & Cohort Analytics"
   headline: "BioPortal Population Datasets"
-  description: "Access deep-phenotyped research cohorts, explore multi-omics sample distributions, and request secure biological materials for approved scientific inquiries."
-# Replace the old `stats:` array with this:
+  description: "Access research cohorts with deep-phenotyped data, explore multi-omics sample distributions, and request secure biological materials for approved scientific inquiries."
 landingMetrics:
   participantsLabel: "Total Participants"
   clinicalVariablesLabel: "Clinical Variables"
@@ -15,48 +14,36 @@ landingMetrics:
     proteomics: "887"
     biosamples: "2,450"
 
-
-# Add this block to your existing data.yaml file
 explorer:
   pageTitle: "Interactive Data Explorer | BioPortal"
   backLink: "/data"
   backText: "Back to Data Request"
-
   header:
     totalPatientsLabel: "Total Patients"
-
   grid:
     noResultsText: "No matching metrics"
-
   sidebar:
     title: "Command Center"
     baseline: "Baseline (Total Cohort)"
     searchPlaceholder: "Search cohorts or metrics..."
-
     tooltip:
       title: "Cohort Discovery"
       description: "Click directly on any chart segment or sidebar attribute to isolate a sub-population. You can refine pie chart layouts by clicking legend labels to toggle specific variables."
       warning: "To ensure precision and maintain privacy, the explorer updates population metrics using one active filter condition at a time."
-
     buttons:
       reset: "Reset Filters"
       export: "Export CSV"
-
     tabs:
       filters: "Filters"
       charts: "Charts"
-
     visibility:
       title: "Visibility Map"
       all: "All"
       none: "None"
-
     status:
       gateway: "Data Gateway"
       syncing: "SYNCING"
 
-
-# Add to data.yaml
 dataRequest:
   pageTitle: "Data Access & Cohorts | BioPortal"
   backText: "Back to Home"
@@ -82,7 +69,7 @@ dataRequest:
     description: "Inquire about specific cohorts or request structural credentials to access full genomic and clinical datasets."
     fields:
       nameLabel: "Full Name"
-      namePlaceholder: "Dr. Jane Smith"
+      namePlaceholder: "Jane Smith"
       emailLabel: "Institutional Email"
       emailPlaceholder: "jane.smith@mcgill.ca"
       interestLabel: "Research Interest"
