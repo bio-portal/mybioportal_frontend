@@ -1,28 +1,30 @@
 # BioPortal Astro Architectural Context
-Generated on: Wed 10 Jun 2026 10:14:40 AM EDT
+Generated on: Wed 10 Jun 2026 10:49:48 AM EDT
 
 ---
 
 ## 📂 Project Directory Structure
 ```text
-[01;34m.[00m
-├── [01;34marchive[00m
+.
+├── archive
 │   ├── 17-byanca-liboni.yaml
 │   └── 19-nadia-blostein.yaml
 ├── astro.config.mjs
 ├── astro_project_context.md
+├── english_translation_dump.txt
 ├── fixcolors.sh
 ├── gather_context.sh
 ├── generate_team.sh
+├── load_npm.sh
 ├── organize_assets.sh
 ├── package.json
 ├── package-lock.json
-├── [00;32mproject_context.txt[00m
+├── project_context.txt
 ├── README.html
 ├── README.md
-├── [01;34msrc[00m
-│   ├── [01;34mcomponents[00m
-│   │   ├── [01;34mexplorer[00m
+├── src
+│   ├── components
+│   │   ├── explorer
 │   │   │   ├── ExplorerGrid.astro
 │   │   │   ├── ExplorerHeader.astro
 │   │   │   └── ExplorerSidebar.astro
@@ -30,63 +32,92 @@ Generated on: Wed 10 Jun 2026 10:14:40 AM EDT
 │   │   ├── Hero.astro
 │   │   ├── Navbar.astro
 │   │   └── TrustBar.astro
-│   ├── [01;34mcontent[00m
-│   │   ├── [01;34men[00m
-│   │   │   ├── [01;34mnews[00m
+│   ├── content
+│   │   ├── f21-hind-lerhcha.yaml
+│   │   ├── news
+│   │   │   ├── en
 │   │   │   │   └── roche-partnership.md
-│   │   │   ├── [01;34mpages[00m
+│   │   │   └── fr
+│   │   │       └── roche-partnership.md
+│   │   ├── pages
+│   │   │   ├── en
 │   │   │   │   ├── data.yaml
 │   │   │   │   ├── global.yaml
 │   │   │   │   ├── home.yaml
 │   │   │   │   ├── news.yaml
 │   │   │   │   ├── participants.yaml
 │   │   │   │   └── privacy.yaml
-│   │   │   └── [01;34mteam[00m
-│   │   │       ├── 01-brent-richards.yaml
-│   │   │       ├── 02-vincent-mooser.yaml
-│   │   │       ├── 03-jonathan-afilalo.yaml
-│   │   │       ├── 04-tricia-peters.yaml
-│   │   │       ├── 05-guillaume-butler.yaml
-│   │   │       ├── 06-satoshi-yoshiji.yaml
-│   │   │       ├── 07-tobias-erlanger.yaml
-│   │   │       ├── 08-david-morrison.yaml
-│   │   │       ├── 09-mariana-pico.yaml
-│   │   │       ├── 10-issam-elkbaiche.yaml
-│   │   │       ├── 11-darin-adra.yaml
-│   │   │       ├── 12-mariana-jaime.yaml
-│   │   │       ├── 13-corinne-pirici.yaml
-│   │   │       ├── 14-mina-nikkhah.yaml
-│   │   │       ├── 15-zaman-afrasiabi.yaml
-│   │   │       ├── 16-cesar-peralta.yaml
-│   │   │       ├── 18-jonafe-daguplo.yaml
-│   │   │       ├── 20-jesse-islam.yaml
-│   │   │       ├── 21-hind-lerhcha.yaml
-│   │   │       └── 22-shirlyn-cabilin.yaml
-│   │   └── [01;34mfr[00m
+│   │   │   └── fr
+│   │   │       ├── data.yaml
+│   │   │       ├── global.yaml
+│   │   │       ├── home.yaml
+│   │   │       ├── news.yaml
+│   │   │       ├── participants.yaml
+│   │   │       └── privacy.yaml
+│   │   └── team
+│   │       ├── en
+│   │       │   ├── 01-brent-richards.yaml
+│   │       │   ├── 02-vincent-mooser.yaml
+│   │       │   ├── 03-jonathan-afilalo.yaml
+│   │       │   ├── 04-tricia-peters.yaml
+│   │       │   ├── 05-guillaume-butler.yaml
+│   │       │   ├── 06-satoshi-yoshiji.yaml
+│   │       │   ├── 07-tobias-erlanger.yaml
+│   │       │   ├── 08-david-morrison.yaml
+│   │       │   ├── 09-mariana-pico.yaml
+│   │       │   ├── 10-issam-elkbaiche.yaml
+│   │       │   ├── 11-darin-adra.yaml
+│   │       │   ├── 12-mariana-jaime.yaml
+│   │       │   ├── 13-corinne-pirici.yaml
+│   │       │   ├── 14-mina-nikkhah.yaml
+│   │       │   ├── 15-zaman-afrasiabi.yaml
+│   │       │   ├── 16-cesar-peralta.yaml
+│   │       │   ├── 18-jonafe-daguplo.yaml
+│   │       │   ├── 20-jesse-islam.yaml
+│   │       │   ├── 21-hind-lerhcha.yaml
+│   │       │   └── 22-shirlyn-cabilin.yaml
+│   │       └── fr
+│   │           ├── 01-brent-richards.yaml
+│   │           ├── 02-vincent-mooser.yaml
+│   │           ├── 03-jonathan-afilalo.yaml
+│   │           ├── 04-tricia-peters.yaml
+│   │           ├── 05-guillaume-butler.yaml
+│   │           ├── 06-satoshi-yoshiji.yaml
+│   │           ├── 07-tobias-erlanger.yaml
+│   │           ├── 08-david-morrison.yaml
+│   │           ├── 09-mariana-pico.yaml
+│   │           ├── 13-corinne-pirici.yaml
+│   │           ├── 14-mina-nikkhah.yaml
+│   │           ├── 15-zaman-afrasiabi.yaml
+│   │           ├── 16-cesar-peralta.yaml
+│   │           ├── 18-jonafe-daguplo.yaml
+│   │           └── 20-jesse-islam.yaml
 │   ├── content.config.ts
-│   ├── [01;34mlayouts[00m
+│   ├── layouts
 │   │   └── Layout.astro
-│   ├── [01;34mone_off_scripts[00m
+│   ├── one_off_scripts
 │   │   └── convert_image_to_webp.R
-│   ├── [01;34mpages[00m
-│   │   └── [01;34m[lang][00m
-│   │       ├── [01;34mdata[00m
+│   ├── pages
+│   │   └── [lang]
+│   │       ├── data
 │   │       │   └── explorer.astro
 │   │       ├── data.astro
 │   │       ├── index.astro
-│   │       ├── [01;34mnews[00m
+│   │       ├── news
 │   │       │   ├── [id].astro
 │   │       │   └── index.astro
 │   │       ├── participants.astro
 │   │       └── privacy.astro
-│   ├── [01;34mscripts[00m
+│   ├── scripts
 │   │   └── explorerEngine.ts
-│   ├── [01;34mstyles[00m
+│   ├── styles
 │   │   └── global.css
 │   └── types.d.ts
-└── tsconfig.json
+├── tsconfig.json
+├── write_french_translations.sh
+└── yaml_gather_context.sh
 
-18 directories, 61 files
+23 directories, 88 files
 ```
 
 ---
@@ -347,7 +378,7 @@ export const collections = { pages, team, news };
 ```astro
 ---
 import { getCollection, getEntry, render } from 'astro:content';
-// UX FIX: Adjusted relative paths to 3 levels up since this file is now nested inside [lang]/news/
+// UX FIX: Adjusted relative paths to 3 levels up since this file is now nested inside [...lang]/news/
 import Layout from '../../../layouts/Layout.astro';
 
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -361,7 +392,7 @@ export async function getStaticPaths() {
     const cleanId = slugParts.join('/');
 
     return {
-      // With prefixDefaultLocale: false, default language paths must pass undefined for the [lang] folder variable
+      // With prefixDefaultLocale: false, default language paths pass undefined for the optional [...lang] parameter
       params: {
         lang: langToken === 'en' ? undefined : langToken,
         id: cleanId
@@ -386,7 +417,7 @@ const backToNewsText = newsPageData?.data?.backToNewsText || (lang === 'fr' ? 'R
 <Layout
   title={`${post.data.title} | BioPortal Insights`}
   navType="minimal"
-  backLink={`${langPrefix}/news`}
+  backLink={`${baseUrl}${langPrefix}/news`}
   backText={backToNewsText}
   lang={lang}
 >
@@ -442,30 +473,31 @@ const backToNewsText = newsPageData?.data?.backToNewsText || (lang === 'fr' ? 'R
 ```astro
 ---
 import { getCollection, getEntry } from 'astro:content';
-// UX FIX: Adjusted relative path to 3 levels up since this file is now nested inside [lang]/news/
+// UX FIX: Adjusted relative path to 3 levels up since this file is now nested inside [...lang]/news/
 import Layout from '../../../layouts/Layout.astro';
 
-// 1. Instruct Astro to compile this route for both English and French paths
+// 1. Map English to an undefined path token to keep it seamlessly serving at the root domain domain level
 export function getStaticPaths() {
   return [
-    { params: { lang: 'en' } },
-    { params: { lang: 'fr' } }
+    { params: { lang: undefined } }, // English maps directly to /news
+    { params: { lang: 'fr' } }        // French maps directly to /fr/news
   ];
 }
 
-const { lang } = Astro.params;
+// 2. Destructure parameters providing a safe fallback variable default
+const { lang = 'en' } = Astro.params;
 const langPrefix = lang === 'en' ? '' : '/fr';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-// 2. Fetch the dynamically correct page configuration dictionary
+// 3. Fetch localized page schema settings dictionaries
 const pageData = await getEntry('pages', `${lang}/news`);
-const { seoTitle, tagline, headline, description } = pageData.data;
+const { seoTitle, tagline, headline, description, readMoreText } = pageData.data;
 
-// 3. Query and filter news items to strictly match the current active locale folder
+// 4. Load matching news articles filtering strictly by folder locale namespace prefixes
 const allNews = await getCollection('news', ({ id }) => id.startsWith(`${lang}/`));
 const sortedNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-// Utility to cleanly extract the raw filename slug from the new nested ID structure (e.g., 'en/roche' -> 'roche')
+// Clean filename slug parser utility
 const getCleanSlug = (id: string) => id.split('/').pop()?.replace(/\.[^/.]+$/, "");
 ---
 <Layout title={`${seoTitle} | BioPortal`} lang={lang}>
@@ -499,7 +531,8 @@ const getCleanSlug = (id: string) => id.split('/').pop()?.replace(/\.[^/.]+$/, "
             <p class="text-sm text-gray-500 leading-relaxed mb-8 flex-grow line-clamp-3">{post.data.excerpt}</p>
 
             <a href={`${baseUrl}${langPrefix}/news/${getCleanSlug(post.id)}/`} class="text-brand-dark font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all mt-auto">
-              Read Insight <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              {readMoreText || (lang === 'fr' ? "Lire l'article" : "Read Insight")}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
           </div>
         </article>
@@ -514,28 +547,26 @@ const getCleanSlug = (id: string) => id.split('/').pop()?.replace(/\.[^/.]+$/, "
 ```astro
 ---
 import { getEntry } from 'astro:content';
-// UX FIX: Incremented all paths to 3 levels up since this component is nested inside [lang]/data/
 import Layout from '../../../layouts/Layout.astro';
 import ExplorerSidebar from '../../../components/explorer/ExplorerSidebar.astro';
 import ExplorerHeader from '../../../components/explorer/ExplorerHeader.astro';
 import ExplorerGrid from '../../../components/explorer/ExplorerGrid.astro';
 
-// 1. Compile static routing fragments for both engine languages
+// 1. Structural change: Pass undefined for English so it compiles without a URL prefix
 export function getStaticPaths() {
   return [
-    { params: { lang: 'en' } },
-    { params: { lang: 'fr' } }
+    { params: { lang: undefined } }, // English maps to /data/explorer
+    { params: { lang: 'fr' } }        // French maps to /fr/data/explorer
   ];
 }
 
-const { lang } = Astro.params;
+// 2. Destructure with a fallback assignment to 'en' when the path parameter is undefined
+const { lang = 'en' } = Astro.params;
 const langPrefix = lang === 'en' ? '' : '/fr';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-// 2. Query localized page data dictionaries dynamically matching active paths
 const dataPage = await getEntry('pages', `${lang}/data`);
 
-// 🌟 FIX: Built comprehensive safety fallbacks to guarantee compile stability if keys aren't translated yet
 const explorerContent = dataPage?.data?.explorer || {
   pageTitle: "Data Explorer",
   backLink: "/data",
@@ -547,7 +578,8 @@ const explorerContent = dataPage?.data?.explorer || {
     baseline: "Baseline Cohort",
     searchPlaceholder: "Search variables...",
     tooltip: { title: "Data Notice", description: "De-identified records.", warning: "Protected asset." },
-    buttons: { reset: "Reset Filters", export: "Export Cohort" },
+    // UX FIX: Safely quoted the "export" keyword boundary to clear the parser compiler crash
+    buttons: { reset: "Reset Filters", "export": "Export Cohort" },
     tabs: { filters: "Filters", charts: "Active Charts" },
     visibility: { title: "Chart Visibility", all: "Show All", none: "Hide All" },
     status: { gateway: "API Status", syncing: "Synchronizing" }
@@ -557,7 +589,7 @@ const explorerContent = dataPage?.data?.explorer || {
 <Layout
   title={explorerContent.pageTitle}
   navType="minimal"
-  backLink={`${langPrefix}${explorerContent.backLink}`}
+  backLink={`${baseUrl}${langPrefix}${explorerContent.backLink}`}
   backText={explorerContent.backText}
   lang={lang}
 >
@@ -584,12 +616,9 @@ const explorerContent = dataPage?.data?.explorer || {
     />
 
     <main id="main-content-area" class="flex-1 p-6 lg:p-12 relative z-10 w-full overflow-x-hidden transition-all duration-500 origin-top">
-
       <div id="loading-overlay" class="absolute inset-0 z-50 bg-surface/80 backdrop-blur-md opacity-100 transition-all duration-700 ease-in-out"></div>
-
       <ExplorerHeader totalCountLabel={explorerContent.header.totalPatientsLabel} />
       <ExplorerGrid noResultsText={explorerContent.grid.noResultsText} />
-
     </main>
   </div>
 </Layout>
@@ -637,14 +666,15 @@ import Layout from '../../layouts/Layout.astro';
 
 export function getStaticPaths() {
   return [
-    { params: { lang: 'en' } },
-    { params: { lang: 'fr' } }
+    { params: { lang: undefined } }, // English maps to root (/data)
+    { params: { lang: 'fr' } }        // French maps to /fr/data
   ];
 }
 
-const { lang } = Astro.params;
+const { lang = 'en' } = Astro.params; // Default to 'en' when lang parameter is undefined
 const langPrefix = lang === 'en' ? '' : '/fr';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 
 const pageData = await getEntry('pages', `${lang}/data`);
 
@@ -897,22 +927,21 @@ const content = pageData?.data?.dataRequest || {
 ```astro
 ---
 import { getCollection, getEntry } from 'astro:content';
-// UX FIX: Adjusted relative paths because this file is now nested in [lang]/
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import TrustBar from '../../components/TrustBar.astro';
 
-// 1. Generate paths for both languages
 export function getStaticPaths() {
   return [
-    { params: { lang: 'en' } },
-    { params: { lang: 'fr' } }
+    { params: { lang: undefined } }, // English maps to root (/)
+    { params: { lang: 'fr' } }        // French maps to /fr
   ];
 }
 
-const { lang } = Astro.params;
+const { lang = 'en' } = Astro.params;
 const langPrefix = lang === 'en' ? '' : '/fr';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 
 // 2. Fetch the dynamically correct home data dictionary
 const homeData = await getEntry('pages', `${lang}/home`);
@@ -1134,21 +1163,20 @@ const getCleanSlug = (id: string) => id.split('/').pop()?.replace(/\.[^/.]+$/, "
 ```astro
 ---
 import { getEntry } from 'astro:content';
-// UX FIX: Bumped up relative imports since this file now lives deeper inside [lang]/
 import Layout from '../../layouts/Layout.astro';
 import TrustBar from '../../components/TrustBar.astro';
 
-// 1. Tell Astro to compile this route for both English and French instances
 export function getStaticPaths() {
   return [
-    { params: { lang: 'en' } },
-    { params: { lang: 'fr' } }
+    { params: { lang: undefined } }, // English maps to root (/participants)
+    { params: { lang: 'fr' } }        // French maps to /fr/participants
   ];
 }
 
-const { lang } = Astro.params;
+const { lang = 'en' } = Astro.params;
 const langPrefix = lang === 'en' ? '' : '/fr';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 
 // 2. Query localized data files dynamically based on active locale context parameters
 const pageData = await getEntry('pages', `${lang}/participants`);
@@ -1254,18 +1282,19 @@ const content = pageData?.data?.recruitmentData || {
 ```astro
 ---
 import { getEntry } from 'astro:content';
-// UX FIX: Adjusted relative path step up because this file is now nested inside the [lang] folder
 import Layout from '../../layouts/Layout.astro';
 
-// 1. Tell Astro to generate paths for both English and French instances
 export function getStaticPaths() {
   return [
-    { params: { lang: 'en' } },
-    { params: { lang: 'fr' } }
+    { params: { lang: undefined } }, // English maps to root (/privacy)
+    { params: { lang: 'fr' } }        // French maps to /fr/privacy
   ];
 }
 
-const { lang } = Astro.params;
+const { lang = 'en' } = Astro.params;
+const langPrefix = lang === 'en' ? '' : '/fr';
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 
 // 2. Fetch data dynamically based on the current locale parameter
 const pageData = await getEntry('pages', `${lang}/privacy`);
