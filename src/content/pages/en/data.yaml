@@ -52,27 +52,22 @@ dataRequest:
     title: "Live Data Explorer"
     description: "Visualize real-time clinical cohorts, demographic distributions, and sample metrics immediately through our zero-latency gateway. Filter and export aggregates on the fly."
     buttonText: "Launch Explorer"
-  accessRequirements:
-    title: "Access Requirements"
-    items:
+  applicationProcess:
+    title: "Application Process"
+    description: "Accessing BioPortal datasets requires strict institutional alignment. Please review the infrastructure requirements and download the official access request framework below."
+    requirementsTitle: "Requirements"
+    requirementsItems:
       - "Institutionally-approved REB/IRB documentation matching the target request."
       - "Executed Data Transfer Agreement (DTA) or institutional alignment contracts."
       - "Compliance with the BioPortal open science attribution framework."
-  infrastructure:
-    title: "Infrastructure Vetting"
-    description: "The infrastructure utilizes our custom-built interactive discovery platform and leverages high-performance computing networks provided by the <strong>Digital Research Alliance of Canada (AllianceCan)</strong> alongside a secure, private compute cluster at the <strong>Lady Davis Institute (LDI)</strong> for downstream processing operations."
-    tags:
+    infrastructureTitle: "Infrastructure Vetting"
+    infrastructureDescription: "The infrastructure utilizes our custom-built interactive discovery platform and leverages high-performance computing networks provided by the <strong>Digital Research Alliance of Canada (AllianceCan)</strong> alongside a secure, private compute cluster at the <strong>Lady Davis Institute (LDI)</strong> for downstream processing operations."
+    infrastructureTags:
       - "LDI Private Cluster"
       - "AllianceCan"
-  form:
+  actionBlock:
     title: "Request Data Access"
-    description: "Inquire about specific cohorts or request structural credentials to access full genomic and clinical datasets."
-    fields:
-      nameLabel: "Full Name"
-      namePlaceholder: "Jane Smith"
-      emailLabel: "Institutional Email"
-      emailPlaceholder: "jane.smith@mcgill.ca"
-      interestLabel: "Research Interest"
-      overviewLabel: "Brief Project Overview"
-      overviewPlaceholder: "Describe your intended scientific use of BioPortal datasets..."
-    buttonText: "Submit Access Inquiry"
+    description: "Download the official Data Access Form, complete all institutional signatures, and submit the finalized PDF to our administrative team."
+    downloadButtonText: "Download Access Form (.pdf)"
+    emailLabel: "Submit completed applications to:"
+    emailAddress: "access.bioportal@ladydavis.ca"

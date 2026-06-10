@@ -1,5 +1,5 @@
 # BioPortal Astro Architectural Context
-Generated on: Wed 10 Jun 2026 10:49:48 AM EDT
+Generated on: Wed 10 Jun 2026 03:51:03 PM EDT
 
 ---
 
@@ -12,7 +12,10 @@ Generated on: Wed 10 Jun 2026 10:49:48 AM EDT
 ├── astro.config.mjs
 ├── astro_project_context.md
 ├── english_translation_dump.txt
+├── english_yamls.cjs
+├── en_translation_dump.txt
 ├── fixcolors.sh
+├── fr_translation_dump.txt
 ├── gather_context.sh
 ├── generate_team.sh
 ├── load_npm.sh
@@ -33,7 +36,6 @@ Generated on: Wed 10 Jun 2026 10:49:48 AM EDT
 │   │   ├── Navbar.astro
 │   │   └── TrustBar.astro
 │   ├── content
-│   │   ├── f21-hind-lerhcha.yaml
 │   │   ├── news
 │   │   │   ├── en
 │   │   │   │   └── roche-partnership.md
@@ -86,19 +88,24 @@ Generated on: Wed 10 Jun 2026 10:49:48 AM EDT
 │   │           ├── 07-tobias-erlanger.yaml
 │   │           ├── 08-david-morrison.yaml
 │   │           ├── 09-mariana-pico.yaml
+│   │           ├── 10-issam-elkbaiche.yaml
+│   │           ├── 11-darin-adra.yaml
+│   │           ├── 12-mariana-jaime.yaml
 │   │           ├── 13-corinne-pirici.yaml
 │   │           ├── 14-mina-nikkhah.yaml
 │   │           ├── 15-zaman-afrasiabi.yaml
 │   │           ├── 16-cesar-peralta.yaml
 │   │           ├── 18-jonafe-daguplo.yaml
-│   │           └── 20-jesse-islam.yaml
+│   │           ├── 20-jesse-islam.yaml
+│   │           ├── 21-hind-lerhcha.yaml
+│   │           └── 22-shirlyn-cabilin.yaml
 │   ├── content.config.ts
 │   ├── layouts
 │   │   └── Layout.astro
 │   ├── one_off_scripts
 │   │   └── convert_image_to_webp.R
 │   ├── pages
-│   │   └── [lang]
+│   │   └── [...lang]
 │   │       ├── data
 │   │       │   └── explorer.astro
 │   │       ├── data.astro
@@ -114,10 +121,11 @@ Generated on: Wed 10 Jun 2026 10:49:48 AM EDT
 │   │   └── global.css
 │   └── types.d.ts
 ├── tsconfig.json
+├── update_french_team_names.cjs
 ├── write_french_translations.sh
 └── yaml_gather_context.sh
 
-23 directories, 88 files
+23 directories, 96 files
 ```
 
 ---
@@ -374,7 +382,7 @@ export const collections = { pages, team, news };
 ---
 
 ## 🏗️ Structural Layouts, Pages, Components & Styles
-### 🧩 File: `src/pages/[lang]/news/[id].astro`
+### 🧩 File: `src/pages/[...lang]/news/[id].astro`
 ```astro
 ---
 import { getCollection, getEntry, render } from 'astro:content';
@@ -469,7 +477,7 @@ const backToNewsText = newsPageData?.data?.backToNewsText || (lang === 'fr' ? 'R
 
 ```
 
-### 🧩 File: `src/pages/[lang]/news/index.astro`
+### 🧩 File: `src/pages/[...lang]/news/index.astro`
 ```astro
 ---
 import { getCollection, getEntry } from 'astro:content';
@@ -543,7 +551,7 @@ const getCleanSlug = (id: string) => id.split('/').pop()?.replace(/\.[^/.]+$/, "
 
 ```
 
-### 🧩 File: `src/pages/[lang]/data/explorer.astro`
+### 🧩 File: `src/pages/[...lang]/data/explorer.astro`
 ```astro
 ---
 import { getEntry } from 'astro:content';
@@ -562,8 +570,6 @@ export function getStaticPaths() {
 
 // 2. Destructure with a fallback assignment to 'en' when the path parameter is undefined
 const { lang = 'en' } = Astro.params;
-const langPrefix = lang === 'en' ? '' : '/fr';
-const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const dataPage = await getEntry('pages', `${lang}/data`);
 
@@ -589,7 +595,7 @@ const explorerContent = dataPage?.data?.explorer || {
 <Layout
   title={explorerContent.pageTitle}
   navType="minimal"
-  backLink={`${baseUrl}${langPrefix}${explorerContent.backLink}`}
+  backLink={explorerContent.backLink}
   backText={explorerContent.backText}
   lang={lang}
 >
@@ -658,7 +664,7 @@ const explorerContent = dataPage?.data?.explorer || {
 
 ```
 
-### 🧩 File: `src/pages/[lang]/data.astro`
+### 🧩 File: `src/pages/[...lang]/data.astro`
 ```astro
 ---
 import { getEntry } from 'astro:content';
@@ -671,10 +677,9 @@ export function getStaticPaths() {
   ];
 }
 
-const { lang = 'en' } = Astro.params; // Default to 'en' when lang parameter is undefined
+const { lang = 'en' } = Astro.params;
 const langPrefix = lang === 'en' ? '' : '/fr';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
-
 
 const pageData = await getEntry('pages', `${lang}/data`);
 
@@ -684,22 +689,30 @@ const metrics = pageData?.data?.landingMetrics || {
   clinicalVariablesLabel: "Clinical Variables",
   proteomicsLabel: "Proteomic Profiles",
   biosamplesLabel: "Matched Biosamples",
-  fallbackValues: {
-    participants: "...",
-    clinicalVariables: "...",
-    proteomics: "...",
-    biosamples: "..."
-  }
+  fallbackValues: { participants: "...", clinicalVariables: "...", proteomics: "...", biosamples: "..." }
 };
 
-// 🌟 FIX: Defensive boundaries to stop undefined property crashes if a YAML file is missing keys
+// 🌟 FIX: Updated defensive boundaries to match the new PDF download architecture
 const content = pageData?.data?.dataRequest || {
   pageTitle: "Datasets",
   backText: "Back",
   explorerCard: { tag: "App", title: "Explorer", description: "Explore datasets", buttonText: "Open Explorer" },
-  accessRequirements: { title: "Requirements", items: [] },
-  infrastructure: { title: "Infrastructure", description: "", tags: [] },
-  form: { title: "Request Data", description: "", buttonText: "Submit", fields: { nameLabel: "Name", namePlaceholder: "", emailLabel: "Email", emailPlaceholder: "", interestLabel: "Interest", overviewLabel: "Overview", overviewPlaceholder: "" } }
+  applicationProcess: {
+    title: "Application Process",
+    description: "",
+    requirementsTitle: "Requirements",
+    requirementsItems: [],
+    infrastructureTitle: "Infrastructure",
+    infrastructureDescription: "",
+    infrastructureTags: []
+  },
+  actionBlock: {
+    title: "Request Data",
+    description: "",
+    downloadButtonText: "Download Form",
+    emailLabel: "Submit to:",
+    emailAddress: "access.bioportal@ladydavis.ca"
+  }
 };
 ---
 <Layout title={content.pageTitle} navType="minimal" backText={content.backText} lang={lang}>
@@ -714,7 +727,6 @@ const content = pageData?.data?.dataRequest || {
 
     <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 mb-16 items-stretch">
       <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
-
         <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
             <h3 id="metric-participants" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep h-12 lg:h-14 flex items-center">
               <div class="live-stat-loader flex items-center gap-1.5 pt-1">
@@ -762,7 +774,6 @@ const content = pageData?.data?.dataRequest || {
             </h3>
             <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.biosamplesLabel}</p>
         </div>
-
       </div>
 
       <div class="lg:col-span-5 bp-frosted-gradient rounded-[2rem] p-10 border border-white/60 shadow-2xl shadow-brand-blue-deep/5 flex flex-col justify-between relative overflow-hidden group">
@@ -779,71 +790,58 @@ const content = pageData?.data?.dataRequest || {
       </div>
     </div>
 
-    <div class="grid lg:grid-cols-12 gap-8 items-start">
-      <div class="lg:col-span-5 space-y-6">
+    <div class="grid lg:grid-cols-12 gap-8 items-stretch">
+      <div class="lg:col-span-7 bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-soft h-full flex flex-col">
+        <h2 class="text-3xl font-black text-brand-dark mb-4">{content.applicationProcess.title}</h2>
+        <p class="text-gray-500 mb-8 leading-relaxed font-medium text-lg">{content.applicationProcess.description}</p>
 
-        <div class="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-soft">
-          <h3 class="text-xl font-bold mb-5 flex items-center gap-3 text-gray-900">
-            <span class="w-8 h-8 rounded-full bg-brand-teal/20 flex items-center justify-center">
-              <svg class="w-4 h-4 text-brand-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-            </span>
-            {content.accessRequirements.title}
-          </h3>
-          <ul class="space-y-4 text-sm text-gray-600 font-medium">
-            {content.accessRequirements.items?.map((item: string, index: number) => (
-              <li class="flex items-start gap-3"><span class="text-brand-teal font-black mt-0.5">0{index + 1}</span><span class="leading-relaxed">{item}</span></li>
-            ))}
-          </ul>
-        </div>
+        <div class="flex-grow space-y-8">
+          <div>
+            <h3 class="text-lg font-bold mb-4 flex items-center gap-3 text-gray-900">
+              <span class="w-8 h-8 rounded-full bg-brand-teal/20 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-brand-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+              </span>
+              {content.applicationProcess.requirementsTitle}
+            </h3>
+            <ul class="space-y-3 text-sm text-gray-600 font-medium ml-11">
+              {content.applicationProcess.requirementsItems?.map((item: string, index: number) => (
+                <li class="flex items-start gap-3"><span class="text-brand-teal font-black mt-0.5 opacity-60">0{index + 1}</span><span class="leading-relaxed">{item}</span></li>
+              ))}
+            </ul>
+          </div>
 
-        <div class="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-soft">
-          <h3 class="text-xl font-bold text-gray-900 mb-4">{content.infrastructure.title}</h3>
-          <p class="text-sm text-gray-500 leading-relaxed mb-6" set:html={content.infrastructure.description}></p>
-          <div class="flex flex-wrap gap-2">
-            {content.infrastructure.tags?.map((tag: string) => (
-              <span class="px-3 py-1.5 rounded-lg bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-widest">{tag}</span>
-            ))}
+          <div class="pt-6 border-t border-gray-100">
+            <h3 class="text-lg font-bold text-gray-900 mb-3">{content.applicationProcess.infrastructureTitle}</h3>
+            <p class="text-sm text-gray-500 leading-relaxed mb-4" set:html={content.applicationProcess.infrastructureDescription}></p>
+            <div class="flex flex-wrap gap-2">
+              {content.applicationProcess.infrastructureTags?.map((tag: string) => (
+                <span class="px-3 py-1.5 rounded-lg bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-widest">{tag}</span>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="lg:col-span-7">
-        <div class="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-brand-blue-deep/5 border border-gray-100 h-full">
-          <h2 class="text-3xl font-black text-brand-dark mb-2">{content.form.title}</h2>
-          <p class="text-gray-500 mb-8 text-sm leading-relaxed font-medium">{content.form.description}</p>
+      <div class="lg:col-span-5 bg-gradient-to-br from-brand-blue-deep to-brand-dark rounded-[2.5rem] p-10 shadow-2xl text-white flex flex-col justify-center relative overflow-hidden group">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+        <div class="relative z-10">
+          <span class="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center mb-6 border border-white/20">
+            <svg class="w-8 h-8 text-brand-green-bright" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          </span>
+          <h2 class="text-3xl font-black mb-3">{content.actionBlock.title}</h2>
+          <p class="text-white/80 mb-8 text-sm leading-relaxed font-medium">{content.actionBlock.description}</p>
 
-          <form class="space-y-6">
-            <div class="grid md:grid-cols-2 gap-6">
-              <div>
-                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields?.nameLabel}</label>
-                <input type="text" placeholder={content.form.fields?.namePlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-inner" />
-              </div>
-              <div>
-                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields?.emailLabel}</label>
-                <input type="email" placeholder={content.form.fields?.emailPlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-inner" />
-              </div>
-            </div>
+          <a href="https://github.com/bio-portal/mybioportal_frontend/blob/main/public/docs/BIO-PORTAL-Data-Access-Form.Feb-23-2026-2.pdf?raw=true" target="_blank" rel="noopener noreferrer" class="w-full py-4 rounded-xl bg-brand-green-bright text-white font-bold text-sm tracking-wide shadow-lg hover:shadow-brand-green-bright/50 hover:-translate-y-1 transition-all flex items-center justify-center gap-3 cursor-pointer mb-8">
+            {content.actionBlock.downloadButtonText}
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          </a>
 
-            <div>
-              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields?.interestLabel}</label>
-              <select class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium appearance-none cursor-pointer shadow-inner">
-                <option>Diabetes & Endocrinology</option>
-                <option>Proteomics & Biomarkers</option>
-                <option>Genomics & Rare Variants</option>
-                <option>Other / Multi-Omics</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields?.overviewLabel}</label>
-              <textarea rows="4" placeholder={content.form.fields?.overviewPlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium resize-none shadow-inner"></textarea>
-            </div>
-
-            <button type="button" class="w-full py-4 rounded-xl bg-brand-blue-deep text-white font-bold text-sm uppercase tracking-widest shadow-lg shadow-brand-blue-deep/20 hover:bg-brand-dark hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3 cursor-pointer mt-4">
-              {content.form.buttonText}
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-            </button>
-          </form>
+          <div class="pt-6 border-t border-white/10">
+            <p class="text-[10px] uppercase tracking-widest font-bold text-white/50 mb-1">{content.actionBlock.emailLabel}</p>
+            <a href={`mailto:${content.actionBlock.emailAddress}`} class="text-lg font-bold text-white hover:text-brand-green-bright transition-colors">
+              {content.actionBlock.emailAddress}
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -851,6 +849,7 @@ const content = pageData?.data?.dataRequest || {
 </Layout>
 
 <script>
+  // Keep your exact existing API script logic here
   const API_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats";
   const METADATA_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats?type=metadata";
 
@@ -868,7 +867,6 @@ const content = pageData?.data?.dataRequest || {
 
       const sexStat = statsArray.find((s: any) => s.chart_id === 'sex');
       const liveParticipants = sexStat?.data.reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
-
       const liveVariables = metaArray.length || 0;
 
       const proteomicStat = statsArray.find((s: any) => s.chart_id === 'n_proteomics');
@@ -889,7 +887,6 @@ const content = pageData?.data?.dataRequest || {
         if (container && value > 0) {
           const loader = container.querySelector('.live-stat-loader') as HTMLElement;
           const valueText = container.querySelector('.live-stat-value') as HTMLElement;
-
           if (loader) loader.style.display = 'none';
           if (valueText) {
             valueText.innerHTML = value.toLocaleString(targetLocale);
@@ -923,7 +920,7 @@ const content = pageData?.data?.dataRequest || {
 
 ```
 
-### 🧩 File: `src/pages/[lang]/index.astro`
+### 🧩 File: `src/pages/[...lang]/index.astro`
 ```astro
 ---
 import { getCollection, getEntry } from 'astro:content';
@@ -1159,7 +1156,7 @@ const getCleanSlug = (id: string) => id.split('/').pop()?.replace(/\.[^/.]+$/, "
 
 ```
 
-### 🧩 File: `src/pages/[lang]/participants.astro`
+### 🧩 File: `src/pages/[...lang]/participants.astro`
 ```astro
 ---
 import { getEntry } from 'astro:content';
@@ -1278,7 +1275,7 @@ const content = pageData?.data?.recruitmentData || {
 
 ```
 
-### 🧩 File: `src/pages/[lang]/privacy.astro`
+### 🧩 File: `src/pages/[...lang]/privacy.astro`
 ```astro
 ---
 import { getEntry } from 'astro:content';
@@ -1406,9 +1403,9 @@ const langPrefix = lang === 'en' ? '' : '/fr';
 
 // 3. Localized translation mappings for hardcoded interface items
 const labels = lang === 'fr' ? {
-  joinText: "Rejoindre l'étude",
+  joinText: "Participer",
   joinTooltip: "Inscrivez-vous pour contribuer en toute sécurité à nos cohortes de recherche basées à Montréal en fournissant des échantillons biologiques et des données cliniques.",
-  requestText: "Demander des données",
+  requestText: "Accès données",
   requestTooltip: "Accédez à notre portail sécurisé pour explorer les ensembles de données anonymisés et demander du matériel biologique pour vos recherches."
 } : {
   joinText: "Join Study",
@@ -1602,33 +1599,35 @@ const {
   backLink = '/',
   backText = 'Back',
   navData,
-  lang = 'en' // 1. Catch the active language token from the parent layout
+  lang = 'en'
 } = Astro.props;
 
-// 2. Establish context-aware link path modifiers
 const langPrefix = lang === 'en' ? '' : '/fr';
-
-// 3. Compute the reverse language path pairing for the switcher link
 const currentPathname = Astro.url.pathname;
-const toggleLang = lang === 'en' ? 'fr' : 'en';
 
+// Cleanly isolate the underlying path regardless of whether the user is on the English or French route
 const relativePath = currentPathname.startsWith(baseUrl)
   ? currentPathname.slice(baseUrl.length)
   : currentPathname;
 
 const cleanRootPath = relativePath.replace(/^\/fr(\/|$)/, '/');
 
-const switchTargetUrl = toggleLang === 'fr'
-  ? `${baseUrl}/fr${cleanRootPath === '/' ? '' : cleanRootPath}`
-  : `${baseUrl}${cleanRootPath}`;
+// Calculate absolute target destinations for both buttons
+const enUrl = `${baseUrl}${cleanRootPath}`.replace(/\/+/g, '/');
+const frUrl = `${baseUrl}/fr${cleanRootPath === '/' ? '' : cleanRootPath}`.replace(/\/+/g, '/');
+
+// UTILITY: Safely concatenate and normalize any array of URL parts
+const buildUrl = (...parts: (string | undefined)[]) => {
+  return parts.filter(Boolean).join('/').replace(/\/+/g, '/');
+};
 ---
 <nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300" data-cta-mode={ctaMode}>
   <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
 
-    <a href={`${baseUrl}${langPrefix}/`} class="flex items-center shrink-0 z-50 h-fit max-h-16 py-2 outline-none">
+    <a href={buildUrl(baseUrl, langPrefix, '/')} class="flex items-center shrink-0 z-50 h-fit max-h-16 py-2 outline-none">
       <img
-        src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
-        alt={navData.logoAlt}
+        src={buildUrl(baseUrl, '/logos/BioPortal_Primary_Color.svg')}
+        alt={navData?.logoAlt || "BioPortal Logo"}
         class="h-10 md:h-11 w-auto shrink-0 hover:-translate-y-0.5 transition-transform object-contain"
         onerror="this.style.display='none'"
       />
@@ -1637,64 +1636,71 @@ const switchTargetUrl = toggleLang === 'fr'
     {type === 'main' ? (
       <>
         <div id="nav-cta-group" class={`absolute left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-4 transition-all duration-500 ease-out ${ctaMode === 'scroll' ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}>
-          <a href={`${baseUrl}${langPrefix}${navData.ctaButtons.primary.href}`} class="px-5 py-2 rounded-full border-2 border-brand-green-bright text-brand-green-bright text-xs font-bold hover:bg-brand-green-bright hover:text-white transition-all bg-white">
-            {navData.ctaButtons.primary.label}
+          <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.primary?.href)} class="px-5 py-2 rounded-full border-2 border-brand-green-bright text-brand-green-bright text-xs font-bold hover:bg-brand-green-bright hover:text-white transition-all bg-white">
+            {navData?.ctaButtons?.primary?.label}
           </a>
-          <a href={`${baseUrl}${langPrefix}${navData.ctaButtons.secondary.href}`} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white">
-            {navData.ctaButtons.secondary.label}
+          <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.secondary?.href)} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white">
+            {navData?.ctaButtons?.secondary?.label}
           </a>
         </div>
 
         <div class="hidden lg:flex items-center space-x-8 font-medium text-sm ml-auto">
-          {navData.links.map((link: any) => (
-            <a href={`${baseUrl}${langPrefix}${link.href}`} class="text-gray-500 hover:text-brand-dark transition-colors">{link.label}</a>
+          {navData?.links?.map((link: any) => (
+            <a href={buildUrl(baseUrl, langPrefix, link.href)} class="text-gray-500 hover:text-brand-dark transition-colors">{link.label}</a>
           ))}
 
-          <a
-            href={switchTargetUrl}
-            class="text-[11px] font-black tracking-wider text-brand-dark border-2 border-gray-100 px-3 py-1.5 rounded-full bg-white shadow-sm hover:border-brand-blue-deep hover:text-brand-blue-deep transition-all uppercase select-none"
-          >
-            {toggleLang}
-          </a>
+          <div class="flex items-center gap-1 bg-gray-100/80 p-1 rounded-full border border-gray-200/40 shadow-inner select-none ml-4">
+            <a href={enUrl} class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'en' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>EN</a>
+            <a href={frUrl} class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'fr' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>FR</a>
+          </div>
         </div>
 
-        <button id="mobile-menu-toggle" class="lg:hidden text-brand-dark p-2 -mr-2 focus:outline-none z-50">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        <button id="mobile-menu-toggle" aria-label="Toggle mobile menu" aria-expanded="false" class="lg:hidden text-brand-dark p-2 -mr-2 focus:outline-none z-50 transition-transform duration-300">
+           <svg id="icon-menu" class="w-6 h-6 transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          <svg id="icon-close" class="w-6 h-6 hidden transition-opacity duration-300 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
 
-        <div id="mobile-menu-panel" class="absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-2xl hidden flex-col px-6 py-8 space-y-6 lg:hidden">
-          {navData.links.map((link: any) => (
-            <a href={`${baseUrl}${langPrefix}${link.href}`} class="mobile-link text-brand-dark font-extrabold text-xl">{link.label}</a>
+        <div id="mobile-menu-panel" class="absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-2xl hidden flex-col px-6 py-8 space-y-6 lg:hidden opacity-0 translate-y-[-10px] transition-all duration-300 pointer-events-none">
+          {navData?.links?.map((link: any) => (
+            <a href={buildUrl(baseUrl, langPrefix, link.href)} class="mobile-link text-brand-dark font-extrabold text-xl">{link.label}</a>
           ))}
 
           <div class="flex items-center justify-between pt-2">
             <span class="text-xs uppercase tracking-widest font-bold text-gray-400">Language / Langue</span>
-            <a
-              href={switchTargetUrl}
-              class="text-xs font-black tracking-widest text-brand-blue-deep border border-brand-blue-deep/20 px-4 py-2 rounded-xl bg-brand-blue-deep/5 uppercase"
-            >
-              Voir en {toggleLang}
-            </a>
+            <div class="flex items-center gap-1 bg-gray-100/80 p-1 rounded-full border border-gray-200/40 shadow-inner select-none">
+              <a href={enUrl} class={`px-4 py-1.5 text-xs font-black rounded-full tracking-wider transition-all ${lang === 'en' ? 'bg-white text-brand-blue-deep shadow-sm' : 'text-gray-400'}`}>EN</a>
+              <a href={frUrl} class={`px-4 py-1.5 text-xs font-black rounded-full tracking-wider transition-all ${lang === 'fr' ? 'bg-white text-brand-blue-deep shadow-sm' : 'text-gray-400'}`}>FR</a>
+            </div>
           </div>
 
           <hr class="border-gray-100" />
           <div class="flex flex-col gap-3">
-            <a href={`${baseUrl}${langPrefix}${navData.ctaButtons.primary.href}`} class="w-full text-center py-4 rounded-xl bg-brand-green-bright text-white font-bold shadow-md shadow-brand-green-bright/20">{navData.ctaButtons.primary.label}</a>
-            <a href={`${baseUrl}${langPrefix}${navData.ctaButtons.secondary.href}`} class="w-full text-center py-4 rounded-xl bg-brand-blue-deep text-white font-bold shadow-md shadow-brand-blue-deep/20">{navData.ctaButtons.secondary.label}</a>
+            <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.primary?.href)} class="w-full text-center py-4 rounded-xl bg-brand-green-bright text-white font-bold shadow-md shadow-brand-green-bright/20">{navData?.ctaButtons?.primary?.label}</a>
+            <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.secondary?.href)} class="w-full text-center py-4 rounded-xl bg-brand-blue-deep text-white font-bold shadow-md shadow-brand-blue-deep/20">{navData?.ctaButtons?.secondary?.label}</a>
           </div>
         </div>
       </>
     ) : (
-      <a href={`${baseUrl}${langPrefix}${backLink}`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2 ml-auto z-50">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        {backText}
-      </a>
+      <div class="flex items-center gap-6 ml-auto z-50">
+        <div class="flex items-center gap-1 bg-gray-100/80 p-1 rounded-full border border-gray-200/40 shadow-inner select-none">
+          <a href={enUrl} class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'en' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>EN</a>
+          <a href={frUrl} class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'fr' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>FR</a>
+        </div>
+
+        <div class="h-4 w-px bg-gray-200"></div>
+
+        <a href={buildUrl(baseUrl, langPrefix, backLink)} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          {backText}
+        </a>
+      </div>
     )}
   </div>
 </nav>
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    // --- Scroll CTA Logic ---
     const nav = document.querySelector('nav[data-cta-mode="scroll"]');
     if (nav) {
       const navCtaGroup = nav.querySelector('#nav-cta-group');
@@ -1721,23 +1727,51 @@ const switchTargetUrl = toggleLang === 'fr'
       handleScroll();
     }
 
+    // --- Mobile Menu Toggle Logic with Animations ---
     const mobileToggle = document.getElementById('mobile-menu-toggle');
     const mobilePanel = document.getElementById('mobile-menu-panel');
+    const iconMenu = document.getElementById('icon-menu');
+    const iconClose = document.getElementById('icon-close');
     const mobileLinks = document.querySelectorAll('.mobile-link');
 
-    if (mobileToggle && mobilePanel) {
-      mobileToggle.addEventListener('click', () => {
-        mobilePanel.classList.toggle('hidden');
-        mobilePanel.classList.toggle('flex');
-      });
+    const toggleMenu = () => {
+      if(!mobilePanel || !mobileToggle || !iconMenu || !iconClose) return;
 
-      mobileLinks.forEach(link => {
-        link.addEventListener('click', () => {
-          mobilePanel.classList.add('hidden');
-          mobilePanel.classList.remove('flex');
-        });
-      });
+      const isExpanded = mobileToggle.getAttribute('aria-expanded') === 'true';
+      mobileToggle.setAttribute('aria-expanded', String(!isExpanded));
+
+      if (!isExpanded) {
+        // Open
+        mobilePanel.classList.remove('hidden');
+        // Force reflow for transition
+        void mobilePanel.offsetWidth;
+        mobilePanel.classList.remove('opacity-0', 'translate-y-[-10px]', 'pointer-events-none');
+        iconMenu.classList.add('hidden');
+        iconClose.classList.remove('hidden');
+        mobileToggle.classList.add('rotate-90');
+      } else {
+        // Close
+        mobilePanel.classList.add('opacity-0', 'translate-y-[-10px]', 'pointer-events-none');
+        iconClose.classList.add('hidden');
+        iconMenu.classList.remove('hidden');
+        mobileToggle.classList.remove('rotate-90');
+
+        // Wait for animation to finish before applying display:none
+        setTimeout(() => {
+          if(mobileToggle.getAttribute('aria-expanded') === 'false') {
+             mobilePanel.classList.add('hidden');
+          }
+        }, 300);
+      }
+    };
+
+    if (mobileToggle) {
+      mobileToggle.addEventListener('click', toggleMenu);
     }
+
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', toggleMenu);
+    });
   });
 </script>
 

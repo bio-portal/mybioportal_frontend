@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const teamDir = path.join(__dirname, 'src', 'content', 'team', 'fr');
+const teamDir = path.join(__dirname, 'src', 'content', 'team', 'en');
 
 // Ensure the target directory exists
 if (!fs.existsSync(teamDir)) {

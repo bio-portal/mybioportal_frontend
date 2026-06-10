@@ -2,12 +2,12 @@ id: "data"
 hero:
   tagline: "Science ouverte et analyse de cohortes"
   headline: "Ensembles de données de population BioPortal"
-  description: "Accédez à des cohortes de recherche profondément phénotypées, explorez les distributions d'échantillons multi-omiques et demandez du matériel biologique sécurisé pour des enquêtes scientifiques approuvées."
+  description: "Accédez à des cohortes de recherche au phénotypage approfondi, explorez les distributions d'échantillons multi-omiques et demandez du matériel biologique sécurisé pour des enquêtes scientifiques approuvées."
 landingMetrics:
   participantsLabel: "Total des participants"
   clinicalVariablesLabel: "Variables cliniques"
   proteomicsLabel: "Profils protéomiques"
-  biosamplesLabel: "Échantillons biologiques appariés"
+  biosamplesLabel: "Échantillons biologiques"
   fallbackValues:
     participants: "6,648"
     clinicalVariables: "158"
@@ -17,7 +17,7 @@ landingMetrics:
 explorer:
   pageTitle: "Explorateur de données interactif | BioPortal"
   backLink: "/data"
-  backText: "Retour à la demande de données"
+  backText: "Retour à l'accès aux données"
   header:
     totalPatientsLabel: "Total des patients"
   grid:
@@ -28,10 +28,10 @@ explorer:
     searchPlaceholder: "Rechercher des cohortes ou des métriques..."
     tooltip:
       title: "Découverte de cohortes"
-      description: "Cliquez directement sur n'importe quel segment de graphique ou attribut de la barre latérale pour isoler une sous-population. Vous pouvez affiner la disposition des graphiques en cliquant sur les étiquettes de légende pour basculer des variables spécifiques."
-      warning: "Pour garantir la précision et préserver la confidentialité, l'explorateur met à jour les métriques de population en utilisant une seule condition de filtre active à la fois."
+      description: "Cliquez directement sur n'importe quel segment de graphique ou attribut de la barre latérale pour isoler une sous-population. Vous pouvez affiner la disposition en cliquant sur les étiquettes de légende."
+      warning: "Pour garantir la précision et préserver la confidentialité, l'explorateur met à jour les métriques de population en utilisant une seule condition de filtre à la fois."
     buttons:
-      reset: "Réinitialiser les filtres"
+      reset: "Réinitialiser"
       export: "Exporter en CSV"
     tabs:
       filters: "Filtres"
@@ -52,27 +52,22 @@ dataRequest:
     title: "Explorateur de données en direct"
     description: "Visualisez en temps réel les cohortes cliniques, les distributions démographiques et les métriques d'échantillons grâce à notre passerelle sans latence. Filtrez et exportez des agrégats à la volée."
     buttonText: "Lancer l'explorateur"
-  accessRequirements:
-    title: "Exigences d'accès"
-    items:
-      - "Documentation du CER/CÉR approuvée par l'établissement correspondant à la demande ciblée."
+  applicationProcess:
+    title: "Processus de demande"
+    description: "L'accès aux ensembles de données de BioPortal exige un alignement institutionnel strict. Veuillez consulter les exigences en matière d'infrastructure et télécharger le cadre de demande d'accès officiel ci-dessous."
+    requirementsTitle: "Exigences"
+    requirementsItems:
+      - "Documentation du CÉR (Comité d'éthique de la recherche) approuvée par l'établissement et correspondant à la demande."
       - "Accord de transfert de données (ATD) ou contrats d'alignement institutionnel signés."
       - "Conformité au cadre d'attribution de la science ouverte de BioPortal."
-  infrastructure:
-    title: "Vérification de l'infrastructure"
-    description: "L'infrastructure utilise notre plateforme de découverte interactive sur mesure et s'appuie sur les réseaux informatiques haute performance fournis par l'<strong>Alliance de recherche numérique du Canada (AllianceCan)</strong>, ainsi que sur une grappe de calcul privée et sécurisée à l'<strong>Institut de recherche Lady Davis (IRLD)</strong> pour les opérations de traitement en aval."
-    tags:
+    infrastructureTitle: "Vérification de l'infrastructure"
+    infrastructureDescription: "L'infrastructure utilise notre plateforme de découverte interactive sur mesure et s'appuie sur les réseaux informatiques haute performance de l'<strong>Alliance de recherche numérique du Canada (AllianceCan)</strong>, ainsi que sur une grappe de calcul privée et sécurisée à l'<strong>Institut de recherche Lady Davis (IRLD)</strong>."
+    infrastructureTags:
       - "Grappe privée IRLD"
       - "AllianceCan"
-  form:
+  actionBlock:
     title: "Demander l'accès aux données"
-    description: "Renseignez-vous sur des cohortes spécifiques ou demandez des identifiants structurels pour accéder à des ensembles de données génomiques et cliniques complets."
-    fields:
-      nameLabel: "Nom complet"
-      namePlaceholder: "Dre Jane Smith"
-      emailLabel: "Courriel institutionnel"
-      emailPlaceholder: "jane.smith@mcgill.ca"
-      interestLabel: "Intérêt de recherche"
-      overviewLabel: "Bref aperçu du projet"
-      overviewPlaceholder: "Décrivez votre utilisation scientifique prévue des ensembles de données BioPortal..."
-    buttonText: "Soumettre la demande d'accès"
+    description: "Téléchargez le formulaire officiel de demande d'accès aux données, obtenez toutes les signatures institutionnelles nécessaires, et soumettez le PDF finalisé à notre équipe administrative."
+    downloadButtonText: "Télécharger le formulaire (.pdf)"
+    emailLabel: "Soumettre les demandes complétées à :"
+    emailAddress: "access.bioportal@ladydavis.ca"

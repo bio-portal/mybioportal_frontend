@@ -93,13 +93,27 @@ const pages = defineCollection({
     fallbackImageAlt: z.string().optional(),
 
     // --- DATA REQUEST & RECRUITMENT SPECIFIC ---
+    // 🌟 FIX: Updated to match the new PDF application process structure
     dataRequest: z.object({
       pageTitle: z.string(),
       backText: z.string(),
       explorerCard: z.any(),
-      accessRequirements: z.any(),
-      infrastructure: z.any(),
-      form: z.any()
+      applicationProcess: z.object({
+        title: z.string(),
+        description: z.string(),
+        requirementsTitle: z.string(),
+        requirementsItems: z.array(z.string()),
+        infrastructureTitle: z.string(),
+        infrastructureDescription: z.string(),
+        infrastructureTags: z.array(z.string()),
+      }),
+      actionBlock: z.object({
+        title: z.string(),
+        description: z.string(),
+        downloadButtonText: z.string(),
+        emailLabel: z.string(),
+        emailAddress: z.string(),
+      })
     }).optional(),
 
     recruitmentData: z.object({
@@ -152,20 +166,18 @@ const pages = defineCollection({
 });
 
 const team = defineCollection({
-  // UPDATED: Captures dynamic entries inside language folders (e.g., team/fr/01-brent.yaml)
   loader: glob({ pattern: "**/*.{yaml,yml}", base: "./src/content/team" }),
   schema: z.object({
     name: z.string(),
     role: z.string(),
     image: z.string().optional(),
     order: z.number(),
-    group: z.string(), // 'governing' or 'recruitment'
+    group: z.string(),
     bio: z.string(),
   }),
 });
 
 const news = defineCollection({
-  // UPDATED: Tracks translated markdown posts (e.g., news/fr/roche-partnership.md)
   loader: glob({ pattern: "**/*.md", base: "./src/content/news" }),
   schema: z.object({
     title: z.string(),
