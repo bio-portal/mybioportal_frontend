@@ -7,25 +7,22 @@ const {
   backLink = '/',
   backText = 'Back',
   navData,
-  lang = 'en' // 1. Catch the active language token from the parent layout
+  lang = 'en'
 } = Astro.props;
 
-// 2. Establish context-aware link path modifiers
 const langPrefix = lang === 'en' ? '' : '/fr';
-
-// 3. Compute the reverse language path pairing for the switcher link
 const currentPathname = Astro.url.pathname;
-const toggleLang = lang === 'en' ? 'fr' : 'en';
 
+// Cleanly isolate the underlying path regardless of whether the user is on the English or French route
 const relativePath = currentPathname.startsWith(baseUrl)
   ? currentPathname.slice(baseUrl.length)
   : currentPathname;
 
 const cleanRootPath = relativePath.replace(/^\/fr(\/|$)/, '/');
 
-const switchTargetUrl = toggleLang === 'fr'
-  ? `${baseUrl}/fr${cleanRootPath === '/' ? '' : cleanRootPath}`
-  : `${baseUrl}${cleanRootPath}`;
+// Calculate absolute target destinations for both buttons
+const enUrl = `${baseUrl}${cleanRootPath}`.replace(/\/+/g, '/');
+const frUrl = `${baseUrl}/fr${cleanRootPath === '/' ? '' : cleanRootPath}`.replace(/\/+/g, '/');
 ---
 <nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300" data-cta-mode={ctaMode}>
   <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
@@ -33,7 +30,7 @@ const switchTargetUrl = toggleLang === 'fr'
     <a href={`${baseUrl}${langPrefix}/`} class="flex items-center shrink-0 z-50 h-fit max-h-16 py-2 outline-none">
       <img
         src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
-        alt={navData.logoAlt}
+        alt={navData?.logoAlt || "BioPortal Logo"}
         class="h-10 md:h-11 w-auto shrink-0 hover:-translate-y-0.5 transition-transform object-contain"
         onerror="this.style.display='none'"
       />
@@ -55,12 +52,10 @@ const switchTargetUrl = toggleLang === 'fr'
             <a href={`${baseUrl}${langPrefix}${link.href}`} class="text-gray-500 hover:text-brand-dark transition-colors">{link.label}</a>
           ))}
 
-          <a
-            href={switchTargetUrl}
-            class="text-[11px] font-black tracking-wider text-brand-dark border-2 border-gray-100 px-3 py-1.5 rounded-full bg-white shadow-sm hover:border-brand-blue-deep hover:text-brand-blue-deep transition-all uppercase select-none"
-          >
-            {toggleLang}
-          </a>
+          <div class="flex items-center gap-1 bg-gray-100/80 p-1 rounded-full border border-gray-200/40 shadow-inner select-none ml-4">
+            <a href={enUrl} class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'en' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>EN</a>
+            <a href={frUrl} class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'fr' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>FR</a>
+          </div>
         </div>
 
         <button id="mobile-menu-toggle" class="lg:hidden text-brand-dark p-2 -mr-2 focus:outline-none z-50">
@@ -74,12 +69,10 @@ const switchTargetUrl = toggleLang === 'fr'
 
           <div class="flex items-center justify-between pt-2">
             <span class="text-xs uppercase tracking-widest font-bold text-gray-400">Language / Langue</span>
-            <a
-              href={switchTargetUrl}
-              class="text-xs font-black tracking-widest text-brand-blue-deep border border-brand-blue-deep/20 px-4 py-2 rounded-xl bg-brand-blue-deep/5 uppercase"
-            >
-              Voir en {toggleLang}
-            </a>
+            <div class="flex items-center gap-1 bg-gray-100/80 p-1 rounded-full border border-gray-200/40 shadow-inner select-none">
+              <a href={enUrl} class={`px-4 py-1.5 text-xs font-black rounded-full tracking-wider transition-all ${lang === 'en' ? 'bg-white text-brand-blue-deep shadow-sm' : 'text-gray-400'}`}>EN</a>
+              <a href={frUrl} class={`px-4 py-1.5 text-xs font-black rounded-full tracking-wider transition-all ${lang === 'fr' ? 'bg-white text-brand-blue-deep shadow-sm' : 'text-gray-400'}`}>FR</a>
+            </div>
           </div>
 
           <hr class="border-gray-100" />
@@ -90,10 +83,19 @@ const switchTargetUrl = toggleLang === 'fr'
         </div>
       </>
     ) : (
-      <a href={`${baseUrl}${langPrefix}${backLink}`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2 ml-auto z-50">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        {backText}
-      </a>
+      <div class="flex items-center gap-6 ml-auto z-50">
+        <div class="flex items-center gap-1 bg-gray-100/80 p-1 rounded-full border border-gray-200/40 shadow-inner select-none">
+          <a href={enUrl} class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'en' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>EN</a>
+          <a href={frUrl} class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'fr' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>FR</a>
+        </div>
+
+        <div class="h-4 w-px bg-gray-200"></div>
+
+        <a href={`${baseUrl}${langPrefix}${backLink}`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          {backText}
+        </a>
+      </div>
     )}
   </div>
 </nav>
