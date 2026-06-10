@@ -1,14 +1,26 @@
 ---
 import { getEntry } from 'astro:content';
-import Layout from '../layouts/Layout.astro';
-import TrustBar from '../components/TrustBar.astro';
+// UX FIX: Bumped up relative imports since this file now lives deeper inside [lang]/
+import Layout from '../../layouts/Layout.astro';
+import TrustBar from '../../components/TrustBar.astro';
 
+// 1. Tell Astro to compile this route for both English and French instances
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'fr' } }
+  ];
+}
+
+const { lang } = Astro.params;
+const langPrefix = lang === 'en' ? '' : '/fr';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-// Fetch content
-const pageData = await getEntry('pages', 'participants');
-const homeData = await getEntry('pages', 'home');
+// 2. Query localized data files dynamically based on active locale context parameters
+const pageData = await getEntry('pages', `${lang}/participants`);
+const homeData = await getEntry('pages', `${lang}/home`);
 
+// Establish dynamic text structure references with secure fallbacks
 const hero = pageData?.data?.hero || {
   tagline: "Participant Portal",
   headline: "Advance Medicine Through",
@@ -16,9 +28,14 @@ const hero = pageData?.data?.hero || {
   description: "Safely contribute to groundbreaking healthcare insights right here in Montreal."
 };
 const steps = pageData?.data?.steps || [];
-const content = pageData?.data?.recruitmentData; // New block
+const content = pageData?.data?.recruitmentData || {
+  pageTitle: "Join Study",
+  whyJoinTitle: "Why Join",
+  howItWorksTitle: "How It Works",
+  formCard: { questions: [] }
+};
 ---
-<Layout title={content.pageTitle} navType="minimal">
+<Layout title={content.pageTitle} navType="minimal" lang={lang}>
   <div class="fixed top-0 inset-x-0 h-[600px] bg-gradient-to-br from-brand-green-bright/5 via-brand-teal/5 to-transparent -z-10"></div>
 
   <main class="relative z-10 -mt-16 pt-0">
@@ -39,7 +56,7 @@ const content = pageData?.data?.recruitmentData; // New block
 
           <div>
             <h3 class="text-xs font-extrabold text-gray-400 uppercase tracking-widest mb-8">{content.whyJoinTitle}</h3>
-            </div>
+          </div>
 
           <div class="pt-8 border-t border-gray-100">
             <h3 class="text-xs font-extrabold text-gray-400 uppercase tracking-widest mb-8">{content.howItWorksTitle}</h3>
@@ -87,7 +104,7 @@ const content = pageData?.data?.recruitmentData; // New block
               </form>
 
               <p class="mt-6 text-[11px] text-gray-400 text-center leading-relaxed font-medium">
-                {content.formCard.disclaimer} <a href={`${baseUrl}/privacy`} class="text-brand-green-bright underline hover:text-brand-dark transition-colors font-bold">{content.formCard.privacyLinkText}</a>.
+                {content.formCard.disclaimer} <a href={`${baseUrl}${langPrefix}/privacy`} class="text-brand-green-bright underline hover:text-brand-dark transition-colors font-bold">{content.formCard.privacyLinkText}</a>.
               </p>
             </div>
           </div>

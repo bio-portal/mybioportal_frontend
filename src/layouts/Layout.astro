@@ -6,6 +6,7 @@ import { getEntry } from 'astro:content';
 
 const {
   title,
+  lang = 'en', // 1. Catch the language prop (defaults to 'en')
   navType = 'main',
   ctaMode = 'visible',
   backLink = '/',
@@ -13,16 +14,14 @@ const {
   hideFooter = false
 } = Astro.props;
 
-// Fetch global site configuration
-const globalData = await getEntry('pages', 'global');
+// 2. Fetch data dynamically based on the active locale (e.g., 'en/global' or 'fr/global')
+const globalData = await getEntry('pages', `${lang}/global`);
 
-// FIX: Pull directly from the root of data, where they actually live!
 const navigation = globalData?.data?.navigation;
 const footer = globalData?.data?.footer;
 ---
 <!doctype html>
-<html lang="en">
-  <head>
+<html lang={lang}> <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <title>{title}</title>
@@ -35,7 +34,7 @@ const footer = globalData?.data?.footer;
         backLink={backLink}
         backText={backText}
         navData={navigation}
-      />
+        lang={lang} />
     )}
 
     <div class="flex-grow pt-20">
@@ -43,7 +42,9 @@ const footer = globalData?.data?.footer;
     </div>
 
     {!hideFooter && footer && (
-      <Footer footerData={footer} />
+      <Footer
+        footerData={footer}
+        lang={lang} />
     )}
   </body>
 </html>

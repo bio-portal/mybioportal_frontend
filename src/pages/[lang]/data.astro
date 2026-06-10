@@ -1,9 +1,19 @@
 ---
 import { getEntry } from 'astro:content';
-import Layout from '../layouts/Layout.astro';
+import Layout from '../../layouts/Layout.astro';
 
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'fr' } }
+  ];
+}
+
+const { lang } = Astro.params;
+const langPrefix = lang === 'en' ? '' : '/fr';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
-const pageData = await getEntry('pages', 'data');
+
+const pageData = await getEntry('pages', `${lang}/data`);
 
 const hero = pageData?.data?.hero || { tagline: 'Data', headline: 'BioPortal Datasets', description: 'Loading data...' };
 const metrics = pageData?.data?.landingMetrics || {
@@ -18,9 +28,18 @@ const metrics = pageData?.data?.landingMetrics || {
     biosamples: "..."
   }
 };
-const content = pageData?.data?.dataRequest;
+
+// 🌟 FIX: Defensive boundaries to stop undefined property crashes if a YAML file is missing keys
+const content = pageData?.data?.dataRequest || {
+  pageTitle: "Datasets",
+  backText: "Back",
+  explorerCard: { tag: "App", title: "Explorer", description: "Explore datasets", buttonText: "Open Explorer" },
+  accessRequirements: { title: "Requirements", items: [] },
+  infrastructure: { title: "Infrastructure", description: "", tags: [] },
+  form: { title: "Request Data", description: "", buttonText: "Submit", fields: { nameLabel: "Name", namePlaceholder: "", emailLabel: "Email", emailPlaceholder: "", interestLabel: "Interest", overviewLabel: "Overview", overviewPlaceholder: "" } }
+};
 ---
-<Layout title={content.pageTitle} navType="minimal" backText={content.backText}>
+<Layout title={content.pageTitle} navType="minimal" backText={content.backText} lang={lang}>
   <div class="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue-deep/10 via-brand-teal/5 to-transparent -z-10"></div>
 
   <main class="max-w-7xl mx-auto px-6 pt-12 pb-24 relative z-10">
@@ -33,7 +52,6 @@ const content = pageData?.data?.dataRequest;
     <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 mb-16 items-stretch">
       <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
 
-        <!-- CARD 1: Total Participants -->
         <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
             <h3 id="metric-participants" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep h-12 lg:h-14 flex items-center">
               <div class="live-stat-loader flex items-center gap-1.5 pt-1">
@@ -46,7 +64,6 @@ const content = pageData?.data?.dataRequest;
             <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.participantsLabel}</p>
         </div>
 
-        <!-- CARD 2: Clinical Variables -->
         <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
             <h3 id="metric-variables" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep h-12 lg:h-14 flex items-center">
               <div class="live-stat-loader flex items-center gap-1.5 pt-1">
@@ -59,7 +76,6 @@ const content = pageData?.data?.dataRequest;
             <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.clinicalVariablesLabel}</p>
         </div>
 
-        <!-- CARD 3: Proteomic Profiles -->
         <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
             <h3 id="metric-proteomics" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep h-12 lg:h-14 flex items-center">
               <div class="live-stat-loader flex items-center gap-1.5 pt-1">
@@ -72,7 +88,6 @@ const content = pageData?.data?.dataRequest;
             <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.proteomicsLabel}</p>
         </div>
 
-        <!-- CARD 4: Matched Biosamples -->
         <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
             <h3 id="metric-biosamples" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep h-12 lg:h-14 flex items-center">
               <div class="live-stat-loader flex items-center gap-1.5 pt-1">
@@ -87,7 +102,6 @@ const content = pageData?.data?.dataRequest;
 
       </div>
 
-      <!-- Right Column: Interactive Explorer Promo Card -->
       <div class="lg:col-span-5 bp-frosted-gradient rounded-[2rem] p-10 border border-white/60 shadow-2xl shadow-brand-blue-deep/5 flex flex-col justify-between relative overflow-hidden group">
         <div class="relative z-10 mb-10">
           <span class="px-3 py-1.5 rounded-lg bg-brand-blue-deep/10 text-brand-blue-deep font-bold text-[10px] uppercase tracking-[0.15em] mb-6 inline-block">{content.explorerCard.tag}</span>
@@ -95,19 +109,16 @@ const content = pageData?.data?.dataRequest;
           <p class="text-gray-600 text-sm leading-relaxed font-medium opacity-90">{content.explorerCard.description}</p>
         </div>
 
-        <!-- FIX: Updated colors to bg-brand-blue-deep and border-brand-blue-deep -->
-        <a href={`${baseUrl}/data/explorer/`} class="relative z-10 w-full py-4 rounded-xl bg-brand-blue-deep text-white text-sm font-bold shadow-lg shadow-brand-blue-deep/20 hover:shadow-2xl hover:shadow-brand-blue-deep/40 hover:scale-[1.02] hover:bg-brand-dark transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer group/btn border border-brand-blue-deep/50">
+        <a href={`${baseUrl}${langPrefix}/data/explorer/`} class="relative z-10 w-full py-4 rounded-xl bg-brand-blue-deep text-white text-sm font-bold shadow-lg shadow-brand-blue-deep/20 hover:shadow-2xl hover:shadow-brand-blue-deep/40 hover:scale-[1.02] hover:bg-brand-dark transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer group/btn border border-brand-blue-deep/50">
           {content.explorerCard.buttonText}
           <svg class="w-5 h-5 text-brand-teal group-hover/btn:text-white transform transition-all duration-300 group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
         </a>
       </div>
     </div>
 
-    <!-- Bottom Section: Access Criteria & Forms -->
     <div class="grid lg:grid-cols-12 gap-8 items-start">
       <div class="lg:col-span-5 space-y-6">
 
-        <!-- FIX: Transformed into a clean, modern white card layout -->
         <div class="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-soft">
           <h3 class="text-xl font-bold mb-5 flex items-center gap-3 text-gray-900">
             <span class="w-8 h-8 rounded-full bg-brand-teal/20 flex items-center justify-center">
@@ -116,7 +127,7 @@ const content = pageData?.data?.dataRequest;
             {content.accessRequirements.title}
           </h3>
           <ul class="space-y-4 text-sm text-gray-600 font-medium">
-            {content.accessRequirements.items.map((item: string, index: number) => (
+            {content.accessRequirements.items?.map((item: string, index: number) => (
               <li class="flex items-start gap-3"><span class="text-brand-teal font-black mt-0.5">0{index + 1}</span><span class="leading-relaxed">{item}</span></li>
             ))}
           </ul>
@@ -126,7 +137,7 @@ const content = pageData?.data?.dataRequest;
           <h3 class="text-xl font-bold text-gray-900 mb-4">{content.infrastructure.title}</h3>
           <p class="text-sm text-gray-500 leading-relaxed mb-6" set:html={content.infrastructure.description}></p>
           <div class="flex flex-wrap gap-2">
-            {content.infrastructure.tags.map((tag: string) => (
+            {content.infrastructure.tags?.map((tag: string) => (
               <span class="px-3 py-1.5 rounded-lg bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-widest">{tag}</span>
             ))}
           </div>
@@ -141,17 +152,17 @@ const content = pageData?.data?.dataRequest;
           <form class="space-y-6">
             <div class="grid md:grid-cols-2 gap-6">
               <div>
-                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields.nameLabel}</label>
-                <input type="text" placeholder={content.form.fields.namePlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-inner" />
+                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields?.nameLabel}</label>
+                <input type="text" placeholder={content.form.fields?.namePlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-inner" />
               </div>
               <div>
-                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields.emailLabel}</label>
-                <input type="email" placeholder={content.form.fields.emailPlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-inner" />
+                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields?.emailLabel}</label>
+                <input type="email" placeholder={content.form.fields?.emailPlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-inner" />
               </div>
             </div>
 
             <div>
-              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields.interestLabel}</label>
+              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields?.interestLabel}</label>
               <select class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium appearance-none cursor-pointer shadow-inner">
                 <option>Diabetes & Endocrinology</option>
                 <option>Proteomics & Biomarkers</option>
@@ -161,8 +172,8 @@ const content = pageData?.data?.dataRequest;
             </div>
 
             <div>
-              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields.overviewLabel}</label>
-              <textarea rows="4" placeholder={content.form.fields.overviewPlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium resize-none shadow-inner"></textarea>
+              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields?.overviewLabel}</label>
+              <textarea rows="4" placeholder={content.form.fields?.overviewPlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium resize-none shadow-inner"></textarea>
             </div>
 
             <button type="button" class="w-full py-4 rounded-xl bg-brand-blue-deep text-white font-bold text-sm uppercase tracking-widest shadow-lg shadow-brand-blue-deep/20 hover:bg-brand-dark hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3 cursor-pointer mt-4">
@@ -192,26 +203,24 @@ const content = pageData?.data?.dataRequest;
       const statsArray = await statsRes.json();
       const metaArray = await metaRes.json();
 
-      // 1. Total Participants
       const sexStat = statsArray.find((s: any) => s.chart_id === 'sex');
       const liveParticipants = sexStat?.data.reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
 
-      // 2. Clinical Variables
       const liveVariables = metaArray.length || 0;
 
-      // 3. Proteomic Profiles
       const proteomicStat = statsArray.find((s: any) => s.chart_id === 'n_proteomics');
       const liveProteomics = proteomicStat?.data
         .filter((d: any) => d.category !== 'No')
         .reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
 
-      // 4. Biosamples
       const sampleStat = statsArray.find((s: any) => s.chart_id === 'sample_type');
       const liveBiosamples = sampleStat?.data
         .filter((d: any) => d.category !== 'None')
         .reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
 
-      // FIX: Robust mutation targeting that completely handles hiding the loader div safely
+      const docLang = document.documentElement.lang || 'en';
+      const targetLocale = docLang === 'fr' ? 'fr-FR' : 'en-US';
+
       const updateDom = (id: string, value: number) => {
         const container = document.getElementById(`metric-${id}`);
         if (container && value > 0) {
@@ -220,7 +229,7 @@ const content = pageData?.data?.dataRequest;
 
           if (loader) loader.style.display = 'none';
           if (valueText) {
-            valueText.innerHTML = value.toLocaleString();
+            valueText.innerHTML = value.toLocaleString(targetLocale);
             valueText.style.display = 'inline';
             valueText.classList.remove('hidden');
           }

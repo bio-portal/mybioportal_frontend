@@ -1,18 +1,26 @@
 ---
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-const { footerData } = Astro.props;
+const {
+  footerData,
+  lang = 'en' // 1. Catch the active language context token
+} = Astro.props;
+
+// 2. Establish language-aware route pathing
+const langPrefix = lang === 'en' ? '' : '/fr';
 ---
 <footer class="bg-brand-dark text-white py-20 px-6 text-center mt-auto">
   <div class="text-2xl font-bold mb-2 tracking-tight">
     {footerData.title}<span class="text-brand-blue-deep">{footerData.titlePunctuation}</span>
   </div>
   <p class="text-gray-400 text-sm mb-6">{footerData.subtitle}</p>
+
   <div class="mb-12">
-    <a href={`${baseUrl}${footerData.privacyLinkHref}`} class="text-xs text-gray-400 hover:text-white underline transition-colors">
+    <a href={`${baseUrl}${langPrefix}${footerData.privacyLinkHref}`} class="text-xs text-gray-400 hover:text-white underline transition-colors">
       {footerData.privacyLinkText}
     </a>
   </div>
+
   <div class="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold">
     {footerData.copyright}
   </div>

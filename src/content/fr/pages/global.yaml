@@ -1,0 +1,26 @@
+id: global
+
+navigation:
+  logoAlt: "Logo de BioPortal"
+  links:
+    - label: "Actualités"
+      href: "/#insights"
+    - label: "Notre Équipe"
+      href: "/#team"
+    - label: "Sécurité des données"
+      href: "/privacy"
+  ctaButtons:
+    primary:
+      label: "Rejoindre l'étude"
+      href: "/participants"
+    secondary:
+      label: "Demander des données"
+      href: "/data"
+
+footer:
+  title: "BioPortal"
+  titlePunctuation: "."
+  subtitle: "Hôpital général juif et Université McGill"
+  privacyLinkText: "Politique de confidentialité et mesures de protection des données"
+  privacyLinkHref: "/privacy"
+  copyright: "© 2026 CIUSSS"

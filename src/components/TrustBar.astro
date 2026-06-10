@@ -10,14 +10,11 @@ const triplePartners = [...content.partners, ...content.partners, ...content.par
   <div class="max-w-6xl mx-auto text-center">
     <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-6 px-6">{content.label}</p>
 
-    <!-- 1. Embla Viewport (must have overflow-hidden) -->
     <div class="embla trustbar-viewport marquee-mask relative w-full overflow-hidden cursor-grab active:cursor-grabbing select-none mb-6">
 
-      <!-- 2. Embla Container -->
       <div class="embla__container flex touch-pan-y py-2 px-4">
 
         {triplePartners.map((partner: any) => (
-          <!-- 3. Embla Slide (must have flex shrink/grow rules and min-width 0) -->
           <div class="embla__slide flex-[0_0_auto] min-w-0 flex items-center justify-center mr-16 md:mr-24">
             <a
               href={partner.url}
@@ -90,6 +87,4 @@ const triplePartners = [...content.partners, ...content.partners, ...content.par
     mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
     -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
   }
-
-  /* We no longer need the custom scrollbar hiding CSS because Embla uses a pure overflow-hidden wrapper! */
 </style>

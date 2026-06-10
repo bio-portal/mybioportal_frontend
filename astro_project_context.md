@@ -1,11 +1,14 @@
 # BioPortal Astro Architectural Context
-Generated on: Wed 03 Jun 2026 10:30:53 AM EDT
+Generated on: Wed 10 Jun 2026 10:14:40 AM EDT
 
 ---
 
 ## 📂 Project Directory Structure
 ```text
 [01;34m.[00m
+├── [01;34marchive[00m
+│   ├── 17-byanca-liboni.yaml
+│   └── 19-nadia-blostein.yaml
 ├── astro.config.mjs
 ├── astro_project_context.md
 ├── fixcolors.sh
@@ -28,49 +31,54 @@ Generated on: Wed 03 Jun 2026 10:30:53 AM EDT
 │   │   ├── Navbar.astro
 │   │   └── TrustBar.astro
 │   ├── [01;34mcontent[00m
-│   │   ├── [01;34mnews[00m
-│   │   │   └── kidney-project.md
-│   │   ├── [01;34mpages[00m
-│   │   │   ├── data.yaml
-│   │   │   ├── global.yaml
-│   │   │   ├── home.yaml
-│   │   │   ├── news.yaml
-│   │   │   ├── participants.yaml
-│   │   │   └── privacy.yaml
-│   │   └── [01;34mteam[00m
-│   │       ├── 01-brent-richards.yaml
-│   │       ├── 02-vincent-mooser.yaml
-│   │       ├── 03-jonathan-afilalo.yaml
-│   │       ├── 04-tricia-peters.yaml
-│   │       ├── 05-guillaume-butler.yaml
-│   │       ├── 06-satoshi-yoshiji.yaml
-│   │       ├── 07-tobias-erlanger.yaml
-│   │       ├── 08-david-morrison.yaml
-│   │       ├── 09-mariana-pico.yaml
-│   │       ├── 10-issam-elkbaiche.yaml
-│   │       ├── 11-darin-adra.yaml
-│   │       ├── 12-mariana-jaime.yaml
-│   │       ├── 13-corinne-pirici.yaml
-│   │       ├── 14-mina-nikkhah.yaml
-│   │       ├── 15-zaman-afrasiabi.yaml
-│   │       ├── 16-cesar-peralta.yaml
-│   │       ├── 17-byanca-liboni.yaml
-│   │       ├── 18-jonafe-daguplo.yaml
-│   │       ├── 19-nadia-blostein.yaml
-│   │       └── 20-jesse-islam.yaml
+│   │   ├── [01;34men[00m
+│   │   │   ├── [01;34mnews[00m
+│   │   │   │   └── roche-partnership.md
+│   │   │   ├── [01;34mpages[00m
+│   │   │   │   ├── data.yaml
+│   │   │   │   ├── global.yaml
+│   │   │   │   ├── home.yaml
+│   │   │   │   ├── news.yaml
+│   │   │   │   ├── participants.yaml
+│   │   │   │   └── privacy.yaml
+│   │   │   └── [01;34mteam[00m
+│   │   │       ├── 01-brent-richards.yaml
+│   │   │       ├── 02-vincent-mooser.yaml
+│   │   │       ├── 03-jonathan-afilalo.yaml
+│   │   │       ├── 04-tricia-peters.yaml
+│   │   │       ├── 05-guillaume-butler.yaml
+│   │   │       ├── 06-satoshi-yoshiji.yaml
+│   │   │       ├── 07-tobias-erlanger.yaml
+│   │   │       ├── 08-david-morrison.yaml
+│   │   │       ├── 09-mariana-pico.yaml
+│   │   │       ├── 10-issam-elkbaiche.yaml
+│   │   │       ├── 11-darin-adra.yaml
+│   │   │       ├── 12-mariana-jaime.yaml
+│   │   │       ├── 13-corinne-pirici.yaml
+│   │   │       ├── 14-mina-nikkhah.yaml
+│   │   │       ├── 15-zaman-afrasiabi.yaml
+│   │   │       ├── 16-cesar-peralta.yaml
+│   │   │       ├── 18-jonafe-daguplo.yaml
+│   │   │       ├── 20-jesse-islam.yaml
+│   │   │       ├── 21-hind-lerhcha.yaml
+│   │   │       └── 22-shirlyn-cabilin.yaml
+│   │   └── [01;34mfr[00m
 │   ├── content.config.ts
 │   ├── [01;34mlayouts[00m
 │   │   └── Layout.astro
+│   ├── [01;34mone_off_scripts[00m
+│   │   └── convert_image_to_webp.R
 │   ├── [01;34mpages[00m
-│   │   ├── [01;34mdata[00m
-│   │   │   └── explorer.astro
-│   │   ├── data.astro
-│   │   ├── index.astro
-│   │   ├── [01;34mnews[00m
-│   │   │   ├── [id].astro
-│   │   │   └── index.astro
-│   │   ├── participants.astro
-│   │   └── privacy.astro
+│   │   └── [01;34m[lang][00m
+│   │       ├── [01;34mdata[00m
+│   │       │   └── explorer.astro
+│   │       ├── data.astro
+│   │       ├── index.astro
+│   │       ├── [01;34mnews[00m
+│   │       │   ├── [id].astro
+│   │       │   └── index.astro
+│   │       ├── participants.astro
+│   │       └── privacy.astro
 │   ├── [01;34mscripts[00m
 │   │   └── explorerEngine.ts
 │   ├── [01;34mstyles[00m
@@ -78,7 +86,7 @@ Generated on: Wed 03 Jun 2026 10:30:53 AM EDT
 │   └── types.d.ts
 └── tsconfig.json
 
-13 directories, 58 files
+18 directories, 61 files
 ```
 
 ---
@@ -101,10 +109,13 @@ Generated on: Wed 03 Jun 2026 10:30:53 AM EDT
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.4",
-    "@upsetjs/bundle": "^1.11.0",
     "astro": "^6.2.2",
     "chart.js": "^4.4.2",
     "chartjs-chart-treemap": "^3.1.0",
+    "chartjs-chart-venn": "^4.3.7",
+    "chartjs-plugin-datalabels": "^2.2.0",
+    "embla-carousel": "^8.6.0",
+    "embla-carousel-auto-scroll": "^8.6.0",
     "tailwindcss": "^4.2.4"
   }
 }
@@ -122,6 +133,15 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  // Add the i18n configuration
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'fr'],
+    routing: {
+      // false means English stays at '/', French goes to '/fr/'
+      prefixDefaultLocale: false
+    }
+  }
 });
 
 ```
@@ -142,7 +162,8 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const pages = defineCollection({
-  loader: glob({ pattern: "*.yaml", base: "./src/content/pages" }),
+  // UPDATED: Looks inside nested language directories (e.g., pages/en/home.yaml)
+  loader: glob({ pattern: "**/*.yaml", base: "./src/content/pages" }),
   schema: z.object({
     id: z.string(),
 
@@ -151,6 +172,7 @@ const pages = defineCollection({
     trustBar: z.any().optional(),
     steps: z.any().optional(),
     benefit: z.any().optional(),
+
     landingMetrics: z.object({
       participantsLabel: z.string(),
       clinicalVariablesLabel: z.string(),
@@ -164,29 +186,27 @@ const pages = defineCollection({
       })
     }).optional(),
 
-    // --- GLOBAL SITE CONFIG (Navbar & Footer) ---
-    global: z.object({
-      // --- GLOBAL SITE CONFIG (Navbar & Footer at root level) ---
-      navigation: z.object({
-        logoAlt: z.string(),
-        links: z.array(z.object({
-          label: z.string(),
-          href: z.string()
-        })),
-        ctaButtons: z.object({
-          primary: z.object({ label: z.string(), href: z.string() }),
-          secondary: z.object({ label: z.string(), href: z.string() }),
-        })
-      }).optional(),
+    // --- GLOBAL SITE CONFIG (Navbar & Footer at root level) ---
+    navigation: z.object({
+      logoAlt: z.string(),
+      links: z.array(z.object({
+        label: z.string(),
+        href: z.string()
+      })),
+      ctaButtons: z.object({
+        primary: z.object({ label: z.string(), href: z.string() }),
+        secondary: z.object({ label: z.string(), href: z.string() }),
+      })
+    }).optional(),
 
-      footer: z.object({
-        title: z.string(),
-        titlePunctuation: z.string(),
-        subtitle: z.string(),
-        privacyLinkText: z.string(),
-        privacyLinkHref: z.string(),
-        copyright: z.string(),
-      }).optional(),
+    footer: z.object({
+      title: z.string(),
+      titlePunctuation: z.string(),
+      subtitle: z.string(),
+      privacyLinkText: z.string(),
+      privacyLinkHref: z.string(),
+      copyright: z.string(),
+    }).optional(),
 
     // --- HOME PAGE SPECIFIC ---
     insights: z.object({
@@ -291,9 +311,9 @@ const pages = defineCollection({
   }),
 });
 
-// --- TEAM & NEWS COLLECTIONS (No changes needed) ---
 const team = defineCollection({
-  loader: glob({ pattern: "*.{yaml,yml}", base: "./src/content/team" }),
+  // UPDATED: Captures dynamic entries inside language folders (e.g., team/fr/01-brent.yaml)
+  loader: glob({ pattern: "**/*.{yaml,yml}", base: "./src/content/team" }),
   schema: z.object({
     name: z.string(),
     role: z.string(),
@@ -305,7 +325,8 @@ const team = defineCollection({
 });
 
 const news = defineCollection({
-  loader: glob({ pattern: "*.md", base: "./src/content/news" }),
+  // UPDATED: Tracks translated markdown posts (e.g., news/fr/roche-partnership.md)
+  loader: glob({ pattern: "**/*.md", base: "./src/content/news" }),
   schema: z.object({
     title: z.string(),
     date: z.date(),
@@ -322,30 +343,52 @@ export const collections = { pages, team, news };
 ---
 
 ## 🏗️ Structural Layouts, Pages, Components & Styles
-### 🧩 File: `src/pages/news/[id].astro`
+### 🧩 File: `src/pages/[lang]/news/[id].astro`
 ```astro
 ---
-import { getCollection, render } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
+import { getCollection, getEntry, render } from 'astro:content';
+// UX FIX: Adjusted relative paths to 3 levels up since this file is now nested inside [lang]/news/
+import Layout from '../../../layouts/Layout.astro';
 
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 export async function getStaticPaths() {
   const newsEntries = await getCollection('news');
-  return newsEntries.map(post => ({
-    params: { id: post.id },
-    props: { post },
-  }));
+
+  return newsEntries.map(post => {
+    // Content file IDs look like 'en/roche-partnership' or 'fr/roche-partnership'
+    const [langToken, ...slugParts] = post.id.split('/');
+    const cleanId = slugParts.join('/');
+
+    return {
+      // With prefixDefaultLocale: false, default language paths must pass undefined for the [lang] folder variable
+      params: {
+        lang: langToken === 'en' ? undefined : langToken,
+        id: cleanId
+      },
+      props: {
+        post,
+        lang: langToken
+      },
+    };
+  });
 }
 
-const { post } = Astro.props;
+const { post, lang } = Astro.props;
 const { Content } = await render(post);
+
+const langPrefix = lang === 'en' ? '' : '/fr';
+
+// Fetch the translated "Back to Insights" text from the pages/news configuration file dynamically
+const newsPageData = await getEntry('pages', `${lang}/news`);
+const backToNewsText = newsPageData?.data?.backToNewsText || (lang === 'fr' ? 'Retour aux actualités' : 'Back to Insights');
 ---
 <Layout
   title={`${post.data.title} | BioPortal Insights`}
   navType="minimal"
-  backLink="/news"
-  backText="Back to Insights"
+  backLink={`${langPrefix}/news`}
+  backText={backToNewsText}
+  lang={lang}
 >
   <div class="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-brand-blue-deep/5 to-transparent -z-10"></div>
 
@@ -356,7 +399,7 @@ const { Content } = await render(post);
           {post.data.tag}
         </span>
         <span class="text-sm font-bold text-gray-400 uppercase tracking-widest">
-          {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+          {post.data.date.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
         </span>
       </div>
 
@@ -382,7 +425,8 @@ const { Content } = await render(post);
 </Layout>
 
 <style>
-  @reference "../../styles/global.css";
+  /* UX FIX: Updated global references path routing to point cleanly 3 directories up */
+  @reference "../../../styles/global.css";
   .article-content :global(h2) { @apply text-3xl font-bold text-gray-900 mt-12 mb-6 tracking-tight; }
   .article-content :global(h3) { @apply text-2xl font-bold text-gray-900 mt-8 mb-4 tracking-tight; }
   .article-content :global(p) { @apply mb-6; }
@@ -394,20 +438,37 @@ const { Content } = await render(post);
 
 ```
 
-### 🧩 File: `src/pages/news/index.astro`
+### 🧩 File: `src/pages/[lang]/news/index.astro`
 ```astro
 ---
 import { getCollection, getEntry } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
+// UX FIX: Adjusted relative path to 3 levels up since this file is now nested inside [lang]/news/
+import Layout from '../../../layouts/Layout.astro';
 
+// 1. Instruct Astro to compile this route for both English and French paths
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'fr' } }
+  ];
+}
+
+const { lang } = Astro.params;
+const langPrefix = lang === 'en' ? '' : '/fr';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
-const pageData = await getEntry('pages', 'news');
+
+// 2. Fetch the dynamically correct page configuration dictionary
+const pageData = await getEntry('pages', `${lang}/news`);
 const { seoTitle, tagline, headline, description } = pageData.data;
 
-const allNews = await getCollection('news');
+// 3. Query and filter news items to strictly match the current active locale folder
+const allNews = await getCollection('news', ({ id }) => id.startsWith(`${lang}/`));
 const sortedNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+// Utility to cleanly extract the raw filename slug from the new nested ID structure (e.g., 'en/roche' -> 'roche')
+const getCleanSlug = (id: string) => id.split('/').pop()?.replace(/\.[^/.]+$/, "");
 ---
-<Layout title={`${seoTitle} | BioPortal`}>
+<Layout title={`${seoTitle} | BioPortal`} lang={lang}>
   <main class="max-w-7xl mx-auto px-6 py-12 lg:py-16">
     <header class="mb-16">
       <span class="text-brand-blue-deep font-bold tracking-widest uppercase text-xs mb-4 block">{tagline}</span>
@@ -430,13 +491,14 @@ const sortedNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
           <div class="p-8 flex flex-col flex-grow">
             <div class="flex justify-between items-start mb-6">
               <span class="text-[10px] font-bold text-gray-400 uppercase">
-                {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                {post.data.date.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
               </span>
               <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-brand-blue-deep/10 text-brand-blue-deep">{post.data.tag}</span>
             </div>
             <h3 class="text-xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-brand-blue-deep transition-colors">{post.data.title}</h3>
             <p class="text-sm text-gray-500 leading-relaxed mb-8 flex-grow line-clamp-3">{post.data.excerpt}</p>
-            <a href={`${baseUrl}/news/${post.id}/`} class="text-brand-dark font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all mt-auto">
+
+            <a href={`${baseUrl}${langPrefix}/news/${getCleanSlug(post.id)}/`} class="text-brand-dark font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all mt-auto">
               Read Insight <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
           </div>
@@ -448,28 +510,429 @@ const sortedNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.va
 
 ```
 
-### 🧩 File: `src/pages/index.astro`
+### 🧩 File: `src/pages/[lang]/data/explorer.astro`
+```astro
+---
+import { getEntry } from 'astro:content';
+// UX FIX: Incremented all paths to 3 levels up since this component is nested inside [lang]/data/
+import Layout from '../../../layouts/Layout.astro';
+import ExplorerSidebar from '../../../components/explorer/ExplorerSidebar.astro';
+import ExplorerHeader from '../../../components/explorer/ExplorerHeader.astro';
+import ExplorerGrid from '../../../components/explorer/ExplorerGrid.astro';
+
+// 1. Compile static routing fragments for both engine languages
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'fr' } }
+  ];
+}
+
+const { lang } = Astro.params;
+const langPrefix = lang === 'en' ? '' : '/fr';
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// 2. Query localized page data dictionaries dynamically matching active paths
+const dataPage = await getEntry('pages', `${lang}/data`);
+
+// 🌟 FIX: Built comprehensive safety fallbacks to guarantee compile stability if keys aren't translated yet
+const explorerContent = dataPage?.data?.explorer || {
+  pageTitle: "Data Explorer",
+  backLink: "/data",
+  backText: "Back",
+  header: { totalPatientsLabel: "Total Patients" },
+  grid: { noResultsText: "No results found" },
+  sidebar: {
+    title: "Cohort Explorer",
+    baseline: "Baseline Cohort",
+    searchPlaceholder: "Search variables...",
+    tooltip: { title: "Data Notice", description: "De-identified records.", warning: "Protected asset." },
+    buttons: { reset: "Reset Filters", export: "Export Cohort" },
+    tabs: { filters: "Filters", charts: "Active Charts" },
+    visibility: { title: "Chart Visibility", all: "Show All", none: "Hide All" },
+    status: { gateway: "API Status", syncing: "Synchronizing" }
+  }
+};
+---
+<Layout
+  title={explorerContent.pageTitle}
+  navType="minimal"
+  backLink={`${langPrefix}${explorerContent.backLink}`}
+  backText={explorerContent.backText}
+  lang={lang}
+>
+  <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-brand-dark/40 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300 lg:hidden"></div>
+
+  <div class="flex min-h-[calc(100vh-80px)] bg-surface font-sans relative">
+
+    <ExplorerSidebar
+      sidebarTitle={explorerContent.sidebar.title}
+      tooltipTitle={explorerContent.sidebar.tooltip.title}
+      tooltipDescription={explorerContent.sidebar.tooltip.description}
+      tooltipWarning={explorerContent.sidebar.tooltip.warning}
+      resetButtonText={explorerContent.sidebar.buttons.reset}
+      exportButtonText={explorerContent.sidebar.buttons.export}
+      searchPlaceholder={explorerContent.sidebar.searchPlaceholder}
+      tabFiltersText={explorerContent.sidebar.tabs.filters}
+      tabChartsText={explorerContent.sidebar.tabs.charts}
+      baselineText={explorerContent.sidebar.baseline}
+      visibilityTitle={explorerContent.sidebar.visibility.title}
+      visibilityAllText={explorerContent.sidebar.visibility.all}
+      visibilityNoneText={explorerContent.sidebar.visibility.none}
+      statusGatewayText={explorerContent.sidebar.status.gateway}
+      statusSyncingText={explorerContent.sidebar.status.syncing}
+    />
+
+    <main id="main-content-area" class="flex-1 p-6 lg:p-12 relative z-10 w-full overflow-x-hidden transition-all duration-500 origin-top">
+
+      <div id="loading-overlay" class="absolute inset-0 z-50 bg-surface/80 backdrop-blur-md opacity-100 transition-all duration-700 ease-in-out"></div>
+
+      <ExplorerHeader totalCountLabel={explorerContent.header.totalPatientsLabel} />
+      <ExplorerGrid noResultsText={explorerContent.grid.noResultsText} />
+
+    </main>
+  </div>
+</Layout>
+
+<script src="../../../scripts/explorerEngine.ts"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('explorer-sidebar');
+    const overlay = document.getElementById('mobile-sidebar-overlay');
+    const openBtn = document.getElementById('mobile-filter-btn');
+    const closeBtn = document.getElementById('mobile-close-sidebar');
+
+    const toggleSidebar = (force?: boolean) => {
+      if (!sidebar || !overlay) return;
+      const isOpen = sidebar.classList.contains('translate-x-0');
+      const shouldOpen = force !== undefined ? force : !isOpen;
+
+      if (shouldOpen) {
+        overlay.classList.remove('hidden');
+        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+        sidebar.classList.remove('-translate-x-full');
+        sidebar.classList.add('translate-x-0');
+      } else {
+        overlay.classList.add('opacity-0');
+        sidebar.classList.remove('translate-x-0');
+        sidebar.classList.add('-translate-x-full');
+        setTimeout(() => overlay.classList.add('hidden'), 300);
+      }
+    };
+
+    if (openBtn) openBtn.addEventListener('click', () => toggleSidebar(true));
+    if (closeBtn) closeBtn.addEventListener('click', () => toggleSidebar(false));
+    if (overlay) overlay.addEventListener('click', () => toggleSidebar(false));
+  });
+</script>
+
+```
+
+### 🧩 File: `src/pages/[lang]/data.astro`
+```astro
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'fr' } }
+  ];
+}
+
+const { lang } = Astro.params;
+const langPrefix = lang === 'en' ? '' : '/fr';
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const pageData = await getEntry('pages', `${lang}/data`);
+
+const hero = pageData?.data?.hero || { tagline: 'Data', headline: 'BioPortal Datasets', description: 'Loading data...' };
+const metrics = pageData?.data?.landingMetrics || {
+  participantsLabel: "Total Participants",
+  clinicalVariablesLabel: "Clinical Variables",
+  proteomicsLabel: "Proteomic Profiles",
+  biosamplesLabel: "Matched Biosamples",
+  fallbackValues: {
+    participants: "...",
+    clinicalVariables: "...",
+    proteomics: "...",
+    biosamples: "..."
+  }
+};
+
+// 🌟 FIX: Defensive boundaries to stop undefined property crashes if a YAML file is missing keys
+const content = pageData?.data?.dataRequest || {
+  pageTitle: "Datasets",
+  backText: "Back",
+  explorerCard: { tag: "App", title: "Explorer", description: "Explore datasets", buttonText: "Open Explorer" },
+  accessRequirements: { title: "Requirements", items: [] },
+  infrastructure: { title: "Infrastructure", description: "", tags: [] },
+  form: { title: "Request Data", description: "", buttonText: "Submit", fields: { nameLabel: "Name", namePlaceholder: "", emailLabel: "Email", emailPlaceholder: "", interestLabel: "Interest", overviewLabel: "Overview", overviewPlaceholder: "" } }
+};
+---
+<Layout title={content.pageTitle} navType="minimal" backText={content.backText} lang={lang}>
+  <div class="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue-deep/10 via-brand-teal/5 to-transparent -z-10"></div>
+
+  <main class="max-w-7xl mx-auto px-6 pt-12 pb-24 relative z-10">
+    <header class="max-w-3xl mb-16 text-center mx-auto">
+      <span class="text-brand-blue-deep font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
+      <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 tracking-tight">{hero.headline}</h1>
+      <p class="text-xl text-gray-600 leading-relaxed">{hero.description}</p>
+    </header>
+
+    <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 mb-16 items-stretch">
+      <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
+            <h3 id="metric-participants" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep h-12 lg:h-14 flex items-center">
+              <div class="live-stat-loader flex items-center gap-1.5 pt-1">
+                <div class="w-2.5 h-2.5 bg-brand-blue-deep/40 rounded-full animate-bounce" style="animation-delay: -0.3s"></div>
+                <div class="w-2.5 h-2.5 bg-brand-blue-deep/60 rounded-full animate-bounce" style="animation-delay: -0.15s"></div>
+                <div class="w-2.5 h-2.5 bg-brand-blue-deep/90 rounded-full animate-bounce"></div>
+              </div>
+              <span class="live-stat-value hidden">{metrics.fallbackValues.participants}</span>
+            </h3>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.participantsLabel}</p>
+        </div>
+
+        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
+            <h3 id="metric-variables" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep h-12 lg:h-14 flex items-center">
+              <div class="live-stat-loader flex items-center gap-1.5 pt-1">
+                <div class="w-2.5 h-2.5 bg-brand-blue-deep/40 rounded-full animate-bounce" style="animation-delay: -0.3s"></div>
+                <div class="w-2.5 h-2.5 bg-brand-blue-deep/60 rounded-full animate-bounce" style="animation-delay: -0.15s"></div>
+                <div class="w-2.5 h-2.5 bg-brand-blue-deep/90 rounded-full animate-bounce"></div>
+              </div>
+              <span class="live-stat-value hidden">{metrics.fallbackValues.clinicalVariables}</span>
+            </h3>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.clinicalVariablesLabel}</p>
+        </div>
+
+        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
+            <h3 id="metric-proteomics" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep h-12 lg:h-14 flex items-center">
+              <div class="live-stat-loader flex items-center gap-1.5 pt-1">
+                <div class="w-2.5 h-2.5 bg-brand-blue-deep/40 rounded-full animate-bounce" style="animation-delay: -0.3s"></div>
+                <div class="w-2.5 h-2.5 bg-brand-blue-deep/60 rounded-full animate-bounce" style="animation-delay: -0.15s"></div>
+                <div class="w-2.5 h-2.5 bg-brand-blue-deep/90 rounded-full animate-bounce"></div>
+              </div>
+              <span class="live-stat-value hidden">{metrics.fallbackValues.proteomics}</span>
+            </h3>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.proteomicsLabel}</p>
+        </div>
+
+        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
+            <h3 id="metric-biosamples" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep h-12 lg:h-14 flex items-center">
+              <div class="live-stat-loader flex items-center gap-1.5 pt-1">
+                <div class="w-2.5 h-2.5 bg-brand-blue-deep/40 rounded-full animate-bounce" style="animation-delay: -0.3s"></div>
+                <div class="w-2.5 h-2.5 bg-brand-blue-deep/60 rounded-full animate-bounce" style="animation-delay: -0.15s"></div>
+                <div class="w-2.5 h-2.5 bg-brand-blue-deep/90 rounded-full animate-bounce"></div>
+              </div>
+              <span class="live-stat-value hidden">{metrics.fallbackValues.biosamples}</span>
+            </h3>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.biosamplesLabel}</p>
+        </div>
+
+      </div>
+
+      <div class="lg:col-span-5 bp-frosted-gradient rounded-[2rem] p-10 border border-white/60 shadow-2xl shadow-brand-blue-deep/5 flex flex-col justify-between relative overflow-hidden group">
+        <div class="relative z-10 mb-10">
+          <span class="px-3 py-1.5 rounded-lg bg-brand-blue-deep/10 text-brand-blue-deep font-bold text-[10px] uppercase tracking-[0.15em] mb-6 inline-block">{content.explorerCard.tag}</span>
+          <h2 class="text-4xl font-black tracking-tight text-gray-900 mb-4">{content.explorerCard.title}</h2>
+          <p class="text-gray-600 text-sm leading-relaxed font-medium opacity-90">{content.explorerCard.description}</p>
+        </div>
+
+        <a href={`${baseUrl}${langPrefix}/data/explorer/`} class="relative z-10 w-full py-4 rounded-xl bg-brand-blue-deep text-white text-sm font-bold shadow-lg shadow-brand-blue-deep/20 hover:shadow-2xl hover:shadow-brand-blue-deep/40 hover:scale-[1.02] hover:bg-brand-dark transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer group/btn border border-brand-blue-deep/50">
+          {content.explorerCard.buttonText}
+          <svg class="w-5 h-5 text-brand-teal group-hover/btn:text-white transform transition-all duration-300 group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-12 gap-8 items-start">
+      <div class="lg:col-span-5 space-y-6">
+
+        <div class="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-soft">
+          <h3 class="text-xl font-bold mb-5 flex items-center gap-3 text-gray-900">
+            <span class="w-8 h-8 rounded-full bg-brand-teal/20 flex items-center justify-center">
+              <svg class="w-4 h-4 text-brand-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            </span>
+            {content.accessRequirements.title}
+          </h3>
+          <ul class="space-y-4 text-sm text-gray-600 font-medium">
+            {content.accessRequirements.items?.map((item: string, index: number) => (
+              <li class="flex items-start gap-3"><span class="text-brand-teal font-black mt-0.5">0{index + 1}</span><span class="leading-relaxed">{item}</span></li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-soft">
+          <h3 class="text-xl font-bold text-gray-900 mb-4">{content.infrastructure.title}</h3>
+          <p class="text-sm text-gray-500 leading-relaxed mb-6" set:html={content.infrastructure.description}></p>
+          <div class="flex flex-wrap gap-2">
+            {content.infrastructure.tags?.map((tag: string) => (
+              <span class="px-3 py-1.5 rounded-lg bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-widest">{tag}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7">
+        <div class="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-brand-blue-deep/5 border border-gray-100 h-full">
+          <h2 class="text-3xl font-black text-brand-dark mb-2">{content.form.title}</h2>
+          <p class="text-gray-500 mb-8 text-sm leading-relaxed font-medium">{content.form.description}</p>
+
+          <form class="space-y-6">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields?.nameLabel}</label>
+                <input type="text" placeholder={content.form.fields?.namePlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-inner" />
+              </div>
+              <div>
+                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields?.emailLabel}</label>
+                <input type="email" placeholder={content.form.fields?.emailPlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-inner" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields?.interestLabel}</label>
+              <select class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium appearance-none cursor-pointer shadow-inner">
+                <option>Diabetes & Endocrinology</option>
+                <option>Proteomics & Biomarkers</option>
+                <option>Genomics & Rare Variants</option>
+                <option>Other / Multi-Omics</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields?.overviewLabel}</label>
+              <textarea rows="4" placeholder={content.form.fields?.overviewPlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium resize-none shadow-inner"></textarea>
+            </div>
+
+            <button type="button" class="w-full py-4 rounded-xl bg-brand-blue-deep text-white font-bold text-sm uppercase tracking-widest shadow-lg shadow-brand-blue-deep/20 hover:bg-brand-dark hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3 cursor-pointer mt-4">
+              {content.form.buttonText}
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const API_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats";
+  const METADATA_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats?type=metadata";
+
+  async function syncLandingMetrics() {
+    try {
+      const [statsRes, metaRes] = await Promise.all([
+        fetch(`${API_GATEWAY}?filter=baseline&_cb=${new Date().getTime()}`),
+        fetch(`${METADATA_GATEWAY}&_cb=${new Date().getTime()}`)
+      ]);
+
+      if (!statsRes.ok || !metaRes.ok) throw new Error("API failed");
+
+      const statsArray = await statsRes.json();
+      const metaArray = await metaRes.json();
+
+      const sexStat = statsArray.find((s: any) => s.chart_id === 'sex');
+      const liveParticipants = sexStat?.data.reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
+
+      const liveVariables = metaArray.length || 0;
+
+      const proteomicStat = statsArray.find((s: any) => s.chart_id === 'n_proteomics');
+      const liveProteomics = proteomicStat?.data
+        .filter((d: any) => d.category !== 'No')
+        .reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
+
+      const sampleStat = statsArray.find((s: any) => s.chart_id === 'sample_type');
+      const liveBiosamples = sampleStat?.data
+        .filter((d: any) => d.category !== 'None')
+        .reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
+
+      const docLang = document.documentElement.lang || 'en';
+      const targetLocale = docLang === 'fr' ? 'fr-FR' : 'en-US';
+
+      const updateDom = (id: string, value: number) => {
+        const container = document.getElementById(`metric-${id}`);
+        if (container && value > 0) {
+          const loader = container.querySelector('.live-stat-loader') as HTMLElement;
+          const valueText = container.querySelector('.live-stat-value') as HTMLElement;
+
+          if (loader) loader.style.display = 'none';
+          if (valueText) {
+            valueText.innerHTML = value.toLocaleString(targetLocale);
+            valueText.style.display = 'inline';
+            valueText.classList.remove('hidden');
+          }
+        }
+      };
+
+      updateDom('participants', liveParticipants);
+      updateDom('variables', liveVariables);
+      updateDom('proteomics', liveProteomics);
+      updateDom('biosamples', liveBiosamples);
+
+    } catch (err) {
+      console.warn("API metrics synchronization skipped, showing static defaults.");
+      document.querySelectorAll('.live-stat-loader').forEach(l => (l as HTMLElement).style.display = 'none');
+      document.querySelectorAll('.live-stat-value').forEach(v => {
+        (v as HTMLElement).style.display = 'inline';
+        v.classList.remove('hidden');
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncLandingMetrics);
+  } else {
+    syncLandingMetrics();
+  }
+</script>
+
+```
+
+### 🧩 File: `src/pages/[lang]/index.astro`
 ```astro
 ---
 import { getCollection, getEntry } from 'astro:content';
-import Layout from '../layouts/Layout.astro';
-import Hero from '../components/Hero.astro';
-import TrustBar from '../components/TrustBar.astro';
+// UX FIX: Adjusted relative paths because this file is now nested in [lang]/
+import Layout from '../../layouts/Layout.astro';
+import Hero from '../../components/Hero.astro';
+import TrustBar from '../../components/TrustBar.astro';
 
+// 1. Generate paths for both languages
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'fr' } }
+  ];
+}
+
+const { lang } = Astro.params;
+const langPrefix = lang === 'en' ? '' : '/fr';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
-const homeData = await getEntry('pages', 'home');
-const allTeam = await getCollection('team');
+
+// 2. Fetch the dynamically correct home data dictionary
+const homeData = await getEntry('pages', `${lang}/home`);
+
+// 3. Filter collections to strictly pull the active language's documents
+const allTeam = await getCollection('team', ({ id }) => id.startsWith(`${lang}/`));
 const sortedTeam = allTeam.sort((a, b) => a.data.order - b.data.order);
-const allNews = await getCollection('news');
+
+const allNews = await getCollection('news', ({ id }) => id.startsWith(`${lang}/`));
 const latestNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
 
-// Extract the section text from our home.yaml
 const { insights, teamSection } = homeData.data;
+
+// Utility to cleanly extract just the filename slug from the new nested ID structure
+const getCleanSlug = (id: string) => id.split('/').pop()?.replace(/\.[^/.]+$/, "");
 ---
-<Layout title="BioPortal | Advancing Human Research" ctaMode="scroll">
+<Layout title={homeData.data.seoTitle || "BioPortal"} ctaMode="scroll" lang={lang}>
   <main class="relative">
 
-    <Hero content={homeData.data.hero} />
+    <Hero content={homeData.data.hero} lang={lang} />
 
     <TrustBar content={homeData.data.trustBar} />
 
@@ -496,12 +959,13 @@ const { insights, teamSection } = homeData.data;
 
             <div class="p-8 flex flex-col flex-grow">
               <div class="flex justify-between items-start mb-6">
-                <span class="text-[10px] font-bold text-gray-400 uppercase">{post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                <span class="text-[10px] font-bold text-gray-400 uppercase">{post.data.date.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
                 <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-brand-blue-deep/10 text-brand-blue-deep">{post.data.tag}</span>
               </div>
               <h3 class="text-xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-brand-blue-deep transition-colors">{post.data.title}</h3>
               <p class="text-sm text-gray-500 leading-relaxed mb-8 flex-grow line-clamp-3">{post.data.excerpt}</p>
-              <a href={`${baseUrl}/news/${post.id}/`} class="text-brand-dark font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all mt-auto">
+
+              <a href={`${baseUrl}${langPrefix}/news/${getCleanSlug(post.id)}/`} class="text-brand-dark font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all mt-auto">
                 {insights.readMoreText} <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </a>
             </div>
@@ -510,7 +974,7 @@ const { insights, teamSection } = homeData.data;
       </div>
 
       <div class="mt-10 text-center">
-        <a href={`${baseUrl}${insights.viewAllLink}`} class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-surface border-2 border-gray-100 text-brand-dark font-bold hover:border-brand-blue-deep hover:text-brand-blue-deep transition-colors shadow-sm cursor-pointer">
+        <a href={`${baseUrl}${langPrefix}${insights.viewAllLink}`} class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-surface border-2 border-gray-100 text-brand-dark font-bold hover:border-brand-blue-deep hover:text-brand-blue-deep transition-colors shadow-sm cursor-pointer">
           {insights.viewAllButtonText}
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
         </a>
@@ -593,23 +1057,104 @@ const { insights, teamSection } = homeData.data;
       </div>
     </section>
   </main>
-  </Layout>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const teamCards = document.querySelectorAll('.team-card');
+      const spotlightContent = document.getElementById('spotlight-content');
+
+      let activeHoverTarget: any = null;
+      let currentDisplayedCard: any = null;
+
+      teamCards.forEach(card => {
+        // --- DESKTOP HOVER LOGIC ---
+        card.addEventListener('mouseenter', () => {
+          if (window.innerWidth < 1024) return;
+          if (currentDisplayedCard === card) return;
+
+          activeHoverTarget = card;
+          const name = card.querySelector('.member-name')?.textContent || '';
+          const role = card.querySelector('.member-role')?.textContent || '';
+          const bio = card.querySelector('.member-bio')?.textContent || '';
+          const imgEl = card.querySelector('.member-img');
+          const imgSrc = imgEl ? imgEl.getAttribute('src') : null;
+
+          const themeColorClass = 'text-brand-blue-deep';
+
+          if (spotlightContent) spotlightContent.style.opacity = '0';
+
+          setTimeout(() => {
+            if (activeHoverTarget !== card || !spotlightContent) return;
+            currentDisplayedCard = card;
+
+            spotlightContent.innerHTML = `
+              <div class="flex justify-between items-start mb-6 gap-4">
+                <div class="pt-2">
+                  <h3 class="text-2xl font-bold text-gray-900 mb-1 tracking-tight leading-tight">${name}</h3>
+                  <p class="text-xs font-bold ${themeColorClass} uppercase tracking-widest">${role}</p>
+                </div>
+                ${imgSrc
+                  ? `<img src="${imgSrc}" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-xl bg-surface shrink-0" />`
+                  : `<div class="w-24 h-24 bg-surface rounded-full border-4 border-white shadow-xl shrink-0 flex items-center justify-center text-brand-blue-deep/30"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>`
+                }
+              </div>
+              <div class="text-gray-600 leading-relaxed text-sm space-y-4 pr-2 font-medium">${bio}</div>
+            `;
+
+            spotlightContent.style.opacity = '1';
+          }, 150);
+        });
+
+        // --- MOBILE TOGGLE LOGIC ---
+        card.addEventListener('click', () => {
+          if (window.innerWidth >= 1024) return;
+          const mobileContainer = card.querySelector('.mobile-bio-container') as HTMLElement;
+          if (!mobileContainer) return;
+
+          const isOpen = mobileContainer.style.maxHeight && mobileContainer.style.maxHeight !== '0px';
+
+          document.querySelectorAll('.mobile-bio-container').forEach(c => {
+            (c as HTMLElement).style.maxHeight = '0px';
+            (c as HTMLElement).style.opacity = '0';
+          });
+
+          if (!isOpen) {
+            mobileContainer.style.maxHeight = mobileContainer.scrollHeight + 'px';
+            mobileContainer.style.opacity = '1';
+          }
+        });
+      });
+    });
+  </script>
+</Layout>
 
 ```
 
-### 🧩 File: `src/pages/participants.astro`
+### 🧩 File: `src/pages/[lang]/participants.astro`
 ```astro
 ---
 import { getEntry } from 'astro:content';
-import Layout from '../layouts/Layout.astro';
-import TrustBar from '../components/TrustBar.astro';
+// UX FIX: Bumped up relative imports since this file now lives deeper inside [lang]/
+import Layout from '../../layouts/Layout.astro';
+import TrustBar from '../../components/TrustBar.astro';
 
+// 1. Tell Astro to compile this route for both English and French instances
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'fr' } }
+  ];
+}
+
+const { lang } = Astro.params;
+const langPrefix = lang === 'en' ? '' : '/fr';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-// Fetch content
-const pageData = await getEntry('pages', 'participants');
-const homeData = await getEntry('pages', 'home');
+// 2. Query localized data files dynamically based on active locale context parameters
+const pageData = await getEntry('pages', `${lang}/participants`);
+const homeData = await getEntry('pages', `${lang}/home`);
 
+// Establish dynamic text structure references with secure fallbacks
 const hero = pageData?.data?.hero || {
   tagline: "Participant Portal",
   headline: "Advance Medicine Through",
@@ -617,9 +1162,14 @@ const hero = pageData?.data?.hero || {
   description: "Safely contribute to groundbreaking healthcare insights right here in Montreal."
 };
 const steps = pageData?.data?.steps || [];
-const content = pageData?.data?.recruitmentData; // New block
+const content = pageData?.data?.recruitmentData || {
+  pageTitle: "Join Study",
+  whyJoinTitle: "Why Join",
+  howItWorksTitle: "How It Works",
+  formCard: { questions: [] }
+};
 ---
-<Layout title={content.pageTitle} navType="minimal">
+<Layout title={content.pageTitle} navType="minimal" lang={lang}>
   <div class="fixed top-0 inset-x-0 h-[600px] bg-gradient-to-br from-brand-green-bright/5 via-brand-teal/5 to-transparent -z-10"></div>
 
   <main class="relative z-10 -mt-16 pt-0">
@@ -640,7 +1190,7 @@ const content = pageData?.data?.recruitmentData; // New block
 
           <div>
             <h3 class="text-xs font-extrabold text-gray-400 uppercase tracking-widest mb-8">{content.whyJoinTitle}</h3>
-            </div>
+          </div>
 
           <div class="pt-8 border-t border-gray-100">
             <h3 class="text-xs font-extrabold text-gray-400 uppercase tracking-widest mb-8">{content.howItWorksTitle}</h3>
@@ -688,7 +1238,7 @@ const content = pageData?.data?.recruitmentData; // New block
               </form>
 
               <p class="mt-6 text-[11px] text-gray-400 text-center leading-relaxed font-medium">
-                {content.formCard.disclaimer} <a href={`${baseUrl}/privacy`} class="text-brand-green-bright underline hover:text-brand-dark transition-colors font-bold">{content.formCard.privacyLinkText}</a>.
+                {content.formCard.disclaimer} <a href={`${baseUrl}${langPrefix}/privacy`} class="text-brand-green-bright underline hover:text-brand-dark transition-colors font-bold">{content.formCard.privacyLinkText}</a>.
               </p>
             </div>
           </div>
@@ -700,16 +1250,28 @@ const content = pageData?.data?.recruitmentData; // New block
 
 ```
 
-### 🧩 File: `src/pages/privacy.astro`
+### 🧩 File: `src/pages/[lang]/privacy.astro`
 ```astro
 ---
 import { getEntry } from 'astro:content';
-import Layout from '../layouts/Layout.astro';
+// UX FIX: Adjusted relative path step up because this file is now nested inside the [lang] folder
+import Layout from '../../layouts/Layout.astro';
 
-const pageData = await getEntry('pages', 'privacy');
+// 1. Tell Astro to generate paths for both English and French instances
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'fr' } }
+  ];
+}
+
+const { lang } = Astro.params;
+
+// 2. Fetch data dynamically based on the current locale parameter
+const pageData = await getEntry('pages', `${lang}/privacy`);
 const { tagline, headline, description, safeguardsTitle, safeguards, footerBox } = pageData.data;
 ---
-<Layout title={`${headline} | BioPortal`} navType="minimal">
+<Layout title={`${headline} | BioPortal`} navType="minimal" lang={lang}>
   <div class="fixed top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue-deep/5 via-brand-teal/5 to-transparent -z-10"></div>
 
   <main class="max-w-3xl mx-auto px-6 py-12 lg:py-16">
@@ -745,307 +1307,6 @@ const { tagline, headline, description, safeguardsTitle, safeguards, footerBox }
 
 ```
 
-### 🧩 File: `src/pages/data.astro`
-```astro
----
-import { getEntry } from 'astro:content';
-import Layout from '../layouts/Layout.astro';
-
-const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
-const pageData = await getEntry('pages', 'data');
-
-const hero = pageData?.data?.hero || { tagline: 'Data', headline: 'BioPortal Datasets', description: 'Loading data...' };
-const metrics = pageData?.data?.landingMetrics;
-const content = pageData?.data?.dataRequest;
----
-<Layout title={content.pageTitle} navType="minimal" backText={content.backText}>
-  <div class="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue-deep/10 via-brand-teal/5 to-transparent -z-10"></div>
-
-  <main class="max-w-7xl mx-auto px-6 pt-12 pb-24 relative z-10">
-    <header class="max-w-3xl mb-16 text-center mx-auto">
-      <span class="text-brand-blue-deep font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
-      <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 tracking-tight">{hero.headline}</h1>
-      <p class="text-xl text-gray-600 leading-relaxed">{hero.description}</p>
-    </header>
-
-    <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 mb-16 items-stretch">
-      <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
-
-        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
-            <h3 id="metric-participants" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep">
-              <span class="live-stat-loader inline-block w-16 h-8 bg-gray-100 rounded animate-pulse"></span>
-              <span class="live-stat-value hidden">{metrics.fallbackValues.participants}</span>
-            </h3>
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.participantsLabel}</p>
-        </div>
-
-        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
-            <h3 id="metric-variables" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep">
-              <span class="live-stat-loader inline-block w-16 h-8 bg-gray-100 rounded animate-pulse"></span>
-              <span class="live-stat-value hidden">{metrics.fallbackValues.clinicalVariables}</span>
-            </h3>
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.clinicalVariablesLabel}</p>
-        </div>
-
-        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
-            <h3 id="metric-proteomics" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep">
-              <span class="live-stat-loader inline-block w-16 h-8 bg-gray-100 rounded animate-pulse"></span>
-              <span class="live-stat-value hidden">{metrics.fallbackValues.proteomics}</span>
-            </h3>
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.proteomicsLabel}</p>
-        </div>
-
-        <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-center">
-            <h3 id="metric-biosamples" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter transition-colors group-hover:text-brand-blue-deep">
-              <span class="live-stat-loader inline-block w-16 h-8 bg-gray-100 rounded animate-pulse"></span>
-              <span class="live-stat-value hidden">{metrics.fallbackValues.biosamples}</span>
-            </h3>
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.biosamplesLabel}</p>
-        </div>
-
-      </div>
-
-      <div class="lg:col-span-5 bp-frosted-gradient rounded-[2rem] p-10 border border-white/60 shadow-2xl shadow-brand-blue-deep/5 flex flex-col justify-between relative overflow-hidden group">
-        <div class="relative z-10 mb-10">
-          <span class="px-3 py-1.5 rounded-lg bg-brand-blue-deep/10 text-brand-blue-deep font-bold text-[10px] uppercase tracking-[0.15em] mb-6 inline-block">{content.explorerCard.tag}</span>
-          <h2 class="text-4xl font-black tracking-tight text-gray-900 mb-4">{content.explorerCard.title}</h2>
-          <p class="text-gray-600 text-sm leading-relaxed font-medium opacity-90">{content.explorerCard.description}</p>
-        </div>
-        <a href={`${baseUrl}/data/explorer/`} class="relative z-10 w-full py-4 rounded-xl bg-brand-dark text-white text-sm font-bold shadow-lg shadow-brand-dark/20 hover:shadow-2xl hover:shadow-brand-dark/40 hover:scale-[1.02] hover:bg-gray-900 transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer group/btn border border-brand-dark/50">
-          {content.explorerCard.buttonText}
-          <svg class="w-5 h-5 text-brand-teal group-hover/btn:text-white transform transition-all duration-300 group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
-        </a>
-      </div>
-    </div>
-
-    <div class="grid lg:grid-cols-12 gap-8 items-start">
-      <div class="lg:col-span-5 space-y-6">
-        <div class="bg-brand-dark rounded-[2.5rem] p-8 text-white shadow-xl">
-          <h3 class="text-xl font-bold mb-5 flex items-center gap-3">
-            <span class="w-8 h-8 rounded-full bg-brand-teal/20 flex items-center justify-center">
-              <svg class="w-4 h-4 text-brand-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-            </span>
-            {content.accessRequirements.title}
-          </h3>
-          <ul class="space-y-4 text-sm text-gray-300 font-medium">
-            {content.accessRequirements.items.map((item: string, index: number) => (
-              <li class="flex items-start gap-3"><span class="text-brand-teal font-black mt-0.5">0{index + 1}</span><span class="leading-relaxed">{item}</span></li>
-            ))}
-          </ul>
-        </div>
-
-        <div class="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-soft">
-          <h3 class="text-xl font-bold text-gray-900 mb-4">{content.infrastructure.title}</h3>
-          <p class="text-sm text-gray-500 leading-relaxed mb-6" set:html={content.infrastructure.description}></p>
-          <div class="flex flex-wrap gap-2">
-            {content.infrastructure.tags.map((tag: string) => (
-              <span class="px-3 py-1.5 rounded-lg bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-widest">{tag}</span>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div class="lg:col-span-7">
-        <div class="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-brand-blue-deep/5 border border-gray-100 h-full">
-          <h2 class="text-3xl font-black text-brand-dark mb-2">{content.form.title}</h2>
-          <p class="text-gray-500 mb-8 text-sm leading-relaxed font-medium">{content.form.description}</p>
-
-          <form class="space-y-6">
-            <div class="grid md:grid-cols-2 gap-6">
-              <div>
-                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields.nameLabel}</label>
-                <input type="text" placeholder={content.form.fields.namePlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-inner" />
-              </div>
-              <div>
-                <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields.emailLabel}</label>
-                <input type="email" placeholder={content.form.fields.emailPlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium shadow-inner" />
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields.interestLabel}</label>
-              <select class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium appearance-none cursor-pointer shadow-inner">
-                <option>Diabetes & Endocrinology</option>
-                <option>Proteomics & Biomarkers</option>
-                <option>Genomics & Rare Variants</option>
-                <option>Other / Multi-Omics</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 ml-1">{content.form.fields.overviewLabel}</label>
-              <textarea rows="4" placeholder={content.form.fields.overviewPlaceholder} class="w-full px-5 py-4 rounded-xl bg-surface border border-gray-200 focus:border-brand-blue-deep focus:bg-white focus:ring-2 focus:ring-brand-blue-deep/20 outline-none transition-all text-sm font-medium resize-none shadow-inner"></textarea>
-            </div>
-
-            <button type="button" class="w-full py-4 rounded-xl bg-brand-blue-deep text-white font-bold text-sm uppercase tracking-widest shadow-lg shadow-brand-blue-deep/20 hover:bg-brand-dark hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3 cursor-pointer mt-4">
-              {content.form.buttonText}
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </main>
-</Layout>
-
-<script>
-  const API_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats";
-  // The API doesn't spit out the number of clinical variables, so we calculate the unique chart_ids from the metadata.
-  const METADATA_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats?type=metadata";
-
-  async function syncLandingMetrics() {
-    try {
-      const [statsRes, metaRes] = await Promise.all([
-        fetch(`${API_GATEWAY}?filter=baseline&_cb=${new Date().getTime()}`),
-        fetch(`${METADATA_GATEWAY}&_cb=${new Date().getTime()}`)
-      ]);
-
-      if (!statsRes.ok || !metaRes.ok) throw new Error("API failed");
-
-      const statsArray = await statsRes.json();
-      const metaArray = await metaRes.json();
-
-      // 1. Total Participants
-      const sexStat = statsArray.find((s: any) => s.chart_id === 'sex');
-      const liveParticipants = sexStat?.data.reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
-
-      // 2. Clinical Variables (Count the number of unique tracking variables defined in your backend)
-      const liveVariables = metaArray.length || 0;
-
-      // 3. Proteomic Profiles
-      const proteomicStat = statsArray.find((s: any) => s.chart_id === 'n_proteomics');
-      // Sum all the patients who *do* have proteomics data (ignoring the "No" column)
-      const liveProteomics = proteomicStat?.data
-        .filter(d => d.category !== 'No')
-        .reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
-
-      // 4. Biosamples
-      const sampleStat = statsArray.find((s: any) => s.chart_id === 'sample_type');
-      // Sum the "Single" + "Multiple" columns
-      const liveBiosamples = sampleStat?.data
-        .filter(d => d.category !== 'None')
-        .reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
-
-
-      const updateDom = (id: string, value: number) => {
-        const container = document.getElementById(`metric-${id}`);
-        if (container && value > 0) {
-          container.querySelector('.live-stat-loader')?.classList.add('hidden');
-          const valElement = container.querySelector('.live-stat-value');
-          if (valElement) {
-              valElement.classList.remove('hidden');
-              valElement.innerHTML = value.toLocaleString();
-          }
-        }
-      };
-
-      updateDom('participants', liveParticipants);
-      updateDom('variables', liveVariables);
-      updateDom('proteomics', liveProteomics);
-      updateDom('biosamples', liveBiosamples);
-
-    } catch (err) {
-      console.warn("API metrics synchronization skipped, showing static defaults.");
-      document.querySelectorAll('.live-stat-loader').forEach(loader => loader.classList.add('hidden'));
-      document.querySelectorAll('.live-stat-value').forEach(val => val.classList.remove('hidden'));
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', syncLandingMetrics);
-  } else {
-    syncLandingMetrics();
-  }
-</script>
-
-```
-
-### 🧩 File: `src/pages/data/explorer.astro`
-```astro
----
-import { getEntry } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import ExplorerSidebar from '../../components/explorer/ExplorerSidebar.astro';
-import ExplorerHeader from '../../components/explorer/ExplorerHeader.astro';
-import ExplorerGrid from '../../components/explorer/ExplorerGrid.astro';
-
-// 1. Fetch all dynamic text for the explorer from your data.yaml file
-const dataPage = await getEntry('pages', 'data');
-const explorerContent = dataPage.data.explorer;
----
-<Layout
-  title={explorerContent.pageTitle}
-  navType="minimal"
-  backLink={explorerContent.backLink}
-  backText={explorerContent.backText}
->
-  <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-brand-dark/40 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300 lg:hidden"></div>
-
-  <div class="flex min-h-[calc(100vh-80px)] bg-surface font-sans relative">
-
-    <ExplorerSidebar
-      sidebarTitle={explorerContent.sidebar.title}
-      tooltipTitle={explorerContent.sidebar.tooltip.title}
-      tooltipDescription={explorerContent.sidebar.tooltip.description}
-      tooltipWarning={explorerContent.sidebar.tooltip.warning}
-      resetButtonText={explorerContent.sidebar.buttons.reset}
-      exportButtonText={explorerContent.sidebar.buttons.export}
-      searchPlaceholder={explorerContent.sidebar.searchPlaceholder}
-      tabFiltersText={explorerContent.sidebar.tabs.filters}
-      tabChartsText={explorerContent.sidebar.tabs.charts}
-      baselineText={explorerContent.sidebar.baseline}
-      visibilityTitle={explorerContent.sidebar.visibility.title}
-      visibilityAllText={explorerContent.sidebar.visibility.all}
-      visibilityNoneText={explorerContent.sidebar.visibility.none}
-      statusGatewayText={explorerContent.sidebar.status.gateway}
-      statusSyncingText={explorerContent.sidebar.status.syncing}
-    />
-
-    <main id="main-content-area" class="flex-1 p-6 lg:p-12 relative z-10 w-full overflow-x-hidden transition-all duration-500 origin-top">
-
-      <div id="loading-overlay" class="absolute inset-0 z-50 bg-surface/80 backdrop-blur-md opacity-100 transition-all duration-700 ease-in-out"></div>
-
-      <ExplorerHeader totalCountLabel={explorerContent.header.totalPatientsLabel} />
-      <ExplorerGrid noResultsText={explorerContent.grid.noResultsText} />
-
-    </main>
-  </div>
-</Layout>
-
-<script src="../../scripts/explorerEngine.ts"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const sidebar = document.getElementById('explorer-sidebar');
-    const overlay = document.getElementById('mobile-sidebar-overlay');
-    const openBtn = document.getElementById('mobile-filter-btn');
-    const closeBtn = document.getElementById('mobile-close-sidebar');
-
-    const toggleSidebar = (force?: boolean) => {
-      if (!sidebar || !overlay) return;
-      const isOpen = sidebar.classList.contains('translate-x-0');
-      const shouldOpen = force !== undefined ? force : !isOpen;
-
-      if (shouldOpen) {
-        overlay.classList.remove('hidden');
-        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
-        sidebar.classList.remove('-translate-x-full');
-        sidebar.classList.add('translate-x-0');
-      } else {
-        overlay.classList.add('opacity-0');
-        sidebar.classList.remove('translate-x-0');
-        sidebar.classList.add('-translate-x-full');
-        setTimeout(() => overlay.classList.add('hidden'), 300);
-      }
-    };
-
-    if (openBtn) openBtn.addEventListener('click', () => toggleSidebar(true));
-    if (closeBtn) closeBtn.addEventListener('click', () => toggleSidebar(false));
-    if (overlay) overlay.addEventListener('click', () => toggleSidebar(false));
-  });
-</script>
-
-```
-
 ### 🧩 File: `src/layouts/Layout.astro`
 ```astro
 ---
@@ -1056,6 +1317,7 @@ import { getEntry } from 'astro:content';
 
 const {
   title,
+  lang = 'en', // 1. Catch the language prop (defaults to 'en')
   navType = 'main',
   ctaMode = 'visible',
   backLink = '/',
@@ -1063,16 +1325,14 @@ const {
   hideFooter = false
 } = Astro.props;
 
-// Fetch global site configuration
-const globalData = await getEntry('pages', 'global');
+// 2. Fetch data dynamically based on the active locale (e.g., 'en/global' or 'fr/global')
+const globalData = await getEntry('pages', `${lang}/global`);
 
-// FIX: Pull directly from the root of data, where they actually live!
 const navigation = globalData?.data?.navigation;
 const footer = globalData?.data?.footer;
 ---
 <!doctype html>
-<html lang="en">
-  <head>
+<html lang={lang}> <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <title>{title}</title>
@@ -1085,7 +1345,7 @@ const footer = globalData?.data?.footer;
         backLink={backLink}
         backText={backText}
         navData={navigation}
-      />
+        lang={lang} />
     )}
 
     <div class="flex-grow pt-20">
@@ -1093,7 +1353,9 @@ const footer = globalData?.data?.footer;
     </div>
 
     {!hideFooter && footer && (
-      <Footer footerData={footer} />
+      <Footer
+        footerData={footer}
+        lang={lang} />
     )}
   </body>
 </html>
@@ -1103,8 +1365,28 @@ const footer = globalData?.data?.footer;
 ### 🧩 File: `src/components/Hero.astro`
 ```astro
 ---
-const { content } = Astro.props;
+const {
+  content,
+  lang = 'en' // 1. Catch the active language context parameter from index pages
+} = Astro.props;
+
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// 2. Compute language path prefixes
+const langPrefix = lang === 'en' ? '' : '/fr';
+
+// 3. Localized translation mappings for hardcoded interface items
+const labels = lang === 'fr' ? {
+  joinText: "Rejoindre l'étude",
+  joinTooltip: "Inscrivez-vous pour contribuer en toute sécurité à nos cohortes de recherche basées à Montréal en fournissant des échantillons biologiques et des données cliniques.",
+  requestText: "Demander des données",
+  requestTooltip: "Accédez à notre portail sécurisé pour explorer les ensembles de données anonymisés et demander du matériel biologique pour vos recherches."
+} : {
+  joinText: "Join Study",
+  joinTooltip: "Register your interest to safely contribute biospecimens and clinical data to our Montreal-based research cohorts.",
+  requestText: "Request Data",
+  requestTooltip: "Access our secure portal to explore de-identified datasets and request biological materials for your research."
+};
 ---
 <header class="pt-12 pb-6 px-6 max-w-5xl mx-auto text-center relative z-10 flex flex-col justify-center min-h-[50vh] max-h-[680px]">
 
@@ -1122,27 +1404,27 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
       <div class="relative group/tooltip w-full sm:w-auto">
         <a
-          href={`${baseUrl}/participants`}
+          href={`${baseUrl}${langPrefix}/participants`}
           class="w-full sm:w-64 h-16 rounded-full bg-brand-green-bright text-white font-extrabold text-lg shadow-xl shadow-brand-green-bright/30 transition-all duration-300 hover:scale-105 hover:brightness-110 hover:shadow-2xl hover:shadow-brand-green-bright/40 flex items-center justify-center gap-3 cursor-pointer select-none group"
         >
-          Join Study
+          {labels.joinText}
           <svg class="w-5 h-5 shrink-0 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
         </a>
         <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 p-4 bg-white border border-gray-100 text-gray-600 text-xs text-left leading-relaxed rounded-2xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/tooltip:opacity-100 transition-all duration-300 pointer-events-none z-50 hidden sm:block">
-          Register your interest to safely contribute biospecimens and clinical data to our Montreal-based research cohorts.
+          {labels.joinTooltip}
         </div>
       </div>
 
       <div class="relative group/tooltip w-full sm:w-auto">
         <a
-          href={`${baseUrl}/data`}
+          href={`${baseUrl}${langPrefix}/data`}
           class="w-full sm:w-64 h-16 rounded-full bg-brand-blue-deep text-white font-extrabold text-lg shadow-xl shadow-brand-blue-deep/30 transition-all duration-300 hover:scale-105 hover:brightness-110 hover:shadow-2xl hover:shadow-brand-blue-deep/40 flex items-center justify-center gap-3 cursor-pointer select-none group"
         >
-          Request Data
+          {labels.requestText}
           <svg class="w-5 h-5 shrink-0 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
         </a>
         <div class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 p-4 bg-white border border-gray-100 text-gray-600 text-xs text-left leading-relaxed rounded-2xl shadow-xl shadow-brand-dark/10 opacity-0 group-hover/tooltip:opacity-100 transition-all duration-300 pointer-events-none z-50 hidden sm:block">
-          Access our secure portal to explore de-identified datasets and request biological materials for your research.
+          {labels.requestTooltip}
         </div>
       </div>
 
@@ -1159,37 +1441,46 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const { content } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-// Duplicate the partners array to create a flawless, unbroken infinite loop
-const doublePartners = [...content.partners, ...content.partners];
+// Tripling ensures there is always enough content off-screen for Embla to seamlessly loop
+const triplePartners = [...content.partners, ...content.partners, ...content.partners];
 ---
 
 <section class="border-y border-gray-100 bg-white/50 py-8 mb-12 overflow-hidden">
   <div class="max-w-6xl mx-auto text-center">
     <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-6 px-6">{content.label}</p>
 
-    <div class="relative w-full overflow-hidden marquee-mask mb-6">
-      <div class="flex w-max items-center gap-x-16 md:gap-x-24 animate-marquee py-2 px-4">
-        {doublePartners.map((partner: any) => (
-          <a
-            href={partner.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="hover:scale-105 transition-transform duration-300 flex items-center justify-center shrink-0"
-            title={partner.name}
-          >
-            {partner.logo ? (
-              <img
-                src={`${baseUrl}${partner.logo}`}
-                alt={partner.name}
-                class="h-9 md:h-11 w-auto object-contain"
-                style={partner.scale ? `transform: scale(${partner.scale});` : ''}
-                onerror="this.style.display='none'"
-              />
-            ) : (
-              <span class="text-base font-black text-gray-800 tracking-tighter whitespace-nowrap">{partner.name}</span>
-            )}
-          </a>
+    <div class="embla trustbar-viewport marquee-mask relative w-full overflow-hidden cursor-grab active:cursor-grabbing select-none mb-6">
+
+      <div class="embla__container flex touch-pan-y py-2 px-4">
+
+        {triplePartners.map((partner: any) => (
+          <div class="embla__slide flex-[0_0_auto] min-w-0 flex items-center justify-center mr-16 md:mr-24">
+            <a
+              href={partner.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="trustbar-link hover:scale-105 transition-transform duration-300 block"
+              title={partner.name}
+              draggable="false"
+            >
+              {partner.logo ? (
+                <img
+                  src={`${baseUrl}${partner.logo}`}
+                  alt={partner.name}
+                  class="h-9 md:h-11 w-auto object-contain pointer-events-none"
+                  style={partner.scale ? `transform: scale(${partner.scale});` : ''}
+                  onerror="this.style.display='none'"
+                  draggable="false"
+                />
+              ) : (
+                <span class="text-base font-black text-gray-800 tracking-tighter whitespace-nowrap pointer-events-none">
+                  {partner.name}
+                </span>
+              )}
+            </a>
+          </div>
         ))}
+
       </div>
     </div>
 
@@ -1203,27 +1494,34 @@ const doublePartners = [...content.partners, ...content.partners];
   </div>
 </section>
 
+<script>
+  import EmblaCarousel from 'embla-carousel';
+  import AutoScroll from 'embla-carousel-auto-scroll';
+
+  // Initialize on client load
+  const viewports = document.querySelectorAll('.trustbar-viewport');
+
+  viewports.forEach((viewportNode) => {
+    const emblaApi = EmblaCarousel(
+      viewportNode as HTMLElement,
+      {
+        loop: true,
+        dragFree: true // Enables the fluid, momentum-based throwing/dragging
+      },
+      [
+        AutoScroll({
+          playOnInit: true,
+          speed: 1, // Adjust this to change the cruising speed
+          stopOnMouseEnter: true, // Flawless pausing on hover
+          stopOnInteraction: false // Crucial: Resumes auto-scrolling after a user lets go of a drag
+        })
+      ]
+    );
+  });
+</script>
+
 <style>
-  /* Infinite linear sliding translation with Hardware Acceleration */
-  @keyframes marquee {
-    0% {
-      transform: translate3d(0, 0, 0);
-    }
-    100% {
-      transform: translate3d(-50%, 0, 0);
-    }
-  }
-
-  .animate-marquee {
-    animation: marquee 35s linear infinite;
-  }
-
-  /* Pauses the slider when a user hovers over a partner link */
-  .animate-marquee:hover {
-    animation-play-state: paused;
-  }
-
-  /* Blends the edges out transparently so logos don't clip abruptly at the borders */
+  /* Keeps the beautiful side fade transitions */
   .marquee-mask {
     mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
     -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
@@ -1237,18 +1535,26 @@ const doublePartners = [...content.partners, ...content.partners];
 ---
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-const { footerData } = Astro.props;
+const {
+  footerData,
+  lang = 'en' // 1. Catch the active language context token
+} = Astro.props;
+
+// 2. Establish language-aware route pathing
+const langPrefix = lang === 'en' ? '' : '/fr';
 ---
 <footer class="bg-brand-dark text-white py-20 px-6 text-center mt-auto">
   <div class="text-2xl font-bold mb-2 tracking-tight">
     {footerData.title}<span class="text-brand-blue-deep">{footerData.titlePunctuation}</span>
   </div>
   <p class="text-gray-400 text-sm mb-6">{footerData.subtitle}</p>
+
   <div class="mb-12">
-    <a href={`${baseUrl}${footerData.privacyLinkHref}`} class="text-xs text-gray-400 hover:text-white underline transition-colors">
+    <a href={`${baseUrl}${langPrefix}${footerData.privacyLinkHref}`} class="text-xs text-gray-400 hover:text-white underline transition-colors">
       {footerData.privacyLinkText}
     </a>
   </div>
+
   <div class="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold">
     {footerData.copyright}
   </div>
@@ -1266,13 +1572,31 @@ const {
   ctaMode = 'visible',
   backLink = '/',
   backText = 'Back',
-  navData
+  navData,
+  lang = 'en' // 1. Catch the active language token from the parent layout
 } = Astro.props;
+
+// 2. Establish context-aware link path modifiers
+const langPrefix = lang === 'en' ? '' : '/fr';
+
+// 3. Compute the reverse language path pairing for the switcher link
+const currentPathname = Astro.url.pathname;
+const toggleLang = lang === 'en' ? 'fr' : 'en';
+
+const relativePath = currentPathname.startsWith(baseUrl)
+  ? currentPathname.slice(baseUrl.length)
+  : currentPathname;
+
+const cleanRootPath = relativePath.replace(/^\/fr(\/|$)/, '/');
+
+const switchTargetUrl = toggleLang === 'fr'
+  ? `${baseUrl}/fr${cleanRootPath === '/' ? '' : cleanRootPath}`
+  : `${baseUrl}${cleanRootPath}`;
 ---
 <nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300" data-cta-mode={ctaMode}>
   <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
 
-    <a href={`${baseUrl}/`} class="flex items-center shrink-0 z-50 h-fit max-h-16 py-2 outline-none">
+    <a href={`${baseUrl}${langPrefix}/`} class="flex items-center shrink-0 z-50 h-fit max-h-16 py-2 outline-none">
       <img
         src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`}
         alt={navData.logoAlt}
@@ -1284,18 +1608,25 @@ const {
     {type === 'main' ? (
       <>
         <div id="nav-cta-group" class={`absolute left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-4 transition-all duration-500 ease-out ${ctaMode === 'scroll' ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}>
-          <a href={`${baseUrl}${navData.ctaButtons.primary.href}`} class="px-5 py-2 rounded-full border-2 border-brand-green-bright text-brand-green-bright text-xs font-bold hover:bg-brand-green-bright hover:text-white transition-all bg-white">
+          <a href={`${baseUrl}${langPrefix}${navData.ctaButtons.primary.href}`} class="px-5 py-2 rounded-full border-2 border-brand-green-bright text-brand-green-bright text-xs font-bold hover:bg-brand-green-bright hover:text-white transition-all bg-white">
             {navData.ctaButtons.primary.label}
           </a>
-          <a href={`${baseUrl}${navData.ctaButtons.secondary.href}`} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white">
+          <a href={`${baseUrl}${langPrefix}${navData.ctaButtons.secondary.href}`} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white">
             {navData.ctaButtons.secondary.label}
           </a>
         </div>
 
         <div class="hidden lg:flex items-center space-x-8 font-medium text-sm ml-auto">
           {navData.links.map((link: any) => (
-            <a href={`${baseUrl}${link.href}`} class="text-gray-500 hover:text-brand-dark transition-colors">{link.label}</a>
+            <a href={`${baseUrl}${langPrefix}${link.href}`} class="text-gray-500 hover:text-brand-dark transition-colors">{link.label}</a>
           ))}
+
+          <a
+            href={switchTargetUrl}
+            class="text-[11px] font-black tracking-wider text-brand-dark border-2 border-gray-100 px-3 py-1.5 rounded-full bg-white shadow-sm hover:border-brand-blue-deep hover:text-brand-blue-deep transition-all uppercase select-none"
+          >
+            {toggleLang}
+          </a>
         </div>
 
         <button id="mobile-menu-toggle" class="lg:hidden text-brand-dark p-2 -mr-2 focus:outline-none z-50">
@@ -1304,17 +1635,28 @@ const {
 
         <div id="mobile-menu-panel" class="absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-2xl hidden flex-col px-6 py-8 space-y-6 lg:hidden">
           {navData.links.map((link: any) => (
-            <a href={`${baseUrl}${link.href}`} class="mobile-link text-brand-dark font-extrabold text-xl">{link.label}</a>
+            <a href={`${baseUrl}${langPrefix}${link.href}`} class="mobile-link text-brand-dark font-extrabold text-xl">{link.label}</a>
           ))}
+
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-xs uppercase tracking-widest font-bold text-gray-400">Language / Langue</span>
+            <a
+              href={switchTargetUrl}
+              class="text-xs font-black tracking-widest text-brand-blue-deep border border-brand-blue-deep/20 px-4 py-2 rounded-xl bg-brand-blue-deep/5 uppercase"
+            >
+              Voir en {toggleLang}
+            </a>
+          </div>
+
           <hr class="border-gray-100" />
           <div class="flex flex-col gap-3">
-            <a href={`${baseUrl}${navData.ctaButtons.primary.href}`} class="w-full text-center py-4 rounded-xl bg-brand-green-bright text-white font-bold shadow-md shadow-brand-green-bright/20">{navData.ctaButtons.primary.label}</a>
-            <a href={`${baseUrl}${navData.ctaButtons.secondary.href}`} class="w-full text-center py-4 rounded-xl bg-brand-blue-deep text-white font-bold shadow-md shadow-brand-blue-deep/20">{navData.ctaButtons.secondary.label}</a>
+            <a href={`${baseUrl}${langPrefix}${navData.ctaButtons.primary.href}`} class="w-full text-center py-4 rounded-xl bg-brand-green-bright text-white font-bold shadow-md shadow-brand-green-bright/20">{navData.ctaButtons.primary.label}</a>
+            <a href={`${baseUrl}${langPrefix}${navData.ctaButtons.secondary.href}`} class="w-full text-center py-4 rounded-xl bg-brand-blue-deep text-white font-bold shadow-md shadow-brand-blue-deep/20">{navData.ctaButtons.secondary.label}</a>
           </div>
         </div>
       </>
     ) : (
-      <a href={`${baseUrl}${backLink}`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2 ml-auto z-50">
+      <a href={`${baseUrl}${langPrefix}${backLink}`} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2 ml-auto z-50">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
         {backText}
       </a>
@@ -1323,7 +1665,6 @@ const {
 </nav>
 
 <script>
-  // Script remains exactly the same
   document.addEventListener("DOMContentLoaded", () => {
     const nav = document.querySelector('nav[data-cta-mode="scroll"]');
     if (nav) {
@@ -1593,7 +1934,8 @@ const { noResultsText } = Astro.props;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   :global(.glass-card:hover) {
-    transform: translateY(-4px);
+    /* 🌟 UX FIX: Subtle scale outward prevents edge-jitter while highlighting */
+    transform: scale(1.015);
     box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     border-color: var(--color-brand-blue-deep);
   }
@@ -1636,6 +1978,31 @@ const { noResultsText } = Astro.props;
 
 @utility logo-gradient {
   background: linear-gradient(135deg, #f37a21, #fdbb10, #7fc342, #26abe2);
+}
+
+/* Add this at the bottom of src/styles/global.css */
+.upset-wrapper .upset-toolbar,
+.upset-wrapper svg g[class*="action"],
+.upset-wrapper .action-menu {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* Core Grid Dots & Matrix Row Recoloring */
+.upset-matrix-dot[data-set="blood"] { fill: var(--color-brand-blue-deep) !important; }
+.upset-matrix-dot[data-set="retinal"] { fill: var(--color-brand-green-bright) !important; }
+.upset-matrix-dot[data-set="urine"] { fill: var(--color-brand-teal) !important; }
+
+/* Highlight the Triple Overlap Intersection Column Bar */
+.upset-bar[data-intersection="retinal-blood-urine"] {
+  fill: var(--color-brand-orange-deep) !important;
+  transition: fill 0.2s ease-in-out;
+}
+
+/* Ensure the fill property state changes gracefully on hover */
+.upset-bar[data-intersection="retinal-blood-urine"]:hover {
+  fill: var(--color-brand-yellow) !important;
+  transition: fill 0.15s ease-in-out;
 }
 
 ```

@@ -1,0 +1,33 @@
+id: participants
+hero:
+  tagline: "Parcours du participant"
+  headline: "Vos données. Votre santé."
+  gradientText: "Notre avenir."
+  description: "Les biobanques mondiales manquent actuellement de représentation ethnique diversifiée. En partageant en toute sécurité un peu de votre temps et de vos données de santé, vous devenez une partie essentielle de la solution pour Montréal et pour le monde."
+steps:
+  - title: "Vérifiez votre admissibilité"
+    desc: "Remplissez le bref formulaire sécurisé sur cette page pour voir si vous êtes admissible à nos études actuelles sur le diabète."
+  - title: "Consentement transparent"
+    desc: "Nous vous expliquerons en détail comment vos données sont dépersonnalisées et protégées avant que vous ne partagiez des échantillons."
+  - title: "Évaluation de santé gratuite"
+    desc: "En guise de remerciement, recevez votre dépistage de la rétinopathie diabétique gratuit et approuvé par Santé Canada."
+benefit:
+  title: "Évaluation oculaire gratuite pour diabétiques"
+  desc: "Nous offrons l'imagerie de la rétinopathie diabétique approuvée par Santé Canada sans frais pour les participants. Dans les 5 minutes suivant l'examen, votre médecin reçoit un rapport diagnostique complet."
+
+recruitmentData:
+  pageTitle: "Rejoindre BioPortal | Faire progresser la recherche sur le diabète"
+  whyJoinTitle: "Pourquoi rejoindre BioPortal"
+  howItWorksTitle: "Comment fonctionne la participation"
+  formCard:
+    title: "Demande d'inscription"
+    description: "Répondez à 3 questions rapides pour voir si vous êtes admissible à notre étude actuelle à Montréal."
+    questions:
+      - "Avez-vous 18 ans ou plus ?"
+      - "Avez-vous une carte d'hôpital d'un hôpital du CIUSSS ?"
+      - "Avez-vous été diagnostiqué avec le diabète ?"
+    emailLabel: "Votre adresse courriel"
+    emailPlaceholder: "nom@courriel.com"
+    buttonText: "Vérifier mon admissibilité"
+    disclaimer: "En validant, vous autorisez les boucles de contact d'opérations sécurisées. Lisez notre"
+    privacyLinkText: "Politique de confidentialité"

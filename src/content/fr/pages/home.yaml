@@ -1,0 +1,50 @@
+id: home
+hero:
+  tagline: "Initiative de la biobanque HGJ McGill"
+  headline: "Accélérer l'avenir de la"
+  gradientText: "médecine de précision et de la recherche omique."
+  description: "BioPortal est une infrastructure de recherche sécurisée de classe mondiale reliant les scientifiques du monde entier à des cohortes de patients profondément phénotypées et multi-omiques. Du décodage de la protéomique des populations à l'exécution d'essais cliniques ciblés, nous fournissons les bases pour stimuler la prochaine génération de soins de santé de précision."
+trustBar:
+  label: "Nos Partenaires"
+  partners:
+    - name: "Hôpital général juif"
+      logo: "/logos/jgh-logo.png"
+      url: "https://www.jgh.ca/fr/"
+    - name: "Scikoop"
+      logo: "/logos/scikoop-logo.png"
+      url: "https://scikoop.com"
+      scale: "1"
+    - name: "CQDM"
+      logo: "/logos/cqdm-logo.png"
+      url: "https://cqdm.org/fr/"
+    - name: "CERC"
+      logo: "/logos/cerc-logo.webp"
+      url: "https://www.cerc.gc.ca/home-accueil-fra.aspx"
+    - name: "Roche"
+      logo: "/logos/roche-logo.png"
+      url: "https://www.roche.com"
+    - name: "Fondation Luci et André Chagnon"
+      logo: "/logos/fondation-chagnon-logo.png"
+      url: "https://fondationchagnon.org/fr/"
+    - name: "Fondation Famille Léger"
+      logo: "/logos/fondation-leger-logo.svg"
+      url: "https://leger.org/fr/"
+  acknowledgments: "Les contributeurs de BioPortal comprennent également les organismes à but non lucratif Fondation de la famille Mierins, la famille Herbert S. Lang, Randi Greenberg et la Fondation de la famille Tony & Betty Infilise."
+
+insights:
+  eyebrow: "Dernières actualités"
+  title: "Nouvelles et découvertes"
+  readMoreText: "Lire l'article"
+  viewAllButtonText: "Voir toutes les actualités"
+  viewAllLink: "/news"
+  fallbackImageAlt: "Marque BioPortal"
+
+teamSection:
+  eyebrow: "Direction et Opérations"
+  title: "Notre Équipe"
+  description: "Les cerveaux derrière BioPortal. Nos professionnels dévoués travaillent sans relâche pour établir des liens avec les participants et faire progresser la recherche scientifique de pointe."
+  governingTitle: "Comité directeur"
+  recruitmentTitle: "Recrutement et Opérations"
+  spotlight:
+    title: "Intendance institutionnelle"
+    description: "Notre initiative est dirigée par d'éminents experts en confidentialité des données cliniques et des chercheurs médicaux. Survolez n'importe quel profil de portfolio à gauche pour examiner leur parcours scientifique et leur mandat de gouvernance."

@@ -2,7 +2,8 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const pages = defineCollection({
-  loader: glob({ pattern: "*.yaml", base: "./src/content/pages" }),
+  // UPDATED: Looks inside nested language directories (e.g., pages/en/home.yaml)
+  loader: glob({ pattern: "**/*.yaml", base: "./src/content/pages" }),
   schema: z.object({
     id: z.string(),
 
@@ -150,9 +151,9 @@ const pages = defineCollection({
   }),
 });
 
-// --- TEAM & NEWS COLLECTIONS (No changes needed) ---
 const team = defineCollection({
-  loader: glob({ pattern: "*.{yaml,yml}", base: "./src/content/team" }),
+  // UPDATED: Captures dynamic entries inside language folders (e.g., team/fr/01-brent.yaml)
+  loader: glob({ pattern: "**/*.{yaml,yml}", base: "./src/content/team" }),
   schema: z.object({
     name: z.string(),
     role: z.string(),
@@ -164,7 +165,8 @@ const team = defineCollection({
 });
 
 const news = defineCollection({
-  loader: glob({ pattern: "*.md", base: "./src/content/news" }),
+  // UPDATED: Tracks translated markdown posts (e.g., news/fr/roche-partnership.md)
+  loader: glob({ pattern: "**/*.md", base: "./src/content/news" }),
   schema: z.object({
     title: z.string(),
     date: z.date(),

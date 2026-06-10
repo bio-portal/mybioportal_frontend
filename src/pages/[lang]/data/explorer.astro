@@ -1,19 +1,51 @@
 ---
 import { getEntry } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import ExplorerSidebar from '../../components/explorer/ExplorerSidebar.astro';
-import ExplorerHeader from '../../components/explorer/ExplorerHeader.astro';
-import ExplorerGrid from '../../components/explorer/ExplorerGrid.astro';
+// UX FIX: Incremented all paths to 3 levels up since this component is nested inside [lang]/data/
+import Layout from '../../../layouts/Layout.astro';
+import ExplorerSidebar from '../../../components/explorer/ExplorerSidebar.astro';
+import ExplorerHeader from '../../../components/explorer/ExplorerHeader.astro';
+import ExplorerGrid from '../../../components/explorer/ExplorerGrid.astro';
 
-// 1. Fetch all dynamic text for the explorer from your data.yaml file
-const dataPage = await getEntry('pages', 'data');
-const explorerContent = dataPage.data.explorer;
+// 1. Compile static routing fragments for both engine languages
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'fr' } }
+  ];
+}
+
+const { lang } = Astro.params;
+const langPrefix = lang === 'en' ? '' : '/fr';
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// 2. Query localized page data dictionaries dynamically matching active paths
+const dataPage = await getEntry('pages', `${lang}/data`);
+
+// 🌟 FIX: Built comprehensive safety fallbacks to guarantee compile stability if keys aren't translated yet
+const explorerContent = dataPage?.data?.explorer || {
+  pageTitle: "Data Explorer",
+  backLink: "/data",
+  backText: "Back",
+  header: { totalPatientsLabel: "Total Patients" },
+  grid: { noResultsText: "No results found" },
+  sidebar: {
+    title: "Cohort Explorer",
+    baseline: "Baseline Cohort",
+    searchPlaceholder: "Search variables...",
+    tooltip: { title: "Data Notice", description: "De-identified records.", warning: "Protected asset." },
+    buttons: { reset: "Reset Filters", export: "Export Cohort" },
+    tabs: { filters: "Filters", charts: "Active Charts" },
+    visibility: { title: "Chart Visibility", all: "Show All", none: "Hide All" },
+    status: { gateway: "API Status", syncing: "Synchronizing" }
+  }
+};
 ---
 <Layout
   title={explorerContent.pageTitle}
   navType="minimal"
-  backLink={explorerContent.backLink}
+  backLink={`${langPrefix}${explorerContent.backLink}`}
   backText={explorerContent.backText}
+  lang={lang}
 >
   <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-brand-dark/40 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300 lg:hidden"></div>
 
@@ -48,7 +80,8 @@ const explorerContent = dataPage.data.explorer;
   </div>
 </Layout>
 
-<script src="../../scripts/explorerEngine.ts"></script>
+<script src="../../../scripts/explorerEngine.ts"></script>
+
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('explorer-sidebar');

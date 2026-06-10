@@ -1,25 +1,47 @@
 ---
-import { getCollection, render } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
+import { getCollection, getEntry, render } from 'astro:content';
+// UX FIX: Adjusted relative paths to 3 levels up since this file is now nested inside [lang]/news/
+import Layout from '../../../layouts/Layout.astro';
 
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 export async function getStaticPaths() {
   const newsEntries = await getCollection('news');
-  return newsEntries.map(post => ({
-    params: { id: post.id },
-    props: { post },
-  }));
+
+  return newsEntries.map(post => {
+    // Content file IDs look like 'en/roche-partnership' or 'fr/roche-partnership'
+    const [langToken, ...slugParts] = post.id.split('/');
+    const cleanId = slugParts.join('/');
+
+    return {
+      // With prefixDefaultLocale: false, default language paths must pass undefined for the [lang] folder variable
+      params: {
+        lang: langToken === 'en' ? undefined : langToken,
+        id: cleanId
+      },
+      props: {
+        post,
+        lang: langToken
+      },
+    };
+  });
 }
 
-const { post } = Astro.props;
+const { post, lang } = Astro.props;
 const { Content } = await render(post);
+
+const langPrefix = lang === 'en' ? '' : '/fr';
+
+// Fetch the translated "Back to Insights" text from the pages/news configuration file dynamically
+const newsPageData = await getEntry('pages', `${lang}/news`);
+const backToNewsText = newsPageData?.data?.backToNewsText || (lang === 'fr' ? 'Retour aux actualités' : 'Back to Insights');
 ---
 <Layout
   title={`${post.data.title} | BioPortal Insights`}
   navType="minimal"
-  backLink="/news"
-  backText="Back to Insights"
+  backLink={`${langPrefix}/news`}
+  backText={backToNewsText}
+  lang={lang}
 >
   <div class="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-brand-blue-deep/5 to-transparent -z-10"></div>
 
@@ -30,7 +52,7 @@ const { Content } = await render(post);
           {post.data.tag}
         </span>
         <span class="text-sm font-bold text-gray-400 uppercase tracking-widest">
-          {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+          {post.data.date.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
         </span>
       </div>
 
@@ -56,7 +78,8 @@ const { Content } = await render(post);
 </Layout>
 
 <style>
-  @reference "../../styles/global.css";
+  /* UX FIX: Updated global references path routing to point cleanly 3 directories up */
+  @reference "../../../styles/global.css";
   .article-content :global(h2) { @apply text-3xl font-bold text-gray-900 mt-12 mb-6 tracking-tight; }
   .article-content :global(h3) { @apply text-2xl font-bold text-gray-900 mt-8 mb-4 tracking-tight; }
   .article-content :global(p) { @apply mb-6; }

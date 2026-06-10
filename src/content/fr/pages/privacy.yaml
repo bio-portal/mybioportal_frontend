@@ -1,0 +1,19 @@
+id: privacy
+tagline: "Sécurité et Gouvernance"
+headline: "Protection des données et confidentialité (ÉBAUCHE)"
+description: "Votre confidentialité est primordiale pour l'Initiative de recherche BioPortal. Nous opérons sous des mesures de protection cliniques, académiques et légales strictes pour garder vos informations privées et en sécurité. BioPortal suit rigoureusement les cadres canadiens et québécois de confidentialité des soins de santé. Ces règles établissent des méthodes rigoureuses pour assurer la sécurité des données tout en guidant la façon dont nous recueillons des informations et collaborons avec les participants."
+safeguardsTitle: "Mesures de protection spécifiques que nous appliquons :"
+safeguards:
+  - title: "Dépersonnalisation"
+    desc: "Nous retirons les noms, les numéros d'assurance maladie (RAMQ) et toutes les informations d'identification directe des données avant que les chercheurs approuvés n'y aient accès."
+  - title: "Conformité légale"
+    desc: "Nous adhérons pleinement à la Loi 25 du Québec, aux règlements des hôpitaux provinciaux et aux cadres de confidentialité fédéraux canadiens pour la sécurité des données génomiques et cliniques."
+  - title: "Supervision par un comité d'éthique"
+    desc: "Tous les protocoles de stockage et de distribution sont gérés selon des protocoles stricts approuvés par les Comités d'éthique de la recherche (CÉR) institutionnels."
+  - title: "Contrôle d'accès strict"
+    desc: "Les données de santé sont stockées sur une infrastructure informatique hautement sécurisée et cloisonnée avec une authentification multifactorielle stricte pour suivre qui les consulte."
+  - title: "Code de conduite des chercheurs"
+    desc: "Pour utiliser les données, les chercheurs doivent signer des accords d'utilisation des données stricts et juridiquement contraignants, promettant explicitement de ne jamais tenter de réidentifier un participant individuel."
+footerBox:
+  title: "Demandes de renseignements et cadres"
+  desc: "Pour un aperçu plus approfondi de nos structures de conformité de base, les chercheurs et les participants peuvent contacter notre bureau d'administration (adresse courriel à venir)."

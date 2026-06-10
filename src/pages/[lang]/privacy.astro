@@ -1,11 +1,23 @@
 ---
 import { getEntry } from 'astro:content';
-import Layout from '../layouts/Layout.astro';
+// UX FIX: Adjusted relative path step up because this file is now nested inside the [lang] folder
+import Layout from '../../layouts/Layout.astro';
 
-const pageData = await getEntry('pages', 'privacy');
+// 1. Tell Astro to generate paths for both English and French instances
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'fr' } }
+  ];
+}
+
+const { lang } = Astro.params;
+
+// 2. Fetch data dynamically based on the current locale parameter
+const pageData = await getEntry('pages', `${lang}/privacy`);
 const { tagline, headline, description, safeguardsTitle, safeguards, footerBox } = pageData.data;
 ---
-<Layout title={`${headline} | BioPortal`} navType="minimal">
+<Layout title={`${headline} | BioPortal`} navType="minimal" lang={lang}>
   <div class="fixed top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue-deep/5 via-brand-teal/5 to-transparent -z-10"></div>
 
   <main class="max-w-3xl mx-auto px-6 py-12 lg:py-16">
