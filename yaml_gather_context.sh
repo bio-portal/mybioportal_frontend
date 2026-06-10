@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # Configuration
-SOURCE_DIR="src/content/en"
-OUTPUT_FILE="english_translation_dump.txt"
+SOURCE_DIR="src/content"
+OUTPUT_FILE="fr_translation_dump.txt"
 
 # Initialize output file with metadata header
 echo "# BioPortal Source Content Translation Dump" > "$OUTPUT_FILE"
 echo "Generated on: $(date)" >> "$OUTPUT_FILE"
-echo "Base Directory: $SOURCE_DIR" >> "$OUTPUT_FILE"
+echo "Targeting: All /fr/ subdirectories in $SOURCE_DIR" >> "$OUTPUT_FILE"
 echo "----------------------------------------" >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
@@ -17,25 +17,25 @@ if [ ! -d "$SOURCE_DIR" ]; then
     exit 1
 fi
 
-echo "Scanning $SOURCE_DIR for content files..."
+echo "Scanning $SOURCE_DIR for French content files..."
 
 # Counter for tracking found files
 file_count=0
 
-# Recursively locate YAML and Markdown files
-find "$SOURCE_DIR" -type f \( -name "*.yaml" -o -name "*.yml" -o -name "*.md" \) | sort | while read -r file; do
+# Recursively locate YAML and Markdown files ONLY inside folders named "fr"
+# Using process substitution < <(...) to prevent the while loop from running in a subshell
+while read -r file; do
     echo "Processing: $file"
-    
+
     # Append structured headers and content boundaries
     echo "=== START_FILE: $file ===" >> "$OUTPUT_FILE"
     cat "$file" >> "$OUTPUT_FILE"
     echo "" >> "$OUTPUT_FILE" # Ensure trailing newline
     echo "=== END_FILE: $file ===" >> "$OUTPUT_FILE"
     echo "" >> "$OUTPUT_FILE"
-    
+
     ((file_count++))
-done
+done < <(find "$SOURCE_DIR" -type f -path "*/fr/*" \( -name "*.yaml" -o -name "*.yml" -o -name "*.md" \) | sort)
 
 echo "----------------------------------------"
-echo "Success! Aggregated $file_count files into '$OUTPUT_FILE'."
-echo "You can now pass this text file over for translation."
+echo "Success! Aggregated $file_count French files into '$OUTPUT_FILE'."

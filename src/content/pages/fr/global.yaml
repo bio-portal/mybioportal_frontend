@@ -14,7 +14,7 @@ navigation:
       label: "Participer"
       href: "/participants"
     secondary:
-      label: "Accès données"
+      label: "Accès Données"
       href: "/data"
 
 footer:
