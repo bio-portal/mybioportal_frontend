@@ -1,21 +1,20 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
-// UX FIX: Adjusted relative paths because this file is now nested in [lang]/
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import TrustBar from '../../components/TrustBar.astro';
 
-// 1. Generate paths for both languages
 export function getStaticPaths() {
   return [
-    { params: { lang: 'en' } },
-    { params: { lang: 'fr' } }
+    { params: { lang: undefined } }, // English maps to root (/)
+    { params: { lang: 'fr' } }        // French maps to /fr
   ];
 }
 
-const { lang } = Astro.params;
+const { lang = 'en' } = Astro.params;
 const langPrefix = lang === 'en' ? '' : '/fr';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 
 // 2. Fetch the dynamically correct home data dictionary
 const homeData = await getEntry('pages', `${lang}/home`);

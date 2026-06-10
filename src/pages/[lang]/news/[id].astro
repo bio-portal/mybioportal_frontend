@@ -1,6 +1,6 @@
 ---
 import { getCollection, getEntry, render } from 'astro:content';
-// UX FIX: Adjusted relative paths to 3 levels up since this file is now nested inside [lang]/news/
+// UX FIX: Adjusted relative paths to 3 levels up since this file is now nested inside [...lang]/news/
 import Layout from '../../../layouts/Layout.astro';
 
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -14,7 +14,7 @@ export async function getStaticPaths() {
     const cleanId = slugParts.join('/');
 
     return {
-      // With prefixDefaultLocale: false, default language paths must pass undefined for the [lang] folder variable
+      // With prefixDefaultLocale: false, default language paths pass undefined for the optional [...lang] parameter
       params: {
         lang: langToken === 'en' ? undefined : langToken,
         id: cleanId
@@ -39,7 +39,7 @@ const backToNewsText = newsPageData?.data?.backToNewsText || (lang === 'fr' ? 'R
 <Layout
   title={`${post.data.title} | BioPortal Insights`}
   navType="minimal"
-  backLink={`${langPrefix}/news`}
+  backLink={`${baseUrl}${langPrefix}/news`}
   backText={backToNewsText}
   lang={lang}
 >

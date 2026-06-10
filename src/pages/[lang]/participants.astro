@@ -1,20 +1,19 @@
 ---
 import { getEntry } from 'astro:content';
-// UX FIX: Bumped up relative imports since this file now lives deeper inside [lang]/
 import Layout from '../../layouts/Layout.astro';
 import TrustBar from '../../components/TrustBar.astro';
 
-// 1. Tell Astro to compile this route for both English and French instances
 export function getStaticPaths() {
   return [
-    { params: { lang: 'en' } },
-    { params: { lang: 'fr' } }
+    { params: { lang: undefined } }, // English maps to root (/participants)
+    { params: { lang: 'fr' } }        // French maps to /fr/participants
   ];
 }
 
-const { lang } = Astro.params;
+const { lang = 'en' } = Astro.params;
 const langPrefix = lang === 'en' ? '' : '/fr';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 
 // 2. Query localized data files dynamically based on active locale context parameters
 const pageData = await getEntry('pages', `${lang}/participants`);

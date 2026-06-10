@@ -4,14 +4,15 @@ import Layout from '../../layouts/Layout.astro';
 
 export function getStaticPaths() {
   return [
-    { params: { lang: 'en' } },
-    { params: { lang: 'fr' } }
+    { params: { lang: undefined } }, // English maps to root (/data)
+    { params: { lang: 'fr' } }        // French maps to /fr/data
   ];
 }
 
-const { lang } = Astro.params;
+const { lang = 'en' } = Astro.params; // Default to 'en' when lang parameter is undefined
 const langPrefix = lang === 'en' ? '' : '/fr';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 
 const pageData = await getEntry('pages', `${lang}/data`);
 

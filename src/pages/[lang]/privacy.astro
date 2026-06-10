@@ -1,17 +1,18 @@
 ---
 import { getEntry } from 'astro:content';
-// UX FIX: Adjusted relative path step up because this file is now nested inside the [lang] folder
 import Layout from '../../layouts/Layout.astro';
 
-// 1. Tell Astro to generate paths for both English and French instances
 export function getStaticPaths() {
   return [
-    { params: { lang: 'en' } },
-    { params: { lang: 'fr' } }
+    { params: { lang: undefined } }, // English maps to root (/privacy)
+    { params: { lang: 'fr' } }        // French maps to /fr/privacy
   ];
 }
 
-const { lang } = Astro.params;
+const { lang = 'en' } = Astro.params;
+const langPrefix = lang === 'en' ? '' : '/fr';
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 
 // 2. Fetch data dynamically based on the current locale parameter
 const pageData = await getEntry('pages', `${lang}/privacy`);

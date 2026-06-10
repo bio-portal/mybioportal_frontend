@@ -1,27 +1,25 @@
 ---
 import { getEntry } from 'astro:content';
-// UX FIX: Incremented all paths to 3 levels up since this component is nested inside [lang]/data/
 import Layout from '../../../layouts/Layout.astro';
 import ExplorerSidebar from '../../../components/explorer/ExplorerSidebar.astro';
 import ExplorerHeader from '../../../components/explorer/ExplorerHeader.astro';
 import ExplorerGrid from '../../../components/explorer/ExplorerGrid.astro';
 
-// 1. Compile static routing fragments for both engine languages
+// 1. Structural change: Pass undefined for English so it compiles without a URL prefix
 export function getStaticPaths() {
   return [
-    { params: { lang: 'en' } },
-    { params: { lang: 'fr' } }
+    { params: { lang: undefined } }, // English maps to /data/explorer
+    { params: { lang: 'fr' } }        // French maps to /fr/data/explorer
   ];
 }
 
-const { lang } = Astro.params;
+// 2. Destructure with a fallback assignment to 'en' when the path parameter is undefined
+const { lang = 'en' } = Astro.params;
 const langPrefix = lang === 'en' ? '' : '/fr';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-// 2. Query localized page data dictionaries dynamically matching active paths
 const dataPage = await getEntry('pages', `${lang}/data`);
 
-// 🌟 FIX: Built comprehensive safety fallbacks to guarantee compile stability if keys aren't translated yet
 const explorerContent = dataPage?.data?.explorer || {
   pageTitle: "Data Explorer",
   backLink: "/data",
@@ -33,7 +31,8 @@ const explorerContent = dataPage?.data?.explorer || {
     baseline: "Baseline Cohort",
     searchPlaceholder: "Search variables...",
     tooltip: { title: "Data Notice", description: "De-identified records.", warning: "Protected asset." },
-    buttons: { reset: "Reset Filters", export: "Export Cohort" },
+    // UX FIX: Safely quoted the "export" keyword boundary to clear the parser compiler crash
+    buttons: { reset: "Reset Filters", "export": "Export Cohort" },
     tabs: { filters: "Filters", charts: "Active Charts" },
     visibility: { title: "Chart Visibility", all: "Show All", none: "Hide All" },
     status: { gateway: "API Status", syncing: "Synchronizing" }
@@ -43,7 +42,7 @@ const explorerContent = dataPage?.data?.explorer || {
 <Layout
   title={explorerContent.pageTitle}
   navType="minimal"
-  backLink={`${langPrefix}${explorerContent.backLink}`}
+  backLink={`${baseUrl}${langPrefix}${explorerContent.backLink}`}
   backText={explorerContent.backText}
   lang={lang}
 >
@@ -70,12 +69,9 @@ const explorerContent = dataPage?.data?.explorer || {
     />
 
     <main id="main-content-area" class="flex-1 p-6 lg:p-12 relative z-10 w-full overflow-x-hidden transition-all duration-500 origin-top">
-
       <div id="loading-overlay" class="absolute inset-0 z-50 bg-surface/80 backdrop-blur-md opacity-100 transition-all duration-700 ease-in-out"></div>
-
       <ExplorerHeader totalCountLabel={explorerContent.header.totalPatientsLabel} />
       <ExplorerGrid noResultsText={explorerContent.grid.noResultsText} />
-
     </main>
   </div>
 </Layout>

@@ -1,29 +1,30 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
-// UX FIX: Adjusted relative path to 3 levels up since this file is now nested inside [lang]/news/
+// UX FIX: Adjusted relative path to 3 levels up since this file is now nested inside [...lang]/news/
 import Layout from '../../../layouts/Layout.astro';
 
-// 1. Instruct Astro to compile this route for both English and French paths
+// 1. Map English to an undefined path token to keep it seamlessly serving at the root domain domain level
 export function getStaticPaths() {
   return [
-    { params: { lang: 'en' } },
-    { params: { lang: 'fr' } }
+    { params: { lang: undefined } }, // English maps directly to /news
+    { params: { lang: 'fr' } }        // French maps directly to /fr/news
   ];
 }
 
-const { lang } = Astro.params;
+// 2. Destructure parameters providing a safe fallback variable default
+const { lang = 'en' } = Astro.params;
 const langPrefix = lang === 'en' ? '' : '/fr';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-// 2. Fetch the dynamically correct page configuration dictionary
+// 3. Fetch localized page schema settings dictionaries
 const pageData = await getEntry('pages', `${lang}/news`);
-const { seoTitle, tagline, headline, description } = pageData.data;
+const { seoTitle, tagline, headline, description, readMoreText } = pageData.data;
 
-// 3. Query and filter news items to strictly match the current active locale folder
+// 4. Load matching news articles filtering strictly by folder locale namespace prefixes
 const allNews = await getCollection('news', ({ id }) => id.startsWith(`${lang}/`));
 const sortedNews = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-// Utility to cleanly extract the raw filename slug from the new nested ID structure (e.g., 'en/roche' -> 'roche')
+// Clean filename slug parser utility
 const getCleanSlug = (id: string) => id.split('/').pop()?.replace(/\.[^/.]+$/, "");
 ---
 <Layout title={`${seoTitle} | BioPortal`} lang={lang}>
@@ -57,7 +58,8 @@ const getCleanSlug = (id: string) => id.split('/').pop()?.replace(/\.[^/.]+$/, "
             <p class="text-sm text-gray-500 leading-relaxed mb-8 flex-grow line-clamp-3">{post.data.excerpt}</p>
 
             <a href={`${baseUrl}${langPrefix}/news/${getCleanSlug(post.id)}/`} class="text-brand-dark font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all mt-auto">
-              Read Insight <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              {readMoreText || (lang === 'fr' ? "Lire l'article" : "Read Insight")}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
           </div>
         </article>
