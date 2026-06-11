@@ -4,8 +4,8 @@ import Layout from '../../layouts/Layout.astro';
 
 export function getStaticPaths() {
   return [
-    { params: { lang: undefined } }, // English maps to root (/data)
-    { params: { lang: 'fr' } }        // French maps to /fr/data
+    { params: { lang: undefined } },
+    { params: { lang: 'fr' } }
   ];
 }
 
@@ -57,48 +57,48 @@ const content = pageData?.data?.dataRequest || {
     </header>
 
     <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 mb-16 items-stretch">
-      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 transition-all duration-300 hover:-translate-y-1">
+      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-soft">
           <h3 id="metric-participants" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter h-12 lg:h-14 flex items-center">
             <div class="live-stat-loader flex items-center gap-1.5 pt-1">
-              <div class="w-2.5 h-2.5 bg-brand-blue-deep/40 rounded-full animate-bounce" style="animation-delay: -0.3s"></div>
-              <div class="w-2.5 h-2.5 bg-brand-blue-deep/60 rounded-full animate-bounce" style="animation-delay: -0.15s"></div>
-              <div class="w-2.5 h-2.5 bg-brand-blue-deep/90 rounded-full animate-bounce"></div>
+              <div class="w-2.5 h-2.5 bg-brand-blue-deep/40 rounded-full animate-pulse"></div>
+              <div class="w-2.5 h-2.5 bg-brand-blue-deep/60 rounded-full animate-pulse" style="animation-delay: 200ms"></div>
+              <div class="w-2.5 h-2.5 bg-brand-blue-deep/90 rounded-full animate-pulse" style="animation-delay: 400ms"></div>
             </div>
             <span class="live-stat-value hidden">{metrics.fallbackValues.participants}</span>
           </h3>
           <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.participantsLabel}</p>
       </div>
 
-      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 transition-all duration-300 hover:-translate-y-1">
+      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-teal shadow-soft">
           <h3 id="metric-variables" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter h-12 lg:h-14 flex items-center">
             <div class="live-stat-loader flex items-center gap-1.5 pt-1">
-              <div class="w-2.5 h-2.5 bg-brand-blue-deep/40 rounded-full animate-bounce" style="animation-delay: -0.3s"></div>
-              <div class="w-2.5 h-2.5 bg-brand-blue-deep/60 rounded-full animate-bounce" style="animation-delay: -0.15s"></div>
-              <div class="w-2.5 h-2.5 bg-brand-blue-deep/90 rounded-full animate-bounce"></div>
+              <div class="w-2.5 h-2.5 bg-brand-teal/40 rounded-full animate-pulse"></div>
+              <div class="w-2.5 h-2.5 bg-brand-teal/60 rounded-full animate-pulse" style="animation-delay: 200ms"></div>
+              <div class="w-2.5 h-2.5 bg-brand-teal/90 rounded-full animate-pulse" style="animation-delay: 400ms"></div>
             </div>
             <span class="live-stat-value hidden">{metrics.fallbackValues.clinicalVariables}</span>
           </h3>
           <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.clinicalVariablesLabel}</p>
       </div>
 
-      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 transition-all duration-300 hover:-translate-y-1">
+      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-green-bright shadow-soft">
           <h3 id="metric-proteomics" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter h-12 lg:h-14 flex items-center">
             <div class="live-stat-loader flex items-center gap-1.5 pt-1">
-              <div class="w-2.5 h-2.5 bg-brand-blue-deep/40 rounded-full animate-bounce" style="animation-delay: -0.3s"></div>
-              <div class="w-2.5 h-2.5 bg-brand-blue-deep/60 rounded-full animate-bounce" style="animation-delay: -0.15s"></div>
-              <div class="w-2.5 h-2.5 bg-brand-blue-deep/90 rounded-full animate-bounce"></div>
+              <div class="w-2.5 h-2.5 bg-brand-green-bright/40 rounded-full animate-pulse"></div>
+              <div class="w-2.5 h-2.5 bg-brand-green-bright/60 rounded-full animate-pulse" style="animation-delay: 200ms"></div>
+              <div class="w-2.5 h-2.5 bg-brand-green-bright/90 rounded-full animate-pulse" style="animation-delay: 400ms"></div>
             </div>
             <span class="live-stat-value hidden">{metrics.fallbackValues.proteomics}</span>
           </h3>
           <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.proteomicsLabel}</p>
       </div>
 
-      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-xl shadow-gray-100/50 transition-all duration-300 hover:-translate-y-1">
+      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-yellow shadow-soft">
           <h3 id="metric-biosamples" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter h-12 lg:h-14 flex items-center">
             <div class="live-stat-loader flex items-center gap-1.5 pt-1">
-              <div class="w-2.5 h-2.5 bg-brand-blue-deep/40 rounded-full animate-bounce" style="animation-delay: -0.3s"></div>
-              <div class="w-2.5 h-2.5 bg-brand-blue-deep/60 rounded-full animate-bounce" style="animation-delay: -0.15s"></div>
-              <div class="w-2.5 h-2.5 bg-brand-blue-deep/90 rounded-full animate-bounce"></div>
+              <div class="w-2.5 h-2.5 bg-brand-yellow/40 rounded-full animate-pulse"></div>
+              <div class="w-2.5 h-2.5 bg-brand-yellow/60 rounded-full animate-pulse" style="animation-delay: 200ms"></div>
+              <div class="w-2.5 h-2.5 bg-brand-yellow/90 rounded-full animate-pulse" style="animation-delay: 400ms"></div>
             </div>
             <span class="live-stat-value hidden">{metrics.fallbackValues.biosamples}</span>
           </h3>
@@ -141,14 +141,12 @@ const content = pageData?.data?.dataRequest || {
 
       <div class="lg:col-span-5 flex flex-col gap-8 h-full">
 
-        <div class="relative group/aurora shrink-0 transition-transform duration-300 hover:scale-[1.02]">
+        <div class="relative group/card shrink-0">
+          <div class="absolute top-8 left-8 -right-2 -bottom-2 rounded-[2.5rem] bg-gradient-to-br from-brand-blue-deep via-brand-teal to-brand-yellow blur-2xl opacity-30 transition-opacity duration-500 group-hover/card:opacity-80"></div>
 
-          <div class="absolute inset-0 translate-x-3 translate-y-3 rounded-[2.5rem] bg-gradient-to-br from-brand-blue-deep via-brand-teal to-brand-yellow blur-xl opacity-20 transition-all duration-500 group-hover/aurora:opacity-50 group-hover/aurora:blur-2xl"></div>
-
-          <div class="relative z-10 bg-white rounded-[2.5rem] p-10 border border-gray-100 h-full flex flex-col justify-between">
+          <div class="relative z-10 bg-white rounded-[2.5rem] p-10 border-2 border-transparent shadow-soft h-full flex flex-col justify-between transition-colors duration-300 group-hover/card:border-brand-blue-deep">
             <div class="flex justify-between items-start mb-6">
               <span class="px-3 py-1.5 rounded-lg bg-brand-blue-deep/5 text-brand-blue-deep font-bold text-[10px] uppercase tracking-[0.15em] border border-brand-blue-deep/10">{content.explorerCard.tag}</span>
-
               <div class="flex items-center gap-2">
                 <span class="relative flex h-2.5 w-2.5">
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-green-bright opacity-75"></span>
@@ -160,28 +158,26 @@ const content = pageData?.data?.dataRequest || {
             <h2 class="text-3xl font-black tracking-tight text-gray-900 mb-3">{content.explorerCard.title}</h2>
             <p class="text-gray-500 text-sm leading-relaxed font-medium mb-8">{content.explorerCard.description}</p>
 
-            <a href={`${baseUrl}${langPrefix}/data/explorer/`} class="w-full py-3.5 rounded-xl bg-brand-blue-deep text-white text-sm font-bold shadow-md hover:bg-brand-dark transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer group/btn">
-              {content.explorerCard.buttonText}
-              <svg class="w-4 h-4 transform transition-transform duration-300 group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+            <a href={`${baseUrl}${langPrefix}/data/explorer/`} class="group/action relative overflow-hidden w-full py-4 rounded-xl bg-brand-blue-deep text-white text-sm font-bold shadow-lg flex items-center justify-center gap-3 cursor-pointer">
+              <div class="shine-layer absolute top-0 bottom-0 w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -left-full pointer-events-none"></div>
+              <span class="relative z-10">{content.explorerCard.buttonText}</span>
+              <svg class="arrow-thrust relative z-10 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
             </a>
           </div>
         </div>
 
-        <div class="relative bg-white rounded-[2.5rem] p-10 flex flex-col justify-center flex-grow group/access border border-gray-100 shadow-soft transition-all duration-300 hover:scale-[1.02] hover:border-brand-blue-deep">
+        <div class="relative bg-white rounded-[2.5rem] p-10 flex flex-col justify-center flex-grow group/card border-2 border-transparent shadow-soft transition-colors duration-300 hover:border-brand-blue-deep">
           <div class="relative z-10">
-            <span class="w-14 h-14 rounded-2xl bg-brand-blue-deep/5 flex items-center justify-center mb-6 border border-brand-blue-deep/10 transition-colors group-hover/access:bg-brand-blue-deep/10">
+            <span class="w-14 h-14 rounded-2xl bg-brand-blue-deep/5 flex items-center justify-center mb-6 border border-brand-blue-deep/10 transition-colors group-hover/card:bg-brand-blue-deep/10">
               <svg class="w-7 h-7 text-brand-blue-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
             </span>
             <h2 class="text-2xl font-black text-gray-900 mb-3">{content.actionBlock.title}</h2>
             <p class="text-gray-500 mb-8 text-sm leading-relaxed font-medium">{content.actionBlock.description}</p>
 
-            <a href="https://github.com/bio-portal/mybioportal_frontend/blob/main/public/docs/BIO-PORTAL-Data-Access-Form.Feb-23-2026-2.pdf?raw=true" target="_blank" rel="noopener noreferrer" class="group/download relative overflow-hidden w-full py-4 rounded-xl bg-brand-green-bright text-white font-bold text-sm tracking-wide shadow-lg flex items-center justify-center gap-3 cursor-pointer mb-8 transition-transform hover:-translate-y-0.5">
-
+            <a href="https://github.com/bio-portal/mybioportal_frontend/blob/main/public/docs/BIO-PORTAL-Data-Access-Form.Feb-23-2026-2.pdf?raw=true" target="_blank" rel="noopener noreferrer" class="group/action relative overflow-hidden w-full py-4 rounded-xl bg-brand-green-bright text-white font-bold text-sm tracking-wide shadow-lg flex items-center justify-center gap-3 cursor-pointer mb-8">
               <div class="shine-layer absolute top-0 bottom-0 w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -left-full pointer-events-none"></div>
-
               <span class="relative z-10">{content.actionBlock.downloadButtonText}</span>
-
-              <svg class="relative z-10 w-5 h-5 transform transition-transform duration-300 group-hover/download:translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+              <svg class="arrow-bounce relative z-10 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
             </a>
 
             <div class="pt-6 border-t border-gray-100">
@@ -198,12 +194,31 @@ const content = pageData?.data?.dataRequest || {
 </Layout>
 
 <style>
+  /* 1. Unified Fast Shine Sweep */
   @keyframes shineSweep {
     0% { left: -100%; }
     100% { left: 200%; }
   }
-  .group\/download:hover .shine-layer {
+  .group\/action:hover .shine-layer {
     animation: shineSweep 0.6s ease-in-out forwards;
+  }
+
+  /* 2. Downward Bounce Arrow (Download) */
+  @keyframes arrowDip {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+  .group\/action:hover .arrow-bounce {
+    animation: arrowDip 0.3s ease-in-out;
+  }
+
+  /* 3. Horizontal Thrust Arrow (Launch) */
+  @keyframes arrowThrust {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(4px); }
+  }
+  .group\/action:hover .arrow-thrust {
+    animation: arrowThrust 0.3s ease-in-out;
   }
 </style>
 
