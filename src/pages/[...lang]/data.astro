@@ -141,10 +141,11 @@ const content = pageData?.data?.dataRequest || {
 
       <div class="lg:col-span-5 flex flex-col gap-8 h-full">
 
-        <div class="relative group/aurora shrink-0">
-          <div class="aurora-bg absolute inset-0 rounded-[2.5rem] bg-gradient-to-r from-brand-blue-deep via-brand-teal to-brand-green-bright bg-[length:200%_200%] opacity-20 blur-xl transition-all duration-700 ease-out group-hover/aurora:opacity-60 group-hover/aurora:blur-2xl group-hover/aurora:scale-105"></div>
+        <div class="relative group/aurora shrink-0 transition-transform duration-300 hover:scale-[1.02]">
 
-          <div class="relative z-10 bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-soft h-full flex flex-col justify-between transition-transform duration-500 ease-out group-hover/aurora:-translate-y-1 group-hover/aurora:scale-[1.01]">
+          <div class="aurora-shadow absolute -inset-4 translate-x-3 translate-y-3 rounded-[2.5rem] blur-2xl opacity-20 transition-opacity duration-300 group-hover/aurora:opacity-70"></div>
+
+          <div class="relative z-10 bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-soft h-full flex flex-col justify-between">
             <div class="flex justify-between items-start mb-6">
               <span class="px-3 py-1.5 rounded-lg bg-brand-blue-deep/5 text-brand-blue-deep font-bold text-[10px] uppercase tracking-[0.15em] border border-brand-blue-deep/10">{content.explorerCard.tag}</span>
 
@@ -166,7 +167,7 @@ const content = pageData?.data?.dataRequest || {
           </div>
         </div>
 
-        <div class="relative bg-white rounded-[2.5rem] p-10 flex flex-col justify-center flex-grow group/access border-2 border-transparent shadow-soft hover:shadow-none hover:border-brand-blue-deep transition-all duration-300">
+        <div class="relative bg-white rounded-[2.5rem] p-10 flex flex-col justify-center flex-grow group/access border-2 border-transparent shadow-soft transition-all duration-300 hover:scale-[1.02] hover:shadow-none hover:border-brand-blue-deep">
           <div class="relative z-10">
             <span class="w-14 h-14 rounded-2xl bg-brand-blue-deep/5 flex items-center justify-center mb-6 border border-brand-blue-deep/10 transition-colors group-hover/access:bg-brand-blue-deep/10">
               <svg class="w-7 h-7 text-brand-blue-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
@@ -174,9 +175,9 @@ const content = pageData?.data?.dataRequest || {
             <h2 class="text-2xl font-black text-gray-900 mb-3">{content.actionBlock.title}</h2>
             <p class="text-gray-500 mb-8 text-sm leading-relaxed font-medium">{content.actionBlock.description}</p>
 
-            <a href="https://github.com/bio-portal/mybioportal_frontend/blob/main/public/docs/BIO-PORTAL-Data-Access-Form.Feb-23-2026-2.pdf?raw=true" target="_blank" rel="noopener noreferrer" class="relative overflow-hidden w-full py-4 rounded-xl bg-brand-green-bright text-white font-bold text-sm tracking-wide shadow-lg transition-transform hover:-translate-y-0.5 flex items-center justify-center gap-3 cursor-pointer mb-8 group/download">
+            <a href="https://github.com/bio-portal/mybioportal_frontend/blob/main/public/docs/BIO-PORTAL-Data-Access-Form.Feb-23-2026-2.pdf?raw=true" target="_blank" rel="noopener noreferrer" class="group/download w-full py-4 rounded-xl bg-brand-green-bright text-white font-bold text-sm tracking-wide shadow-lg flex items-center justify-center gap-3 cursor-pointer mb-8 relative overflow-hidden">
 
-              <div class="absolute inset-0 -translate-x-[150%] bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover/download:translate-x-[150%] transition-transform duration-700 ease-in-out skew-x-12"></div>
+              <div class="shine-layer absolute inset-0 -translate-x-[150%] skew-x-12 bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none"></div>
 
               <span class="relative z-10">{content.actionBlock.downloadButtonText}</span>
 
@@ -202,17 +203,36 @@ const content = pageData?.data?.dataRequest || {
 </Layout>
 
 <style>
-  /* 1. Aurora Breathing Background */
+  /* 1. Full Spectrum Aurora Breathing Shadow */
+  .aurora-shadow {
+    background: linear-gradient(
+      135deg,
+      var(--color-brand-blue-deep),
+      var(--color-brand-teal),
+      var(--color-brand-green-bright),
+      var(--color-brand-yellow),
+      var(--color-brand-orange-deep)
+    );
+    background-size: 200% 200%;
+    animation: auroraBreath 8s ease infinite;
+  }
+
   @keyframes auroraBreath {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
   }
-  .aurora-bg {
-    animation: auroraBreath 8s ease infinite;
+
+  /* 2. One-Way Fast Shine on Hover */
+  .group\/download:hover .shine-layer {
+    animation: shineSweep 0.6s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+  }
+  @keyframes shineSweep {
+    0% { transform: translateX(-150%) skewX(12deg); }
+    100% { transform: translateX(150%) skewX(12deg); }
   }
 
-  /* 2. Mechanical Download Arrow */
+  /* 3. Mechanical Download Arrow */
   .group\/download:hover .mechanical-arrow {
     animation: dropDown 0.6s ease-in-out forwards;
   }
