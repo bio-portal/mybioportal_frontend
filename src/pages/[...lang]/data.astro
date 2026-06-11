@@ -57,7 +57,7 @@ const content = pageData?.data?.dataRequest || {
     </header>
 
     <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 mb-16 items-stretch">
-      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-soft">
+      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-soft transition-all duration-300 hover:-translate-y-1">
           <h3 id="metric-participants" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter h-12 lg:h-14 flex items-center">
             <div class="live-stat-loader flex items-center gap-1.5 pt-1">
               <div class="w-2.5 h-2.5 bg-brand-blue-deep/40 rounded-full animate-pulse"></div>
@@ -69,7 +69,7 @@ const content = pageData?.data?.dataRequest || {
           <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.participantsLabel}</p>
       </div>
 
-      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-teal shadow-soft">
+      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-teal shadow-soft transition-all duration-300 hover:-translate-y-1">
           <h3 id="metric-variables" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter h-12 lg:h-14 flex items-center">
             <div class="live-stat-loader flex items-center gap-1.5 pt-1">
               <div class="w-2.5 h-2.5 bg-brand-teal/40 rounded-full animate-pulse"></div>
@@ -81,7 +81,7 @@ const content = pageData?.data?.dataRequest || {
           <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.clinicalVariablesLabel}</p>
       </div>
 
-      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-green-bright shadow-soft">
+      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-green-bright shadow-soft transition-all duration-300 hover:-translate-y-1">
           <h3 id="metric-proteomics" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter h-12 lg:h-14 flex items-center">
             <div class="live-stat-loader flex items-center gap-1.5 pt-1">
               <div class="w-2.5 h-2.5 bg-brand-green-bright/40 rounded-full animate-pulse"></div>
@@ -93,7 +93,7 @@ const content = pageData?.data?.dataRequest || {
           <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.proteomicsLabel}</p>
       </div>
 
-      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-yellow shadow-soft">
+      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-yellow shadow-soft transition-all duration-300 hover:-translate-y-1">
           <h3 id="metric-biosamples" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter h-12 lg:h-14 flex items-center">
             <div class="live-stat-loader flex items-center gap-1.5 pt-1">
               <div class="w-2.5 h-2.5 bg-brand-yellow/40 rounded-full animate-pulse"></div>
@@ -141,29 +141,23 @@ const content = pageData?.data?.dataRequest || {
 
       <div class="lg:col-span-5 flex flex-col gap-8 h-full">
 
-        <div class="relative group/card shrink-0">
-          <div class="absolute top-8 left-8 -right-2 -bottom-2 rounded-[2.5rem] bg-gradient-to-br from-brand-blue-deep via-brand-teal to-brand-yellow blur-2xl opacity-30 transition-opacity duration-500 group-hover/card:opacity-80"></div>
+        <div class="relative bg-white rounded-[2.5rem] p-10 border-2 border-transparent shadow-soft h-full flex flex-col justify-between group/card transition-colors duration-300 hover:border-brand-blue-deep shrink-0">
+          <div class="flex justify-between items-start mb-6">
+            <span class="px-3 py-1.5 rounded-lg bg-brand-blue-deep/5 text-brand-blue-deep font-bold text-[10px] uppercase tracking-[0.15em] border border-brand-blue-deep/10">{content.explorerCard.tag}</span>
 
-          <div class="relative z-10 bg-white rounded-[2.5rem] p-10 border-2 border-transparent shadow-soft h-full flex flex-col justify-between transition-colors duration-300 group-hover/card:border-brand-blue-deep">
-            <div class="flex justify-between items-start mb-6">
-              <span class="px-3 py-1.5 rounded-lg bg-brand-blue-deep/5 text-brand-blue-deep font-bold text-[10px] uppercase tracking-[0.15em] border border-brand-blue-deep/10">{content.explorerCard.tag}</span>
-              <div class="flex items-center gap-2">
-                <span class="relative flex h-2.5 w-2.5">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-green-bright opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-green-bright"></span>
-                </span>
-              </div>
+            <div class="flex items-center justify-center h-6 w-6">
+              <span class="aurora-dot relative block h-3 w-3 rounded-full shadow-sm ring-2 ring-white"></span>
             </div>
-
-            <h2 class="text-3xl font-black tracking-tight text-gray-900 mb-3">{content.explorerCard.title}</h2>
-            <p class="text-gray-500 text-sm leading-relaxed font-medium mb-8">{content.explorerCard.description}</p>
-
-            <a href={`${baseUrl}${langPrefix}/data/explorer/`} class="group/action relative overflow-hidden w-full py-4 rounded-xl bg-brand-blue-deep text-white text-sm font-bold shadow-lg flex items-center justify-center gap-3 cursor-pointer">
-              <div class="shine-layer absolute top-0 bottom-0 w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -left-full pointer-events-none"></div>
-              <span class="relative z-10">{content.explorerCard.buttonText}</span>
-              <svg class="arrow-thrust relative z-10 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
-            </a>
           </div>
+
+          <h2 class="text-3xl font-black tracking-tight text-gray-900 mb-3">{content.explorerCard.title}</h2>
+          <p class="text-gray-500 text-sm leading-relaxed font-medium mb-8">{content.explorerCard.description}</p>
+
+          <a href={`${baseUrl}${langPrefix}/data/explorer/`} class="group/action relative overflow-hidden w-full py-4 rounded-xl bg-brand-blue-deep text-white text-sm font-bold shadow-lg flex items-center justify-center gap-3 cursor-pointer">
+            <div class="shine-layer absolute top-0 bottom-0 w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -left-full pointer-events-none"></div>
+            <span class="relative z-10">{content.explorerCard.buttonText}</span>
+            <svg class="arrow-thrust relative z-10 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+          </a>
         </div>
 
         <div class="relative bg-white rounded-[2.5rem] p-10 flex flex-col justify-center flex-grow group/card border-2 border-transparent shadow-soft transition-colors duration-300 hover:border-brand-blue-deep">
@@ -194,7 +188,26 @@ const content = pageData?.data?.dataRequest || {
 </Layout>
 
 <style>
-  /* 1. Unified Fast Shine Sweep */
+  /* 1. Aurora Dot Background Animation */
+  .aurora-dot {
+    background: linear-gradient(
+      135deg,
+      var(--color-brand-blue-deep),
+      var(--color-brand-teal),
+      var(--color-brand-green-bright),
+      var(--color-brand-yellow),
+      var(--color-brand-orange-deep)
+    );
+    background-size: 300% 300%;
+    animation: auroraSpin 4s ease infinite;
+  }
+  @keyframes auroraSpin {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* 2. Unified Fast Shine Sweep */
   @keyframes shineSweep {
     0% { left: -100%; }
     100% { left: 200%; }
@@ -203,7 +216,7 @@ const content = pageData?.data?.dataRequest || {
     animation: shineSweep 0.6s ease-in-out forwards;
   }
 
-  /* 2. Downward Bounce Arrow (Download) */
+  /* 3. Downward Bounce Arrow (Download) */
   @keyframes arrowDip {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(4px); }
@@ -212,7 +225,7 @@ const content = pageData?.data?.dataRequest || {
     animation: arrowDip 0.3s ease-in-out;
   }
 
-  /* 3. Horizontal Thrust Arrow (Launch) */
+  /* 4. Horizontal Thrust Arrow (Launch) */
   @keyframes arrowThrust {
     0%, 100% { transform: translateX(0); }
     50% { transform: translateX(4px); }
