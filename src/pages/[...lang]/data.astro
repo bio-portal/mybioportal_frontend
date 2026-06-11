@@ -107,6 +107,7 @@ const content = pageData?.data?.dataRequest || {
     </div>
 
     <div class="grid lg:grid-cols-12 gap-8 items-stretch">
+
       <div class="lg:col-span-7 bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-soft h-full flex flex-col">
         <h2 class="text-3xl font-black text-brand-dark mb-4">{content.applicationProcess.title}</h2>
         <p class="text-gray-500 mb-8 leading-relaxed font-medium text-lg">{content.applicationProcess.description}</p>
@@ -139,12 +140,13 @@ const content = pageData?.data?.dataRequest || {
       </div>
 
       <div class="lg:col-span-5 flex flex-col gap-8 h-full">
-        <div class="bg-gray-900 rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden group border border-gray-800 shrink-0">
-          <div class="absolute inset-0 bg-gradient-to-tr from-brand-blue-deep/30 via-transparent to-brand-teal/20 opacity-40 animate-[spin_90s_linear_infinite]"></div>
 
-          <div class="relative z-10">
+        <div class="relative group/aurora shrink-0">
+          <div class="aurora-bg absolute inset-0 rounded-[2.5rem] bg-gradient-to-r from-brand-blue-deep via-brand-teal to-brand-green-bright bg-[length:200%_200%] opacity-20 blur-xl transition-all duration-700 ease-out group-hover/aurora:opacity-60 group-hover/aurora:blur-2xl group-hover/aurora:scale-105"></div>
+
+          <div class="relative z-10 bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-soft h-full flex flex-col justify-between transition-transform duration-500 ease-out group-hover/aurora:-translate-y-1 group-hover/aurora:scale-[1.01]">
             <div class="flex justify-between items-start mb-6">
-              <span class="px-3 py-1.5 rounded-lg bg-white/10 text-brand-teal font-bold text-[10px] uppercase tracking-[0.15em] border border-white/5">{content.explorerCard.tag}</span>
+              <span class="px-3 py-1.5 rounded-lg bg-brand-blue-deep/5 text-brand-blue-deep font-bold text-[10px] uppercase tracking-[0.15em] border border-brand-blue-deep/10">{content.explorerCard.tag}</span>
 
               <div class="flex items-center gap-2">
                 <span class="relative flex h-2.5 w-2.5">
@@ -154,32 +156,41 @@ const content = pageData?.data?.dataRequest || {
               </div>
             </div>
 
-            <h2 class="text-3xl font-black tracking-tight text-white mb-3">{content.explorerCard.title}</h2>
-            <p class="text-gray-400 text-sm leading-relaxed font-medium mb-8">{content.explorerCard.description}</p>
+            <h2 class="text-3xl font-black tracking-tight text-gray-900 mb-3">{content.explorerCard.title}</h2>
+            <p class="text-gray-500 text-sm leading-relaxed font-medium mb-8">{content.explorerCard.description}</p>
 
-            <a href={`${baseUrl}${langPrefix}/data/explorer/`} class="w-full py-3.5 rounded-xl bg-white/10 text-white text-sm font-bold shadow-sm hover:bg-white hover:text-brand-dark transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer border border-white/20 group/btn">
+            <a href={`${baseUrl}${langPrefix}/data/explorer/`} class="w-full py-3.5 rounded-xl bg-brand-blue-deep text-white text-sm font-bold shadow-md hover:bg-brand-dark transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer group/btn">
               {content.explorerCard.buttonText}
               <svg class="w-4 h-4 transform transition-transform duration-300 group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
             </a>
           </div>
         </div>
 
-        <div class="bg-white rounded-[2.5rem] p-10 border border-gray-200 shadow-xl flex flex-col justify-center flex-grow relative overflow-hidden">
+        <div class="relative bg-white rounded-[2.5rem] p-10 flex flex-col justify-center flex-grow group/access border-2 border-transparent shadow-soft hover:shadow-none hover:border-brand-blue-deep transition-all duration-300">
           <div class="relative z-10">
-            <span class="w-14 h-14 rounded-2xl bg-brand-blue-deep/5 flex items-center justify-center mb-6 border border-brand-blue-deep/10">
+            <span class="w-14 h-14 rounded-2xl bg-brand-blue-deep/5 flex items-center justify-center mb-6 border border-brand-blue-deep/10 transition-colors group-hover/access:bg-brand-blue-deep/10">
               <svg class="w-7 h-7 text-brand-blue-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
             </span>
             <h2 class="text-2xl font-black text-gray-900 mb-3">{content.actionBlock.title}</h2>
             <p class="text-gray-500 mb-8 text-sm leading-relaxed font-medium">{content.actionBlock.description}</p>
 
-            <a href="https://github.com/bio-portal/mybioportal_frontend/blob/main/public/docs/BIO-PORTAL-Data-Access-Form.Feb-23-2026-2.pdf?raw=true" target="_blank" rel="noopener noreferrer" class="group/download w-full py-4 rounded-xl bg-brand-blue-deep text-white font-bold text-sm tracking-wide shadow-lg shadow-brand-blue-deep/20 hover:shadow-2xl hover:shadow-brand-blue-deep/40 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3 cursor-pointer mb-8">
-              {content.actionBlock.downloadButtonText}
-              <svg class="w-5 h-5 transform transition-transform duration-300 group-hover/download:translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            <a href="https://github.com/bio-portal/mybioportal_frontend/blob/main/public/docs/BIO-PORTAL-Data-Access-Form.Feb-23-2026-2.pdf?raw=true" target="_blank" rel="noopener noreferrer" class="relative overflow-hidden w-full py-4 rounded-xl bg-brand-green-bright text-white font-bold text-sm tracking-wide shadow-lg transition-transform hover:-translate-y-0.5 flex items-center justify-center gap-3 cursor-pointer mb-8 group/download">
+
+              <div class="absolute inset-0 -translate-x-[150%] bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover/download:translate-x-[150%] transition-transform duration-700 ease-in-out skew-x-12"></div>
+
+              <span class="relative z-10">{content.actionBlock.downloadButtonText}</span>
+
+              <div class="relative z-10 w-5 h-5 flex flex-col items-center justify-center overflow-hidden">
+                <svg class="w-5 h-5 absolute" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1"></path>
+                  <path class="mechanical-arrow" stroke-linecap="round" stroke-linejoin="round" d="M12 4v11m0 0l-4-4m4 4l4-4"></path>
+                </svg>
+              </div>
             </a>
 
             <div class="pt-6 border-t border-gray-100">
               <p class="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-1">{content.actionBlock.emailLabel}</p>
-              <a href={`mailto:${content.actionBlock.emailAddress}`} class="text-base font-bold text-brand-dark hover:text-brand-blue-deep transition-colors">
+              <a href={`mailto:${content.actionBlock.emailAddress}`} class="text-base font-bold text-brand-dark hover:text-brand-blue-deep transition-colors group-hover/access:text-brand-blue-deep">
                 {content.actionBlock.emailAddress}
               </a>
             </div>
@@ -190,8 +201,33 @@ const content = pageData?.data?.dataRequest || {
   </main>
 </Layout>
 
+<style>
+  /* 1. Aurora Breathing Background */
+  @keyframes auroraBreath {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .aurora-bg {
+    animation: auroraBreath 8s ease infinite;
+  }
+
+  /* 2. Mechanical Download Arrow */
+  .group\/download:hover .mechanical-arrow {
+    animation: dropDown 0.6s ease-in-out forwards;
+  }
+  @keyframes dropDown {
+    0% { transform: translateY(0); opacity: 1; }
+    40% { transform: translateY(4px); opacity: 1; }
+    41% { opacity: 0; }
+    42% { transform: translateY(-10px); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+</style>
+
 <script>
-  // Keep your exact existing API script logic here
+  // API Fetch Logic exactly as it was
   const API_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats";
   const METADATA_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats?type=metadata";
 
