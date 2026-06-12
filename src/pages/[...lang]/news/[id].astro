@@ -30,8 +30,6 @@ export async function getStaticPaths() {
 const { post, lang } = Astro.props;
 const { Content } = await render(post);
 
-const langPrefix = lang === 'en' ? '' : '/fr';
-
 // Fetch the translated "Back to Insights" text from the pages/news configuration file dynamically
 const newsPageData = await getEntry('pages', `${lang}/news`);
 const backToNewsText = newsPageData?.data?.backToNewsText || (lang === 'fr' ? 'Retour aux actualités' : 'Back to Insights');
@@ -39,7 +37,7 @@ const backToNewsText = newsPageData?.data?.backToNewsText || (lang === 'fr' ? 'R
 <Layout
   title={`${post.data.title} | BioPortal Insights`}
   navType="minimal"
-  backLink={`${baseUrl}${langPrefix}/news/`}
+  backLink="/news/"  /* 🌟 PATH FIX: Navbar already injects base URL and language prefixes automatically */
   backText={backToNewsText}
   lang={lang}
 >

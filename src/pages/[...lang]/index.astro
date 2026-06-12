@@ -63,6 +63,10 @@ const getCleanSlug = (id: string) => id.split('/').pop()?.replace(/\.[^/.]+$/, "
       <div class="grid md:grid-cols-3 gap-8">
         {latestNews.map(post => (
           <article class="relative bg-white rounded-[2.5rem] border border-gray-100 shadow-soft hover:shadow-2xl transition-all group flex flex-col overflow-hidden">
+
+            {/* 🌟 CLICKABILITY FIX: Transparent overlay link covering the entire card bounds */}
+            <a href={`${baseUrl}${langPrefix}/news/${getCleanSlug(post.id)}/`} class="absolute inset-0 z-20" aria-label={post.data.title}></a>
+
             <div class="h-48 w-full relative overflow-hidden bg-surface flex-shrink-0">
               {post.data.image ? (
                 <img src={`${baseUrl}${post.data.image}`} alt={post.data.title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
@@ -73,7 +77,7 @@ const getCleanSlug = (id: string) => id.split('/').pop()?.replace(/\.[^/.]+$/, "
               )}
             </div>
 
-            <div class="p-8 flex flex-col flex-grow">
+            <div class="p-8 flex flex-col flex-grow relative z-10">
               <div class="flex justify-between items-start mb-6">
                 <span class="text-[10px] font-bold text-gray-400 uppercase">{post.data.date.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
                 <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-brand-blue-deep/10 text-brand-blue-deep">{post.data.tag}</span>
@@ -81,9 +85,10 @@ const getCleanSlug = (id: string) => id.split('/').pop()?.replace(/\.[^/.]+$/, "
               <h3 class="text-xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-brand-blue-deep transition-colors">{post.data.title}</h3>
               <p class="text-sm text-gray-500 leading-relaxed mb-8 flex-grow line-clamp-3">{post.data.excerpt}</p>
 
-              <a href={`${baseUrl}${langPrefix}/news/${getCleanSlug(post.id)}/`} class="relative after:absolute after:inset-0 text-brand-dark font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all mt-auto">
+              {/* Styled layout block representing the link cleanly */}
+              <div class="text-brand-dark font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all mt-auto">
                 {insights.readMoreText} <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </a>
+              </div>
             </div>
           </article>
         ))}
