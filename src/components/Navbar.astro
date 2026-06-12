@@ -57,9 +57,10 @@ const buildUrl = (...parts: (string | undefined)[]) => {
             <a href={buildUrl(baseUrl, langPrefix, link.href)} class="text-gray-500 hover:text-brand-dark transition-colors">{link.label}</a>
           ))}
 
+          {/* Desktop Language Toggles */}
           <div class="flex items-center gap-1 bg-gray-100/80 p-1 rounded-full border border-gray-200/40 shadow-inner select-none ml-4">
-            <a href={enUrl} class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'en' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>EN</a>
-            <a href={frUrl} class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'fr' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>FR</a>
+            <a href={enUrl} onclick="sessionStorage.setItem('langPref', 'en')" class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'en' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>EN</a>
+            <a href={frUrl} onclick="sessionStorage.setItem('langPref', 'fr')" class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'fr' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>FR</a>
           </div>
         </div>
 
@@ -73,11 +74,12 @@ const buildUrl = (...parts: (string | undefined)[]) => {
             <a href={buildUrl(baseUrl, langPrefix, link.href)} class="mobile-link text-brand-dark font-extrabold text-xl">{link.label}</a>
           ))}
 
+          {/* Mobile Language Toggles */}
           <div class="flex items-center justify-between pt-2">
             <span class="text-xs uppercase tracking-widest font-bold text-gray-400">Language / Langue</span>
             <div class="flex items-center gap-1 bg-gray-100/80 p-1 rounded-full border border-gray-200/40 shadow-inner select-none">
-              <a href={enUrl} class={`px-4 py-1.5 text-xs font-black rounded-full tracking-wider transition-all ${lang === 'en' ? 'bg-white text-brand-blue-deep shadow-sm' : 'text-gray-400'}`}>EN</a>
-              <a href={frUrl} class={`px-4 py-1.5 text-xs font-black rounded-full tracking-wider transition-all ${lang === 'fr' ? 'bg-white text-brand-blue-deep shadow-sm' : 'text-gray-400'}`}>FR</a>
+              <a href={enUrl} onclick="sessionStorage.setItem('langPref', 'en')" class={`px-4 py-1.5 text-xs font-black rounded-full tracking-wider transition-all ${lang === 'en' ? 'bg-white text-brand-blue-deep shadow-sm' : 'text-gray-400'}`}>EN</a>
+              <a href={frUrl} onclick="sessionStorage.setItem('langPref', 'fr')" class={`px-4 py-1.5 text-xs font-black rounded-full tracking-wider transition-all ${lang === 'fr' ? 'bg-white text-brand-blue-deep shadow-sm' : 'text-gray-400'}`}>FR</a>
             </div>
           </div>
 
@@ -90,9 +92,11 @@ const buildUrl = (...parts: (string | undefined)[]) => {
       </>
     ) : (
       <div class="flex items-center gap-6 ml-auto z-50">
+
+        {/* Minimal/Spoke Navbar Language Toggles */}
         <div class="flex items-center gap-1 bg-gray-100/80 p-1 rounded-full border border-gray-200/40 shadow-inner select-none">
-          <a href={enUrl} class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'en' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>EN</a>
-          <a href={frUrl} class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'fr' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>FR</a>
+          <a href={enUrl} onclick="sessionStorage.setItem('langPref', 'en')" class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'en' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>EN</a>
+          <a href={frUrl} onclick="sessionStorage.setItem('langPref', 'fr')" class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'fr' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>FR</a>
         </div>
 
         <div class="h-4 w-px bg-gray-200"></div>
