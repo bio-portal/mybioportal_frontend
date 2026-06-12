@@ -4,8 +4,8 @@ import Layout from '../../layouts/Layout.astro';
 
 export function getStaticPaths() {
   return [
-    { params: { lang: undefined } }, // English maps to root (/data)
-    { params: { lang: 'fr' } }        // French maps to /fr/data
+    { params: { lang: undefined } },
+    { params: { lang: 'fr' } }
   ];
 }
 
@@ -47,14 +47,14 @@ const content = pageData?.data?.dataRequest || {
 };
 ---
 <Layout title={content.pageTitle} navType="minimal" backText={content.backText} lang={lang}>
-    <main class="max-w-7xl mx-auto px-6 pt-12 pb-24 relative z-10">
+  <main class="max-w-7xl mx-auto px-6 pt-12 pb-24 relative z-10">
     <header class="max-w-3xl mb-16 text-center mx-auto">
       <span class="text-brand-blue-deep font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
       <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 tracking-tight">{hero.headline}</h1>
       <p class="text-xl text-gray-600 leading-relaxed">{hero.description}</p>
     </header>
 
-        <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 mb-16 items-stretch">
+    <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 mb-16 items-stretch">
       <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-soft">
           <h3 id="metric-participants" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter h-12 lg:h-14 flex items-center">
             <div class="live-stat-loader flex items-center gap-1.5 pt-1">
@@ -63,7 +63,7 @@ const content = pageData?.data?.dataRequest || {
               <div class="w-2.5 h-2.5 bg-brand-blue-deep/90 rounded-full animate-pulse" style="animation-delay: 400ms"></div>
             </div>
             <span class="live-stat-value hidden">{metrics.fallbackValues.participants}</span>
-          h3>
+          </h3>
           <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.participantsLabel}</p>
       </div>
 
@@ -75,7 +75,7 @@ const content = pageData?.data?.dataRequest || {
               <div class="w-2.5 h-2.5 bg-brand-teal/90 rounded-full animate-pulse" style="animation-delay: 400ms"></div>
             </div>
             <span class="live-stat-value hidden">{metrics.fallbackValues.clinicalVariables}</span>
-          h3>
+          </h3>
           <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.clinicalVariablesLabel}</p>
       </div>
 
@@ -87,7 +87,7 @@ const content = pageData?.data?.dataRequest || {
               <div class="w-2.5 h-2.5 bg-brand-green-bright/90 rounded-full animate-pulse" style="animation-delay: 400ms"></div>
             </div>
             <span class="live-stat-value hidden">{metrics.fallbackValues.proteomics}</span>
-          h3>
+          </h3>
           <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.proteomicsLabel}</p>
       </div>
 
@@ -96,3 +96,199 @@ const content = pageData?.data?.dataRequest || {
             <div class="live-stat-loader flex items-center gap-1.5 pt-1">
               <div class="w-2.5 h-2.5 bg-brand-yellow/40 rounded-full animate-pulse"></div>
               <div class="w-2.5 h-2.5 bg-brand-yellow/60 rounded-full animate-pulse" style="animation-delay: 200ms"></div>
+              <div class="w-2.5 h-2.5 bg-brand-yellow/90 rounded-full animate-pulse" style="animation-delay: 400ms"></div>
+            </div>
+            <span class="live-stat-value hidden">{metrics.fallbackValues.biosamples}</span>
+          </h3>
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.biosamplesLabel}</p>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-12 gap-8 items-stretch">
+
+      <div class="lg:col-span-7 bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-soft h-full flex flex-col">
+        <h2 class="text-3xl font-black text-brand-dark mb-4">{content.applicationProcess.title}</h2>
+        <p class="text-gray-500 mb-8 leading-relaxed font-medium text-lg">{content.applicationProcess.description}</p>
+
+        <div class="flex-grow space-y-8">
+          <div>
+            <h3 class="text-lg font-bold mb-4 flex items-center gap-3 text-gray-900">
+              <span class="w-8 h-8 rounded-full bg-brand-teal/20 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-brand-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+              </span>
+              {content.applicationProcess.requirementsTitle}
+            </h3>
+            <ul class="space-y-3 text-sm text-gray-600 font-medium ml-11">
+              {content.applicationProcess.requirementsItems?.map((item: string, index: number) => (
+                <li class="flex items-start gap-3"><span class="text-brand-teal font-black mt-0.5 opacity-60">0{index + 1}</span><span class="leading-relaxed">{item}</span></li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="pt-6 border-t border-gray-100">
+            <h3 class="text-lg font-bold text-gray-900 mb-3">{content.applicationProcess.infrastructureTitle}</h3>
+            <p class="text-sm text-gray-500 leading-relaxed mb-4" set:html={content.applicationProcess.infrastructureDescription}></p>
+            <div class="flex flex-wrap gap-2">
+              {content.applicationProcess.infrastructureTags?.map((tag: string) => (
+                <span class="px-3 py-1.5 rounded-lg bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-widest">{tag}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5 flex flex-col gap-8 h-full">
+
+        <div class="relative bg-white rounded-[2.5rem] p-10 border-2 border-transparent shadow-soft flex flex-col group/card transition-colors duration-300 hover:border-brand-blue-deep shrink-0">
+          <div class="flex justify-between items-start mb-6">
+            <span class="px-3 py-1.5 rounded-lg bg-brand-blue-deep/5 text-brand-blue-deep font-bold text-[10px] uppercase tracking-[0.15em] border border-brand-blue-deep/10">{content.explorerCard.tag}</span>
+
+            <div class="relative flex h-3 w-3 mt-1 mr-1">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-teal opacity-60"></span>
+              <span class="aurora-dot relative inline-flex rounded-full h-3 w-3 shadow-sm ring-2 ring-white"></span>
+            </div>
+          </div>
+
+          <h2 class="text-3xl font-black tracking-tight text-gray-900 mb-3">{content.explorerCard.title}</h2>
+          <p class="text-gray-500 text-sm leading-relaxed font-medium mb-8">{content.explorerCard.description}</p>
+
+          <a href={`${baseUrl}${langPrefix}/data/explorer/`} class="group/action w-full py-4 rounded-xl bg-brand-blue-deep text-white text-sm font-bold shadow-lg flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 hover:brightness-110">
+            <span class="relative z-10">{content.explorerCard.buttonText}</span>
+            <svg class="arrow-thrust relative z-10 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+          </a>
+        </div>
+
+        <div class="relative bg-white rounded-[2.5rem] p-10 flex flex-col justify-center flex-grow group/card border-2 border-transparent shadow-soft transition-colors duration-300 hover:border-brand-blue-deep">
+          <div class="relative z-10">
+            <span class="w-14 h-14 rounded-2xl bg-brand-blue-deep/5 flex items-center justify-center mb-6 border border-brand-blue-deep/10 transition-colors group-hover/card:bg-brand-blue-deep/10">
+              <svg class="w-7 h-7 text-brand-blue-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            </span>
+            <h2 class="text-2xl font-black text-gray-900 mb-3">{content.actionBlock.title}</h2>
+            <p class="text-gray-500 mb-8 text-sm leading-relaxed font-medium">{content.actionBlock.description}</p>
+
+            <a href="https://github.com/bio-portal/mybioportal_frontend/blob/main/public/docs/BIO-PORTAL-Data-Access-Form.Feb-23-2026-2.pdf?raw=true" target="_blank" rel="noopener noreferrer" class="group/action w-full py-4 rounded-xl bg-brand-blue-deep text-white font-bold text-sm tracking-wide shadow-lg flex items-center justify-center gap-3 cursor-pointer mb-8 transition-all duration-300 hover:brightness-110">
+              <span class="relative z-10">{content.actionBlock.downloadButtonText}</span>
+              <svg class="arrow-bounce relative z-10 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            </a>
+
+            <div class="pt-6 border-t border-gray-100">
+              <p class="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-1">{content.actionBlock.emailLabel}</p>
+              <a href={`mailto:${content.actionBlock.emailAddress}`} class="text-base font-bold text-brand-dark hover:text-brand-blue-deep transition-colors">
+                {content.actionBlock.emailAddress}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  /* 1. Aurora Dot Background Animation */
+  .aurora-dot {
+    background: linear-gradient(
+      135deg,
+      var(--color-brand-blue-deep),
+      var(--color-brand-teal),
+      var(--color-brand-green-bright),
+      var(--color-brand-yellow),
+      var(--color-brand-orange-deep)
+    );
+    background-size: 300% 300%;
+    animation: auroraSpin 4s ease infinite;
+  }
+  @keyframes auroraSpin {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* 2. Downward Bounce Arrow (Download) */
+  @keyframes arrowDip {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+  .group\/action:hover .arrow-bounce {
+    animation: arrowDip 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* 3. Horizontal Thrust Arrow (Launch) */
+  @keyframes arrowThrust {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(4px); }
+  }
+  .group\/action:hover .arrow-thrust {
+    animation: arrowThrust 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+</style>
+
+<script>
+  // API Fetch Logic exactly as it was
+  const API_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats";
+  const METADATA_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats?type=metadata";
+
+  async function syncLandingMetrics() {
+    try {
+      const [statsRes, metaRes] = await Promise.all([
+        fetch(`${API_GATEWAY}?filter=baseline&_cb=${new Date().getTime()}`),
+        fetch(`${METADATA_GATEWAY}&_cb=${new Date().getTime()}`)
+      ]);
+
+      if (!statsRes.ok || !metaRes.ok) throw new Error("API failed");
+
+      const statsArray = await statsRes.json();
+      const metaArray = await metaRes.json();
+
+      const sexStat = statsArray.find((s: any) => s.chart_id === 'sex');
+      const liveParticipants = sexStat?.data.reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
+      const liveVariables = metaArray.length || 0;
+
+      const proteomicStat = statsArray.find((s: any) => s.chart_id === 'n_proteomics');
+      const liveProteomics = proteomicStat?.data
+        .filter((d: any) => d.category !== 'No')
+        .reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
+
+      const sampleStat = statsArray.find((s: any) => s.chart_id === 'sample_type');
+      const liveBiosamples = sampleStat?.data
+        .filter((d: any) => d.category !== 'None')
+        .reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
+
+      const docLang = document.documentElement.lang || 'en';
+      const targetLocale = docLang === 'fr' ? 'fr-FR' : 'en-US';
+
+      const updateDom = (id: string, value: number) => {
+        const container = document.getElementById(`metric-${id}`);
+        if (container && value > 0) {
+          const loader = container.querySelector('.live-stat-loader') as HTMLElement;
+          const valueText = container.querySelector('.live-stat-value') as HTMLElement;
+          if (loader) loader.style.display = 'none';
+          if (valueText) {
+            valueText.innerHTML = value.toLocaleString(targetLocale);
+            valueText.style.display = 'inline';
+            valueText.classList.remove('hidden');
+          }
+        }
+      };
+
+      updateDom('participants', liveParticipants);
+      updateDom('variables', liveVariables);
+      updateDom('proteomics', liveProteomics);
+      updateDom('biosamples', liveBiosamples);
+
+    } catch (err) {
+      console.warn("API metrics synchronization skipped, showing static defaults.");
+      document.querySelectorAll('.live-stat-loader').forEach(l => (l as HTMLElement).style.display = 'none');
+      document.querySelectorAll('.live-stat-value').forEach(v => {
+        (v as HTMLElement).style.display = 'inline';
+        v.classList.remove('hidden');
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncLandingMetrics);
+  } else {
+    syncLandingMetrics();
+  }
+</script>
