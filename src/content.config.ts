@@ -135,7 +135,11 @@ const pages = defineCollection({
       pageTitle: z.string(),
       whyJoinTitle: z.string(),
       howItWorksTitle: z.string(),
-      actionCard: z.object({
+      pillars: z.array(z.object({
+        title: z.string(),
+        desc: z.string()
+      })),
+      formCard: z.object({
         title: z.string(),
         description: z.string(),
         buttonText: z.string(),

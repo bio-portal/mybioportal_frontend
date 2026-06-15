@@ -17,49 +17,21 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pageData = await getEntry('pages', `${lang}/participants`);
 const homeData = await getEntry('pages', `${lang}/home`);
 
-// Emotional, high-trust text defaults
-const hero = pageData?.data?.hero || {
-  tagline: lang === 'fr' ? "Portail des participants" : "Participant Portal",
-  headline: lang === 'fr' ? "Façonnez l'avenir de la médecine" : "Shape the Future of Medicine",
-  gradientText: lang === 'fr' ? "Pour nous tous." : "For All of Us.",
-  description: lang === 'fr'
-    ? "Devenez un partenaire essentiel de la médecine de précision. Votre participation aide les scientifiques d'ici et d'ailleurs à concevoir des soins de santé plus justes, plus sûrs et adaptés à chacun."
-    : "Become a vital partner in precision medicine. Your unique background helps scientists here in Montreal and worldwide discover fairer, safer treatments tailored to everyone."
-};
+const hero = pageData?.data?.hero;
+const steps = pageData?.data?.steps || [];
+const content = pageData?.data?.recruitmentData;
 
-const steps = pageData?.data?.steps || [
-  {
-    title: lang === 'fr' ? "Donner son consentement numérique" : "Digital Consent",
-    desc: lang === 'fr' ? "Passez en revue notre formulaire d'eConsentement sécurisé dans le confort de votre foyer." : "Review our secure, transparent eConsent form from the comfort of your home."
-  },
-  {
-    title: lang === 'fr' ? "Partager votre profil de santé" : "Contribute Insight",
-    desc: lang === 'fr' ? "Vos données de santé cryptées aident les chercheurs à identifier des indicateurs de maladies avant qu'elles ne se développent." : "Your encrypted health metrics help researchers trace disease patterns before they progress."
-  },
-  {
-    title: lang === 'fr' ? "Propulser les découvertes" : "Accelerate Discovery",
-    desc: lang === 'fr' ? "Les scientifiques du monde entier utilisent ces données anonymisées pour concevoir les traitements de demain." : "Global scientists use this privacy-protected registry to engineer next-generation therapeutics."
-  }
+// SVG Icon mapping for the 3 pillars (Security, Altruism, Value)
+const pillarIcons = [
+  // 0: Lock (Security)
+  '<path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />',
+  // 1: People (Representation)
+  '<path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />',
+  // 2: Heart (Health Value)
+  '<path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />'
 ];
-
-const content = pageData?.data?.recruitmentData || {
-  pageTitle: lang === 'fr' ? "Rejoindre l'étude" : "Join the Study",
-  whyJoinTitle: lang === 'fr' ? "Pourquoi participer ?" : "Why Join the BioBank?",
-  howItWorksTitle: lang === 'fr' ? "Votre parcours" : "How It Works",
-  actionCard: {
-    title: lang === 'fr' ? "Prêt à faire une différence ?" : "Ready to Make an Impact?",
-    description: lang === 'fr'
-      ? "En vous joignant à BioPortal, vous laissez un héritage durable pour la santé des générations futures."
-      : "By joining BioPortal, you leave a lasting healthcare legacy for your family and community.",
-    buttonText: lang === 'fr' ? "Commencer le eConsentement" : "Begin eConsent Form",
-    disclaimer: lang === 'fr'
-      ? "Votre vie privée est notre priorité absolue. Vos données sont cryptées, sécurisées et hébergées à l'Hôpital général juif."
-      : "Your privacy is our absolute priority. Data is fully anonymized, heavily encrypted, and managed at the Jewish General Hospital."
-  }
-};
 ---
 <Layout title={content.pageTitle} navType="minimal" lang={lang}>
-
   <main class="max-w-7xl mx-auto px-6 pt-12 pb-24 relative z-10">
 
     <header class="max-w-4xl mb-20 text-center mx-auto">
@@ -76,42 +48,20 @@ const content = pageData?.data?.recruitmentData || {
     <div class="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start mt-20">
 
       <div class="lg:col-span-7 space-y-16">
-
         <div>
           <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-8">{content.whyJoinTitle}</h3>
-
           <div class="space-y-12">
-            <div class="flex gap-5 items-start">
-              <div class="w-12 h-12 rounded-2xl bg-brand-green-bright/10 flex items-center justify-center shrink-0 text-brand-green-bright">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            {content.pillars.map((pillar: any, index: number) => (
+              <div class="flex gap-5 items-start">
+                <div class="w-12 h-12 rounded-2xl bg-brand-green-bright/10 flex items-center justify-center shrink-0 text-brand-green-bright">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" set:html={pillarIcons[index] || pillarIcons[0]}></svg>
+                </div>
+                <div>
+                  <h4 class="text-xl font-bold text-gray-900 mb-2 tracking-tight">{pillar.title}</h4>
+                  <p class="text-gray-500 leading-relaxed font-medium">{pillar.desc}</p>
+                </div>
               </div>
-              <div>
-                <h4 class="text-xl font-bold text-gray-900 mb-2 tracking-tight">
-                  {lang === 'fr' ? "Représenter toute la population canadienne" : "Medicine That Reflects Everyone"}
-                </h4>
-                <p class="text-gray-500 leading-relaxed font-medium">
-                  {lang === 'fr'
-                    ? "Historiquement, la recherche médicale s'est concentrée sur des groupes homogènes. À BioPortal, plus de la moitié de notre communauté provient d'horizons divers. Votre voix biologique garantit que les traitements futurs fonctionneront en toute sécurité pour tout le monde."
-                    : "Historically, clinical research has left massive gaps by studying narrow populations. At BioPortal, over half of our participants represent diverse ancestries. Your biological presence ensures future drugs and therapies work safely for every single community."}
-                </p>
-              </div>
-            </div>
-
-            <div class="flex gap-5 items-start">
-              <div class="w-12 h-12 rounded-2xl bg-brand-green-bright/10 flex items-center justify-center shrink-0 text-brand-green-bright">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0015 0m-15 0a7.5 7.5 0 1115 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077l1.41-.513m14.095-5.13l1.41-.513M5.106 17.785l1.15-.827m11.379-8.16l1.15-.827M8.14 21.27l.707-1.03m10.304-6.115l.707-1.03M12 3v1.5m0 16.5V21m-3.077-8.457l-.513 1.41m5.13-14.095l-.513 1.41M17.785 5.106l-.827 1.15m-8.16 11.379l-.827 1.15M21.27 8.14l-1.03.707m-6.115 10.304l-1.03.707"></path></svg>
-              </div>
-              <div>
-                <h4 class="text-xl font-bold text-gray-900 mb-2 tracking-tight">
-                  {lang === 'fr' ? "Un héritage pour vos proches" : "A Health Legacy for Your Family"}
-                </h4>
-                <p class="text-gray-500 leading-relaxed font-medium">
-                  {lang === 'fr'
-                    ? "En faisant don de vos données de santé anonymisées, vous aidez à tracer les signatures moléculaires des maladies chroniques avant qu'elles ne se transmettent. C’est un cadeau direct pour la santé de vos enfants et des générations futures."
-                    : "By donating your health fingerprint, you help track complex, chronic medical traits before they emerge in future generations. It is a protective blueprint engineered directly for your children, family, and network."}
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -134,24 +84,26 @@ const content = pageData?.data?.recruitmentData || {
       </div>
 
       <div class="lg:col-span-5 w-full lg:sticky lg:top-28">
-        <div class="bg-white rounded-[2.5rem] shadow-soft border border-gray-100 p-8 lg:p-10 relative overflow-hidden flex flex-col justify-center min-h-[400px]">
-          <div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        {/* 🌟 UX FIX: Added group class, glowing border, and shadow transition on hover */}
+        <div class="group bg-white rounded-[2.5rem] shadow-soft border-2 border-transparent hover:border-brand-green-bright/40 hover:shadow-2xl hover:shadow-brand-green-bright/20 transition-all duration-500 p-8 lg:p-10 relative overflow-hidden flex flex-col justify-center min-h-[400px]">
+          <div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none transition-transform duration-700 group-hover:scale-150"></div>
 
           <div class="relative z-10 text-center lg:text-left">
-            <span class="w-14 h-14 rounded-2xl bg-brand-green-bright/5 flex items-center justify-center mb-6 border border-brand-green-bright/10 mx-auto lg:mx-0">
+            <span class="w-14 h-14 rounded-2xl bg-brand-green-bright/5 flex items-center justify-center mb-6 border border-brand-green-bright/10 mx-auto lg:mx-0 group-hover:bg-brand-green-bright/10 transition-colors">
               <svg class="w-7 h-7 text-brand-green-bright" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
             </span>
 
-            <h3 class="text-2xl font-black text-brand-dark mb-3 tracking-tight">{content.actionCard.title}</h3>
-            <p class="text-gray-500 mb-8 text-sm leading-relaxed font-medium">{content.actionCard.description}</p>
+            <h3 class="text-2xl font-black text-brand-dark mb-3 tracking-tight">{content.formCard.title}</h3>
+            <p class="text-gray-500 mb-8 text-sm leading-relaxed font-medium">{content.formCard.description}</p>
 
-            <a href="https://example-econsent-form-url.com" target="_blank" rel="noopener noreferrer" class="group/action w-full py-4 rounded-xl bg-brand-green-bright text-white font-bold text-sm tracking-widest uppercase shadow-lg shadow-brand-green-bright/10 flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 hover:brightness-110">
-              <span>{content.actionCard.buttonText}</span>
+            <a href="https://example-econsent-form-url.com" target="_blank" rel="noopener noreferrer" class="group/action w-full py-4 rounded-xl bg-brand-green-bright text-white font-bold text-sm tracking-widest uppercase shadow-lg shadow-brand-green-bright/20 flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 hover:brightness-110">
+              <span>{content.formCard.buttonText}</span>
               <svg class="arrow-thrust w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
             </a>
 
             <p class="mt-8 text-[11px] text-gray-400 text-center lg:text-left leading-relaxed font-medium">
-              {content.actionCard.disclaimer} <a href={`${baseUrl}${langPrefix}/privacy/`} class="text-brand-green-bright underline hover:text-brand-dark transition-colors font-bold">{lang === 'fr' ? "Politique de confidentialité" : "Privacy Policy"}</a>.
+              {content.formCard.disclaimer} <a href={`${baseUrl}${langPrefix}/privacy/`} class="text-brand-green-bright underline hover:text-brand-dark transition-colors font-bold">{content.formCard.privacyLinkText}</a>.
             </p>
           </div>
         </div>
@@ -162,7 +114,6 @@ const content = pageData?.data?.recruitmentData || {
 </Layout>
 
 <style>
-  /* Spring Bezier Curve Arrow Acceleration */
   @keyframes arrowThrust {
     0%, 100% { transform: translateX(0); }
     50% { transform: translateX(4px); }

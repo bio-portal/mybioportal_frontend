@@ -2,7 +2,7 @@ id: participants
 hero:
   tagline: "Parcours du participant"
   headline: "Façonnez l'avenir de la médecine."
-  gradientText: "Pour nous tous."
+  gradientText: "Pour notre avenir."
   description: "Votre bagage unique aide les scientifiques, à Montréal et partout dans le monde, à découvrir des traitements plus justes et plus sûrs pour toutes les communautés. En partageant un peu de votre temps, vous devenez une partie essentielle de la solution."
 steps:
   - title: "eConsentement sécurisé"
@@ -11,17 +11,23 @@ steps:
     desc: "Vos données de santé sécurisées aident les chercheurs à suivre des schémas complexes et à déceler des indicateurs de santé avant leur progression."
   - title: "Propulser les découvertes"
     desc: "Les données anonymisées et protégées alimentent la recherche mondiale en science ouverte pour concevoir les soins de demain."
-benefit:
-  title: "Imagerie rétinienne avancée"
-  desc: "Dans le cadre de notre suivi approfondi de la santé, les participants bénéficient d'une imagerie rétinienne haute résolution sans frais, offrant des rapports diagnostiques précis directement à votre équipe médicale."
 
 recruitmentData:
   pageTitle: "Rejoindre BioPortal | Faire progresser la médecine de précision"
-  whyJoinTitle: "Pourquoi votre présence est essentielle"
+  whyJoinTitle: "Vos questions et votre impact"
   howItWorksTitle: "Votre parcours de participation"
-  actionCard:
-    title: "Prêt à laisser un héritage durable ?"
-    description: "En rejoignant BioPortal, vous contribuez à bâtir un avenir de la santé qui représente et protège fidèlement votre famille, vos origines et votre communauté."
+
+  pillars:
+    - title: "1. Sécurité des données de niveau bancaire"
+      desc: "Votre vie privée est non négociable. Toutes vos données biologiques et de santé sont fortement cryptées, dissociées de votre identité et conservées en toute sécurité sur les serveurs protégés de l'Hôpital général juif."
+    - title: "2. Une médecine qui vous ressemble"
+      desc: "Historiquement, la recherche médicale a souvent ignoré la diversité. En partageant votre empreinte de santé unique, vous contribuez à garantir que les traitements de demain seront sûrs et efficaces pour votre famille et les générations futures."
+    - title: "3. Des bilans de santé gratuits pour vous"
+      desc: "En guise de remerciement, les participants reçoivent une analyse détaillée de leur composition corporelle (muscles, graisse et hydratation). Si vous vivez avec le diabète, vous bénéficierez également d'un examen de la vue haute résolution gratuit."
+
+  formCard:
+    title: "Prêt à laisser un héritage ?"
+    description: "En rejoignant BioPortal, vous contribuez à bâtir un avenir de la santé qui représente et protège fidèlement votre communauté."
     buttonText: "Commencer le eConsentement"
     disclaimer: "Votre vie privée est notre priorité absolue. Les données sont hautement cryptées, entièrement dépersonnalisées et gérées de manière sécurisée à l'Hôpital général juif."
     privacyLinkText: "Politique de confidentialité"
