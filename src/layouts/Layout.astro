@@ -14,6 +14,9 @@ const {
   hideFooter = false
 } = Astro.props;
 
+// Safely grab the base URL for deploying to custom domains or subfolders like GitHub Pages
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 // 2. Fetch data dynamically based on the active locale (e.g., 'en/global' or 'fr/global')
 const globalData = await getEntry('pages', `${lang}/global`);
 
@@ -21,9 +24,14 @@ const navigation = globalData?.data?.navigation;
 const footer = globalData?.data?.footer;
 ---
 <!doctype html>
-<html lang={lang}> <head>
+<html lang={lang}>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+
+    {/* 🌟 FAVICON ADDED HERE */}
+    <link rel="icon" type="image/svg+xml" href={`${baseUrl}/logos/BioPortal_Mark_Color.svg`} />
+
     <title>{title}</title>
   </head>
   <body class="flex flex-col min-h-screen bg-surface">

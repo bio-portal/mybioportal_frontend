@@ -1,33 +1,27 @@
 id: participants
 hero:
   tagline: "Parcours du participant"
-  headline: "Vos données. Votre santé."
-  gradientText: "Notre avenir."
-  description: "Les biobanques mondiales manquent actuellement de représentation ethnique diversifiée. En partageant en toute sécurité un peu de votre temps et de vos données de santé, vous devenez une partie essentielle de la solution pour Montréal et pour le monde."
+  headline: "Façonnez l'avenir de la médecine."
+  gradientText: "Pour nous tous."
+  description: "Votre bagage unique aide les scientifiques, à Montréal et partout dans le monde, à découvrir des traitements plus justes et plus sûrs pour toutes les communautés. En partageant un peu de votre temps, vous devenez une partie essentielle de la solution."
 steps:
-  - title: "Vérifiez votre admissibilité"
-    desc: "Remplissez le bref formulaire sécurisé sur cette page pour voir si vous êtes admissible à nos études actuelles sur le diabète."
-  - title: "Consentement transparent"
-    desc: "Nous vous expliquerons en détail comment vos données sont dépersonnalisées et protégées avant que vous ne partagiez des échantillons."
-  - title: "Évaluation de santé gratuite"
-    desc: "En guise de remerciement, recevez votre dépistage de la rétinopathie diabétique gratuit et approuvé par Santé Canada."
+  - title: "eConsentement sécurisé"
+    desc: "Examinez et signez notre formulaire de consentement numérique transparent, en toute sécurité depuis le confort de votre foyer."
+  - title: "Partager votre profil de santé"
+    desc: "Vos données de santé sécurisées aident les chercheurs à suivre des schémas complexes et à déceler des indicateurs de santé avant leur progression."
+  - title: "Propulser les découvertes"
+    desc: "Les données anonymisées et protégées alimentent la recherche mondiale en science ouverte pour concevoir les soins de demain."
 benefit:
-  title: "Évaluation oculaire gratuite pour diabétiques"
-  desc: "Nous offrons l'imagerie de la rétinopathie diabétique approuvée par Santé Canada sans frais pour les participants. Dans les 5 minutes suivant l'examen, votre médecin reçoit un rapport diagnostique complet."
+  title: "Imagerie rétinienne avancée"
+  desc: "Dans le cadre de notre suivi approfondi de la santé, les participants bénéficient d'une imagerie rétinienne haute résolution sans frais, offrant des rapports diagnostiques précis directement à votre équipe médicale."
 
 recruitmentData:
-  pageTitle: "Rejoindre BioPortal | Faire progresser la recherche sur le diabète"
-  whyJoinTitle: "Pourquoi rejoindre BioPortal"
-  howItWorksTitle: "Comment fonctionne la participation"
-  formCard:
-    title: "Demande d'inscription"
-    description: "Répondez à 3 questions rapides pour voir si vous êtes admissible à notre étude actuelle à Montréal."
-    questions:
-      - "Avez-vous 18 ans ou plus ?"
-      - "Avez-vous une carte d'hôpital d'un hôpital du CIUSSS ?"
-      - "Avez-vous été diagnostiqué avec le diabète ?"
-    emailLabel: "Votre adresse courriel"
-    emailPlaceholder: "nom@courriel.com"
-    buttonText: "Vérifier mon admissibilité"
-    disclaimer: "En validant, vous autorisez les boucles de contact d'opérations sécurisées. Lisez notre"
+  pageTitle: "Rejoindre BioPortal | Faire progresser la médecine de précision"
+  whyJoinTitle: "Pourquoi votre présence est essentielle"
+  howItWorksTitle: "Votre parcours de participation"
+  actionCard:
+    title: "Prêt à laisser un héritage durable ?"
+    description: "En rejoignant BioPortal, vous contribuez à bâtir un avenir de la santé qui représente et protège fidèlement votre famille, vos origines et votre communauté."
+    buttonText: "Commencer le eConsentement"
+    disclaimer: "Votre vie privée est notre priorité absolue. Les données sont hautement cryptées, entièrement dépersonnalisées et gérées de manière sécurisée à l'Hôpital général juif."
     privacyLinkText: "Politique de confidentialité"

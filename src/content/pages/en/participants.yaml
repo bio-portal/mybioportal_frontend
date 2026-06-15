@@ -1,33 +1,27 @@
 id: participants
 hero:
-  tagline: "Participant Pathway"
-  headline: "Your data. Your health."
-  gradientText: "Our future."
-  description: "Global biobanks currently lack diverse ethnic representation. By safely sharing a small amount of your time and health data, you become a critical part of the solution for Montreal and the world."
+  tagline: "Participant Journey"
+  headline: "Shape the Future of Medicine."
+  gradientText: "For All of Us."
+  description: "Your unique background helps scientists here in Montreal and worldwide discover fairer, safer treatments tailored to every community. By sharing a small amount of your time, you become a permanent part of the solution."
 steps:
-  - title: "Check Eligibility"
-    desc: "Fill out the brief secure form on this page to see if you qualify for our current diabetes studies."
-  - title: "Transparent Consent"
-    desc: "We will carefully explain how your data is de-identified and protected before you share any samples."
-  - title: "Free Health Assessment"
-    desc: "As a thank you, receive your free, Health Canada-approved diabetic retinopathy screening."
+  - title: "Secure eConsent"
+    desc: "Review and sign our transparent, digital consent form securely from the comfort of your home."
+  - title: "Contribute Insight"
+    desc: "Your secure health metrics help researchers track complex health patterns and trace traits before they progress."
+  - title: "Drive Discovery"
+    desc: "Anonymized, privacy-protected data powers global open-science research to engineer next-generation therapeutics."
 benefit:
-  title: "Free Diabetic Eye Assessment"
-  desc: "We offer Health Canada-approved diabetic retinopathy imaging at no cost to participants. Within 5 minutes of the scan, your doctor receives a full diagnostic report."
+  title: "Advanced Retinal Imaging"
+  desc: "As part of our comprehensive health tracking, participants receive high-resolution retinal imaging at no cost, providing deep diagnostic insights directly to your clinical team."
 
 recruitmentData:
-  pageTitle: "Join BioPortal | Advancing Diabetes Research"
-  whyJoinTitle: "Why Join BioPortal"
-  howItWorksTitle: "How Participation Works"
-  formCard:
-    title: "Request to Join"
-    description: "Answer 3 quick questions to see if you qualify for our current Montreal study."
-    questions:
-      - "Are you 18 years or older?"
-      - "Do you have a hospital card with a CIUSSS hospital?"
-      - "Have you been diagnosed with diabetes?"
-    emailLabel: "Your Email Address"
-    emailPlaceholder: "name@email.com"
-    buttonText: "Check My Eligibility"
-    disclaimer: "By validating, you authorize secure operations contact loops. Read our global open science"
+  pageTitle: "Join BioPortal | Advance Precision Medicine"
+  whyJoinTitle: "Why Your Presence Matters"
+  howItWorksTitle: "Your Contribution Pathway"
+  actionCard:
+    title: "Ready to Leave a Legacy?"
+    description: "By joining BioPortal, you help build a healthcare future that truly represents and protects your family, background, and community."
+    buttonText: "Begin eConsent Process"
+    disclaimer: "Your privacy is our absolute priority. Data is heavily encrypted, fully de-identified, and securely managed at the Jewish General Hospital."
     privacyLinkText: "Privacy Policy"

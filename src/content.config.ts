@@ -8,10 +8,25 @@ const pages = defineCollection({
     id: z.string(),
 
     // --- SHARED / EXISTING PAGE FIELDS ---
-    hero: z.any().optional(),
-    trustBar: z.any().optional(),
-    steps: z.any().optional(),
-    benefit: z.any().optional(),
+    // Cleaned up from z.any() to strict structures
+    hero: z.object({
+      tagline: z.string().optional(),
+      headline: z.string().optional(),
+      gradientText: z.string().optional(),
+      description: z.string().optional()
+    }).optional(),
+
+    trustBar: z.any().optional(), // Left as any depending on your TrustBar component structure
+
+    steps: z.array(z.object({
+      title: z.string(),
+      desc: z.string()
+    })).optional(),
+
+    benefit: z.object({
+      title: z.string(),
+      desc: z.string()
+    }).optional(),
 
     landingMetrics: z.object({
       participantsLabel: z.string(),
@@ -93,7 +108,6 @@ const pages = defineCollection({
     fallbackImageAlt: z.string().optional(),
 
     // --- DATA REQUEST & RECRUITMENT SPECIFIC ---
-    // 🌟 FIX: Updated to match the new PDF application process structure
     dataRequest: z.object({
       pageTitle: z.string(),
       backText: z.string(),
@@ -116,11 +130,18 @@ const pages = defineCollection({
       })
     }).optional(),
 
+    // 🌟 CLEANED: No more z.any(), strictly expecting the new actionCard schema
     recruitmentData: z.object({
       pageTitle: z.string(),
       whyJoinTitle: z.string(),
       howItWorksTitle: z.string(),
-      formCard: z.any()
+      actionCard: z.object({
+        title: z.string(),
+        description: z.string(),
+        buttonText: z.string(),
+        disclaimer: z.string(),
+        privacyLinkText: z.string()
+      })
     }).optional(),
 
     // --- DATA EXPLORER APP SPECIFIC ---
