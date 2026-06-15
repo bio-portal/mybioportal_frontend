@@ -97,10 +97,11 @@ const pillarIcons = [
             <h3 class="text-2xl font-black text-brand-dark mb-3 tracking-tight">{content.formCard.title}</h3>
             <p class="text-gray-500 mb-8 text-sm leading-relaxed font-medium">{content.formCard.description}</p>
 
-            <a href="https://example-econsent-form-url.com" target="_blank" rel="noopener noreferrer" class="group/action w-full py-4 rounded-xl bg-brand-green-bright text-white font-bold text-sm tracking-widest uppercase shadow-lg shadow-brand-green-bright/20 flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 hover:brightness-110">
-              <span>{content.formCard.buttonText}</span>
-              <svg class="arrow-thrust w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
-            </a>
+            {/* DISABLED STATE: eConsent Coming Soon */}
+            <div class="w-full py-4 rounded-xl bg-gray-100 text-gray-400 font-bold text-sm tracking-widest uppercase border border-gray-200 flex items-center justify-center gap-3 cursor-not-allowed select-none">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+  <span>{content.formCard.buttonText}</span>
+            </div>
 
             <p class="mt-8 text-[11px] text-gray-400 text-center lg:text-left leading-relaxed font-medium">
               {content.formCard.disclaimer} <a href={`${baseUrl}${langPrefix}/privacy/`} class="text-brand-green-bright underline hover:text-brand-dark transition-colors font-bold">{content.formCard.privacyLinkText}</a>.

@@ -27,7 +27,7 @@ recruitmentData:
 
   formCard:
     title: "Ready to Leave a Legacy?"
-    description: "By joining BioPortal, you help build a healthcare future that truly represents and protects your community."
-    buttonText: "Begin eConsent Process"
+    description: "Our secure digital consent platform is launching shortly. Check back soon to join BioPortal and help build a healthcare future that truly represents your community."
+    buttonText: "eConsent Available Soon"
     disclaimer: "Your privacy is our absolute priority. Data is heavily encrypted, fully de-identified, and securely managed at the Jewish General Hospital."
     privacyLinkText: "Privacy Policy"
