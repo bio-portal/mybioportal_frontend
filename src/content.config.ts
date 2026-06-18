@@ -60,6 +60,8 @@ const pages = defineCollection({
       subtitle: z.string(),
       privacyLinkText: z.string(),
       privacyLinkHref: z.string(),
+      faqLinkText: z.string().optional(), // Added
+      contactText: z.string().optional(), // Added
       copyright: z.string(),
     }).optional(),
 
@@ -147,7 +149,20 @@ const pages = defineCollection({
         privacyLinkText: z.string()
       })
     }).optional(),
-
+    // --- FAQ PAGE SPECIFIC ---
+    faqData: z.object({
+      pageTitle: z.string(),
+      tagline: z.string(),
+      headline: z.string(),
+      description: z.string(),
+      categories: z.array(z.object({
+        name: z.string(),
+        items: z.array(z.object({
+          q: z.string(),
+          a: z.string()
+        }))
+      }))
+    }).optional(),
     // --- DATA EXPLORER APP SPECIFIC ---
     explorer: z.object({
       pageTitle: z.string(),
@@ -214,3 +229,5 @@ const news = defineCollection({
 });
 
 export const collections = { pages, team, news };
+
+

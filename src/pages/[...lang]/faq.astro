@@ -1,0 +1,59 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } }, // English maps to root (/faq)
+    { params: { lang: 'fr' } }        // French maps to /fr/faq
+  ];
+}
+
+const { lang = 'en' } = Astro.params;
+
+// Fetch data from the new YAML files based on language!
+const pageData = await getEntry('pages', `${lang}/faq`);
+const content = pageData?.data?.faqData;
+---
+<Layout title={content.pageTitle} navType="minimal" lang={lang}>
+  <main class="max-w-7xl mx-auto px-6 pt-12 pb-24 relative z-10">
+
+    {/* Page Header */}
+    <header class="max-w-3xl mb-20 text-center mx-auto">
+      <span class="text-brand-green-bright font-bold tracking-widest uppercase text-xs mb-4 block">{content.tagline}</span>
+      <h1 class="text-4xl lg:text-6xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-6">
+        {content.headline}
+      </h1>
+      <p class="text-lg lg:text-xl text-gray-500 leading-relaxed font-medium">{content.description}</p>
+    </header>
+
+    {/* FAQ Categories & Accordions */}
+    <div class="max-w-4xl mx-auto space-y-16">
+      {content.categories.map((category: any) => (
+        <section>
+          <h2 class="text-2xl font-extrabold text-brand-dark mb-6 tracking-tight border-b border-gray-100 pb-4">{category.name}</h2>
+
+          <div class="space-y-4">
+            {category.items.map((item: any) => (
+              <details class="group bg-white rounded-2xl shadow-soft border border-gray-100 overflow-hidden [&_summary::-webkit-details-marker]:hidden">
+                <summary class="flex items-center justify-between p-6 lg:p-8 cursor-pointer outline-none hover:bg-gray-50 transition-colors">
+                  <h3 class="font-bold text-gray-900 text-lg pr-4 group-hover:text-brand-blue-deep transition-colors">{item.q}</h3>
+                  <span class="shrink-0 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 group-open:bg-brand-blue-deep group-open:text-white transition-colors duration-300">
+                    <svg class="w-4 h-4 transition-transform duration-300 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </span>
+                </summary>
+                <div class="px-6 pb-6 lg:px-8 lg:pb-8 text-gray-600 leading-relaxed font-medium">
+                  {/* set:html renders the <br> and <ul> tags safely inside the string */}
+                  <div set:html={item.a}></div>
+                </div>
+              </details>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+
+  </main>
+</Layout>

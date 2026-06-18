@@ -23,4 +23,6 @@ footer:
   subtitle: "Hôpital général juif et Université McGill"
   privacyLinkText: "Politique de confidentialité et mesures de protection des données"
   privacyLinkHref: "/privacy"
-  copyright: "© 2026 CIUSSS"
+  faqLinkText: "Foire aux questions"
+  contactText: "Nous joindre"
+  copyright: "© 2026 CIUSSS du Centre-Ouest-de-l’Île-de-Montréal"

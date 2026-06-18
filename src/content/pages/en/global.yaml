@@ -23,4 +23,6 @@ footer:
   subtitle: "Jewish General Hospital & McGill University"
   privacyLinkText: "Privacy Policy & Data Safeguards"
   privacyLinkHref: "/privacy"
-  copyright: "© 2026 CIUSSS"
+  copyright: "© 2026 CIUSSS West-Central Montreal"
+  faqLinkText: "FAQ"
+  contactText: "Contact Us"
