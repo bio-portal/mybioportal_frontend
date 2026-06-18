@@ -31,26 +31,25 @@ const langPrefix = lang === 'en' ? '' : '/fr';
       </a>
     </div>
 
-    {/* Footer Navigation Links */}
-    <div class="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 mb-12">
+   {/* Footer Navigation Links */}
+    <div class="flex flex-col items-center gap-5 mb-12 w-full text-center">
+
       <a href={`${baseUrl}${langPrefix}${footerData.privacyLinkHref}`} class="text-sm font-medium text-gray-400 hover:text-white transition-colors">
         {footerData.privacyLinkText}
       </a>
-
-      <span class="text-white/20 hidden sm:inline">•</span>
 
       <a href={`${baseUrl}${langPrefix}/faq/`} class="text-sm font-medium text-gray-400 hover:text-white transition-colors">
         {footerData.faqLinkText}
       </a>
 
-      <span class="text-white/20 hidden sm:inline">•</span>
-
-      {/* 🌟 Direct Email Link */}
-      <a href="mailto:access.bioportal@ladydavis.ca" class="text-sm font-medium text-gray-400 hover:text-white transition-colors flex items-center gap-2 group">
+      {/* Added a tiny bit of top margin (mt-2) to slightly separate the contact from the pages */}
+      <a href="mailto:access.bioportal@ladydavis.ca" class="text-sm font-medium text-gray-400 hover:text-white transition-colors flex items-center gap-2 group mt-2">
         <svg class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
         {footerData.contactText} (access.bioportal@ladydavis.ca)
       </a>
+
     </div>
+
 
     <div class="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold">
       {footerData.copyright}
