@@ -47,7 +47,7 @@ dataRequest:
   explorerCard:
     tag: "Interactive Platform"
     title: "Live Data Explorer"
-    description: "Visualize real-time clinical cohorts, demographic distributions, and sample metrics immediately through our zero-latency gateway. Filter and export aggregates on the fly."
+    description: "Visualize real-time clinical cohorts, demographic distributions, and sample metrics immediately through our gateway. Filter and export aggregates on the fly."
     buttonText: "Launch Explorer"
   applicationProcess:
     title: "Application Process"

@@ -65,8 +65,8 @@ const DICTIONARY_FR: Record<string, string> = {
   "Amputation History": "Historique d'amputation",
   "has_Diabetic_foot_ulcer": "Ulcères du pied",
   "Foot Ulcers": "Ulcères du pied",
-  "sample_intersections": "Intersections des modalités de données",
-  "Data Modality Intersections": "Intersections des modalités de données",
+  "sample_intersections": "Intersections des données",
+  "Data Modality Intersections": "Intersections des données",
 
   // Unit Definitions
   "patients": "patients",

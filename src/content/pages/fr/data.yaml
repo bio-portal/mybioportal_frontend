@@ -47,7 +47,7 @@ dataRequest:
   explorerCard:
     tag: "Plateforme interactive"
     title: "Explorateur de données en direct"
-    description: "Visualisez en temps réel les cohortes cliniques, les distributions démographiques et les métriques d'échantillons grâce à notre passerelle sans latence. Filtrez et exportez des agrégats à la volée."
+    description: "Visualisez en temps réel les cohortes cliniques, les distributions démographiques et les métriques d'échantillons grâce à notre passerelle. Filtrez et exportez des agrégats à la volée."
     buttonText: "Lancer l'explorateur"
   applicationProcess:
     title: "Processus de demande"
