@@ -36,7 +36,7 @@ const backToNewsText = newsPageData?.data?.backToNewsText || (lang === 'fr' ? 'R
 ---
 <Layout
   title={`${post.data.title} | BioPortal Insights`}
-  navType="minimal"
+
   backLink="/news/"  /* 🌟 PATH FIX: Navbar already injects base URL and language prefixes automatically */
   backText={backToNewsText}
   lang={lang}

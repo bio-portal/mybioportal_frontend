@@ -15,7 +15,7 @@ const { lang = 'en' } = Astro.params;
 const pageData = await getEntry('pages', `${lang}/faq`);
 const content = pageData?.data?.faqData;
 ---
-<Layout title={content.pageTitle} navType="minimal" lang={lang}>
+<Layout title={content.pageTitle} lang={lang}>
   <main class="max-w-7xl mx-auto px-6 pt-12 pb-24 relative z-10">
 
     {/* Page Header */}

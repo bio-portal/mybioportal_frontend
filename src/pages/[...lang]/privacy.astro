@@ -18,7 +18,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pageData = await getEntry('pages', `${lang}/privacy`);
 const { tagline, headline, description, safeguardsTitle, safeguards, footerBox } = pageData.data;
 ---
-<Layout title={`${headline} | BioPortal`} navType="minimal" lang={lang}>
+<Layout title={`${headline} | BioPortal`} lang={lang}>
   <div class="fixed top-0 inset-x-0 h-[500px] bg-gradient-to-br from-brand-blue-deep/5 via-brand-teal/5 to-transparent -z-10"></div>
 
   <main class="max-w-3xl mx-auto px-6 py-12 lg:py-16">
