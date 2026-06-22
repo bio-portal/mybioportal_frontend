@@ -3,7 +3,6 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const {
   type = 'main',
-  ctaMode = 'visible',
   backLink = '/',
   backText = 'Back',
   navData,
@@ -20,7 +19,17 @@ const relativePath = currentPathname.startsWith(baseUrl)
 
 const cleanRootPath = relativePath.replace(/^\/fr(\/|$)/, '/');
 
-// Calculate absolute target destinations for both buttons
+// 🌟 AUTO-DETECT ROUTE LOGIC
+const isHome = cleanRootPath === '/' || cleanRootPath === '';
+const isParticipants = cleanRootPath.startsWith('/participants');
+const isResearchers = cleanRootPath.startsWith('/researchers');
+
+// 🌟 DYNAMIC CTA VISIBILITY RULES
+const autoCtaMode = isHome ? 'scroll' : 'visible';
+const showPrimary = !isParticipants; // Hides "Join Study" on the Participants page
+const showSecondary = !isResearchers; // Hides "Access Data" on the Researchers page
+
+// Calculate absolute target destinations for language toggles
 const enUrl = `${baseUrl}${cleanRootPath}`.replace(/\/+/g, '/');
 const frUrl = `${baseUrl}/fr${cleanRootPath === '/' ? '' : cleanRootPath}`.replace(/\/+/g, '/');
 
@@ -29,7 +38,7 @@ const buildUrl = (...parts: (string | undefined)[]) => {
   return parts.filter(Boolean).join('/').replace(/\/+/g, '/');
 };
 ---
-<nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300" data-cta-mode={ctaMode}>
+<nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300" data-cta-mode={autoCtaMode}>
   <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
 
     <a href={buildUrl(baseUrl, langPrefix, '/')} class="flex items-center shrink-0 z-50 h-fit max-h-16 py-2 outline-none">
@@ -43,13 +52,18 @@ const buildUrl = (...parts: (string | undefined)[]) => {
 
     {type === 'main' ? (
       <>
-        <div id="nav-cta-group" class={`absolute left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-4 transition-all duration-500 ease-out ${ctaMode === 'scroll' ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}>
-          <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.primary?.href)} class="px-5 py-2 rounded-full border-2 border-brand-green-bright text-brand-green-bright text-xs font-bold hover:bg-brand-green-bright hover:text-white transition-all bg-white">
-            {navData?.ctaButtons?.primary?.label}
-          </a>
-          <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.secondary?.href)} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white">
-            {navData?.ctaButtons?.secondary?.label}
-          </a>
+        {/* DESKTOP CENTER BUTTONS */}
+        <div id="nav-cta-group" class={`absolute left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-4 transition-all duration-500 ease-out ${autoCtaMode === 'scroll' ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}>
+          {showPrimary && (
+            <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.primary?.href)} class="px-5 py-2 rounded-full border-2 border-brand-green-bright text-brand-green-bright text-xs font-bold hover:bg-brand-green-bright hover:text-white transition-all bg-white shadow-sm">
+              {navData?.ctaButtons?.primary?.label}
+            </a>
+          )}
+          {showSecondary && (
+            <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.secondary?.href)} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white shadow-sm">
+              {navData?.ctaButtons?.secondary?.label}
+            </a>
+          )}
         </div>
 
         <div class="hidden lg:flex items-center space-x-8 font-medium text-sm ml-auto">
@@ -84,9 +98,15 @@ const buildUrl = (...parts: (string | undefined)[]) => {
           </div>
 
           <hr class="border-gray-100" />
+
+          {/* MOBILE BUTTONS */}
           <div class="flex flex-col gap-3">
-            <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.primary?.href)} class="w-full text-center py-4 rounded-xl bg-brand-green-bright text-white font-bold shadow-md shadow-brand-green-bright/20">{navData?.ctaButtons?.primary?.label}</a>
-            <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.secondary?.href)} class="w-full text-center py-4 rounded-xl bg-brand-blue-deep text-white font-bold shadow-md shadow-brand-blue-deep/20">{navData?.ctaButtons?.secondary?.label}</a>
+            {showPrimary && (
+              <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.primary?.href)} class="w-full text-center py-4 rounded-xl bg-brand-green-bright text-white font-bold shadow-md shadow-brand-green-bright/20">{navData?.ctaButtons?.primary?.label}</a>
+            )}
+            {showSecondary && (
+              <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.secondary?.href)} class="w-full text-center py-4 rounded-xl bg-brand-blue-deep text-white font-bold shadow-md shadow-brand-blue-deep/20">{navData?.ctaButtons?.secondary?.label}</a>
+            )}
           </div>
         </div>
       </>
