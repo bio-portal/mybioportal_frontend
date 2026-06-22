@@ -22,7 +22,7 @@ const cleanRootPath = relativePath.replace(/^\/fr(\/|$)/, '/');
 // 🌟 AUTO-DETECT ROUTE LOGIC
 const isHome = cleanRootPath === '/' || cleanRootPath === '';
 const isParticipants = cleanRootPath.startsWith('/participants');
-const isResearchers = cleanRootPath.startsWith('/researchers');
+const isResearchers = cleanRootPath.startsWith('/data');
 
 // 🌟 DYNAMIC CTA VISIBILITY RULES
 const autoCtaMode = isHome ? 'scroll' : 'visible';
