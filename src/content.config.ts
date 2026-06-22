@@ -34,10 +34,10 @@ const pages = defineCollection({
       proteomicsLabel: z.string(),
       biosamplesLabel: z.string(),
       fallbackValues: z.object({
-        participants: z.string(),
+        participants: z.string().optional(),
         clinicalVariables: z.string(),
-        proteomics: z.string(),
-        biosamples: z.string()
+        proteomics: z.string().optional(),
+        biosamples: z.string().optional()
       })
     }).optional(),
 
