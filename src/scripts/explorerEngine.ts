@@ -3,49 +3,77 @@ import { TreemapController, TreemapElement } from 'chartjs-chart-treemap';
 import { VennDiagramController, ArcSlice } from 'chartjs-chart-venn';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-
 // ==========================================
 // LOCALIZATION ENGINE (QUEBEC-COMPLIANT)
 // ==========================================
 
 const LANG = document.documentElement.lang || 'en';
 
+// Dual-mapping dictionary matching both raw chart_ids and YAML display names
 const DICTIONARY_FR: Record<string, string> = {
+  // 📊 CHART HEADERS & ID IDENTIFIERS
   "age": "Groupe d'âge",
+  "Age Group": "Groupe d'âge",
   "sex": "Sexe à la naissance",
+  "Sex at Birth": "Sexe à la naissance",
   "Ethnicity": "Ancestralité",
+  "Ancestry": "Ancestralité",
   "deceased_status": "Statut vital",
+  "Vital Status": "Statut vital",
   "consent_location": "Site de recrutement",
+  "Recruitment Site": "Site de recrutement",
   "diabetes_type": "Sous-type de diabète",
+  "Diabetes Subtype": "Sous-type de diabète",
   "demo_smoking": "Statut de tabagisme",
+  "Smoking Status": "Statut de tabagisme",
   "has_Kidney_Disease": "Maladie rénale (Néphropathie)",
+  "Kidney Disease (Nephropathy)": "Maladie rénale (Néphropathie)",
   "has_Coronary_Artery_Disease": "Maladie coronarienne",
+  "Coronary Artery Disease": "Maladie coronarienne",
   "has_Congestive_Heart_Failure": "Insuffisance cardiaque",
+  "Heart Failure": "Insuffisance cardiaque",
   "has_Stroke": "Historique d'AVC",
+  "Stroke History": "Historique d'AVC",
   "cancer_types": "Distribution des cancers",
+  "Cancer Distribution": "Distribution des cancers",
   "Body Mass Index": "IMC",
+  "BMI": "IMC",
   "Systolic Blood Pressure": "PA (Systolique)",
+  "BP (Systolic)": "PA (Systolique)",
   "Diastolic Blood Pressure": "PA (Diastolique)",
+  "BP (Diastolic)": "PA (Diastolique)",
   "Skeletal Muscle Mass Measurement": "Masse musculaire (KG)",
+  "Muscle Mass (KG)": "Masse musculaire (KG)",
   "Body Fat Percentage": "Graisse corporelle %",
+  "Body Fat %": "Graisse corporelle %",
   "n_proteomics": "Protéomique disponible",
+  "Proteomics Available": "Protéomique disponible",
   "has_Retinopathy": "Rétinopathie (Toute)",
+  "Retinopathy (Any)": "Rétinopathie (Toute)",
   "eyeart_severity": "Score de sévérité EyeArt",
+  "EyeArt Severity Score": "Score de sévérité EyeArt",
   "has_DME": "Œdème maculaire (OMD)",
+  "Macular Edema (DME)": "Œdème maculaire (OMD)",
   "cfs_score": "Échelle de fragilité (CFS)",
+  "Frailty Scale (CFS)": "Échelle de fragilité (CFS)",
   "sample_type": "Disponibilité des échantillons",
+  "Sample Availability": "Disponibilité des échantillons",
   "has_Neuropathy": "Neuropathie",
   "has_Peripheral_Vascular_Disease": "Maladie vasculaire périphérique",
+  "Peripheral Vascular Disease": "Maladie vasculaire périphérique",
   "has_Amputation": "Historique d'amputation",
+  "Amputation History": "Historique d'amputation",
   "has_Diabetic_foot_ulcer": "Ulcères du pied",
+  "Foot Ulcers": "Ulcères du pied",
   "sample_intersections": "Intersections des modalités de données",
+  "Data Modality Intersections": "Intersections des modalités de données",
 
   // Unit Definitions
   "patients": "patients",
   "diagnoses": "diagnostics",
   "samples": "échantillons",
 
-  //  DATA CATEGORY FIELDS
+  // 🧪 DATA CATEGORY FIELDS
   "MALE": "Homme",
   "FEMALE": "Femme",
   "Alive": "Vivant",
@@ -66,14 +94,22 @@ const DICTIONARY_FR: Record<string, string> = {
   "No": "Non",
   "Yes": "Oui",
   "Never Smoker": "Jamais fumé",
-  "Former Smoker": "Ancien fumeur",
+  "Former Smoker": "Ancien fumer",
   "Current Smoker": "Fumeur actuel",
+  "European": "Européen",
+  "African": "Africain",
+  "South Asian": "Sud-Asiatique",
+  "Middle Eastern": "Moyen-Orient",
+  "Southeast Asian": "Asiatique du Sud-Est",
+  "Hispanic or Latin American": "Hispanique ou Latino-Américain",
+  "Hispanic Or Latin American": "Hispanique ou Latino-Américain",
+  "East Asian": "Asiatique de l'Est",
+  "Native American": "Autochtone",
   "Underweight (<18.5)": "Insuffisance pondérale (<18,5)",
   "Healthy (18.5-24.9)": "Poids santé (18,5-24,9)",
   "Overweight (25.0-29.9)": "Surpoids (25,0-29,9)",
   "Obesity Class 1 (30.0-34.9)": "Obésité de classe 1 (30,0-34,9)",
   "Obesity Class 2 (35.0-39.9)": "Obésité de classe 2 (35,0-39,9)",
-  "Obesity Class 3 (40.0+ Mauve)": "Obésité de classe 3 (40,0+)",
   "Obesity Class 3 (40.0+)": "Obésité de classe 3 (40,0+)",
   "Normal (<120)": "Normale (<120)",
   "Elevated (120-129)": "Élevée (120-129)",
@@ -102,6 +138,7 @@ const DICTIONARY_FR: Record<string, string> = {
   "Urine": "Urine",
   "Single": "Unique",
   "Both": "Les deux",
+  "No Modalities": "Aucune modalité",
   "Unknown": "Inconnu",
   "Ungradable": "Inclassable",
 
@@ -116,12 +153,8 @@ function t(key: string): string {
   return DICTIONARY_FR[key] || key;
 }
 
-
 // Register standard elements alongside Treemap, Venn, and DataLabels modules
 Chart.register(...registerables, TreemapController, TreemapElement, VennDiagramController, ArcSlice, ChartDataLabels);
-
-
-
 
 // ==========================================
 // TYPES & CONFIGURATION
@@ -281,7 +314,6 @@ const ChartFactory = {
     this.instances = {};
   },
 
-  // 🌟 ARCHITECTURE FIX: Parse data once, return parsed array AND the true numerical total for O(1) tooltips
   parseData(data: CategoryCount[], isTreemap: boolean, isPie: boolean) {
     let totalCount = 0;
     let trueTotal = 0;
@@ -323,7 +355,7 @@ const ChartFactory = {
 
     const { parsed: data, trueTotal } = this.parseData(rawData, isTreemap, isPie);
 
-    // 🌟 PRESENTATION BOUNDARY: Translate visual labels vector on the fly
+    // 🌟 PRESENTATION BOUNDARY INTERCEPTION: Localize the chart categories vector dynamically
     const labels = data.map(d => t(d.category));
     const bgColors = data.map((_, i) => ThemeManager.getColor(i));
 
@@ -369,7 +401,7 @@ const ChartFactory = {
         if (!String(item.count).startsWith('<')) trueTotal += parseInt(String(item.count), 10) || 0;
 
         return {
-          label: item.category,
+          label: t(item.category), // Presentation translation
           name: item.category,
           sets: sets,
           value: isNaN(inclusiveVal) ? 0 : inclusiveVal,
@@ -384,7 +416,7 @@ const ChartFactory = {
     return {
       type: 'venn' as any,
       data: {
-        labels: vennData.map(d => d.category),
+        labels: vennData.map(d => t(d.category)),
         datasets: [{
           data: vennData,
           customData: vennData,
@@ -400,7 +432,6 @@ const ChartFactory = {
       },
       options: {
         ...sharedOptions,
-        // 🌟 FIX: Generous internal padding forces the circles to scale down, leaving a safe ring of whitespace for the outer text
         layout: {
           padding: { top: 20, bottom: 20, left: 35, right: 35 }
         },
@@ -419,7 +450,7 @@ const ChartFactory = {
                 const rawItem = dataset.customData[index];
 
                 if (rawItem && typeof rawItem.displayVal === 'string' && rawItem.displayVal.startsWith('<')) {
-                    return '<10';
+                    return `<${CONFIG.MASK_VALUE}`;
                 }
                 return value;
               }
@@ -435,7 +466,6 @@ const ChartFactory = {
       }
     };
   },
-
 
   getTreemapConfig(meta: VariableMeta, data: any[], bgColors: string[], trueTotal: number): ChartConfiguration {
     const sharedOptions = this.getSharedOptions(meta);
@@ -475,7 +505,7 @@ const ChartFactory = {
                const rawItem = liveCustomData.find((d: any) => String(d.category) === String(cat));
                const displayCount = rawItem ? rawItem.displayVal : '';
 
-               // 🌟 LOCALIZED BOUNDS CHECK
+               // 🌟 LOCALIZED WRAPPING ADJUSTMENTS
                const lines = TextEngine.getBalancedLines(t(cat), displayCount);
                if (!lines.length) return { size: 11, weight: '700', family: "'Outfit', sans-serif" };
 
@@ -485,6 +515,7 @@ const ChartFactory = {
 
                let calculatedSize = Math.min(sizeByWidth, sizeByHeight);
                calculatedSize = Math.max(9, Math.min(14, calculatedSize));
+
                return { size: calculatedSize, weight: '700', family: "'Outfit', sans-serif" };
             },
             formatter: (ctx: any) => {
@@ -619,19 +650,15 @@ const ChartFactory = {
     };
   },
 
-  // 🌟 ARCHITECTURE FIX: Shared options stripped to purely universal event bounds and generic tooltip behavior
   getSharedOptions(meta: VariableMeta): any {
     return {
       responsive: true,
       maintainAspectRatio: false,
-      animation: { duration: 600, easing: 'easeOutQuart' },
-
       onHover: (event: any, elements: any[]) => {
         if (event.native && event.native.target) {
           event.native.target.style.cursor = elements.length ? 'pointer' : 'default';
         }
       },
-
       onClick: (event: any, elements: any[]) => {
         if (!elements.length) return;
         const targetIndex = elements[0].index;
@@ -644,7 +671,7 @@ const ChartFactory = {
         } else if (type === 'venn') {
            selectedCategory = (chart.data.datasets[0] as any).customData[targetIndex]?.category || '';
         } else {
-           // 🌟 SECURITY FIX: Target the raw unmutated dataset tracking array parameter to keep query keys functional
+           // 🌟 SECURITY REWORK: Query standard data maps utilizing the raw unmutated English metadata payload configurations
            selectedCategory = (chart.data.datasets[0] as any).customData?.[targetIndex]?.category || String(chart.data.labels![targetIndex]);
         }
 
@@ -665,16 +692,18 @@ const ChartFactory = {
               let rawCat = '';
               if (type === 'treemap') rawCat = tooltipItems[0].raw?.g || '';
               else if (type === 'venn') rawCat = (tooltipItems[0].dataset as any).customData[tooltipItems[0].dataIndex]?.category;
-              else rawCat = tooltipItems[0].label;
-
-              // 🌟 LOCALIZED HOVER ENTITY
+              else {
+                const dataset = tooltipItems[0].dataset as any;
+                rawCat = dataset.customData?.[tooltipItems[0].dataIndex]?.category || tooltipItems[0].label;
+              }
+              // 🌟 LOCALIZED HOVER LABELS
               return t(rawCat);
             },
             label: (context: any) => {
               const dataset = context.dataset;
               const customData = dataset?.customData || [];
               const trueTotal = dataset.trueTotal || 0;
-              const unit = meta.units === 'patients' ? '' : ` ${t(meta.units)}`; // Localized Units
+              const unit = meta.units === 'patients' ? '' : ` ${t(meta.units)}`;
               const type = context.chart.config.type;
 
               let rawItem;
@@ -690,7 +719,7 @@ const ChartFactory = {
               const displayVal = rawItem.displayVal !== undefined ? rawItem.displayVal : rawItem.numericVal;
 
               if (typeof displayVal === 'string' && displayVal.startsWith('<')) {
-                  return ` ${t('Count:')} ${displayVal}${unit}${t(' (Rare)')}`; // Localized Structural Tooltip Strings
+                  return ` ${t('Count:')} ${displayVal}${unit}${t(' (Rare)')}`;
               }
 
               const percentage = trueTotal > 0 ? ((Number(displayVal) / trueTotal) * 100).toFixed(1) : '0.0';
@@ -769,7 +798,7 @@ const UIManager = {
 
       const titleEl = document.getElementById('view-title');
       if (titleEl) {
-        // 🌟 LOCALIZED WORKSPACE TEXT FIELDS
+        // 🌟 TRANSLATED DESKTOP WORKSPACE CONTEXT STATUS row TEXT HEADER FIELD
         titleEl.innerText = filterKey === 'baseline'
           ? t('Cohort Overview')
           : t(filterKey.replace(/_/g, ' ').replace(/(^|\s)\S/g, l => l.toUpperCase()));
@@ -841,7 +870,7 @@ const UIManager = {
 
           card.dataset.title = meta.display_name.toLowerCase();
 
-          // 🌟 LOCALIZED PRESENTATION CARD MARKUP
+          // 🌟 LOCALIZED PRESENTATION DASHBOARD CARDS INFRASTRUCTURE
           card.innerHTML = `
             <div class="absolute top-0 left-0 w-1.5 h-full bg-brand-blue-deep/20 group-hover:bg-brand-blue-deep transition-colors"></div>
             <div class="flex justify-between items-start mb-3 pl-1">
@@ -898,7 +927,7 @@ const UIManager = {
   updateSizeCounters() {
     const size = DataManager.cohortSizes[this.activeFilter] || "...";
     const displayVal = (typeof size === 'string' && !size.startsWith('<') && size !== '...')
-      ? parseInt(size).toLocaleString() : size.toLocaleString();
+      ? parseInt(size).toLocaleString(LANG === 'fr' ? 'fr-FR' : 'en-US') : size.toLocaleString(LANG === 'fr' ? 'fr-FR' : 'en-US');
 
     const topSize = document.getElementById('top-cohort-size');
     const sideSize = document.getElementById('size-baseline');
@@ -919,7 +948,7 @@ const UIManager = {
       const details = document.createElement('details');
       details.className = "group group\/details border-b border-gray-100 filter-group";
 
-      // 🌟 LOCALIZED SIDEBAR CATEGORY GROUP HEADERS
+      // 🌟 LOCALIZED SIDEBAR ACCORDIONS
       details.innerHTML = `<summary class="flex justify-between items-center w-full font-extrabold text-xs text-gray-600 uppercase tracking-widest cursor-pointer list-none py-4 px-2 hover:text-brand-blue-deep hover:bg-brand-blue-deep/5 transition-all select-none"><span class="searchable-text">${t(meta.display_name)}</span> <span class="transition-transform duration-300 group-open:rotate-180 text-brand-blue-deep">▼</span></summary>`;
 
       const container = document.createElement('div');
@@ -943,7 +972,7 @@ const UIManager = {
             if (typeof dCount === 'string' && !dCount.startsWith('<')) dCount = parseInt(dCount).toLocaleString(LANG === 'fr' ? 'fr-FR' : 'en-US');
             else if (typeof dCount === 'number') dCount = dCount.toLocaleString(LANG === 'fr' ? 'fr-FR' : 'en-US');
 
-            // 🌟 LOCALIZED PRESENTATION ELEMENT
+            // 🌟 LOCALIZED SIDEBAR SELECTION TARGET COMPONENT TRIGGERS
             btn.innerHTML = `<span class="searchable-text">${t(item.category)}</span> <span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-md text-gray-500 font-black">${dCount}</span>`;
             btn.onclick = () => this.applyFilter(finalKey);
             container.appendChild(btn);
@@ -963,7 +992,7 @@ const UIManager = {
       const wrapper = document.createElement('label');
       wrapper.className = "toggle-item flex justify-between items-center py-2.5 px-2 hover:bg-gray-50 rounded-xl cursor-pointer transition-colors";
 
-      // 🌟 LOCALIZED VISIBILITY SELECTION MANAGER TEXT ROW
+      // 🌟 LOCALIZED TOGGLES INTERFACE
       wrapper.innerHTML = `<span class="searchable-text text-[13px] font-semibold text-gray-700 pr-2 leading-tight">${t(meta.display_name)}</span>`;
 
       const sw = document.createElement('div');
