@@ -16,6 +16,10 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pageData = await getEntry('pages', `${lang}/data`);
 
 const hero = pageData?.data?.hero || { tagline: 'Data', headline: 'BioPortal Datasets', description: 'Loading data...' };
+
+// 🌟 EXACT PIPELINE CONFIGURATION
+const TOTAL_CLINICAL_VARIABLES = "158";
+
 const metrics = pageData?.data?.landingMetrics || {
   participantsLabel: "Total Participants",
   clinicalVariablesLabel: "Clinical Variables",
@@ -54,8 +58,10 @@ const content = pageData?.data?.dataRequest || {
       <p class="text-xl text-gray-600 leading-relaxed">{hero.description}</p>
     </header>
 
-    <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 mb-16 items-stretch">
-      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-soft">
+    {/* Metric Cards Section */}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16 items-stretch">
+      {/* 1. Total Cohort */}
+      <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-blue-deep shadow-soft">
           <h3 id="metric-participants" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter h-12 lg:h-14 flex items-center">
             <div class="live-stat-loader flex items-center gap-1.5 pt-1">
               <div class="w-2.5 h-2.5 bg-brand-blue-deep/40 rounded-full animate-pulse"></div>
@@ -67,8 +73,9 @@ const content = pageData?.data?.dataRequest || {
           <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.participantsLabel}</p>
       </div>
 
-      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-teal shadow-soft">
-          <h3 id="metric-variables" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter h-12 lg:h-14 flex items-center">
+      {/* 2. Hardcoded Pipeline Tracking Metric */}
+      <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-teal shadow-soft">
+          <h3 id="metric-variables" data-static-value={TOTAL_CLINICAL_VARIABLES} class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter h-12 lg:h-14 flex items-center">
             <div class="live-stat-loader flex items-center gap-1.5 pt-1">
               <div class="w-2.5 h-2.5 bg-brand-teal/40 rounded-full animate-pulse"></div>
               <div class="w-2.5 h-2.5 bg-brand-teal/60 rounded-full animate-pulse" style="animation-delay: 200ms"></div>
@@ -79,7 +86,8 @@ const content = pageData?.data?.dataRequest || {
           <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.clinicalVariablesLabel}</p>
       </div>
 
-      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-green-bright shadow-soft">
+      {/* 3. Total Proteomics */}
+      <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-green-bright shadow-soft">
           <h3 id="metric-proteomics" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter h-12 lg:h-14 flex items-center">
             <div class="live-stat-loader flex items-center gap-1.5 pt-1">
               <div class="w-2.5 h-2.5 bg-brand-green-bright/40 rounded-full animate-pulse"></div>
@@ -91,7 +99,8 @@ const content = pageData?.data?.dataRequest || {
           <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{metrics.proteomicsLabel}</p>
       </div>
 
-      <div class="lg:col-span-3 bg-white rounded-[2rem] p-8 border-t-4 border-brand-yellow shadow-soft">
+      {/* 4. Venn Diagram Intersections */}
+      <div class="bg-white rounded-[2rem] p-8 border-t-4 border-brand-yellow shadow-soft">
           <h3 id="metric-biosamples" class="text-4xl lg:text-5xl font-black text-brand-dark mb-2 tracking-tighter h-12 lg:h-14 flex items-center">
             <div class="live-stat-loader flex items-center gap-1.5 pt-1">
               <div class="w-2.5 h-2.5 bg-brand-yellow/40 rounded-full animate-pulse"></div>
@@ -104,8 +113,8 @@ const content = pageData?.data?.dataRequest || {
       </div>
     </div>
 
-    <div class="grid lg:grid-cols-12 gap-8 items-stretch">
-
+    {/* Informational Cards Grid */}
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
       <div class="lg:col-span-7 bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-soft h-full flex flex-col">
         <h2 class="text-3xl font-black text-brand-dark mb-4">{content.applicationProcess.title}</h2>
         <p class="text-gray-500 mb-8 leading-relaxed font-medium text-lg">{content.applicationProcess.description}</p>
@@ -138,20 +147,16 @@ const content = pageData?.data?.dataRequest || {
       </div>
 
       <div class="lg:col-span-5 flex flex-col gap-8 h-full">
-
         <div class="relative bg-white rounded-[2.5rem] p-10 border-2 border-transparent shadow-soft flex flex-col group/card transition-colors duration-300 hover:border-brand-blue-deep shrink-0">
           <div class="flex justify-between items-start mb-6">
             <span class="px-3 py-1.5 rounded-lg bg-brand-blue-deep/5 text-brand-blue-deep font-bold text-[10px] uppercase tracking-[0.15em] border border-brand-blue-deep/10">{content.explorerCard.tag}</span>
-
             <div class="relative flex h-3 w-3 mt-1 mr-1">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-teal opacity-60"></span>
               <span class="aurora-dot relative inline-flex rounded-full h-3 w-3 shadow-sm ring-2 ring-white"></span>
             </div>
           </div>
-
           <h2 class="text-3xl font-black tracking-tight text-gray-900 mb-3">{content.explorerCard.title}</h2>
           <p class="text-gray-500 text-sm leading-relaxed font-medium mb-8">{content.explorerCard.description}</p>
-
           <a href={`${baseUrl}${langPrefix}/data/explorer/`} class="group/action w-full py-4 rounded-xl bg-brand-blue-deep text-white text-sm font-bold shadow-lg flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 hover:brightness-110">
             <span class="relative z-10">{content.explorerCard.buttonText}</span>
             <svg class="arrow-thrust relative z-10 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
@@ -165,12 +170,10 @@ const content = pageData?.data?.dataRequest || {
             </span>
             <h2 class="text-2xl font-black text-gray-900 mb-3">{content.actionBlock.title}</h2>
             <p class="text-gray-500 mb-8 text-sm leading-relaxed font-medium">{content.actionBlock.description}</p>
-
             <a href="https://github.com/bio-portal/mybioportal_frontend/blob/main/public/docs/BIO-PORTAL-Data-Access-Form.Feb-23-2026-2.pdf?raw=true" target="_blank" rel="noopener noreferrer" class="group/action w-full py-4 rounded-xl bg-brand-blue-deep text-white font-bold text-sm tracking-wide shadow-lg flex items-center justify-center gap-3 cursor-pointer mb-8 transition-all duration-300 hover:brightness-110">
               <span class="relative z-10">{content.actionBlock.downloadButtonText}</span>
               <svg class="arrow-bounce relative z-10 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
             </a>
-
             <div class="pt-6 border-t border-gray-100">
               <p class="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-1">{content.actionBlock.emailLabel}</p>
               <a href={`mailto:${content.actionBlock.emailAddress}`} class="text-base font-bold text-brand-dark hover:text-brand-blue-deep transition-colors">
@@ -185,16 +188,8 @@ const content = pageData?.data?.dataRequest || {
 </Layout>
 
 <style>
-  /* 1. Aurora Dot Background Animation */
   .aurora-dot {
-    background: linear-gradient(
-      135deg,
-      var(--color-brand-blue-deep),
-      var(--color-brand-teal),
-      var(--color-brand-green-bright),
-      var(--color-brand-yellow),
-      var(--color-brand-orange-deep)
-    );
+    background: linear-gradient(135deg, var(--color-brand-blue-deep), var(--color-brand-teal), var(--color-brand-green-bright), var(--color-brand-yellow), var(--color-brand-orange-deep));
     background-size: 300% 300%;
     animation: auroraSpin 4s ease infinite;
   }
@@ -203,8 +198,6 @@ const content = pageData?.data?.dataRequest || {
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
   }
-
-  /* 2. Downward Bounce Arrow (Download) */
   @keyframes arrowDip {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(4px); }
@@ -212,8 +205,6 @@ const content = pageData?.data?.dataRequest || {
   .group\/action:hover .arrow-bounce {
     animation: arrowDip 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-
-  /* 3. Horizontal Thrust Arrow (Launch) */
   @keyframes arrowThrust {
     0%, 100% { transform: translateX(0); }
     50% { transform: translateX(4px); }
@@ -224,60 +215,77 @@ const content = pageData?.data?.dataRequest || {
 </style>
 
 <script>
-  // API Fetch Logic exactly as it was
   const API_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats";
-  const METADATA_GATEWAY = "https://biobank-api-51100283624.northamerica-northeast1.run.app/GetStats?type=metadata";
 
   async function syncLandingMetrics() {
     try {
-      const [statsRes, metaRes] = await Promise.all([
-        fetch(`${API_GATEWAY}?filter=baseline&_cb=${new Date().getTime()}`),
-        fetch(`${METADATA_GATEWAY}&_cb=${new Date().getTime()}`)
-      ]);
+      // 1. Single API call targeting baseline metrics
+      const statsRes = await fetch(`${API_GATEWAY}?filter=baseline&_cb=${new Date().getTime()}`);
+      if (!statsRes.ok) throw new Error("API Connection Error");
 
-      if (!statsRes.ok || !metaRes.ok) throw new Error("API failed");
+      const summaryStatistics = await statsRes.json();
+      if (!summaryStatistics || summaryStatistics.length === 0) throw new Error("Dataset Empty");
 
-      const statsArray = await statsRes.json();
-      const metaArray = await metaRes.json();
+      // 🌟 HELPER: Safely evaluate mixed interface{} types from Go API
+      const extractCount = (val: any): number => {
+        if (typeof val === 'number') return val;
+        if (typeof val === 'string') return parseInt(val) || 0;
+        return 0;
+      };
 
-      const sexStat = statsArray.find((s: any) => s.chart_id === 'sex');
-      const liveParticipants = sexStat?.data.reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
-      const liveVariables = metaArray.length || 0;
+      // 2. Compute Metrics using the precise backend parameters
+      // Total Patients (Summing up the 'sex' chart data array elements)
+      const sexData = summaryStatistics.find((s: any) => s.chart_id === 'sex' && s.filter_key === 'baseline')?.data || [];
+      const totalPatients = sexData.reduce((sum: number, item: any) => sum + extractCount(item.count), 0);
 
-      const proteomicStat = statsArray.find((s: any) => s.chart_id === 'n_proteomics');
-      const liveProteomics = proteomicStat?.data
-        .filter((d: any) => d.category !== 'No')
-        .reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
+      // Total Proteomics (Grabbing the "Yes" metrics)
+      const proteomicsData = summaryStatistics.find((s: any) => s.chart_id === 'n_proteomics' && s.filter_key === 'baseline')?.data || [];
+      const proteomicMatch = proteomicsData.find((item: any) => item.category.includes('Yes'));
+      const totalProteomics = proteomicMatch ? extractCount(proteomicMatch.count) : 0;
 
-      const sampleStat = statsArray.find((s: any) => s.chart_id === 'sample_type');
-      const liveBiosamples = sampleStat?.data
-        .filter((d: any) => d.category !== 'None')
-        .reduce((acc: number, curr: any) => acc + (parseInt(curr.count) || 0), 0) || 0;
+      // Matched Biosamples (Summing up the 'sample_intersections' matrix array)
+      const vennData = summaryStatistics.find((s: any) => s.chart_id === 'sample_intersections' && s.filter_key === 'baseline')?.data || [];
+      const totalBiosamples = vennData.reduce((sum: number, item: any) => sum + extractCount(item.count), 0);
 
+      // 3. Extract the Hardcoded Variable Value from the DOM configuration attribute
+      const variablesEl = document.getElementById('metric-variables');
+      const staticVariables = variablesEl?.dataset.staticValue || "158";
+
+      // 4. Internationalization formatting configuration
       const docLang = document.documentElement.lang || 'en';
       const targetLocale = docLang === 'fr' ? 'fr-FR' : 'en-US';
+      const formatNum = (val: number) => val.toLocaleString(targetLocale);
 
-      const updateDom = (id: string, value: number) => {
+      // 5. Atomic State Modifier function
+      const updateDom = (id: string, displayValue: string) => {
         const container = document.getElementById(`metric-${id}`);
-        if (container && value > 0) {
+        if (container) {
           const loader = container.querySelector('.live-stat-loader') as HTMLElement;
           const valueText = container.querySelector('.live-stat-value') as HTMLElement;
           if (loader) loader.style.display = 'none';
           if (valueText) {
-            valueText.innerHTML = value.toLocaleString(targetLocale);
+            valueText.innerHTML = displayValue;
             valueText.style.display = 'inline';
             valueText.classList.remove('hidden');
           }
         }
       };
 
-      updateDom('participants', liveParticipants);
-      updateDom('variables', liveVariables);
-      updateDom('proteomics', liveProteomics);
-      updateDom('biosamples', liveBiosamples);
+      // 🌟 ALL OR NOTHING COMPLIANCE GUARD:
+      // Only swap visual assets if numbers were accurately parsed.
+      if (totalPatients > 0 && totalBiosamples > 0) {
+        updateDom('participants', formatNum(totalPatients));
+        updateDom('variables', staticVariables);
+        updateDom('proteomics', formatNum(totalProteomics));
+        updateDom('biosamples', formatNum(totalBiosamples));
+      } else {
+        throw new Error("Data bounds calculation failed");
+      }
 
     } catch (err) {
-      console.warn("API metrics synchronization skipped, showing static defaults.");
+      console.warn("Metrics synchronization failed. Falling back to static values.");
+
+      // Clear all animations gracefully and drop down fallback markers simultaneously
       document.querySelectorAll('.live-stat-loader').forEach(l => (l as HTMLElement).style.display = 'none');
       document.querySelectorAll('.live-stat-value').forEach(v => {
         (v as HTMLElement).style.display = 'inline';
