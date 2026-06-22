@@ -3,8 +3,125 @@ import { TreemapController, TreemapElement } from 'chartjs-chart-treemap';
 import { VennDiagramController, ArcSlice } from 'chartjs-chart-venn';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
+
+// ==========================================
+// LOCALIZATION ENGINE (QUEBEC-COMPLIANT)
+// ==========================================
+
+const LANG = document.documentElement.lang || 'en';
+
+const DICTIONARY_FR: Record<string, string> = {
+  "age": "Groupe d'âge",
+  "sex": "Sexe à la naissance",
+  "Ethnicity": "Ancestralité",
+  "deceased_status": "Statut vital",
+  "consent_location": "Site de recrutement",
+  "diabetes_type": "Sous-type de diabète",
+  "demo_smoking": "Statut de tabagisme",
+  "has_Kidney_Disease": "Maladie rénale (Néphropathie)",
+  "has_Coronary_Artery_Disease": "Maladie coronarienne",
+  "has_Congestive_Heart_Failure": "Insuffisance cardiaque",
+  "has_Stroke": "Historique d'AVC",
+  "cancer_types": "Distribution des cancers",
+  "Body Mass Index": "IMC",
+  "Systolic Blood Pressure": "PA (Systolique)",
+  "Diastolic Blood Pressure": "PA (Diastolique)",
+  "Skeletal Muscle Mass Measurement": "Masse musculaire (KG)",
+  "Body Fat Percentage": "Graisse corporelle %",
+  "n_proteomics": "Protéomique disponible",
+  "has_Retinopathy": "Rétinopathie (Toute)",
+  "eyeart_severity": "Score de sévérité EyeArt",
+  "has_DME": "Œdème maculaire (OMD)",
+  "cfs_score": "Échelle de fragilité (CFS)",
+  "sample_type": "Disponibilité des échantillons",
+  "has_Neuropathy": "Neuropathie",
+  "has_Peripheral_Vascular_Disease": "Maladie vasculaire périphérique",
+  "has_Amputation": "Historique d'amputation",
+  "has_Diabetic_foot_ulcer": "Ulcères du pied",
+  "sample_intersections": "Intersections des modalités de données",
+
+  // Unit Definitions
+  "patients": "patients",
+  "diagnoses": "diagnostics",
+  "samples": "échantillons",
+
+  //  DATA CATEGORY FIELDS
+  "MALE": "Homme",
+  "FEMALE": "Femme",
+  "Alive": "Vivant",
+  "Deceased": "Décédé",
+  "Type 2 Diabetes": "Diabète de type 2",
+  "Type 1 Diabetes": "Diabète de type 1",
+  "No Diabetes": "Pas de diabète",
+  "Gestational": "Gestationnel",
+  "Prediabetes": "Prédiabète",
+  "Endocrinology": "Endocrinologie",
+  "Emergency": "Urgences",
+  "Nephrology": "Néphrologie",
+  "Wards": "Unités d'hospitalisation",
+  "Gestational Diabetes Clinic": "Clinique du diabète gestationnel",
+  "K2 - Inpatient Cardio": "K2 - Cardio hospitalisation",
+  "Cardiology": "Cardiologie",
+  "Diabetic Foot Clinic": "Clinique du pied diabétique",
+  "No": "Non",
+  "Yes": "Oui",
+  "Never Smoker": "Jamais fumé",
+  "Former Smoker": "Ancien fumeur",
+  "Current Smoker": "Fumeur actuel",
+  "Underweight (<18.5)": "Insuffisance pondérale (<18,5)",
+  "Healthy (18.5-24.9)": "Poids santé (18,5-24,9)",
+  "Overweight (25.0-29.9)": "Surpoids (25,0-29,9)",
+  "Obesity Class 1 (30.0-34.9)": "Obésité de classe 1 (30,0-34,9)",
+  "Obesity Class 2 (35.0-39.9)": "Obésité de classe 2 (35,0-39,9)",
+  "Obesity Class 3 (40.0+ Mauve)": "Obésité de classe 3 (40,0+)",
+  "Obesity Class 3 (40.0+)": "Obésité de classe 3 (40,0+)",
+  "Normal (<120)": "Normale (<120)",
+  "Elevated (120-129)": "Élevée (120-129)",
+  "Stage 1 (130-139)": "Stade 1 (130-139)",
+  "Stage 2 (140-159)": "Stade 2 (140-159)",
+  "Crisis (160+)": "Crise hypertensive (160+)",
+  "Normal (<80)": "Normale (<80)",
+  "Stage 1 (80-89)": "Stade 1 (80-89)",
+  "Stage 2 (90-99)": "Stade 2 (90-99)",
+  "Stage 3 (100-119)": "Stade 3 (100-119)",
+  "Crisis (120+)": "Crise hypertensive (120+)",
+  "Very Fit": "Excellente forme",
+  "Well": "En forme",
+  "Managing Well": "Se porte bien",
+  "Vulnerable": "Vulnérable",
+  "Mildly Frail": "Fragilité légère",
+  "Moderately Frail": "Fragilité modérée",
+  "Severely Frail": "Fragilité sévère",
+  "Very Severely Frail": "Fragilité très sévère",
+  "Retinal + Blood + Urine": "Rétinien + Sang + Urine",
+  "Retinal + Blood": "Rétinien + Sang",
+  "Retinal + Urine": "Rétinien + Urine",
+  "Blood + Urine": "Sang + Urine",
+  "Retinal": "Rétinien",
+  "Blood": "Sang",
+  "Urine": "Urine",
+  "Single": "Unique",
+  "Both": "Les deux",
+  "Unknown": "Inconnu",
+  "Ungradable": "Inclassable",
+
+  // Workspace Context Strings
+  "Cohort Overview": "Aperçu de la cohorte",
+  "Count:": "Effectif :",
+  " (Rare)": " (Rare)"
+};
+
+function t(key: string): string {
+  if (LANG !== 'fr') return key;
+  return DICTIONARY_FR[key] || key;
+}
+
+
 // Register standard elements alongside Treemap, Venn, and DataLabels modules
 Chart.register(...registerables, TreemapController, TreemapElement, VennDiagramController, ArcSlice, ChartDataLabels);
+
+
+
 
 // ==========================================
 // TYPES & CONFIGURATION
@@ -205,7 +322,9 @@ const ChartFactory = {
     }
 
     const { parsed: data, trueTotal } = this.parseData(rawData, isTreemap, isPie);
-    const labels = data.map(d => d.category);
+
+    // 🌟 PRESENTATION BOUNDARY: Translate visual labels vector on the fly
+    const labels = data.map(d => t(d.category));
     const bgColors = data.map((_, i) => ThemeManager.getColor(i));
 
     let config: ChartConfiguration;
@@ -356,17 +475,16 @@ const ChartFactory = {
                const rawItem = liveCustomData.find((d: any) => String(d.category) === String(cat));
                const displayCount = rawItem ? rawItem.displayVal : '';
 
-               const lines = TextEngine.getBalancedLines(cat, displayCount);
+               // 🌟 LOCALIZED BOUNDS CHECK
+               const lines = TextEngine.getBalancedLines(t(cat), displayCount);
                if (!lines.length) return { size: 11, weight: '700', family: "'Outfit', sans-serif" };
 
                const maxChars = Math.max(...lines.map(l => l.length));
-
                const sizeByWidth = Math.floor(boxWidth / (maxChars * 0.55));
                const sizeByHeight = Math.floor(boxHeight / (lines.length * 1.35));
 
                let calculatedSize = Math.min(sizeByWidth, sizeByHeight);
                calculatedSize = Math.max(9, Math.min(14, calculatedSize));
-
                return { size: calculatedSize, weight: '700', family: "'Outfit', sans-serif" };
             },
             formatter: (ctx: any) => {
@@ -381,7 +499,8 @@ const ChartFactory = {
               const rawItem = liveCustomData.find((d: any) => String(d.category) === String(cat));
               const displayCount = rawItem ? rawItem.displayVal : '';
 
-              return TextEngine.getBalancedLines(cat, displayCount);
+              // 🌟 LOCALIZED PRESENTATION
+              return TextEngine.getBalancedLines(t(cat), displayCount);
             }
           }
         }] as any
@@ -525,7 +644,8 @@ const ChartFactory = {
         } else if (type === 'venn') {
            selectedCategory = (chart.data.datasets[0] as any).customData[targetIndex]?.category || '';
         } else {
-           selectedCategory = String(chart.data.labels![targetIndex]);
+           // 🌟 SECURITY FIX: Target the raw unmutated dataset tracking array parameter to keep query keys functional
+           selectedCategory = (chart.data.datasets[0] as any).customData?.[targetIndex]?.category || String(chart.data.labels![targetIndex]);
         }
 
         UIManager.handleChartClick(meta.chart_id, selectedCategory);
@@ -542,16 +662,19 @@ const ChartFactory = {
             title: (tooltipItems: any[]) => {
               if (!tooltipItems || !tooltipItems.length) return '';
               const type = tooltipItems[0].chart.config.type;
-              if (type === 'treemap') return tooltipItems[0].raw?.g || '';
-              if (type === 'venn') return (tooltipItems[0].dataset as any).customData[tooltipItems[0].dataIndex]?.category;
-              return tooltipItems[0].label;
+              let rawCat = '';
+              if (type === 'treemap') rawCat = tooltipItems[0].raw?.g || '';
+              else if (type === 'venn') rawCat = (tooltipItems[0].dataset as any).customData[tooltipItems[0].dataIndex]?.category;
+              else rawCat = tooltipItems[0].label;
+
+              // 🌟 LOCALIZED HOVER ENTITY
+              return t(rawCat);
             },
-            // 🌟 ARCHITECTURE FIX: O(1) constant time percentage calculation
             label: (context: any) => {
               const dataset = context.dataset;
               const customData = dataset?.customData || [];
               const trueTotal = dataset.trueTotal || 0;
-              const unit = meta.units === 'patients' ? '' : ` ${meta.units}`;
+              const unit = meta.units === 'patients' ? '' : ` ${t(meta.units)}`; // Localized Units
               const type = context.chart.config.type;
 
               let rawItem;
@@ -567,11 +690,11 @@ const ChartFactory = {
               const displayVal = rawItem.displayVal !== undefined ? rawItem.displayVal : rawItem.numericVal;
 
               if (typeof displayVal === 'string' && displayVal.startsWith('<')) {
-                  return ` Count: ${displayVal}${unit} (Rare)`;
+                  return ` ${t('Count:')} ${displayVal}${unit}${t(' (Rare)')}`; // Localized Structural Tooltip Strings
               }
 
               const percentage = trueTotal > 0 ? ((Number(displayVal) / trueTotal) * 100).toFixed(1) : '0.0';
-              return ` Count: ${displayVal}${unit} (${percentage}%)`;
+              return ` ${t('Count:')} ${Number(displayVal).toLocaleString(LANG === 'fr' ? 'fr-FR' : 'en-US')}${unit} (${percentage}%)`;
             }
           }
         }
@@ -645,7 +768,12 @@ const UIManager = {
       await new Promise(resolve => setTimeout(resolve, CONFIG.FROSTING_DELAY_MS));
 
       const titleEl = document.getElementById('view-title');
-      if (titleEl) titleEl.innerText = filterKey === 'baseline' ? 'Cohort Overview' : filterKey.replace(/_/g, ' ').replace(/(^|\s)\S/g, l => l.toUpperCase());
+      if (titleEl) {
+        // 🌟 LOCALIZED WORKSPACE TEXT FIELDS
+        titleEl.innerText = filterKey === 'baseline'
+          ? t('Cohort Overview')
+          : t(filterKey.replace(/_/g, ' ').replace(/(^|\s)\S/g, l => l.toUpperCase()));
+      }
       this.updateSizeCounters();
       this.updateDashboard();
 
@@ -681,7 +809,7 @@ const UIManager = {
       if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
       if (aIdx !== -1) return -1;
       if (bIdx !== -1) return 1;
-      return a.display_name.localeCompare(b.display_name);
+      return t(a.display_name).localeCompare(t(b.display_name));
     });
 
     sortedMetadata.forEach(meta => {
@@ -702,28 +830,26 @@ const UIManager = {
       const containerHeight = 240;
 
       const canvasHeight = isBar ? Math.max(containerHeight, validData.length * 38) : containerHeight;
-
-      // 🌟 FIX: Dynamic overflow control. Only Bar charts get scrollbars. Everything else is locked.
       const overflowClass = isBar ? 'overflow-x-auto overflow-y-auto custom-scrollbar' : 'overflow-hidden flex items-center justify-center';
 
       let card = document.querySelector(`.chart-card[data-title="${meta.display_name.toLowerCase()}"]`) as HTMLElement;
 
       if (!card) {
           card = document.createElement('div');
-          // 🌟 ARCHITECTURE FIX: Tightened UX dimensions
           card.className = "chart-card glass-card pt-5 pb-4 px-6 flex flex-col group relative overflow-hidden transition-all duration-700 ease-out";
           if (this.isInitialRender) card.classList.add('opacity-0', 'translate-y-3');
 
           card.dataset.title = meta.display_name.toLowerCase();
 
+          // 🌟 LOCALIZED PRESENTATION CARD MARKUP
           card.innerHTML = `
             <div class="absolute top-0 left-0 w-1.5 h-full bg-brand-blue-deep/20 group-hover:bg-brand-blue-deep transition-colors"></div>
             <div class="flex justify-between items-start mb-3 pl-1">
               <div class="pr-2">
-                <h3 class="font-extrabold text-brand-dark text-lg tracking-tight leading-tight group-hover:text-brand-blue-deep transition-colors">${meta.display_name}</h3>
+                <h3 class="font-extrabold text-brand-dark text-lg tracking-tight leading-tight group-hover:text-brand-blue-deep transition-colors">${t(meta.display_name)}</h3>
               </div>
               <div class="flex items-center gap-2 shrink-0">
-                <span class="text-[10px] bg-gray-50 text-gray-400 px-2.5 py-1 rounded-md font-bold uppercase tracking-widest border border-gray-100">${meta.units}</span>
+                <span class="text-[10px] bg-gray-50 text-gray-400 px-2.5 py-1 rounded-md font-bold uppercase tracking-widest border border-gray-100">${t(meta.units)}</span>
                 <button onclick="downloadCardImage('${meta.chart_id}', '${meta.display_name}')" class="p-1 rounded-md text-gray-400 opacity-25 group-hover:opacity-100 hover:text-brand-blue-deep hover:bg-gray-50 transition-all duration-300 cursor-pointer" title="Download Figure">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 </button>
@@ -746,7 +872,6 @@ const UIManager = {
          card.style.display = 'flex';
          const wrapper = card.querySelector('.chart-canvas-wrapper') as HTMLElement;
          if (wrapper) wrapper.style.height = `${canvasHeight}px`;
-         // 🌟 FIX: Ensure the class updates cleanly on pre-existing cards if re-rendered
          const scrollContainer = card.querySelector('.relative.w-full.pl-1') as HTMLElement;
          if (scrollContainer) scrollContainer.className = `relative w-full pl-1 ${overflowClass}`;
 
@@ -763,8 +888,6 @@ const UIManager = {
 
       cardCount++;
     });
-
-
 
     this.isInitialRender = false;
 
@@ -794,8 +917,10 @@ const UIManager = {
       if (!matches.length) return;
 
       const details = document.createElement('details');
-      details.className = "group border-b border-gray-100 filter-group";
-      details.innerHTML = `<summary class="flex justify-between items-center w-full font-extrabold text-xs text-gray-600 uppercase tracking-widest cursor-pointer list-none py-4 px-2 hover:text-brand-blue-deep hover:bg-brand-blue-deep/5 transition-all select-none"><span class="searchable-text">${meta.display_name}</span> <span class="transition-transform duration-300 group-open:rotate-180 text-brand-blue-deep">▼</span></summary>`;
+      details.className = "group group\/details border-b border-gray-100 filter-group";
+
+      // 🌟 LOCALIZED SIDEBAR CATEGORY GROUP HEADERS
+      details.innerHTML = `<summary class="flex justify-between items-center w-full font-extrabold text-xs text-gray-600 uppercase tracking-widest cursor-pointer list-none py-4 px-2 hover:text-brand-blue-deep hover:bg-brand-blue-deep/5 transition-all select-none"><span class="searchable-text">${t(meta.display_name)}</span> <span class="transition-transform duration-300 group-open:rotate-180 text-brand-blue-deep">▼</span></summary>`;
 
       const container = document.createElement('div');
       container.className = "space-y-1.5 pl-3 border-l-[3px] border-gray-100 ml-1.5 mb-4";
@@ -815,10 +940,11 @@ const UIManager = {
             btn.className = "filter-btn w-full text-left px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-[13px] flex justify-between items-center font-medium border border-transparent cursor-pointer";
 
             let dCount = item.count;
-            if (typeof dCount === 'string' && !dCount.startsWith('<')) dCount = parseInt(dCount).toLocaleString();
-            else if (typeof dCount === 'number') dCount = dCount.toLocaleString();
+            if (typeof dCount === 'string' && !dCount.startsWith('<')) dCount = parseInt(dCount).toLocaleString(LANG === 'fr' ? 'fr-FR' : 'en-US');
+            else if (typeof dCount === 'number') dCount = dCount.toLocaleString(LANG === 'fr' ? 'fr-FR' : 'en-US');
 
-            btn.innerHTML = `<span class="searchable-text">${item.category}</span> <span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-md text-gray-500 font-black">${dCount}</span>`;
+            // 🌟 LOCALIZED PRESENTATION ELEMENT
+            btn.innerHTML = `<span class="searchable-text">${t(item.category)}</span> <span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-md text-gray-500 font-black">${dCount}</span>`;
             btn.onclick = () => this.applyFilter(finalKey);
             container.appendChild(btn);
           }
@@ -836,7 +962,9 @@ const UIManager = {
     DataManager.metadata.forEach(meta => {
       const wrapper = document.createElement('label');
       wrapper.className = "toggle-item flex justify-between items-center py-2.5 px-2 hover:bg-gray-50 rounded-xl cursor-pointer transition-colors";
-      wrapper.innerHTML = `<span class="searchable-text text-[13px] font-semibold text-gray-700 pr-2 leading-tight">${meta.display_name}</span>`;
+
+      // 🌟 LOCALIZED VISIBILITY SELECTION MANAGER TEXT ROW
+      wrapper.innerHTML = `<span class="searchable-text text-[13px] font-semibold text-gray-700 pr-2 leading-tight">${t(meta.display_name)}</span>`;
 
       const sw = document.createElement('div');
       sw.className = "apple-switch";

@@ -9,10 +9,7 @@ landingMetrics:
   proteomicsLabel: "Profils protéomiques"
   biosamplesLabel: "Échantillons biologiques"
   fallbackValues:
-    participants: "6,648"
     clinicalVariables: "158"
-    proteomics: "887"
-    biosamples: "2,450"
 
 explorer:
   pageTitle: "Explorateur de données interactif | BioPortal"
