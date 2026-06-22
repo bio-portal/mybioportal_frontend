@@ -14,12 +14,22 @@ const { lang = 'en' } = Astro.params;
 const langPrefix = lang === 'en' ? '' : '/fr';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
+// Fetch both the Participants page data AND the Data page data to reuse the explorer card content
 const pageData = await getEntry('pages', `${lang}/participants`);
 const homeData = await getEntry('pages', `${lang}/home`);
+const dataPageData = await getEntry('pages', `${lang}/data`);
 
 const hero = pageData?.data?.hero;
 const steps = pageData?.data?.steps || [];
 const content = pageData?.data?.recruitmentData;
+
+// Extract the Explorer Card from the data.yaml
+const explorerCard = dataPageData?.data?.dataRequest?.explorerCard || {
+  tag: "Interactive Platform",
+  title: "Live Data Explorer",
+  description: "Visualize real-time clinical cohorts, demographic distributions, and sample metrics immediately.",
+  buttonText: "Launch Explorer"
+};
 
 // SVG Icon mapping for the 3 pillars (Security, Altruism, Value)
 const pillarIcons = [
@@ -83,10 +93,28 @@ const pillarIcons = [
         </div>
       </div>
 
-      <div class="lg:col-span-5 w-full lg:sticky lg:top-28">
+      {/* STICKY COLUMN: Now a flex column to hold both cards */}
+      <div class="lg:col-span-5 w-full lg:sticky lg:top-28 flex flex-col gap-6">
 
-        {/* 🌟 UX FIX: Removed shadow glow, kept only the crisp border outline on hover */}
-<div class="group bg-white rounded-[2.5rem] shadow-soft border-2 border-transparent hover:border-brand-green-bright/50 transition-colors duration-500 p-8 lg:p-10 relative overflow-hidden flex flex-col justify-center min-h-[400px]">
+        {/* 1. DATA EXPLORER LAUNCHER CARD (Green Theme) */}
+        <div class="relative bg-white rounded-[2.5rem] p-10 border-2 border-transparent shadow-soft flex flex-col group/card transition-colors duration-300 hover:border-brand-green-bright shrink-0">
+          <div class="flex justify-between items-start mb-6">
+            <span class="px-3 py-1.5 rounded-lg bg-brand-green-bright/5 text-brand-green-bright font-bold text-[10px] uppercase tracking-[0.15em] border border-brand-green-bright/10">{explorerCard.tag}</span>
+            <div class="relative flex h-3 w-3 mt-1 mr-1">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-green-bright opacity-60"></span>
+              <span class="aurora-dot relative inline-flex rounded-full h-3 w-3 shadow-sm ring-2 ring-white"></span>
+            </div>
+          </div>
+          <h2 class="text-3xl font-black tracking-tight text-gray-900 mb-3">{explorerCard.title}</h2>
+          <p class="text-gray-500 text-sm leading-relaxed font-medium mb-8">{explorerCard.description}</p>
+          <a href={`${baseUrl}${langPrefix}/data/explorer/`} class="group/action w-full py-4 rounded-xl bg-brand-green-bright text-white text-sm font-bold shadow-md shadow-brand-green-bright/20 flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 hover:brightness-110">
+            <span class="relative z-10">{explorerCard.buttonText}</span>
+            <svg class="arrow-thrust relative z-10 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+          </a>
+        </div>
+
+        {/* 2. ECONSENT CARD (Disabled) */}
+        <div class="group bg-white rounded-[2.5rem] shadow-soft border-2 border-transparent hover:border-brand-green-bright/50 transition-colors duration-500 p-8 lg:p-10 relative overflow-hidden flex flex-col justify-center">
           <div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none transition-transform duration-700 group-hover:scale-150"></div>
 
           <div class="relative z-10 text-center lg:text-left">
@@ -99,8 +127,8 @@ const pillarIcons = [
 
             {/* DISABLED STATE: eConsent Coming Soon */}
             <div class="w-full py-4 rounded-xl bg-gray-100 text-gray-400 font-bold text-sm tracking-widest uppercase border border-gray-200 flex items-center justify-center gap-3 cursor-not-allowed select-none">
-  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-  <span>{content.formCard.buttonText}</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <span>{content.formCard.buttonText}</span>
             </div>
 
             <p class="mt-8 text-[11px] text-gray-400 text-center lg:text-left leading-relaxed font-medium">
@@ -108,6 +136,7 @@ const pillarIcons = [
             </p>
           </div>
         </div>
+
       </div>
 
     </div>
@@ -115,6 +144,26 @@ const pillarIcons = [
 </Layout>
 
 <style>
+  /* 1. Aurora Dot Background Animation */
+  .aurora-dot {
+    background: linear-gradient(
+      135deg,
+      var(--color-brand-blue-deep),
+      var(--color-brand-teal),
+      var(--color-brand-green-bright),
+      var(--color-brand-yellow),
+      var(--color-brand-orange-deep)
+    );
+    background-size: 300% 300%;
+    animation: auroraSpin 4s ease infinite;
+  }
+  @keyframes auroraSpin {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* 2. Horizontal Thrust Arrow (Launch) */
   @keyframes arrowThrust {
     0%, 100% { transform: translateX(0); }
     50% { transform: translateX(4px); }
