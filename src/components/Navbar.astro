@@ -22,12 +22,17 @@ const cleanRootPath = relativePath.replace(/^\/fr(\/|$)/, '/');
 // 🌟 AUTO-DETECT ROUTE LOGIC
 const isHome = cleanRootPath === '/' || cleanRootPath === '';
 const isParticipants = cleanRootPath.startsWith('/participants');
-const isResearchers = cleanRootPath.startsWith('/data');
+
+// Explicitly detect the interactive explorer app
+const isExplorer = cleanRootPath.startsWith('/data/explorer');
+
+// Only treat it as the Data landing page if it starts with /data but IS NOT the explorer app
+const isResearchers = cleanRootPath.startsWith('/data') && !isExplorer;
 
 // 🌟 DYNAMIC CTA VISIBILITY RULES
 const autoCtaMode = isHome ? 'scroll' : 'visible';
 const showPrimary = !isParticipants; // Hides "Join Study" on the Participants page
-const showSecondary = !isResearchers; // Hides "Access Data" on the Researchers page
+const showSecondary = !isResearchers; // Hides "Access Data" on the Data landing page, keeps it on Explorer
 
 // Calculate absolute target destinations for language toggles
 const enUrl = `${baseUrl}${cleanRootPath}`.replace(/\/+/g, '/');
