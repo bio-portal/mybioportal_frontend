@@ -20,31 +20,40 @@ const langPrefix = lang === 'en' ? '' : '/fr';
       {footerData.subtitle}
     </p>
 
-    {/* 2. The Navigation Links (Clean, horizontal text row) */}
-    <nav class="flex flex-col sm:flex-row items-center justify-center gap-y-6 gap-x-12 mb-14 w-full">
+    {/* 2. The Navigation Links (Mathematically Centered Grid) */}
+    <nav class="grid grid-cols-1 sm:grid-cols-3 w-full max-w-3xl mx-auto gap-y-6 mb-14 items-center">
 
-      <a href={`${baseUrl}${langPrefix}/faq/`} class="text-sm font-bold text-gray-300 hover:text-white transition-colors tracking-wide">
-        {footerData.faqLinkText}
-      </a>
+      {/* FAQ (Column 1) */}
+      <div class="flex items-center justify-center">
+        <a href={`${baseUrl}${langPrefix}/faq/`} class="text-sm font-bold text-gray-300 hover:text-white transition-colors tracking-wide">
+          {footerData.faqLinkText}
+        </a>
+      </div>
 
-      {/* Visual separator for desktop */}
-      <div class="hidden sm:block w-1.5 h-1.5 rounded-full bg-brand-blue-deep/50"></div>
+      {/* Privacy Policy (Column 2 - Dead Center) */}
+      <div class="relative flex items-center justify-center">
+        {/* Left Visual Dot - Absolutely positioned so it doesn't affect the centering math */}
+        <div class="hidden sm:block absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-brand-blue-deep/50"></div>
 
-      <a href={`${baseUrl}${langPrefix}${footerData.privacyLinkHref}`} class="text-sm font-bold text-gray-300 hover:text-white transition-colors tracking-wide">
-        {footerData.privacyLinkText}
-      </a>
+        <a href={`${baseUrl}${langPrefix}${footerData.privacyLinkHref}`} class="text-sm font-bold text-gray-300 hover:text-white transition-colors tracking-wide">
+          {footerData.privacyLinkText}
+        </a>
 
-      <div class="hidden sm:block w-1.5 h-1.5 rounded-full bg-brand-blue-deep/50"></div>
+        {/* Right Visual Dot */}
+        <div class="hidden sm:block absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-1.5 h-1.5 rounded-full bg-brand-blue-deep/50"></div>
+      </div>
 
-      {/* Contact Link */}
-      <a href="mailto:access.bioportal@ladydavis.ca" class="text-sm font-bold text-gray-300 hover:text-white transition-colors tracking-wide flex items-center gap-2 group">
-        <svg class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity text-brand-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-        {footerData.contactText}
-      </a>
+      {/* Contact Link (Column 3) */}
+      <div class="flex items-center justify-center">
+        <a href="mailto:access.bioportal@ladydavis.ca" class="text-sm font-bold text-gray-300 hover:text-white transition-colors tracking-wide flex items-center gap-2 group">
+          <svg class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity text-brand-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+          {footerData.contactText}
+        </a>
+      </div>
 
     </nav>
 
-    {/* 3. The Social Icons (Subdued but accessible) */}
+    {/* 3. The Social Icons */}
     <div class="flex items-center justify-center gap-4 mb-16">
       <a href="https://x.com/bioportal_hgj" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/5 hover:border-white/30 transition-all duration-300" aria-label="X (Twitter)">
         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
