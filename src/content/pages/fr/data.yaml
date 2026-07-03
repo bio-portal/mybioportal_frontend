@@ -2,7 +2,7 @@ id: "data"
 hero:
   tagline: "Science ouverte et analyse de cohortes"
   headline: "Ensembles de données de population BioPortal"
-  description: "Accédez à des cohortes de recherche au phénotypage approfondi, explorez les distributions d'échantillons multi-omiques et demandez du matériel biologique sécurisé pour des enquêtes scientifiques approuvées."
+  description: "Accédez à des cohortes de recherche au phénotypage approfondi, explorez les distributions d'échantillons multi-omiques et demandez du matériel biologique sécurisé pour des programme de recherche approuvés."
 landingMetrics:
   participantsLabel: "Total des participants"
   clinicalVariablesLabel: "Variables cliniques"
@@ -63,8 +63,8 @@ dataRequest:
       - "Grappe privée IRLD"
       - "AllianceCan"
   actionBlock:
-    title: "Demander l'accès aux données"
-    description: "Téléchargez le formulaire officiel de demande d'accès aux données, obtenez toutes les signatures institutionnelles nécessaires, et soumettez le PDF finalisé à notre équipe administrative."
+    title: "Demande d'accès aux données"
+    description: "Visualisez en temps réel les cohortes cliniques, les distributions démographiques et les mesures d'échantillons grâce à notre portail. Filtrez et exportez des résumés de données rapidement et facilement."
     downloadButtonText: "Télécharger le formulaire (.pdf)"
     emailLabel: "Soumettre les demandes complétées à :"
     emailAddress: "access.bioportal@ladydavis.ca"

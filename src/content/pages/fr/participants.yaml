@@ -2,32 +2,32 @@ id: participants
 hero:
   tagline: "Parcours du participant"
   headline: "Façonnez l'avenir de la médecine."
-  gradientText: "Pour notre avenir."
-  description: "Votre bagage unique aide les scientifiques, à Montréal et partout dans le monde, à découvrir des traitements plus justes et plus sûrs pour toutes les communautés. En partageant un peu de votre temps, vous devenez une partie essentielle de la solution."
+  gradientText: "Pour notre avenir à tous."
+  description: "Votre expérience unique aide les scientifiques, à Montréal et partout dans le monde, à découvrir des traitements plus efficaces et plus sûrs pour tous. En donnant un peu de votre temps, vous devenez une partie essentielle de la solution."
 steps:
   - title: "eConsentement sécurisé"
     desc: "Examinez et signez notre formulaire de consentement numérique transparent, en toute sécurité depuis le confort de votre foyer."
-  - title: "Partager votre profil de santé"
-    desc: "Vos données de santé sécurisées aident les chercheurs à suivre des schémas complexes et à déceler des indicateurs de santé avant leur progression."
+  - title: "Partager votre empreinte santé"
+    desc: "Vos données de santé sécurisées aident les chercheurs à suivre des tendances de santé complexes et à repérer des signes de maladie avant leur progression."
   - title: "Propulser les découvertes"
-    desc: "Les données anonymisées et protégées alimentent la recherche mondiale en science ouverte pour concevoir les soins de demain."
+    desc: "Vos données, anonymisées et protégées, alimenteront la recherche mondiale en science ouverte et façonneront les soins de demain."
 
 recruitmentData:
   pageTitle: "Rejoindre BioPortal | Faire progresser la médecine de précision"
   whyJoinTitle: "Vos questions et votre impact"
-  howItWorksTitle: "Votre parcours de participation"
+  howItWorksTitle: "Votre parcours en tant que participant"
 
   pillars:
-    - title: "1. Sécurité des données de niveau bancaire"
-      desc: "Votre vie privée est non négociable. Toutes vos données biologiques et de santé sont fortement cryptées, dissociées de votre identité et conservées en toute sécurité sur les serveurs protégés de l'Hôpital général juif."
+    - title: "1. Sécurité des données de haut niveau"
+      desc: "Fortement chiffrées, anonymisées et conservées en toute sécurité sur les serveurs sécurisés de l'Hôpital général juif."
     - title: "2. Une médecine qui vous ressemble"
-      desc: "Historiquement, la recherche médicale a souvent ignoré la diversité. En partageant votre empreinte de santé unique, vous contribuez à garantir que les traitements de demain seront sûrs et efficaces pour votre famille et les générations futures."
+      desc: "Historiquement, la recherche médicale a souvent les populations sous-représentées. En partageant votre empreinte santé, vous contribuez à garantir que les traitements de demain seront sûrs et efficaces pour votre famille et les générations futures."
     - title: "3. Des bilans de santé gratuits pour vous"
       desc: "En guise de remerciement, les participants reçoivent une analyse détaillée de leur composition corporelle (muscles, graisse et hydratation). Si vous vivez avec le diabète, vous bénéficierez également d'un examen de la vue haute résolution gratuit."
 
   formCard:
-    title: "Prêt à laisser un héritage ?"
-    description: "Notre plateforme de consentement numérique sécurisée sera lancée sous peu. Revenez bientôt pour rejoindre BioPortal et contribuer à bâtir un avenir de la santé qui représente fidèlement votre communauté."
+    title: "Prêt à contribuer?"
+    description: "Notre plateforme de consentement numérique sécurisée sera lancée sous peu. Revenez bientôt pour rejoindre BioPortal et contribuer à bâtir un avenir de la santé qui vous représente."
     buttonText: "eConsentement bientôt disponible"
     disclaimer: "Votre vie privée est notre priorité absolue. Les données sont hautement cryptées, entièrement dépersonnalisées et gérées de manière sécurisée à l'Hôpital général juif."
     privacyLinkText: "Politique de confidentialité"
