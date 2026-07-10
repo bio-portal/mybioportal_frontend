@@ -68,7 +68,10 @@ const explorerContent = dataPage?.data?.explorer || {
 
     <main id="main-content-area" class="flex-1 p-6 lg:p-12 relative z-10 w-full overflow-x-hidden transition-all duration-500 origin-top">
       <div id="loading-overlay" class="absolute inset-0 z-50 bg-surface/80 backdrop-blur-md opacity-100 transition-all duration-700 ease-in-out"></div>
-      <ExplorerHeader totalCountLabel={explorerContent.header.totalPatientsLabel} />
+      <ExplorerHeader
+  totalCountLabel={explorerContent.header.totalPatientsLabel}
+  approxDisclaimer={explorerContent.header.approxDisclaimer}
+/>
       <ExplorerGrid noResultsText={explorerContent.grid.noResultsText} />
     </main>
   </div>
