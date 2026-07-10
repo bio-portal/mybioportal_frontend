@@ -22,7 +22,10 @@ const explorerContent = dataPage?.data?.explorer || {
   pageTitle: "Data Explorer",
   backLink: "/data",
   backText: "Back",
-  header: { totalPatientsLabel: "Total Patients" },
+  header: {
+    totalPatientsLabel: "Total Patients",
+    approxDisclaimer: "Values are approximate to preserve privacy." // 🌟 Added fallback string
+  },
   grid: { noResultsText: "No results found" },
   sidebar: {
     title: "Cohort Explorer",
