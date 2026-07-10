@@ -170,6 +170,7 @@ const pages = defineCollection({
       backText: z.string(),
       header: z.object({
         totalPatientsLabel: z.string(),
+        approxDisclaimer: z.string(),
       }),
       grid: z.object({
         noResultsText: z.string(),
