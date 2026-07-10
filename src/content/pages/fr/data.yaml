@@ -16,7 +16,8 @@ explorer:
   backLink: "/data"
   backText: "Retour à l'accès aux données"
   header:
-    totalPatientsLabel: "Total des patients"
+    totalPatientsLabel: "Nombre de participants"
+    approxDisclaimer: "Les valeurs sont approximatives pour préserver la confidentialité."
   grid:
     noResultsText: "Aucune métrique correspondante"
   sidebar:

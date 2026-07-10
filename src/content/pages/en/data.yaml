@@ -16,7 +16,8 @@ explorer:
   backLink: "/data"
   backText: "Back to Data Request"
   header:
-    totalPatientsLabel: "Total Patients"
+    totalPatientsLabel: "Total Participants"
+    approxDisclaimer: "Values are approximate to preserve privacy."
   grid:
     noResultsText: "No matching metrics"
   sidebar:

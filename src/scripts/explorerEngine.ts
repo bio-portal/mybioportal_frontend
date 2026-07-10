@@ -798,10 +798,19 @@ const UIManager = {
 
       const titleEl = document.getElementById('view-title');
       if (titleEl) {
-        // 🌟 TRANSLATED DESKTOP WORKSPACE CONTEXT STATUS row TEXT HEADER FIELD
-        titleEl.innerText = filterKey === 'baseline'
-          ? t('Cohort Overview')
-          : t(filterKey.replace(/_/g, ' ').replace(/(^|\s)\S/g, l => l.toUpperCase()));
+        if (filterKey === 'baseline') {
+          titleEl.innerText = t('Cohort Overview');
+        } else {
+          // Dynamically find the matching chart metadata to split the string cleanly
+          const match = DataManager.metadata.find(m => filterKey.startsWith(m.chart_id.toLowerCase().replace(/ /g, '_') + '_'));
+          const prefix = match ? match.chart_id.toLowerCase().replace(/ /g, '_') + '_' : '';
+
+          const chartTitle = match ? match.display_name : filterKey.split('_')[0];
+          const filterVal = filterKey.replace(prefix, '').replace(/_/g, ' ').replace(/(^|\s)\S/g, l => l.toUpperCase());
+
+          // Join them with a colon and translate both pieces separately so the dictionary functions right
+          titleEl.innerText = `${t(chartTitle)}: ${t(filterVal)}`;
+        }
       }
       this.updateSizeCounters();
       this.updateDashboard();
