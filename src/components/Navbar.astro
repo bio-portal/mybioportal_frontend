@@ -1,0 +1,230 @@
+---
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const {
+  type = 'main',
+  backLink = '/',
+  backText = 'Back',
+  navData,
+  lang = 'en'
+} = Astro.props;
+
+const langPrefix = lang === 'en' ? '' : '/fr';
+const currentPathname = Astro.url.pathname;
+
+// Cleanly isolate the underlying path regardless of whether the user is on the English or French route
+const relativePath = currentPathname.startsWith(baseUrl)
+  ? currentPathname.slice(baseUrl.length)
+  : currentPathname;
+
+const cleanRootPath = relativePath.replace(/^\/fr(\/|$)/, '/');
+
+// 🌟 AUTO-DETECT ROUTE LOGIC
+const isHome = cleanRootPath === '/' || cleanRootPath === '';
+const isParticipants = cleanRootPath.startsWith('/participants');
+
+// Explicitly detect the interactive explorer app
+const isExplorer = cleanRootPath.startsWith('/data/explorer');
+
+// Only treat it as the Data landing page if it starts with /data but IS NOT the explorer app
+const isResearchers = cleanRootPath.startsWith('/data') && !isExplorer;
+
+// 🌟 DYNAMIC CTA VISIBILITY RULES
+const autoCtaMode = isHome ? 'scroll' : 'visible';
+const showPrimary = !isParticipants; // Hides "Join Study" on the Participants page
+const showSecondary = !isResearchers; // Hides "Access Data" on the Data landing page, keeps it on Explorer
+
+// Calculate absolute target destinations for language toggles
+const enUrl = `${baseUrl}${cleanRootPath}`.replace(/\/+/g, '/');
+const frUrl = `${baseUrl}/fr${cleanRootPath === '/' ? '' : cleanRootPath}`.replace(/\/+/g, '/');
+
+// UTILITY: Safely concatenate and normalize any array of URL parts
+const buildUrl = (...parts: (string | undefined)[]) => {
+  return parts.filter(Boolean).join('/').replace(/\/+/g, '/');
+};
+---
+<nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-gray-200/60 transition-all duration-300" data-cta-mode={autoCtaMode}>
+  <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
+
+    <a href={buildUrl(baseUrl, langPrefix, '/')} class="flex items-center shrink-0 z-50 h-fit max-h-16 py-2 outline-none">
+      <img
+        src={buildUrl(baseUrl, '/logos/BioPortal_Primary_Color.svg')}
+        alt={navData?.logoAlt || "BioPortal Logo"}
+        class="h-10 md:h-11 w-auto shrink-0 hover:-translate-y-0.5 transition-transform object-contain"
+        onerror="this.style.display='none'"
+      />
+    </a>
+
+    {type === 'main' ? (
+      <>
+    {/* DESKTOP CENTER BUTTONS (Upgraded to xl:flex) */}
+        <div id="nav-cta-group" class={`absolute left-1/2 -translate-x-1/2 hidden xl:flex items-center gap-4 transition-all duration-500 ease-out ${autoCtaMode === 'scroll' ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}>
+          {showPrimary && (
+            <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.primary?.href)} class="px-5 py-2 rounded-full border-2 border-brand-green-bright text-brand-green-bright text-xs font-bold hover:bg-brand-green-bright hover:text-white transition-all bg-white shadow-sm whitespace-nowrap">
+              {navData?.ctaButtons?.primary?.label}
+            </a>
+          )}
+          {showSecondary && (
+            <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.secondary?.href)} class="px-5 py-2 rounded-full border-2 border-brand-blue-deep text-brand-blue-deep text-xs font-bold hover:bg-brand-blue-deep hover:text-white transition-all bg-white shadow-sm whitespace-nowrap">
+              {navData?.ctaButtons?.secondary?.label}
+            </a>
+          )}
+        </div>
+
+        {/* NAVIGATION LINKS (Upgraded to xl:flex) */}
+        <div class="hidden xl:flex items-center space-x-6 lg:space-x-8 font-medium text-sm ml-auto">
+          {navData?.links?.map((link: any) => (
+            <a href={buildUrl(baseUrl, langPrefix, link.href)} class="text-gray-500 hover:text-brand-dark transition-colors whitespace-nowrap">{link.label}</a>
+          ))}
+
+          {/* 🌟 NEW: STACKED UTILITY COLUMN */}
+          <div class="flex flex-col items-stretch gap-1.5 ml-4 shrink-0">
+            {navData?.explorerButton && (
+              <a href={buildUrl(baseUrl, langPrefix, navData.explorerButton.href)} class="px-4 py-1.5 rounded-full bg-brand-blue-deep text-white text-[10px] font-bold hover:bg-brand-dark transition-colors shadow-sm flex items-center justify-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                {navData.explorerButton.label}
+              </a>
+            )}
+            <div class="flex items-center justify-between gap-1 bg-gray-100/80 p-0.5 rounded-full border border-gray-200/40 shadow-inner">
+              <a href={enUrl} onclick="sessionStorage.setItem('langPref', 'en')" class={`flex-1 text-center px-2 py-0.5 text-[9px] font-black rounded-full tracking-wider transition-all ${lang === 'en' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>EN</a>
+              <a href={frUrl} onclick="sessionStorage.setItem('langPref', 'fr')" class={`flex-1 text-center px-2 py-0.5 text-[9px] font-black rounded-full tracking-wider transition-all ${lang === 'fr' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>FR</a>
+            </div>
+          </div>
+        </div>
+
+        {/* MOBILE MENU TOGGLE (Upgraded to xl:hidden) */}
+        <button id="mobile-menu-toggle" aria-label="Toggle mobile menu" aria-expanded="false" class="xl:hidden text-brand-dark p-2 -mr-2 focus:outline-none z-50 transition-transform duration-300">
+           <svg id="icon-menu" class="w-6 h-6 transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          <svg id="icon-close" class="w-6 h-6 hidden transition-opacity duration-300 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+
+        {/* MOBILE MENU PANEL (Upgraded to xl:hidden) */}
+        <div id="mobile-menu-panel" class="absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-2xl hidden flex-col px-6 py-8 space-y-6 xl:hidden opacity-0 translate-y-[-10px] transition-all duration-300 pointer-events-none">
+          {navData?.links?.map((link: any) => (
+            <a href={buildUrl(baseUrl, langPrefix, link.href)} class="mobile-link text-brand-dark font-extrabold text-xl">{link.label}</a>
+          ))}
+
+          {/* Mobile Language Toggles */}
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-xs uppercase tracking-widest font-bold text-gray-400">Language / Langue</span>
+            <div class="flex items-center gap-1 bg-gray-100/80 p-1 rounded-full border border-gray-200/40 shadow-inner select-none">
+              <a href={enUrl} onclick="sessionStorage.setItem('langPref', 'en')" class={`px-4 py-1.5 text-xs font-black rounded-full tracking-wider transition-all ${lang === 'en' ? 'bg-white text-brand-blue-deep shadow-sm' : 'text-gray-400'}`}>EN</a>
+              <a href={frUrl} onclick="sessionStorage.setItem('langPref', 'fr')" class={`px-4 py-1.5 text-xs font-black rounded-full tracking-wider transition-all ${lang === 'fr' ? 'bg-white text-brand-blue-deep shadow-sm' : 'text-gray-400'}`}>FR</a>
+            </div>
+          </div>
+
+          <hr class="border-gray-100" />
+
+          {/* MOBILE BUTTONS */}
+          <div class="flex flex-col gap-3">
+            {navData?.explorerButton && (
+              <a href={buildUrl(baseUrl, langPrefix, navData.explorerButton.href)} class="w-full text-center py-4 rounded-xl bg-brand-dark text-white font-bold shadow-md shadow-brand-dark/20 flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                {navData.explorerButton.label}
+              </a>
+            )}
+            {showPrimary && (
+              <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.primary?.href)} class="w-full text-center py-4 rounded-xl bg-brand-green-bright text-white font-bold shadow-md shadow-brand-green-bright/20">{navData?.ctaButtons?.primary?.label}</a>
+            )}
+            {showSecondary && (
+              <a href={buildUrl(baseUrl, langPrefix, navData?.ctaButtons?.secondary?.href)} class="w-full text-center py-4 rounded-xl bg-brand-blue-deep text-white font-bold shadow-md shadow-brand-blue-deep/20">{navData?.ctaButtons?.secondary?.label}</a>
+            )}
+          </div>
+        </div>
+      </>
+    ) : (
+      <div class="flex items-center gap-6 ml-auto z-50">
+
+        {/* Minimal/Spoke Navbar Language Toggles */}
+        <div class="flex items-center gap-1 bg-gray-100/80 p-1 rounded-full border border-gray-200/40 shadow-inner select-none">
+          <a href={enUrl} onclick="sessionStorage.setItem('langPref', 'en')" class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'en' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>EN</a>
+          <a href={frUrl} onclick="sessionStorage.setItem('langPref', 'fr')" class={`px-2.5 py-1 text-[10px] font-black rounded-full tracking-wider transition-all ${lang === 'fr' ? 'bg-white text-brand-blue-deep shadow-sm border border-gray-100' : 'text-gray-400 hover:text-brand-dark'}`}>FR</a>
+        </div>
+
+        <div class="h-4 w-px bg-gray-200"></div>
+
+        <a href={buildUrl(baseUrl, langPrefix, backLink)} class="text-sm font-bold text-gray-400 hover:text-brand-dark transition-colors flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          {backText}
+        </a>
+      </div>
+    )}
+  </div>
+</nav>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // --- Scroll CTA Logic ---
+    const nav = document.querySelector('nav[data-cta-mode="scroll"]');
+    if (nav) {
+      const navCtaGroup = nav.querySelector('#nav-cta-group');
+      const heroButtons = document.getElementById('hero-button-group');
+
+      const handleScroll = () => {
+        let shouldShow = false;
+        if (heroButtons) {
+          const rect = heroButtons.getBoundingClientRect();
+          if (rect.bottom < 80) shouldShow = true;
+        } else {
+          if (window.scrollY > 400) shouldShow = true;
+        }
+
+        if (shouldShow) {
+          navCtaGroup?.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
+          navCtaGroup?.classList.add('opacity-100', 'translate-y-0');
+        } else {
+          navCtaGroup?.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none');
+          navCtaGroup?.classList.remove('opacity-100', 'translate-y-0');
+        }
+      };
+      window.addEventListener('scroll', handleScroll);
+      handleScroll();
+    }
+
+    // --- Mobile Menu Toggle Logic with Animations ---
+    const mobileToggle = document.getElementById('mobile-menu-toggle');
+    const mobilePanel = document.getElementById('mobile-menu-panel');
+    const iconMenu = document.getElementById('icon-menu');
+    const iconClose = document.getElementById('icon-close');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    const toggleMenu = () => {
+      if(!mobilePanel || !mobileToggle || !iconMenu || !iconClose) return;
+
+      const isExpanded = mobileToggle.getAttribute('aria-expanded') === 'true';
+      mobileToggle.setAttribute('aria-expanded', String(!isExpanded));
+
+      if (!isExpanded) {
+        // Open
+        mobilePanel.classList.remove('hidden');
+        // Force reflow for transition
+        void mobilePanel.offsetWidth;
+        mobilePanel.classList.remove('opacity-0', 'translate-y-[-10px]', 'pointer-events-none');
+        iconMenu.classList.add('hidden');
+        iconClose.classList.remove('hidden');
+        mobileToggle.classList.add('rotate-90');
+      } else {
+        // Close
+        mobilePanel.classList.add('opacity-0', 'translate-y-[-10px]', 'pointer-events-none');
+        iconClose.classList.add('hidden');
+        iconMenu.classList.remove('hidden');
+        mobileToggle.classList.remove('rotate-90');
+
+        // Wait for animation to finish before applying display:none
+        setTimeout(() => {
+          if(mobileToggle.getAttribute('aria-expanded') === 'false') {
+             mobilePanel.classList.add('hidden');
+          }
+        }, 300);
+      }
+    };
+
+    if (mobileToggle) {
+      mobileToggle.addEventListener('click', toggleMenu);
+    }
+
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', toggleMenu);
+    });
+  });
+</script>

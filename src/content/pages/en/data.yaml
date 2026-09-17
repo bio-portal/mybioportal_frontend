@@ -1,0 +1,71 @@
+id: "data"
+hero:
+  tagline: "Open Science & Cohort Analytics"
+  headline: "BioPortal Population Datasets"
+  description: "Access research cohorts with deep-phenotyped data, explore multi-omics sample distributions, and request secure biological materials for approved scientific inquiries."
+landingMetrics:
+  participantsLabel: "Total Participants"
+  clinicalVariablesLabel: "Clinical Variables"
+  proteomicsLabel: "Proteomic Profiles"
+  biosamplesLabel: "Matched Biosamples"
+  fallbackValues:
+    clinicalVariables: "158"
+
+explorer:
+  pageTitle: "Interactive Data Explorer | BioPortal"
+  backLink: "/data"
+  backText: "Back to Data Request"
+  header:
+    totalPatientsLabel: "Total Participants"
+    approxDisclaimer: "Values are approximate to preserve privacy."
+  grid:
+    noResultsText: "No matching metrics"
+  sidebar:
+    title: "Command Center"
+    baseline: "Baseline (Total Cohort)"
+    searchPlaceholder: "Search cohorts or metrics..."
+    tooltip:
+      title: "Cohort Discovery"
+      description: "Click directly on any chart segment or sidebar attribute to isolate a sub-population. You can refine pie chart layouts by clicking legend labels to toggle specific variables."
+      warning: "To ensure precision and maintain privacy, the explorer updates population metrics using one active filter condition at a time."
+    buttons:
+      reset: "Reset Filters"
+      export: "Export CSV"
+    tabs:
+      filters: "Filters"
+      charts: "Charts"
+    visibility:
+      title: "Visibility Map"
+      all: "All"
+      none: "None"
+    status:
+      gateway: "Data Gateway"
+      syncing: "SYNCING"
+
+dataRequest:
+  pageTitle: "Data Access & Cohorts | BioPortal"
+  backText: "Back to Home"
+  explorerCard:
+    tag: "Interactive Platform"
+    title: "Live Data Explorer"
+    description: "Visualize real-time clinical cohorts, demographic distributions, and sample metrics immediately through our gateway. Filter and export aggregates on the fly."
+    buttonText: "Launch Explorer"
+  applicationProcess:
+    title: "Application Process"
+    description: "Accessing BioPortal datasets requires strict institutional alignment. Please review the infrastructure requirements and download the official access request framework below."
+    requirementsTitle: "Requirements"
+    requirementsItems:
+      - "Institutionally-approved REB/IRB documentation matching the target request."
+      - "Executed Data Transfer Agreement (DTA) or institutional alignment contracts."
+      - "Compliance with the BioPortal open science attribution framework."
+    infrastructureTitle: "Infrastructure Vetting"
+    infrastructureDescription: "The infrastructure utilizes our custom-built interactive discovery platform and leverages high-performance computing networks provided by the <strong>Digital Research Alliance of Canada (AllianceCan)</strong> alongside a secure, private compute cluster at the <strong>Lady Davis Institute (LDI)</strong> for downstream processing operations."
+    infrastructureTags:
+      - "LDI Private Cluster"
+      - "AllianceCan"
+  actionBlock:
+    title: "Request Data Access"
+    description: "Download the official Data Access Form, complete all institutional signatures, and submit the finalized PDF to our administrative team."
+    downloadButtonText: "Download Access Form (.pdf)"
+    emailLabel: "Submit completed applications to:"
+    emailAddress: "access.bioportal@ladydavis.ca"

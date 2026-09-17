@@ -1,0 +1,58 @@
+---
+import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import { getEntry } from 'astro:content';
+
+const {
+  title,
+  lang = 'en', // 1. Catch the language prop (defaults to 'en')
+  navType = 'main',
+  ctaMode = 'visible',
+  backLink = '/',
+  backText = 'Back',
+  hideFooter = false
+} = Astro.props;
+
+// Safely grab the base URL for deploying to custom domains or subfolders like GitHub Pages
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// 2. Fetch data dynamically based on the active locale (e.g., 'en/global' or 'fr/global')
+const globalData = await getEntry('pages', `${lang}/global`);
+
+const navigation = globalData?.data?.navigation;
+const footer = globalData?.data?.footer;
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+
+    {/* 🌟 FAVICON ADDED HERE */}
+    <link rel="icon" type="image/svg+xml" href={`${baseUrl}/logos/favicon_bioportal.svg?v=1`} />
+
+    <title>{title}</title>
+  </head>
+  <body class="flex flex-col min-h-screen bg-surface">
+    {navigation && (
+      <Navbar
+        type={navType}
+        ctaMode={ctaMode}
+        backLink={backLink}
+        backText={backText}
+        navData={navigation}
+        lang={lang} />
+    )}
+
+    <div class="flex-grow pt-20">
+      <slot />
+    </div>
+
+    {!hideFooter && footer && (
+      <Footer
+        footerData={footer}
+        lang={lang} />
+    )}
+  </body>
+</html>

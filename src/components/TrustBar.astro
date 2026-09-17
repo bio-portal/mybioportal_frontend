@@ -1,0 +1,90 @@
+---
+const { content } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Tripling ensures there is always enough content off-screen for Embla to seamlessly loop
+const triplePartners = [...content.partners, ...content.partners, ...content.partners];
+---
+
+<section class="border-y border-gray-100 bg-white/50 py-8 mb-12 overflow-hidden">
+  <div class="max-w-6xl mx-auto text-center">
+    <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-6 px-6">{content.label}</p>
+
+    <div class="embla trustbar-viewport marquee-mask relative w-full overflow-hidden cursor-grab active:cursor-grabbing select-none mb-6">
+
+      <div class="embla__container flex touch-pan-y py-2 px-4">
+
+        {triplePartners.map((partner: any) => (
+          <div class="embla__slide flex-[0_0_auto] min-w-0 flex items-center justify-center mr-16 md:mr-24">
+            <a
+              href={partner.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="trustbar-link hover:scale-105 transition-transform duration-300 block"
+              title={partner.name}
+              draggable="false"
+            >
+              {partner.logo ? (
+                <img
+                  src={`${baseUrl}${partner.logo}`}
+                  alt={partner.name}
+                  class="h-9 md:h-11 w-auto object-contain pointer-events-none"
+                  style={partner.scale ? `transform: scale(${partner.scale});` : ''}
+                  onerror="this.style.display='none'"
+                  draggable="false"
+                />
+              ) : (
+                <span class="text-base font-black text-gray-800 tracking-tighter whitespace-nowrap pointer-events-none">
+                  {partner.name}
+                </span>
+              )}
+            </a>
+          </div>
+        ))}
+
+      </div>
+    </div>
+
+    {content.acknowledgments && (
+      <div class="max-w-3xl mx-auto pt-4 px-6 border-t border-gray-100/60">
+        <p class="text-xs md:text-sm text-gray-400 leading-relaxed italic font-medium">
+          {content.acknowledgments}
+        </p>
+      </div>
+    )}
+  </div>
+</section>
+
+<script>
+  import EmblaCarousel from 'embla-carousel';
+  import AutoScroll from 'embla-carousel-auto-scroll';
+
+  // Initialize on client load
+  const viewports = document.querySelectorAll('.trustbar-viewport');
+
+  viewports.forEach((viewportNode) => {
+    const emblaApi = EmblaCarousel(
+      viewportNode as HTMLElement,
+      {
+        loop: true,
+        dragFree: true // Enables the fluid, momentum-based throwing/dragging
+      },
+      [
+        AutoScroll({
+          playOnInit: true,
+          speed: 1, // Adjust this to change the cruising speed
+          stopOnMouseEnter: true, // Flawless pausing on hover
+          stopOnInteraction: false // Crucial: Resumes auto-scrolling after a user lets go of a drag
+        })
+      ]
+    );
+  });
+</script>
+
+<style>
+  /* Keeps the beautiful side fade transitions */
+  .marquee-mask {
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  }
+</style>

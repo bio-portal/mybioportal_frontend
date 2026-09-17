@@ -1,0 +1,31 @@
+id: global
+
+navigation:
+  logoAlt: "Logo de BioPortal"
+  explorerButton:
+    label: "Explorateur"
+    href: "/data/explorer/"
+  links:
+    - label: "Actualités"
+      href: "/#insights"
+    - label: "Équipe"
+      href: "/#team"
+    - label: "Sécurité"
+      href: "/privacy"
+  ctaButtons:
+    primary:
+      label: "Participer"
+      href: "/participants"
+    secondary:
+      label: "Aperçu des données"
+      href: "/data"
+
+footer:
+  title: "BioPortal"
+  titlePunctuation: "."
+  subtitle: "Hôpital général juif et Université McGill"
+  privacyLinkText: "Politique de confidentialité"
+  privacyLinkHref: "/privacy"
+  faqLinkText: "Foire aux questions"
+  contactText: "Nous joindre"
+  copyright: "© 2026 CIUSSS du Centre-Ouest-de-l’Île-de-Montréal"

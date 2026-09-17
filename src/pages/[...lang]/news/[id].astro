@@ -1,0 +1,88 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+// UX FIX: Adjusted relative paths to 3 levels up since this file is now nested inside [...lang]/news/
+import Layout from '../../../layouts/Layout.astro';
+
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+export async function getStaticPaths() {
+  const newsEntries = await getCollection('news');
+
+  return newsEntries.map(post => {
+    // Content file IDs look like 'en/roche-partnership' or 'fr/roche-partnership'
+    const [langToken, ...slugParts] = post.id.split('/');
+    const cleanId = slugParts.join('/');
+
+    return {
+      // With prefixDefaultLocale: false, default language paths pass undefined for the optional [...lang] parameter
+      params: {
+        lang: langToken === 'en' ? undefined : langToken,
+        id: cleanId
+      },
+      props: {
+        post,
+        lang: langToken
+      },
+    };
+  });
+}
+
+const { post, lang } = Astro.props;
+const { Content } = await render(post);
+
+// Fetch the translated "Back to Insights" text from the pages/news configuration file dynamically
+const newsPageData = await getEntry('pages', `${lang}/news`);
+const backToNewsText = newsPageData?.data?.backToNewsText || (lang === 'fr' ? 'Retour aux actualités' : 'Back to Insights');
+---
+<Layout
+  title={`${post.data.title} | BioPortal Insights`}
+
+  backLink="/news/"  /* 🌟 PATH FIX: Navbar already injects base URL and language prefixes automatically */
+  backText={backToNewsText}
+  lang={lang}
+>
+  <div class="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-brand-blue-deep/5 to-transparent -z-10"></div>
+
+  <main class="max-w-3xl mx-auto px-6 pt-12 pb-24">
+    <header class="mb-10 border-b border-gray-100 pb-10">
+      <div class="flex items-center gap-4 mb-6">
+        <span class="text-xs font-bold px-3 py-1 rounded-md bg-brand-blue-deep/10 text-brand-blue-deep uppercase tracking-widest">
+          {post.data.tag}
+        </span>
+        <span class="text-sm font-bold text-gray-400 uppercase tracking-widest">
+          {post.data.date.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </span>
+      </div>
+
+      <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight tracking-tight mb-10">
+        {post.data.title}
+      </h1>
+
+      <div class="w-full h-[300px] md:h-[400px] rounded-3xl relative overflow-hidden bg-surface shadow-xl shadow-gray-200/50">
+        {post.data.image ? (
+          <img src={`${baseUrl}${post.data.image}`} alt={post.data.title} class="w-full h-full object-cover" />
+        ) : (
+          <div class="absolute inset-0 bg-gradient-to-br from-brand-orange-mid/10 via-brand-green-bright/5 to-brand-blue-deep/10 flex items-center justify-center">
+            <img src={`${baseUrl}/logos/BioPortal_Primary_Color.svg`} alt="BioPortal Mark" class="w-48 md:w-64 h-auto opacity-30 grayscale" onerror="this.style.display='none'" />
+          </div>
+        )}
+      </div>
+    </header>
+
+    <article class="text-lg text-gray-600 leading-relaxed space-y-6 article-content">
+      <Content />
+    </article>
+  </main>
+</Layout>
+
+<style>
+  /* UX FIX: Updated global references path routing to point cleanly 3 directories up */
+  @reference "../../../styles/global.css";
+  .article-content :global(h2) { @apply text-3xl font-bold text-gray-900 mt-12 mb-6 tracking-tight; }
+  .article-content :global(h3) { @apply text-2xl font-bold text-gray-900 mt-8 mb-4 tracking-tight; }
+  .article-content :global(p) { @apply mb-6; }
+  .article-content :global(a) { @apply text-brand-blue-deep font-semibold hover:text-brand-dark transition-colors underline underline-offset-2; }
+  .article-content :global(ul) { @apply list-disc list-outside ml-6 mb-6 space-y-2; }
+  .article-content :global(blockquote) { @apply border-l-4 border-brand-blue-deep pl-6 py-2 my-8 text-xl italic text-gray-500 bg-brand-blue-deep/5 rounded-r-2xl; }
+  .article-content :global(strong) { @apply font-bold text-gray-900; }
+</style>

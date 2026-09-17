@@ -1,0 +1,31 @@
+id: global
+
+navigation:
+  logoAlt: "BioPortal Logo"
+  explorerButton:
+    label: "Data Explorer"
+    href: "/data/explorer/"
+  links:
+    - label: "Insights"
+      href: "/#insights"
+    - label: "Our Team"
+      href: "/#team"
+    - label: "Data Security"
+      href: "/privacy"
+  ctaButtons:
+    primary:
+      label: "Join Study"
+      href: "/participants"
+    secondary:
+      label: "Data Overview"
+      href: "/data"
+
+footer:
+  title: "BioPortal"
+  titlePunctuation: "."
+  subtitle: "Jewish General Hospital & McGill University"
+  privacyLinkText: "Privacy Policy"
+  privacyLinkHref: "/privacy"
+  copyright: "© 2026 CIUSSS West-Central Montreal"
+  faqLinkText: "FAQ"
+  contactText: "Contact Us"

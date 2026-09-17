@@ -1,0 +1,70 @@
+id: faq
+faqData:
+  pageTitle: "FAQ | BioPortal"
+  tagline: "Aide et soutien"
+  headline: "Foire aux questions"
+  description: "Trouvez des réponses aux questions courantes concernant la participation à l'Initiative de recherche BioPortal, la sécurité des données et les termes médicaux."
+  categories:
+    - name: "BioPortal et participation"
+      items:
+        - q: "Qu’est-ce que BioPortal ?"
+          a: "BioPortal est une biobanque de recherche hospitalière située au Centre hospitalier Jewish General Hospital. Elle recueille des renseignements sur la santé, des échantillons biologiques (comme du sang) et des données cliniques auprès des participants afin de soutenir la recherche médicale. L’objectif est de mieux comprendre les maladies et d’améliorer la prévention, le diagnostic et le traitement pour les patients de demain."
+        - q: "Combien de temps cela prendra-t-il ?"
+          a: "La participation prend habituellement de 15 à 20 minutes. Cela comprend : répondre à des questionnaires, fournir des échantillons de sang de base (ou de salive) et d’urine, mesurer la tension artérielle, évaluer la composition corporelle et effectuer un dépistage de la rétinopathie diabétique si vous êtes diabétique."
+        - q: "Où puis-je me rendre à l’hôpital pour participer ?"
+          a: "BioPortal a actuellement des bureaux dans les services d’endocrinologie, de néphrologie et de cardiologie, ainsi qu’à la clinique HERZL."
+        - q: "Puis-je me retirer du projet de recherche en tout temps ?"
+          a: "Oui. La participation est entièrement volontaire. Vous pouvez vous retirer en tout temps sans que cela n’affecte vos soins médicaux. L’équipe de recherche vous expliquera ce qu’il adviendra de vos données et de vos échantillons si vous décidez de vous retirer."
+        - q: "Comment puis-je communiquer avec l’équipe de recherche ?"
+          a: |
+            Vous pouvez communiquer avec l’équipe de recherche BioPortal :<br/><br/>
+            <ol class='list-decimal pl-5 space-y-1'>
+              <li>En parlant directement au personnel lors de votre visite à l’hôpital.</li>
+              <li>En utilisant les coordonnées fournies dans vos documents de consentement.</li>
+              <li>En remplissant le formulaire de contact sur notre site Web.</li>
+            </ol><br/>
+            L’équipe se fera un plaisir de répondre à vos questions ou préoccupations.
+
+    - name: "Confidentialité et données"
+      items:
+        - q: "Vais-je recevoir mes résultats ?"
+          a: "Certains résultats (comme des mesures de base ou certains résultats cliniques, lorsque pertinent) peuvent vous être communiqués. Toutefois, BioPortal est un projet de recherche et non un service diagnostique ; ainsi, toutes les données de recherche ne seront pas nécessairement retournées. L’équipe de recherche vous expliquera clairement quelles informations, le cas échéant, pourront vous être transmises."
+        - q: "Qui aura accès à mes données ?"
+          a: |
+            Vos données peuvent être consultées par :<br/><br/>
+            <ol class='list-decimal pl-5 space-y-1'>
+              <li>Des membres autorisés de l’équipe de recherche BioPortal.</li>
+              <li>Des chercheurs ayant obtenu l’approbation éthique requise.</li>
+            </ol><br/>
+            Tout accès est régi par des mesures strictes de protection juridiques, éthiques et institutionnelles.
+        - q: "Les renseignements que je fournis sont-ils confidentiels ?"
+          a: "Oui. Vos renseignements sont strictement confidentiels. Les identifiants personnels sont protégés et les données de recherche sont codées afin que les chercheurs ne puissent pas vous identifier directement."
+        - q: "Ce projet est-il financé par l’industrie pharmaceutique ?"
+          a: "BioPortal reçoit du financement de diverses sources, pouvant inclure des organismes publics, des fondations et des partenaires industriels. Toute collaboration est encadrée par des règles éthiques strictes, et aucune entreprise n’a accès directement à vos données nominatives."
+
+    - name: "Termes médicaux et conditions"
+      items:
+        - q: "Qu’est-ce que la bioimpédance ?"
+          a: "La bioimpédance est une mesure non invasive qui permet d’estimer la composition corporelle, comme la masse grasse, la masse musculaire et l’eau corporelle. Elle fonctionne en envoyant un très faible signal électrique inoffensif à travers le corps et ne prend que quelques minutes."
+        - q: "Qu’est-ce que la rétinopathie diabétique ?"
+          a: "La rétinopathie diabétique est une complication du diabète qui touche les vaisseaux sanguins de la rétine (à l’arrière de l’œil). Avec le temps, un taux élevé de sucre dans le sang peut endommager ces vaisseaux, ce qui peut entraîner des problèmes de vision, voire une perte de vision si la condition n’est pas détectée et traitée rapidement."
+        - q: "Quels sont les différents types de diabète ?"
+          a: |
+            Il existe plusieurs types de diabète. Les plus courants comprennent :<br/><br/>
+            <ul class='list-disc pl-5 space-y-3'>
+              <li><strong>Diabète de type 1 :</strong> Maladie auto-immune dans laquelle le corps cesse de produire de l’insuline. Les personnes atteintes doivent recevoir un traitement à l’insuline à vie. Il peut apparaître à tout âge, mais débute souvent pendant l’enfance ou au début de l’âge adulte.</li>
+              <li><strong>Diabète de type 2 :</strong> Condition où le corps n’utilise pas correctement l’insuline et/ou n’en produit pas suffisamment. Il s’agit du type de diabète le plus fréquent et il est influencé par des facteurs génétiques, liés au mode de vie et environnementaux.</li>
+              <li><strong>Diabète gestationnel :</strong> Type de diabète qui se développe pendant la grossesse chez des personnes qui n’avaient pas de diabète auparavant. Il disparaît généralement après l’accouchement, mais augmente le risque de développer un diabète de type 2 plus tard dans la vie.</li>
+              <li><strong>Diabète monogénique (dont le MODY) :</strong> Forme plus rare de diabète causée par une mutation d’un seul gène. Un exemple est le diabète de type MODY (Maturity-Onset Diabetes of the Young). Il est souvent diagnostiqué à un jeune âge et peut être confondu avec un diabète de type 1 ou de type 2.</li>
+              <li><strong>Diabète secondaire :</strong> Diabète qui se développe à la suite d’une autre condition médicale ou de la prise de certains médicaments, comme l’utilisation prolongée de corticostéroïdes ou des maladies affectant le pancréas.</li>
+              <li><strong>Prédiabète :</strong> État où la glycémie est plus élevée que la normale, sans atteindre les seuils diagnostiques du diabète. Le prédiabète augmente le risque de développer un diabète de type 2 et peut souvent être pris en charge par des changements aux habitudes de vie.</li>
+            </ul>
+
+    - name: "Capacités de la plateforme (à venir)"
+      items:
+        - q: "Puis-je répondre aux questionnaires sur mon téléphone ou ma tablette ?"
+          a: "<em>Les informations concernant la compatibilité de la plateforme seront bientôt disponibles.</em>"
+        - q: "Puis-je répondre aux questionnaires en format papier ?"
+          a: "<em>Les informations concernant les formats papier seront bientôt disponibles.</em>"
+        - q: "Puis-je répondre aux questionnaires par téléphone ?"
+          a: "<em>Les informations concernant les entretiens téléphoniques seront bientôt disponibles.</em>"

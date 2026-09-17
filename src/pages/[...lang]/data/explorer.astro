@@ -1,0 +1,114 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import ExplorerSidebar from '../../../components/explorer/ExplorerSidebar.astro';
+import ExplorerHeader from '../../../components/explorer/ExplorerHeader.astro';
+import ExplorerGrid from '../../../components/explorer/ExplorerGrid.astro';
+
+// 1. Structural change: Pass undefined for English so it compiles without a URL prefix
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } }, // English maps to /data/explorer
+    { params: { lang: 'fr' } }        // French maps to /fr/data/explorer
+  ];
+}
+
+// 2. Destructure with a fallback assignment to 'en' when the path parameter is undefined
+const { lang = 'en' } = Astro.params;
+
+const dataPage = await getEntry('pages', `${lang}/data`);
+
+const explorerContent = dataPage?.data?.explorer || {
+  pageTitle: "Data Explorer",
+  backLink: "/data",
+  backText: "Back",
+  header: {
+    totalPatientsLabel: "Total Patients",
+    approxDisclaimer: "Values are approximate to preserve privacy."
+  },
+  grid: { noResultsText: "No results found" },
+  sidebar: {
+    title: "Cohort Explorer",
+    baseline: "Baseline Cohort",
+    searchPlaceholder: "Search variables...",
+    tooltip: { title: "Data Notice", description: "De-identified records.", warning: "Protected asset." },
+    // UX FIX: Safely quoted the "export" keyword boundary to clear the parser compiler crash
+    buttons: { reset: "Reset Filters", "export": "Export Cohort" },
+    tabs: { filters: "Filters", charts: "Active Charts" },
+    visibility: { title: "Chart Visibility", all: "Show All", none: "Hide All" },
+    status: { gateway: "API Status", syncing: "Synchronizing" }
+  }
+};
+---
+<Layout
+  title={explorerContent.pageTitle}
+
+  backLink={explorerContent.backLink}
+  backText={explorerContent.backText}
+  lang={lang}
+>
+  <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-brand-dark/40 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300 lg:hidden"></div>
+
+  <div class="flex min-h-[calc(100vh-80px)] bg-surface font-sans relative">
+
+    <ExplorerSidebar
+      sidebarTitle={explorerContent.sidebar.title}
+      tooltipTitle={explorerContent.sidebar.tooltip.title}
+      tooltipDescription={explorerContent.sidebar.tooltip.description}
+      tooltipWarning={explorerContent.sidebar.tooltip.warning}
+      resetButtonText={explorerContent.sidebar.buttons.reset}
+      exportButtonText={explorerContent.sidebar.buttons.export}
+      searchPlaceholder={explorerContent.sidebar.searchPlaceholder}
+      tabFiltersText={explorerContent.sidebar.tabs.filters}
+      tabChartsText={explorerContent.sidebar.tabs.charts}
+      baselineText={explorerContent.sidebar.baseline}
+      visibilityTitle={explorerContent.sidebar.visibility.title}
+      visibilityAllText={explorerContent.sidebar.visibility.all}
+      visibilityNoneText={explorerContent.sidebar.visibility.none}
+      statusGatewayText={explorerContent.sidebar.status.gateway}
+      statusSyncingText={explorerContent.sidebar.status.syncing}
+    />
+
+    <main id="main-content-area" class="flex-1 p-6 lg:p-12 relative z-10 w-full overflow-x-hidden transition-all duration-500 origin-top">
+      <div id="loading-overlay" class="absolute inset-0 z-50 bg-surface/80 backdrop-blur-md opacity-100 transition-all duration-700 ease-in-out"></div>
+      <ExplorerHeader
+  totalCountLabel={explorerContent.header.totalPatientsLabel}
+  approxDisclaimer={explorerContent.header.approxDisclaimer}
+/>
+      <ExplorerGrid noResultsText={explorerContent.grid.noResultsText} />
+    </main>
+  </div>
+</Layout>
+
+<script src="../../../scripts/explorerEngine.ts"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('explorer-sidebar');
+    const overlay = document.getElementById('mobile-sidebar-overlay');
+    const openBtn = document.getElementById('mobile-filter-btn');
+    const closeBtn = document.getElementById('mobile-close-sidebar');
+
+    const toggleSidebar = (force?: boolean) => {
+      if (!sidebar || !overlay) return;
+      const isOpen = sidebar.classList.contains('translate-x-0');
+      const shouldOpen = force !== undefined ? force : !isOpen;
+
+      if (shouldOpen) {
+        overlay.classList.remove('hidden');
+        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+        sidebar.classList.remove('-translate-x-full');
+        sidebar.classList.add('translate-x-0');
+      } else {
+        overlay.classList.add('opacity-0');
+        sidebar.classList.remove('translate-x-0');
+        sidebar.classList.add('-translate-x-full');
+        setTimeout(() => overlay.classList.add('hidden'), 300);
+      }
+    };
+
+    if (openBtn) openBtn.addEventListener('click', () => toggleSidebar(true));
+    if (closeBtn) closeBtn.addEventListener('click', () => toggleSidebar(false));
+    if (overlay) overlay.addEventListener('click', () => toggleSidebar(false));
+  });
+</script>

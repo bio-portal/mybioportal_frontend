@@ -1,0 +1,70 @@
+id: faq
+faqData:
+  pageTitle: "FAQ | BioPortal"
+  tagline: "Help & Support"
+  headline: "Frequently Asked Questions"
+  description: "Find answers to common questions about participating in the BioPortal Research Initiative, data security, and medical terms."
+  categories:
+    - name: "BioPortal & Participation"
+      items:
+        - q: "What is BioPortal?"
+          a: "BioPortal is a hospital-based research biobank at the Jewish General Hospital. It collects health information, biological samples (such as blood), and clinical data from participants to support medical research. The goal is to better understand diseases and to improve prevention, diagnosis, and treatment for future patients."
+        - q: "How long will this take?"
+          a: "Participation usually takes 15 to 20 minutes to answer questionnaires, take baseline blood (or saliva) and urine samples, take blood pressure, measure body composition, and screen for diabetic retinopathy if you’re diabetic."
+        - q: "Where can I go in the hospital to take part?"
+          a: "BioPortal currently has offices in endocrinology, nephrology, cardiology. And in the HERZL clinic."
+        - q: "Can I withdraw from the research project at any time?"
+          a: "Yes. Participation is completely voluntary. You may withdraw at any time without affecting your medical care. The research team will explain what happens to your data and samples if you choose to withdraw."
+        - q: "How can I contact the research team?"
+          a: |
+            You can contact the BioPortal research team by:<br/><br/>
+            <ol class='list-decimal pl-5 space-y-1'>
+              <li>Speaking directly with staff during your hospital visit.</li>
+              <li>Using the contact information provided in your consent documents.</li>
+              <li>Completing the contact form on our website.</li>
+            </ol><br/>
+            The team will be happy to answer any questions or concerns.
+
+    - name: "Confidentiality & Data"
+      items:
+        - q: "Will I get my data?"
+          a: "Some results (such as basic measurements or selected clinical results, when applicable) may be shared with you. However, BioPortal is a research project, not a diagnostic service, so not all research data will be returned. The research team will clearly explain what information, if any, you may receive."
+        - q: "Who will have access to my data?"
+          a: |
+            Your data may be accessed by:<br/><br/>
+            <ol class='list-decimal pl-5 space-y-1'>
+              <li>Authorized and approved members of the BioPortal research team.</li>
+              <li>Researchers who have received ethics approval.</li>
+            </ol><br/>
+            All access is governed by strict legal, ethical, and institutional safeguards.
+        - q: "Is the information I give confidential?"
+          a: "Yes. Your information is kept strictly confidential. Personal identifiers are protected, and research data are coded so that researchers cannot directly identify you."
+        - q: "Is this project funded by the pharmaceutical industry?"
+          a: "BioPortal receives funding from multiple sources, which may include public agencies, foundations, and industry partners. Any partnerships are governed by strict ethical rules, and no company has direct access to your identifiable data."
+
+    - name: "Medical Terms & Conditions"
+      items:
+        - q: "What is bioimpedance?"
+          a: "Bioimpedance is a non-invasive measurement that estimates body composition, such as body fat, muscle mass, and body water. It works by sending a very small, harmless electrical signal through the body and takes only a few minutes."
+        - q: "What is diabetic retinopathy?"
+          a: "Diabetic retinopathy is a complication of diabetes that affects the blood vessels in the retina (the back of the eye). Over time, high blood sugar levels can damage these vessels, potentially leading to vision problems or vision loss if not detected and treated early."
+        - q: "What are the different types of diabetes?"
+          a: |
+            There are several types of diabetes. The most common ones include:<br/><br/>
+            <ul class='list-disc pl-5 space-y-3'>
+              <li><strong>Type 1 diabetes:</strong> An autoimmune condition in which the body stops producing insulin. People with type 1 diabetes need insulin treatment for life. It can develop at any age but often begins in childhood or young adulthood.</li>
+              <li><strong>Type 2 diabetes:</strong> A condition in which the body does not use insulin properly and/or does not produce enough insulin. It is the most common type of diabetes and is influenced by genetic, lifestyle, and environmental factors.</li>
+              <li><strong>Gestational diabetes:</strong> A type of diabetes that develops during pregnancy in people who did not previously have diabetes. It usually goes away after delivery but increases the risk of developing type 2 diabetes later in life.</li>
+              <li><strong>Monogenic diabetes (including MODY):</strong> A rarer form of diabetes caused by a change in a single gene. One example is Maturity-Onset Diabetes of the Young (MODY). It is often diagnosed at a younger age and may be mistaken for type 1 or type 2 diabetes.</li>
+              <li><strong>Secondary diabetes:</strong> Diabetes that develops as a result of another medical condition or certain medications, such as long-term steroid use or diseases affecting the pancreas.</li>
+              <li><strong>Prediabetes:</strong> A condition where blood sugar levels are higher than normal but not high enough to be classified as diabetes. Prediabetes increases the risk of developing type 2 diabetes and can often be managed with lifestyle changes.</li>
+            </ul>
+
+    - name: "Platform Capabilities (Coming Soon)"
+      items:
+        - q: "Can I answer the questionnaires on my smartphone or tablet?"
+          a: "<em>Information regarding platform compatibility will be available soon.</em>"
+        - q: "Can I answer the questionnaires on a paper format?"
+          a: "<em>Information regarding paper formats will be available soon.</em>"
+        - q: "Can I answer the questionnaires over the phone?"
+          a: "<em>Information regarding phone interviews will be available soon.</em>"

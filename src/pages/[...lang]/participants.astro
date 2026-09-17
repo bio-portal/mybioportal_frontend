@@ -1,0 +1,174 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import TrustBar from '../../components/TrustBar.astro';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } }, // English maps to root (/participants)
+    { params: { lang: 'fr' } }        // French maps to /fr/participants
+  ];
+}
+
+const { lang = 'en' } = Astro.params;
+const langPrefix = lang === 'en' ? '' : '/fr';
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Fetch both the Participants page data AND the Data page data to reuse the explorer card content
+const pageData = await getEntry('pages', `${lang}/participants`);
+const homeData = await getEntry('pages', `${lang}/home`);
+const dataPageData = await getEntry('pages', `${lang}/data`);
+
+const hero = pageData?.data?.hero;
+const steps = pageData?.data?.steps || [];
+const content = pageData?.data?.recruitmentData;
+
+// Extract the Explorer Card from the data.yaml
+const explorerCard = dataPageData?.data?.dataRequest?.explorerCard || {
+  tag: "Interactive Platform",
+  title: "Live Data Explorer",
+  description: "Visualize real-time clinical cohorts, demographic distributions, and sample metrics immediately.",
+  buttonText: "Launch Explorer"
+};
+
+// SVG Icon mapping for the 3 pillars (Security, Altruism, Value)
+const pillarIcons = [
+  // 0: Lock (Security)
+  '<path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />',
+  // 1: People (Representation)
+  '<path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />',
+  // 2: Heart (Health Value)
+  '<path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />'
+];
+---
+<Layout title={content.pageTitle} lang={lang}>
+  <main class="max-w-7xl mx-auto px-6 pt-12 pb-24 relative z-10">
+
+    <header class="max-w-4xl mb-20 text-center mx-auto">
+      <span class="text-brand-green-bright font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
+      <h1 class="text-5xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-6">
+        {hero.headline} <br/>
+        <span class="bg-gradient-to-r from-brand-green-bright to-brand-teal bg-clip-text text-transparent pb-2">{hero.gradientText}</span>
+      </h1>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-medium">{hero.description}</p>
+    </header>
+
+    {homeData?.data?.trustBar && <TrustBar content={homeData.data.trustBar} />}
+
+    <div class="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start mt-20">
+
+      <div class="lg:col-span-7 space-y-16">
+        <div>
+          <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-8">{content.whyJoinTitle}</h3>
+          <div class="space-y-12">
+            {content.pillars.map((pillar: any, index: number) => (
+              <div class="flex gap-5 items-start">
+                <div class="w-12 h-12 rounded-2xl bg-brand-green-bright/10 flex items-center justify-center shrink-0 text-brand-green-bright">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" set:html={pillarIcons[index] || pillarIcons[0]}></svg>
+                </div>
+                <div>
+                  <h4 class="text-xl font-bold text-gray-900 mb-2 tracking-tight">{pillar.title}</h4>
+                  <p class="text-gray-500 leading-relaxed font-medium">{pillar.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="pt-12 border-t border-gray-100">
+          <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-8">{content.howItWorksTitle}</h3>
+          <div class="space-y-8 relative pl-4 border-l-2 border-brand-green-bright/20 ml-5">
+            {steps.map((step: any, index: number) => (
+              <div class="relative group">
+                <div class="absolute -left-[37px] top-0 w-8 h-8 rounded-full bg-white border-2 border-brand-green-bright text-brand-green-bright font-extrabold text-xs flex items-center justify-center transition-all shadow-sm">
+                  {index + 1}
+                </div>
+                <div class="pl-4 pb-2">
+                  <h4 class="font-bold text-gray-900 text-lg mb-1 tracking-tight">{step.title}</h4>
+                  <p class="text-base text-gray-500 leading-relaxed font-medium">{step.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* STICKY COLUMN: Now a flex column to hold both cards */}
+      <div class="lg:col-span-5 w-full lg:sticky lg:top-28 flex flex-col gap-6">
+
+        {/* 1. DATA EXPLORER LAUNCHER CARD (Green Theme) */}
+        <div class="relative bg-white rounded-[2.5rem] p-10 border-2 border-transparent shadow-soft flex flex-col group/card transition-colors duration-300 hover:border-brand-green-bright shrink-0">
+          <div class="flex justify-between items-start mb-6">
+            <span class="px-3 py-1.5 rounded-lg bg-brand-green-bright/5 text-brand-green-bright font-bold text-[10px] uppercase tracking-[0.15em] border border-brand-green-bright/10">{explorerCard.tag}</span>
+            <div class="relative flex h-3 w-3 mt-1 mr-1">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-green-bright opacity-60"></span>
+              <span class="aurora-dot relative inline-flex rounded-full h-3 w-3 shadow-sm ring-2 ring-white"></span>
+            </div>
+          </div>
+          <h2 class="text-3xl font-black tracking-tight text-gray-900 mb-3">{explorerCard.title}</h2>
+          <p class="text-gray-500 text-sm leading-relaxed font-medium mb-8">{explorerCard.description}</p>
+          <a href={`${baseUrl}${langPrefix}/data/explorer/`} class="group/action w-full py-4 rounded-xl bg-brand-green-bright text-white text-sm font-bold shadow-md shadow-brand-green-bright/20 flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 hover:brightness-110">
+            <span class="relative z-10">{explorerCard.buttonText}</span>
+            <svg class="arrow-thrust relative z-10 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+          </a>
+        </div>
+
+        {/* 2. ECONSENT CARD (Disabled) */}
+        <div class="group bg-white rounded-[2.5rem] shadow-soft border-2 border-transparent hover:border-brand-green-bright/50 transition-colors duration-500 p-8 lg:p-10 relative overflow-hidden flex flex-col justify-center">
+          <div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none transition-transform duration-700 group-hover:scale-150"></div>
+
+          <div class="relative z-10 text-center lg:text-left">
+            <span class="w-14 h-14 rounded-2xl bg-brand-green-bright/5 flex items-center justify-center mb-6 border border-brand-green-bright/10 mx-auto lg:mx-0 group-hover:bg-brand-green-bright/10 transition-colors">
+              <svg class="w-7 h-7 text-brand-green-bright" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            </span>
+
+            <h3 class="text-2xl font-black text-brand-dark mb-3 tracking-tight">{content.formCard.title}</h3>
+            <p class="text-gray-500 mb-8 text-sm leading-relaxed font-medium">{content.formCard.description}</p>
+
+            {/* DISABLED STATE: eConsent Coming Soon */}
+            <div class="w-full py-4 rounded-xl bg-gray-100 text-gray-400 font-bold text-sm tracking-widest uppercase border border-gray-200 flex items-center justify-center gap-3 cursor-not-allowed select-none">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <span>{content.formCard.buttonText}</span>
+            </div>
+
+            <p class="mt-8 text-[11px] text-gray-400 text-center lg:text-left leading-relaxed font-medium">
+              {content.formCard.disclaimer} <a href={`${baseUrl}${langPrefix}/privacy/`} class="text-brand-green-bright underline hover:text-brand-dark transition-colors font-bold">{content.formCard.privacyLinkText}</a>.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+</Layout>
+
+<style>
+  /* 1. Aurora Dot Background Animation */
+  .aurora-dot {
+    background: linear-gradient(
+      135deg,
+      var(--color-brand-blue-deep),
+      var(--color-brand-teal),
+      var(--color-brand-green-bright),
+      var(--color-brand-yellow),
+      var(--color-brand-orange-deep)
+    );
+    background-size: 300% 300%;
+    animation: auroraSpin 4s ease infinite;
+  }
+  @keyframes auroraSpin {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* 2. Horizontal Thrust Arrow (Launch) */
+  @keyframes arrowThrust {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(4px); }
+  }
+  .group\/action:hover .arrow-thrust {
+    animation: arrowThrust 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+</style>

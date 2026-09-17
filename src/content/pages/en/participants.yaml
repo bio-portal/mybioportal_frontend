@@ -1,0 +1,33 @@
+id: participants
+hero:
+  tagline: "Participant Journey"
+  headline: "Shape the Future of Medicine."
+  gradientText: "For Our Future."
+  description: "Your unique background helps scientists here in Montreal and worldwide discover fairer, safer treatments tailored to every community. By sharing a small amount of your time, you become a permanent part of the solution."
+steps:
+  - title: "Secure eConsent"
+    desc: "Review and sign our transparent, digital consent form securely from the comfort of your home."
+  - title: "Contribute Insight"
+    desc: "Your secure health metrics help researchers track complex health patterns and trace traits before they progress."
+  - title: "Drive Discovery"
+    desc: "Anonymized, privacy-protected data powers global open-science research to engineer next-generation therapeutics."
+
+recruitmentData:
+  pageTitle: "Join BioPortal | Advance Precision Medicine"
+  whyJoinTitle: "Addressing Your Questions & Impact"
+  howItWorksTitle: "Your Contribution Pathway"
+
+  pillars:
+    - title: "1. Bank-Grade Data Security"
+      desc: "Your privacy is non-negotiable. All biological and health data is heavily encrypted, stripped of your personal identity, and securely locked within the Jewish General Hospital's protected local servers."
+    - title: "2. Medicine That Reflects You"
+      desc: "Medical research has historically ignored diverse communities. By sharing your unique health fingerprint, you help ensure that tomorrow's treatments work safely and effectively for your family and future generations."
+    - title: "3. Free Health Insights For You"
+      desc: "As a thank you, participants receive a detailed body composition scan (measuring muscle, fat, and hydration). If you are living with diabetes, you will also receive a free, high-resolution eye health screening."
+
+  formCard:
+    title: "Ready to Leave a Legacy?"
+    description: "Our secure digital consent platform is launching shortly. Check back soon to join BioPortal and help build a healthcare future that truly represents your community."
+    buttonText: "eConsent Available Soon"
+    disclaimer: "Your privacy is our absolute priority. Data is heavily encrypted, fully de-identified, and securely managed at the Jewish General Hospital."
+    privacyLinkText: "Privacy Policy"
