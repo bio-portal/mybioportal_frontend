@@ -214,13 +214,13 @@ const content = pageData?.data?.dataRequest || {
       </div>
 
       {/* MOBILE VIEW */}
-      <div id="mobile-container" class="w-full flex lg:hidden flex-col gap-6">
+      <div id="mobile-container" class="w-full flex lg:hidden flex-col gap-6 relative z-20">
         <!-- JS will populate mobile nodes here -->
       </div>
     </div>
 
     {/* Informational Cards Grid */}
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch relative z-20">
       <div class="lg:col-span-7 bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-soft h-full flex flex-col">
         <h2 class="text-3xl font-black text-brand-dark mb-4">{content.applicationProcess.title}</h2>
         <p class="text-gray-500 mb-8 leading-relaxed font-medium text-lg">{content.applicationProcess.description}</p>
@@ -293,8 +293,11 @@ const content = pageData?.data?.dataRequest || {
   </main>
 </Layout>
 
-<style>
-  /* Base structural CSS */
+<style is:global>
+  /*
+   * IMPORTANT: <style is:global> is required in Astro to style DOM elements
+   * that are injected dynamically by client-side Javascript.
+   */
   .radial-section-wrapper { min-height: 600px; }
   #radial-container { position: relative; }
   #svg-layer { pointer-events: none; }
@@ -419,6 +422,8 @@ const content = pageData?.data?.dataRequest || {
     const svgLayer = document.getElementById('svg-layer');
     const mobileContainer = document.getElementById('mobile-container');
     const svgEl = document.getElementById('base-svg');
+
+    if (!radialContainer || !svgLayer || !mobileContainer || !svgEl) return;
 
     const nodes = [];
     const paths = [];
