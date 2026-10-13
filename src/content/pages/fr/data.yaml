@@ -4,12 +4,21 @@ hero:
   headline: "Ensembles de données de population BioPortal"
   description: "Accédez à des cohortes de recherche au phénotypage approfondi, explorez les distributions d'échantillons multi-omiques et demandez du matériel biologique sécurisé pour des programme de recherche approuvés."
 landingMetrics:
-  participantsLabel: "Total des participants"
-  clinicalVariablesLabel: "Variables cliniques"
-  proteomicsLabel: "Profils protéomiques"
-  biosamplesLabel: "Échantillons biologiques"
-  fallbackValues:
-    clinicalVariables: "158"
+- label: Total des participants
+  value: 7645
+- label: Variables cliniques
+  value: 158
+- label: Protéines Olink Explore HT
+  value: 5,400
+- label: Profils protéomiques
+  value: 3090
+- label: Échantillons de sang
+  value: 4845
+- label: Échantillons d'urine
+  value: 3210
+- label: Scans rétiniens
+  value: 1175
+
 
 explorer:
   pageTitle: "Explorateur de données interactif | BioPortal"

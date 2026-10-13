@@ -4,12 +4,20 @@ hero:
   headline: "BioPortal Population Datasets"
   description: "Access research cohorts with deep-phenotyped data, explore multi-omics sample distributions, and request secure biological materials for approved scientific inquiries."
 landingMetrics:
-  participantsLabel: "Total Participants"
-  clinicalVariablesLabel: "Clinical Variables"
-  proteomicsLabel: "Proteomic Profiles"
-  biosamplesLabel: "Matched Biosamples"
-  fallbackValues:
-    clinicalVariables: "158"
+- label: Total Participants
+  value: 7645
+- label: Clinical Variables
+  value: 158
+- label: Olink Explore HT Proteins
+  value: 5,400
+- label: Proteomic Profiles
+  value: 3090
+- label: Matched Blood Samples
+  value: 4845
+- label: Matched Urine Samples
+  value: 3210
+- label: Retinal Scans
+  value: 1175
 
 explorer:
   pageTitle: "Interactive Data Explorer | BioPortal"
