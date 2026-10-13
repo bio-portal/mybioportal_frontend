@@ -55,157 +55,38 @@ const content = pageData?.data?.dataRequest || {
 
 <Layout title={content.pageTitle} backText={content.backText} lang={lang}>
   <main class="max-w-7xl mx-auto px-6 pt-12 pb-24 relative z-10">
-    <header class="max-w-3xl mb-24 text-center mx-auto">
+    <header class="max-w-3xl mb-12 text-center mx-auto">
       <span class="text-brand-blue-deep font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
-      <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 tracking-tight">{hero.headline}</h1>
-      <p class="text-xl text-gray-600 leading-relaxed">{hero.description}</p>
+      <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-4 tracking-tight">{hero.headline}</h1>
+      <p class="text-lg text-gray-600 leading-relaxed">{hero.description}</p>
     </header>
 
     {/* ========================================= */}
     {/* DYNAMIC RADIAL METRICS ENGINE             */}
     {/* ========================================= */}
-    <div class="radial-section-wrapper mb-24 relative w-full h-[600px] flex justify-center items-center">
+    <div class="radial-section-wrapper mb-16 relative w-full min-h-[450px] lg:h-[500px] flex justify-center items-center">
 
       {/* DESKTOP VIEW */}
-      <div id="radial-container" class="absolute inset-0 w-full h-full hidden lg:flex justify-center items-center">
+      <div id="radial-container" class="absolute inset-0 w-full h-full hidden lg:flex justify-center items-center" data-baseurl={baseUrl}>
         <svg id="svg-layer" class="absolute inset-0 w-full h-full z-[1] pointer-events-none"></svg>
 
         <a href={`${baseUrl}${langPrefix}/data/explorer/`} id="center-hub" class="absolute z-10 flex justify-center items-center cursor-pointer no-underline group/hub">
-          <div id="real-logo" class="relative flex justify-center items-center w-[220px] h-[220px] transition-transform duration-400 ease-out group-hover/hub:scale-[1.06]">
-            <!-- BioPortal Vector Mark -->
-            <svg id="base-svg" class="absolute inset-0 w-full h-full overflow-visible" viewBox="0 0 612 792" xmlns="http://www.w3.org/2000/svg">
-              <style type="text/css">
-                  .st0{fill-rule:evenodd;clip-rule:evenodd;fill:#26ABE2;}
-                  .st1{fill-rule:evenodd;clip-rule:evenodd;fill:#F37A21;}
-                  .st2{fill:#7DCDEE;}
-                  .st3{fill:#F5954D;}
-                  .st4{fill:#51BCE8;}
-                  .st5{fill:#F8AF7A;}
-                  .st6{fill-rule:evenodd;clip-rule:evenodd;fill:#FDBB10;}
-                  .st7{fill-rule:evenodd;clip-rule:evenodd;fill:#7FC343;}
-                  .st8{fill-rule:evenodd;clip-rule:evenodd;fill:#FAAB14;}
-                  .st9{fill-rule:evenodd;clip-rule:evenodd;fill:#E5C917;}
-                  .st10{fill-rule:evenodd;clip-rule:evenodd;fill:#CCC822;}
-                  .st11{fill-rule:evenodd;clip-rule:evenodd;fill:#99C538;}
-                  .st12{fill-rule:evenodd;clip-rule:evenodd;fill:#B2C62D;}
-                  .st13{fill-rule:evenodd;clip-rule:evenodd;fill:#F9A316;}
-                  .st14{fill-rule:evenodd;clip-rule:evenodd;fill:#F89A19;}
-                  .st15{fill-rule:evenodd;clip-rule:evenodd;fill:#F58A1D;}
-                  .st16{fill-rule:evenodd;clip-rule:evenodd;fill:#87C96E;}
-                  .st17{fill-rule:evenodd;clip-rule:evenodd;fill:#9FDBEE;}
-                  .st18{fill-rule:evenodd;clip-rule:evenodd;fill:#97D5C3;}
-                  .st19{fill-rule:evenodd;clip-rule:evenodd;fill:#87D1EC;}
-                  .st20{fill-rule:evenodd;clip-rule:evenodd;fill:#56BEE7;}
-                  .st21{fill-rule:evenodd;clip-rule:evenodd;fill:#6FC8E9;}
-                  .st22{fill-rule:evenodd;clip-rule:evenodd;fill:#3EB5E4;}
-                  .st23{fill-rule:evenodd;clip-rule:evenodd;fill:#8FCF99;}
-                  .st24{fill:#FAB545;}
-                  .st25{fill:#F9AE47;}
-                  .st26{fill:#FBBC43;}
-                  .st27{fill:#D6D34E;}
-                  .st28{fill:#FDC940;}
-                  .st29{fill:#EAD445;}
-                  .st30{fill:#F7A14A;}
-                  .st31{fill:#B2E2F1;}
-                  .st32{fill:#9FDAF0;}
-                  .st33{fill:#8CD3ED;}
-                  .st34{fill:#65C4E9;}
-                  .st35{fill:#ACDDCF;}
-                  .st36{fill:#9FD48B;}
-                  .st37{fill:#99CF69;}
-                  .st38{fill:#ADD160;}
-                  .st39{fill:#C1D157;}
-                  .st40{fill:#A5D9AD;}
-                  .st41{fill:#78CBEC;}
-                  .st42{fill:#BCE2C2;}
-                  .st43{fill:#C1E6DB;}
-                  .st44{fill:#B2DB8E;}
-                  .st45{fill:#C5E9F5;}
-                  .st46{fill:#B7DFA8;}
-                  .st47{fill:#C2DC88;}
-                  .st48{fill:#8BD3EF;}
-                  .st49{fill:#B7E3F4;}
-                  .st50{fill:#9AD8F1;}
-                  .st51{fill:#A9DEF2;}
-                  .st52{fill:#FBC275;}
-                  .st53{fill:#F9B977;}
-                  .st54{fill:#D1DD81;}
-                  .st55{fill:#FCCD72;}
-                  .st56{fill:#EFDF74;}
-                  .st57{fill:#E0DE7A;}
-                  .st58{fill:#FBC873;}
-                  .st59{fill:#FED670;}
-              </style>
-              <g id="logo-groups">
-                <rect x="340.4" y="356.3" fill="#26ABE2" class="logo-piece" width="5.3" height="5.3"/>
-                <rect x="333.8" y="356.3" fill="#F37A21" class="logo-piece" width="5.3" height="5.3"/>
-                <polyline fill="#7DCDEE" class="logo-piece" points="332.4,356.3 327.1,356.3 327.1,361.6 332.4,361.6 332.4,356.3"/>
-                <polyline fill="#F5954D" class="logo-piece" points="345.8,363 340.4,363 340.4,368.3 345.8,368.3 345.8,363"/>
-                <polyline fill="#51BCE8" class="logo-piece" points="339.1,363 333.8,363 333.8,368.3 339.1,368.3 339.1,363"/>
-                <polyline fill="#F5954D" class="logo-piece" points="332.4,363 327.1,363 327.1,368.3 332.4,368.3 332.4,363"/>
-                <rect x="340.4" y="369.6" fill="#26ABE2" class="logo-piece" width="5.3" height="5.3"/>
-                <polyline fill="#F8AF7A" class="logo-piece" points="339.1,369.6 333.8,369.6 333.8,375 339.1,375 339.1,369.6"/>
-                <polyline fill="#7DCDEE" class="logo-piece" points="332.4,369.6 327.1,369.6 327.1,375 332.4,375 332.4,369.6"/>
-                <rect x="307.1" y="356.3" fill="#F37A21" class="logo-piece" width="18.7" height="5.3"/>
-                <polyline fill="#F5954D" class="logo-piece" points="325.8,363 307.1,363 307.1,368.3 325.8,368.3 325.8,363"/>
-                <polyline fill="#F8AF7A" class="logo-piece" points="325.8,369.6 307.1,369.6 307.1,375 325.8,375 325.8,369.6"/>
-                <path fill="#FDBB10" class="logo-piece" d="M280.9,372.2l-3.8-3.8c-1.2,1.3-2.4,2.6-3.4,4.1l4.3,3.1C278.9,374.4,279.8,373.3,280.9,372.2z"/>
-                <path fill="#7FC343" class="logo-piece" d="M271.7,402.8l-5.3,0.9c0.5,2.7,1.3,5.3,2.3,7.8l4.9-2.1C272.8,407.2,272.2,405,271.7,402.8z"/>
-                <path fill="#FAAB14" class="logo-piece" d="M284,369.4l-3.3-4.2c-0.9,0.7-1.8,1.5-2.6,2.3l3.8,3.8C282.5,370.6,283.2,370,284,369.4z"/>
-                <path fill="#E5C917" class="logo-piece" d="M277.2,376.7l-4.3-3.1c-1,1.5-2,3.1-2.8,4.8l4.8,2.3C275.5,379.3,276.3,377.9,277.2,376.7z"/>
-                <path fill="#CCC822" class="logo-piece" d="M274.3,381.9l-4.8-2.3c-0.9,1.8-1.6,3.8-2.1,5.7l5.2,1.4C272.9,385,273.5,383.4,274.3,381.9z"/>
-                <path fill="#99C538" class="logo-piece" d="M271.1,396.3c0-0.4,0-0.8,0-1.1l-5.3-0.3c0,0.5,0,0.9,0,1.4c0,2.1,0.2,4.1,0.5,6.1l5.3-0.9C271.2,399.8,271.1,398,271.1,396.3z"/>
-                <path fill="#B2C62D" class="logo-piece" d="M272.1,387.9l-5.2-1.4c-0.6,2.3-0.9,4.6-1.1,7l5.3,0.3C271.3,391.8,271.7,389.9,272.1,387.9z"/>
-                <path fill="#F9A316" class="logo-piece" d="M287.7,366.7l-2.7-4.6c-1.1,0.7-2.3,1.5-3.3,2.3l3.3,4.2C285.9,367.9,286.8,367.3,287.7,366.7z"/>
-                <path fill="#F89A19" class="logo-piece" d="M290.7,365.1l-2.2-4.8c-0.8,0.4-1.5,0.8-2.3,1.2l2.7,4.6C289.5,365.7,290.1,365.4,290.7,365.1z"/>
-                <path fill="#F89A19" class="logo-piece" d="M294.1,363.7l-1.7-5.1c-0.9,0.3-1.8,0.7-2.7,1.1l2.2,4.8C292.6,364.2,293.3,363.9,294.1,363.7z"/>
-                <path fill="#F58A1D" class="logo-piece" d="M305.8,361.6v-5.3c-4.2,0-8.3,0.7-12.1,1.9l1.7,5.1C298.6,362.2,302.1,361.6,305.8,361.6z"/>
-                <path fill="#87C96E" class="logo-piece" d="M274.2,410.6l-4.9,2.1c1.3,3,3,5.7,5,8.3l4.1-3.4C276.7,415.4,275.3,413.1,274.2,410.6z"/>
-                <path fill="#9FDBEE" class="logo-piece" d="M295.1,429.3l-1.7,5c3.2,1,6.5,1.7,10,1.9l0.2-5.3C300.7,430.7,297.8,430.2,295.1,429.3z"/>
-                <path fill="#97D5C3" class="logo-piece" d="M286.5,425.1l-3.1,4.4c2.7,1.8,5.6,3.3,8.7,4.4l1.7-5C291.2,427.9,288.7,426.6,286.5,425.1z"/>
-                <path fill="#87D1EC" class="logo-piece" d="M305.8,431c-0.3,0-0.6,0-0.8,0l-0.2,5.3c0.4,0,0.7,0,1.1,0c3.3,0,6.5-0.4,9.6-1.2L314,430C311.4,430.6,308.6,431,305.8,431z"/>
-                <path fill="#56BEE7" class="logo-piece" d="M325.6,424.7l3,4.4c3.5-2.4,6.6-5.4,9.2-8.9l-4.3-3.1C331.3,420.1,328.6,422.6,325.6,424.7z"/>
-                <path fill="#6FC8E9" class="logo-piece" d="M315.3,429.6l1.4,5.2c3.9-1.1,7.5-2.8,10.8-4.9l-3-4.4C321.7,427.3,318.6,428.7,315.3,429.6z"/>
-                <path fill="#3EB5E4" class="logo-piece" d="M334.2,416.1l4.3,3.1c2.6-3.7,4.6-7.8,5.8-12.3l-5.2-1.3C338.1,409.4,336.5,412.9,334.2,416.1z"/>
-                <path fill="#8FCF99" class="logo-piece" d="M279.3,418.6l-4.1,3.4c2.1,2.5,4.5,4.8,7.2,6.7l3.1-4.4C283.1,422.7,281.1,420.8,279.3,418.6z"/>
-                <path fill="#FAB545" class="logo-piece" d="M288.4,367.8c-0.9,0.5-1.8,1.1-2.6,1.8l3.3,4.2c0.6-0.5,1.3-0.9,2-1.4L288.4,367.8"/>
-                <path fill="#F9AE47" class="logo-piece" d="M291.3,366.3c-0.6,0.3-1.1,0.6-1.7,0.9l2.7,4.6c0.4-0.2,0.8-0.4,1.2-0.6L291.3,366.3"/>
-                <path fill="#FBBC43" class="logo-piece" d="M284.8,370.4c-0.7,0.6-1.4,1.2-2,1.8l3.8,3.8c0.5-0.5,1-0.9,1.6-1.4L284.8,370.4"/>
-                <path fill="#D6D34E" class="logo-piece" d="M275.5,382.4c-0.7,1.5-1.2,3-1.7,4.6l5.2,1.4c0.4-1.3,0.8-2.5,1.4-3.6L275.5,382.4"/>
-                <path fill="#FDC940" class="logo-piece" d="M281.8,373.2c-1,1-1.9,2.1-2.7,3.2l4.3,3.1c0.7-0.9,1.4-1.7,2.2-2.5L281.8,373.2"/>
-                <path fill="#EAD445" class="logo-piece" d="M278.3,377.4c-0.8,1.2-1.6,2.5-2.2,3.8l4.8,2.3c0.5-1,1.1-2,1.8-3L278.3,377.4"/>
-                <path fill="#F7A14A" class="logo-piece" d="M305.8,363c-3.5,0-6.9,0.5-10,1.5l1.7,5.1c2.6-0.8,5.4-1.3,8.3-1.3V363"/>
-                <path fill="#F9AE47" class="logo-piece" d="M294.5,364.9c-0.7,0.2-1.4,0.5-2,0.8l2.2,4.8c0.5-0.2,1-0.4,1.5-0.6L294.5,364.9"/>
-                <path fill="#B2E2F1" class="logo-piece" d="M297.3,423l-1.7,5c2.6,0.8,5.3,1.4,8.1,1.5l0.2-5.3C301.6,424.1,299.4,423.6,297.3,423"/>
-                <path fill="#9FDAF0" class="logo-piece" d="M312.3,423.5c-2.1,0.5-4.3,0.8-6.5,0.8c-0.2,0-0.4,0-0.6,0l-0.2,5.3c0.3,0,0.5,0,0.8,0c2.7,0,5.4-0.3,7.9-0.9L312.3,423.5"/>
-                <path fill="#8CD3ED" class="logo-piece" d="M320.8,419.9c-2.2,1.4-4.6,2.5-7.2,3.3l1.4,5.2c3.2-0.9,6.1-2.3,8.8-4L320.8,419.9"/>
-                <path fill="#65C4E9" class="logo-piece" d="M332.7,403.9c-0.8,3-2.2,5.8-3.9,8.3l4.3,3.1c2.1-3,3.7-6.4,4.7-10.1L332.7,403.9"/>
-                <path fill="#ACDDCF" class="logo-piece" d="M290.3,419.6l-3.1,4.4c2.2,1.5,4.5,2.7,7.1,3.6l1.7-5C294,421.8,292.1,420.8,290.3,419.6"/>
-                <path fill="#9FD48B" class="logo-piece" d="M280.3,407.9l-4.9,2.1c1.1,2.4,2.5,4.6,4.1,6.7l4.1-3.4C282.3,411.7,281.2,409.9,280.3,407.9"/>
-                <path fill="#99CF69" class="logo-piece" d="M278.3,401.7l-5.3,0.9c0.4,2.2,1,4.3,1.8,6.3l4.9-2.1C279.1,405.1,278.6,403.4,278.3,401.7"/>
-                <path fill="#ADD160" class="logo-piece" d="M272.5,395.2c0,0.4,0,0.7,0,1.1c0,1.7,0.1,3.3,0.4,4.9l5.3-0.9c-0.2-1.3-0.3-2.7-0.3-4c0-0.3,0-0.5,0-0.8L272.5,395.2"/>
-                <path fill="#C1D157" class="logo-piece" d="M273.4,388.3c-0.4,1.8-0.7,3.7-0.9,5.6l5.3,0.3c0.1-1.5,0.4-3,0.7-4.5L273.4,388.3"/>
-                <path fill="#A5D9AD" class="logo-piece" d="M284.4,414.4l-4.1,3.4c1.7,2,3.7,3.9,5.8,5.4l3.1-4.4C287.4,417.6,285.8,416.1,284.4,414.4"/>
-                <path fill="#78CBEC" class="logo-piece" d="M328.1,413.2c-1.7,2.3-3.8,4.3-6.2,5.9l3,4.4c2.9-2,5.4-4.5,7.5-7.2L328.1,413.2"/>
-                <path fill="#BCE2C2" class="logo-piece" d="M289.6,410.2l-4.2,3.4c1.3,1.6,2.8,3,4.5,4.2l3.1-4.4C291.8,412.5,290.6,411.4,289.6,410.2"/>
-                <path fill="#C1E6DB" class="logo-piece" d="M294.1,414.1l-3.1,4.4c1.7,1.1,3.5,2,5.4,2.8l1.7-5C296.8,415.7,295.4,415,294.1,414.1"/>
-                <path fill="#B2DB8E" class="logo-piece" d="M284.9,400.5l-5.3,0.9c0.3,1.6,0.8,3.2,1.4,4.8l4.9-2.1C285.5,402.9,285.1,401.8,284.9,400.5"/>
-                <path fill="#C5E9F5" class="logo-piece" d="M299.5,416.7l-1.7,5c2,0.6,4.1,1,6.2,1.2l0.2-5.3C302.6,417.4,301,417.1,299.5,416.7"/>
-                <path fill="#B7DFA8" class="logo-piece" d="M286.4,405.3l-4.9,2.1c0.8,1.8,1.9,3.6,3.1,5.1l4.1-3.4C287.9,408,287.1,406.7,286.4,405.3"/>
-                <path fill="#C2DC88" class="logo-piece" d="M279.1,395.6c0,0.2,0,0.5,0,0.7c0,1.3,0.1,2.6,0.3,3.8l5.3-0.9c-0.1-1-0.2-1.9-0.2-2.9c0-0.1,0-0.3,0-0.4L279.1,395.6"/>
-              </g>
-            </svg>
+          <div id="real-logo" class="relative flex justify-center items-center w-[200px] h-[200px] transition-transform duration-400 ease-out group-hover/hub:scale-[1.06]">
+            <!-- JS WILL FETCH AND INJECT /logos/BioPortal_Mark_Color.svg HERE -->
           </div>
 
-          <div id="hub-text-container">
+          <div id="hub-text-container" class="absolute z-20 flex flex-col justify-center items-center pointer-events-none w-[90px]">
             {lang === 'fr' ? (
-              <div class="hub-text-fr transition-colors duration-300">Explorateur</div>
+              <div class="hub-text-fr">
+                Explorateur
+                <svg class="arrow-thrust w-4 h-4 text-gray-900 group-hover/hub:text-brand-blue-deep mx-auto mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+              </div>
             ) : (
               <div class="hub-text-en">
                 Explore
                 <span class="hub-text-en-row">
                   Data
-                  <svg class="arrow-thrust w-4 h-4 text-gray-900 group-hover/hub:text-brand-blue-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                  <svg class="arrow-thrust w-4 h-4 text-gray-900 group-hover/hub:text-brand-blue-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
                 </span>
               </div>
             )}
@@ -294,14 +175,7 @@ const content = pageData?.data?.dataRequest || {
 </Layout>
 
 <style is:global>
-  /*
-   * IMPORTANT: <style is:global> is required in Astro to style DOM elements
-   * that are injected dynamically by client-side Javascript.
-   */
-  .radial-section-wrapper { min-height: 600px; }
-  #radial-container { position: relative; }
-  #svg-layer { pointer-events: none; }
-
+  /* Base structural CSS */
   .spoke-line {
       fill: none;
       stroke-width: 1.5;
@@ -340,9 +214,12 @@ const content = pageData?.data?.dataRequest || {
       color: #64748b;
   }
 
-  /* Center Hub Styles */
-  #real-logo { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-  .group\/hub:hover #real-logo { transform: scale(1.06); }
+  /* Logo Injection Styles */
+  #real-logo svg {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      overflow: visible;
+  }
 
   .logo-piece {
       transform-origin: center;
@@ -353,29 +230,28 @@ const content = pageData?.data?.dataRequest || {
   }
 
   /* Center Text */
-  #hub-text-container {
-      position: absolute; z-index: 20; display: flex; flex-direction: column;
-      align-items: center; pointer-events: none; width: 90px;
-  }
   .hub-text-en {
-      font-weight: 900; font-size: 1.05rem; color: #0f172a;
+      font-weight: 900; font-size: 1.15rem; color: #0f172a;
       letter-spacing: -0.01em; line-height: 1.1; display: flex;
       flex-direction: column; align-items: center; transition: color 0.3s ease;
   }
   .hub-text-en-row { display: flex; align-items: center; justify-content: center; gap: 2px; margin-left: 12px; }
+
   .hub-text-fr {
-      font-weight: 800; font-size: clamp(0.7rem, 1vw, 0.85rem);
+      font-weight: 800; font-size: clamp(0.7rem, 1vw, 0.95rem);
       color: #0f172a; letter-spacing: 0.05em; transition: color 0.3s ease;
+      display: flex; flex-direction: column; align-items: center;
   }
+
   .group\/hub:hover .hub-text-en, .group\/hub:hover .hub-text-fr { color: #0284c7; }
 
-  /* Center Arrow Bounce (Matches Astro Card) */
+  /* Center Arrow Bounce */
   .arrow-thrust {
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s ease;
+      transition: color 0.3s ease;
   }
   @keyframes centerArrowThrust {
     0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(4px); }
+    50% { transform: translateX(5px); }
   }
   .group\/hub:hover .arrow-thrust {
       animation: centerArrowThrust 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -415,24 +291,44 @@ const content = pageData?.data?.dataRequest || {
 </style>
 
 <script define:vars={{ clientMetrics }}>
-  // Ensure the DOM is fully parsed in Astro before firing SVG math
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", async () => {
 
     const radialContainer = document.getElementById('radial-container');
     const svgLayer = document.getElementById('svg-layer');
     const mobileContainer = document.getElementById('mobile-container');
-    const svgEl = document.getElementById('base-svg');
+    const logoContainer = document.getElementById('real-logo');
+    const baseUrl = radialContainer?.dataset.baseurl || '';
 
-    if (!radialContainer || !svgLayer || !mobileContainer || !svgEl) return;
+    if (!radialContainer || !svgLayer || !mobileContainer || !logoContainer) return;
+
+    let rawPieces = [];
+
+    // 1. Fetch & Inject Original SVG Dynamically
+    try {
+        const res = await fetch(`${baseUrl}/logos/BioPortal_Mark_Color.svg`);
+        if (!res.ok) throw new Error('Failed to fetch logo SVG');
+        const svgText = await res.text();
+        logoContainer.innerHTML = svgText;
+
+        const svgEl = logoContainer.querySelector('svg');
+        if (svgEl) {
+            svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+            rawPieces = svgEl.querySelectorAll('path, rect, polyline, polygon, circle');
+            rawPieces.forEach(p => p.classList.add('logo-piece'));
+        }
+    } catch (err) {
+        console.error("SVG Injection Error:", err);
+        return; // Abort if SVG fails to load
+    }
 
     const nodes = [];
     const paths = [];
     const dots = [];
     const logoPiecesData = [];
 
-    // 1. Initial DOM Setup (Invisible initially)
+    // 2. Initial Data Nodes Setup
     clientMetrics.forEach((m, i) => {
-        // Desktop Node (Flat colors for text, data-driven stroke logic)
+        // Desktop Node
         const div = document.createElement('div');
         div.className = 'data-node';
         div.innerHTML = `<div class="node-val">${m.value}</div><div class="node-lbl">${m.label}</div>`;
@@ -446,7 +342,7 @@ const content = pageData?.data?.dataRequest || {
         mobileContainer.appendChild(mDiv);
     });
 
-    // 2. Setup Geometry & Animate In
+    // 3. Layout Engine
     function setupLayout(isInitialLoad) {
         if (window.innerWidth <= 1024) {
             nodes.forEach(n => n.element.style.display = 'none');
@@ -461,23 +357,29 @@ const content = pageData?.data?.dataRequest || {
 
         const centerX = radialContainer.clientWidth / 2;
         const centerY = radialContainer.clientHeight / 2;
-        const hubRadius = 140;
+        const hubRadius = 130;
         const radialExt = 30;
         const horizExt = 90;
         const totalNodes = nodes.length;
         const startAngle = -Math.PI / 2.5;
 
-        // Auto-crop ViewBox to get accurate SVG bounds
-        const bbox = svgEl.getBBox();
+        const svgEl = logoContainer.querySelector('svg');
+        if (!svgEl) return;
+
+        // Auto-crop ViewBox for accurate SVG bounds mapping
+        let bbox = { x: 0, y: 0, width: 100, height: 100 };
+        try { bbox = svgEl.getBBox(); } catch(e) {}
+
         svgEl.setAttribute('viewBox', `${bbox.x - 2} ${bbox.y - 2} ${bbox.width + 4} ${bbox.height + 4}`);
         const cx = bbox.x + bbox.width / 2;
         const cy = bbox.y + bbox.height / 2;
-        const svgScale = bbox.width / 220; // 220px is the CSS width of #real-logo
+        const svgScale = bbox.width / 200; // #real-logo is 200px wide
 
-        // Map SVG pieces if not done yet
+        // Map SVG pieces
         if (logoPiecesData.length === 0) {
-            document.querySelectorAll('.logo-piece').forEach((piece) => {
-                const pBbox = piece.getBBox();
+            rawPieces.forEach((piece) => {
+                let pBbox = { x: 0, y: 0, width: 0, height: 0 };
+                try { pBbox = piece.getBBox(); } catch(e) {}
                 logoPiecesData.push({
                     pcx: pBbox.x + pBbox.width / 2,
                     pcy: pBbox.y + pBbox.height / 2,
@@ -503,11 +405,11 @@ const content = pageData?.data?.dataRequest || {
             const svgStartX = cx + ((startX - centerX) * svgScale);
             const svgStartY = cy + ((startY - centerY) * svgScale);
 
-            let closestColor = nodeObj.data.color; // fallback to hardcoded
+            let closestColor = nodeObj.data.color;
             let minDistance = Infinity;
             logoPiecesData.forEach(p => {
                 const dist = Math.hypot(p.pcx - svgStartX, p.pcy - svgStartY);
-                if (dist < minDistance) {
+                if (dist < minDistance && p.color !== 'none') {
                     minDistance = dist;
                     closestColor = p.color;
                 }
@@ -552,14 +454,12 @@ const content = pageData?.data?.dataRequest || {
         });
     }
 
-    // Run setup instantly to prevent flashes
-    setupLayout(true);
+    // 4. Fire Render Sequence
+    function playAnimations() {
+        if (window.innerWidth <= 1024) return;
 
-    // Sequence Animations
-    if (window.innerWidth > 1024) {
         // 0ms: Logo Pop-in
-        const logoPieces = Array.from(document.querySelectorAll('.logo-piece'));
-        const shuffled = logoPieces.sort(() => 0.5 - Math.random());
+        const shuffled = Array.from(rawPieces).sort(() => 0.5 - Math.random());
         shuffled.forEach((piece, i) => {
             setTimeout(() => {
                 piece.style.opacity = '1';
@@ -588,12 +488,17 @@ const content = pageData?.data?.dataRequest || {
                 setTimeout(() => {
                     n.element.style.opacity = '1';
                     n.element.style.transform = n.isRight ? 'translate(0, -50%)' : 'translate(-100%, -50%)';
-                }, i * 40); // Soft micro-stagger
+                }, i * 40);
             });
         }, 800);
     }
 
-    // 3. Perfect Resizing (Debounced)
+    // Ensure layout builds immediately, then animates
+    setupLayout(true);
+    // Slight delay ensures getBBox() calculates correctly after fetch injection
+    setTimeout(playAnimations, 50);
+
+    // 5. Debounced Resizing
     let resizeTimer;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
