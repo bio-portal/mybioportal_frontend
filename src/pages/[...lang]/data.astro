@@ -55,7 +55,7 @@ const content = pageData?.data?.dataRequest || {
 
 <Layout title={content.pageTitle} backText={content.backText} lang={lang}>
   <main class="max-w-7xl mx-auto px-6 pt-12 pb-24 relative z-10">
-    <header class="max-w-3xl mb-12 text-center mx-auto">
+    <header class="max-w-3xl mb-3 text-center mx-auto">
       <span class="text-brand-blue-deep font-bold tracking-widest uppercase text-xs mb-4 block">{hero.tagline}</span>
       <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-4 tracking-tight">{hero.headline}</h1>
       <p class="text-lg text-gray-600 leading-relaxed">{hero.description}</p>
@@ -64,7 +64,7 @@ const content = pageData?.data?.dataRequest || {
     {/* ========================================= */}
     {/* DYNAMIC RADIAL METRICS ENGINE             */}
     {/* ========================================= */}
-    <div class="radial-section-wrapper mb-16 relative w-full min-h-[450px] lg:h-[500px] flex justify-center items-center">
+    <div class="radial-section-wrapper mb-4 relative w-full h-[350px] flex justify-center items-center">
 
       {/* DESKTOP VIEW */}
       <div id="radial-container" class="absolute inset-0 w-full h-full hidden lg:flex justify-center items-center" data-baseurl={baseUrl}>
