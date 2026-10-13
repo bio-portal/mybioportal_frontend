@@ -64,7 +64,7 @@ const content = pageData?.data?.dataRequest || {
     {/* ========================================= */}
     {/* DYNAMIC RADIAL METRICS ENGINE             */}
     {/* ========================================= */}
-    <div class="radial-section-wrapper mb-6 relative w-full h-[380px] flex justify-center items-center">
+    <div class="radial-section-wrapper mb-7 relative w-full h-[390px] flex justify-center items-center">
 
       {/* DESKTOP VIEW */}
       <div id="radial-container" class="absolute inset-0 w-full h-full hidden lg:flex justify-center items-center" data-baseurl={baseUrl}>
@@ -183,7 +183,10 @@ const content = pageData?.data?.dataRequest || {
       stroke-linejoin: round;
   }
 
-  .spoke-dot { transition: opacity 0.4s ease; }
+  .spoke-dot {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
 
   .data-node {
       position: absolute;
@@ -439,6 +442,7 @@ const content = pageData?.data?.dataRequest || {
 
             if (isInitialLoad) {
                 path.style.opacity = '0';
+                dot.style.opacity = '0';
                 nodeObj.element.style.transform = isRightSide ? 'translate(20px, -50%)' : 'translate(-120%, -50%)';
             } else {
                 nodeObj.element.style.opacity = '1';
@@ -490,7 +494,7 @@ const content = pageData?.data?.dataRequest || {
                     n.element.style.transform = n.isRight ? 'translate(0, -50%)' : 'translate(-100%, -50%)';
                 }, i * 40);
             });
-        }, 800);
+        }, 1000);
     }
 
     // Ensure layout builds immediately, then animates
