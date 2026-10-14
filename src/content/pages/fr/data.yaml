@@ -6,20 +6,20 @@ hero:
 landingMetrics:
 - label: Total des participants
   value: 7,645
-- label: Variables cliniques
-  value: 160
 - label: Protéines Olink Explore HT
   value: 5,400
 - label: Profils protéomiques
   value: 3,090
+- label: Illumina GSA v3-MD Génotypage (Bientôt)
+  value: 7,645
 - label: Échantillons de sang
   value: 4,845
 - label: Échantillons d'urine
   value: 3,210
 - label: Scans rétiniens
   value: 1,175
-- label: Illumina GSA v3-MD Génotypage (Bientôt)
-  value: 7,645
+- label: Variables cliniques
+  value: 160
 
 explorer:
   pageTitle: "Explorateur de données interactif | BioPortal"
