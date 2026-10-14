@@ -119,7 +119,6 @@ const pages = defineCollection({
         requirementsItems: z.array(z.string()),
         infrastructureTitle: z.string(),
         infrastructureDescription: z.string(),
-        infrastructureTags: z.array(z.string()),
       }),
       actionBlock: z.object({
         title: z.string(),
