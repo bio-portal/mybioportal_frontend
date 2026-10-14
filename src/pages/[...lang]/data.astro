@@ -344,6 +344,8 @@ const content = pageData?.data?.dataRequest || {
 
         const mDiv = document.createElement('div');
         mDiv.className = 'mobile-node';
+        // ADD THIS LINE TO SET THE COLOR IMMEDIATELY ON MOBILE
+        mDiv.style.setProperty('--accent-color', m.color);
         mDiv.innerHTML = `<div class="node-val">${m.value}</div><div class="node-lbl">${m.label}</div>`;
         mobileContainer.appendChild(mDiv);
     });
@@ -452,11 +454,12 @@ const content = pageData?.data?.dataRequest || {
             nodeObj.isRight = isRightSide;
         });
     }
-
+    let hasPlayedDesktopAnimation = false;
     // 4. Fire Render Sequence
     function playAnimations() {
         if (window.innerWidth <= 1024) return;
-
+        if (hasPlayedDesktopAnimation) return;
+        hasPlayedDesktopAnimation = true;
         // --- RELATIVE TIMING CONFIGURATION ---
         // Change these to perfectly tune the cascade!
         const TIMING = {
@@ -539,7 +542,13 @@ const content = pageData?.data?.dataRequest || {
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
-            setupLayout(false);
+            // If resizing to desktop and animation hasn't played yet, play it!
+            if (window.innerWidth > 1024 && !hasPlayedDesktopAnimation) {
+                setupLayout(true);
+                playAnimations();
+            } else {
+                setupLayout(false); // Otherwise just snap layout into place
+            }
         }, 50);
     });
 
