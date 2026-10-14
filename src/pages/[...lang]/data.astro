@@ -11,17 +11,20 @@ export function getStaticPaths() {
 
 const { lang = 'en' } = Astro.params;
 const langPrefix = lang === 'en' ? '' : '/fr';
-// 🌟 FIXED: Safe RegExp instantiation prevents esbuild parsing errors on '$'
+// 🌟 Safe RegExp instantiation prevents esbuild parsing errors on '$'
 const baseUrl = import.meta.env.BASE_URL.replace(new RegExp('/$'), '');
 
 const pageData = await getEntry('pages', `${lang}/data`);
 
 const hero = pageData?.data?.hero || { tagline: 'Data', headline: 'BioPortal Datasets', description: 'Loading data...' };
 
+// 1. Grab landing metrics from YAML
 const rawMetrics = pageData?.data?.landingMetrics || [];
 
+// 2. Exact Hex colors matching your SVG logo pieces (used as a fallback)
 const brandHexColors = ['#0284c7', '#0d9488', '#0ea5e9', '#16a34a', '#eab308', '#f97316', '#ea580c'];
 
+// 3. Prepare metrics for the client-side JS Engine
 const clientMetrics = rawMetrics.map((m: any, i: number) => ({
   label: m.label,
   value: String(m.value),
@@ -59,6 +62,9 @@ const content = pageData?.data?.dataRequest || {
       <p class="text-lg text-gray-600 leading-relaxed">{hero.description}</p>
     </header>
 
+    {/* ========================================= */}
+    {/* DYNAMIC RADIAL METRICS ENGINE             */}
+    {/* ========================================= */}
     <div class="radial-section-wrapper mb-7 relative w-full h-[390px] flex justify-center items-center">
 
       {/* DESKTOP VIEW */}
@@ -170,11 +176,13 @@ const content = pageData?.data?.dataRequest || {
 </Layout>
 
 <style is:global>
+  /* Base structural CSS */
   .spoke-line {
       fill: none;
       stroke-width: 1.5;
       stroke-linecap: round;
       stroke-linejoin: round;
+      /* Removed transition here - it is perfectly synced via JS now */
   }
 
   .spoke-dot { transition: opacity 0.4s ease; }
@@ -210,6 +218,7 @@ const content = pageData?.data?.dataRequest || {
       white-space: normal;
   }
 
+  /* Logo Injection Styles */
   #real-logo svg {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -221,9 +230,11 @@ const content = pageData?.data?.dataRequest || {
       transform-box: fill-box;
       opacity: 0;
       transform: scale(0);
-      transition: transform 0.75s cubic-bezier(0.55, 0.085, 0.68, 0.53), opacity 0.75s ease;
+      /* Snappy, springy overshoot bounce on load! */
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
   }
 
+  /* Center Text */
   .hub-text-en, .hub-text-fr {
       opacity: 0;
       transition: opacity 0.5s ease, color 0.3s ease;
@@ -244,7 +255,10 @@ const content = pageData?.data?.dataRequest || {
 
   .group\/hub:hover .hub-text-en, .group\/hub:hover .hub-text-fr { color: #0284c7; }
 
-  .arrow-thrust { transition: color 0.3s ease; }
+  /* Center Arrow Bounce */
+  .arrow-thrust {
+      transition: color 0.3s ease;
+  }
   @keyframes centerArrowThrust {
     0%, 100% { transform: translateX(0); }
     50% { transform: translateX(5px); }
@@ -253,12 +267,16 @@ const content = pageData?.data?.dataRequest || {
       animation: centerArrowThrust 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
-  .mobile-node { display: flex; flex-direction: column; position: relative; padding-left: 1.5rem; }
+  /* Mobile Node Style */
+  .mobile-node {
+      display: flex; flex-direction: column; position: relative; padding-left: 1.5rem;
+  }
   .mobile-node::before {
       content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
       border-radius: 3px; background-color: var(--accent-color);
   }
 
+  /* Existing Astro Card Animations */
   .aurora-dot {
     background: linear-gradient(135deg, var(--color-brand-blue-deep), var(--color-brand-teal), var(--color-brand-green-bright), var(--color-brand-yellow), var(--color-brand-orange-deep));
     background-size: 300% 300%;
@@ -283,7 +301,7 @@ const content = pageData?.data?.dataRequest || {
 </style>
 
 <script define:vars={{ clientMetrics }}>
-  document.addEventListener("DOMContentLoaded", async () => {
+  const initRadial = async () => {
 
     const radialContainer = document.getElementById('radial-container');
     const svgLayer = document.getElementById('svg-layer');
@@ -298,14 +316,7 @@ const content = pageData?.data?.dataRequest || {
 
     let rawPieces = [];
 
-    const TIMING = {
-        logoStaggerMs: 8,
-        linesStartDelay: 350,
-        linesDuration: '0.8s',
-        nodesStartDelay: 950,
-        centerTextDelay: 1300
-    };
-
+    // 1. Fetch & Inject Original SVG Dynamically
     try {
         const res = await fetch(`${baseUrl}/logos/BioPortal_Mark_Color.svg`);
         if (!res.ok) throw new Error('Failed to fetch logo SVG');
@@ -328,6 +339,7 @@ const content = pageData?.data?.dataRequest || {
     const dots = [];
     const logoPiecesData = [];
 
+    // 2. Initial Data Nodes Setup
     clientMetrics.forEach((m, i) => {
         const div = document.createElement('div');
         div.className = 'data-node';
@@ -341,6 +353,7 @@ const content = pageData?.data?.dataRequest || {
         mobileContainer.appendChild(mDiv);
     });
 
+    // 3. Layout Engine
     function setupLayout(isInitialLoad) {
         if (window.innerWidth <= 1024) {
             nodes.forEach(n => n.element.style.display = 'none');
@@ -445,17 +458,53 @@ const content = pageData?.data?.dataRequest || {
         });
     }
 
+    // 4. Fire Render Sequence
     function playAnimations() {
         if (window.innerWidth <= 1024) return;
 
+        // --- RELATIVE TIMING CONFIGURATION ---
+        // Change these to perfectly tune the cascade!
+        const TIMING = {
+            // Logo Animation
+            LOGO_PIECE_STAGGER_MS: 5,   // Delay between each of the 60 blocks popping in
+            LOGO_ANIM_DURATION_MS: 500, // Should closely match the CSS transition duration
+
+            // Line Drawing
+            LINES_START_PERCENT: 0.97,  // Starts drawing at 97% of the total logo load time
+            LINES_DURATION_MS: 700,     // Speed of the line drawing outward
+
+            // Nodes (Dots & Text)
+            // The overlap ensures text/dots slide in fluidly before the line fully finishes
+            NODES_OVERLAP_MS: 100,
+
+            // Center Text ('Explore Data')
+            CENTER_TEXT_DELAY_MS: 300   // Appears X ms after the outer nodes trigger
+        };
+
+        // --- Mathematical Sequencing ---
+        // 1. Calculate exact moment the logo finishes its cascade
+        const totalLogoTimeMs = (rawPieces.length * TIMING.LOGO_PIECE_STAGGER_MS) + TIMING.LOGO_ANIM_DURATION_MS;
+
+        // 2. Lines start near the very end of the logo rendering
+        const linesStartDelayMs = totalLogoTimeMs * TIMING.LINES_START_PERCENT;
+
+        // 3. Nodes (text/dots) appear just before lines hit the endpoints
+        const nodesStartDelayMs = (linesStartDelayMs + TIMING.LINES_DURATION_MS) - TIMING.NODES_OVERLAP_MS;
+
+        // 4. Center text fades in last
+        const centerTextDelayMs = nodesStartDelayMs + TIMING.CENTER_TEXT_DELAY_MS;
+
+        // --- Execution ---
+        // Play Logo Pop-in
         const shuffled = Array.from(rawPieces).sort(() => 0.5 - Math.random());
         shuffled.forEach((piece, i) => {
             setTimeout(() => {
                 piece.style.opacity = '1';
                 piece.style.transform = 'scale(1)';
-            }, i * TIMING.logoStaggerMs);
+            }, i * TIMING.LOGO_PIECE_STAGGER_MS);
         });
 
+        // Play Line Draws
         setTimeout(() => {
             paths.forEach(path => {
                 const length = path.getTotalLength();
@@ -463,12 +512,13 @@ const content = pageData?.data?.dataRequest || {
                 path.style.strokeDashoffset = length;
                 path.style.opacity = '1';
 
-                path.getBoundingClientRect();
-                path.style.transition = `stroke-dashoffset ${TIMING.linesDuration} cubic-bezier(0.22, 1, 0.36, 1)`;
+                path.getBoundingClientRect(); // force reflow
+                path.style.transition = `stroke-dashoffset ${TIMING.LINES_DURATION_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`;
                 path.style.strokeDashoffset = '0';
             });
-        }, TIMING.linesStartDelay);
+        }, linesStartDelayMs);
 
+        // Play Dots & Outer Text
         setTimeout(() => {
             dots.forEach(d => d.style.opacity = '1');
             nodes.forEach((n, i) => {
@@ -477,12 +527,13 @@ const content = pageData?.data?.dataRequest || {
                     n.element.style.transform = n.isRight ? 'translate(0, -50%)' : 'translate(-100%, -50%)';
                 }, i * 40);
             });
-        }, TIMING.nodesStartDelay);
+        }, nodesStartDelayMs);
 
+        // Play Center Text
         if (centerText) {
             setTimeout(() => {
                 centerText.style.opacity = '1';
-            }, TIMING.centerTextDelay);
+            }, centerTextDelayMs);
         }
     }
 
@@ -497,5 +548,12 @@ const content = pageData?.data?.dataRequest || {
         }, 50);
     });
 
-  });
+  };
+
+  // Run instantly if already loaded, otherwise wait
+  if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initRadial);
+  } else {
+      initRadial();
+  }
 </script>
