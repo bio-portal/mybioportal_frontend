@@ -9,7 +9,7 @@ landingMetrics:
 - label: Clinical Variables
   value: 160
 - label: Olink Explore HT Proteins
-  value: 5,400
+  value: 5400
 - label: Proteomic Profiles
   value: 3090
 - label: Matched Blood Samples

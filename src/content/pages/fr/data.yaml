@@ -9,7 +9,7 @@ landingMetrics:
 - label: Variables cliniques
   value: 160
 - label: Protéines Olink Explore HT
-  value: 5,400
+  value: 5400
 - label: Profils protéomiques
   value: 3090
 - label: Échantillons de sang
