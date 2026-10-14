@@ -41,8 +41,7 @@ const content = pageData?.data?.dataRequest || {
     requirementsTitle: "Requirements",
     requirementsItems: [],
     infrastructureTitle: "Infrastructure",
-    infrastructureDescription: "",
-    infrastructureTags: []
+    infrastructureDescription: ""
   },
   actionBlock: {
     title: "Request Data",
@@ -65,7 +64,7 @@ const content = pageData?.data?.dataRequest || {
     {/* ========================================= */}
     {/* DYNAMIC RADIAL METRICS ENGINE             */}
     {/* ========================================= */}
-    <div class="radial-section-wrapper mb-7 relative w-full h-[390px] flex justify-center items-center">
+    <div class="radial-section-wrapper mb-7 relative w-full h-auto lg:h-[390px] flex justify-center items-center">
 
       {/* DESKTOP VIEW */}
       <div id="radial-container" class="absolute inset-0 w-full h-full hidden lg:flex justify-center items-center" data-baseurl={baseUrl}>
@@ -125,11 +124,7 @@ const content = pageData?.data?.dataRequest || {
           <div class="pt-6 border-t border-gray-100">
             <h3 class="text-lg font-bold text-gray-900 mb-3">{content.applicationProcess.infrastructureTitle}</h3>
             <p class="text-sm text-gray-500 leading-relaxed mb-4" set:html={content.applicationProcess.infrastructureDescription}></p>
-            <div class="flex flex-wrap gap-2">
-              {content.applicationProcess.infrastructureTags?.map((tag: string) => (
-                <span class="px-3 py-1.5 rounded-lg bg-brand-blue-mid/10 text-brand-dark font-bold text-[10px] uppercase tracking-widest">{tag}</span>
-              ))}
-            </div>
+
           </div>
         </div>
       </div>

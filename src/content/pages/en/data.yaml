@@ -65,14 +65,11 @@ dataRequest:
     description: "Accessing BioPortal datasets requires strict institutional alignment. Please review the infrastructure requirements and download the official access request framework below."
     requirementsTitle: "Requirements"
     requirementsItems:
-      - "Institutionally-approved REB/IRB documentation matching the target request."
+      - "Independently-approved REB/IRB documentation matching the target request."
       - "Executed Data Transfer Agreement (DTA) or institutional alignment contracts."
       - "Compliance with the BioPortal open science attribution framework."
     infrastructureTitle: "Infrastructure Vetting"
     infrastructureDescription: "The infrastructure utilizes our custom-built interactive discovery platform and leverages high-performance computing networks provided by the <strong>Digital Research Alliance of Canada (AllianceCan)</strong> alongside a secure, private compute cluster at the <strong>Lady Davis Institute (LDI)</strong> for downstream processing operations."
-    infrastructureTags:
-      - "LDI Private Cluster"
-      - "AllianceCan"
   actionBlock:
     title: "Request Data Access"
     description: "Download the official Data Access Form, complete all institutional signatures, and submit the finalized PDF to our administrative team."
