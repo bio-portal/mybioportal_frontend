@@ -5,21 +5,21 @@ hero:
   description: "Accédez à des cohortes de recherche au phénotypage approfondi, explorez les distributions d'échantillons multi-omiques et demandez du matériel biologique sécurisé pour des programme de recherche approuvés."
 landingMetrics:
 - label: Total des participants
-  value: 7645
+  value: 7,645
 - label: Variables cliniques
   value: 160
 - label: Protéines Olink Explore HT
-  value: 5400
+  value: 5,400
 - label: Profils protéomiques
-  value: 3090
+  value: 3,090
 - label: Échantillons de sang
-  value: 4845
+  value: 4,845
 - label: Échantillons d'urine
-  value: 3210
+  value: 3,210
 - label: Scans rétiniens
-  value: 1175
+  value: 1,175
 - label: Illumina GSA v3-MD Génotypage (Bientôt)
-  value: 7645
+  value: 7,645
 
 explorer:
   pageTitle: "Explorateur de données interactif | BioPortal"
