@@ -18,7 +18,8 @@ landingMetrics:
   value: 3210
 - label: Scans rétiniens
   value: 1175
-
+- label: Illumina GSA v3-MD Génotypage (Bientôt)
+  value: 7645
 
 explorer:
   pageTitle: "Explorateur de données interactif | BioPortal"
