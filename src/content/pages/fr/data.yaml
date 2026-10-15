@@ -17,9 +17,9 @@ landingMetrics:
 - label: Échantillons d'urine
   value: 3,210
 - label: Scans rétiniens
-  value: 1,175
+  value: 4,230
 - label: Variables cliniques
-  value: 160
+  value: 170
 
 explorer:
   pageTitle: "Explorateur de données interactif | BioPortal"
