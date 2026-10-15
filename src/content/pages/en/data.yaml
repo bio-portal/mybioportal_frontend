@@ -17,9 +17,9 @@ landingMetrics:
 - label: Matched Urine Samples
   value: 3,210
 - label: Retinal Scans
-  value: 1,175
+  value: 4,230
 - label: Clinical Variables
-  value: 160
+  value: 170
 
 explorer:
   pageTitle: "Interactive Data Explorer | BioPortal"
