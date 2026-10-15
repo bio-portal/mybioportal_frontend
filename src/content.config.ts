@@ -28,18 +28,12 @@ const pages = defineCollection({
       desc: z.string()
     }).optional(),
 
-    landingMetrics: z.object({
-      participantsLabel: z.string(),
-      clinicalVariablesLabel: z.string(),
-      proteomicsLabel: z.string(),
-      biosamplesLabel: z.string(),
-      fallbackValues: z.object({
-        participants: z.string().optional(),
-        clinicalVariables: z.string(),
-        proteomics: z.string().optional(),
-        biosamples: z.string().optional()
+    landingMetrics: z.array(
+      z.object({
+        label: z.string(),
+        value: z.union([z.string(), z.number()]) // Accepts '32' or 7645 safely
       })
-    }).optional(),
+    ).optional(),
 
     // --- GLOBAL SITE CONFIG (Navbar & Footer at root level) ---
     navigation: z.object({
@@ -125,7 +119,6 @@ const pages = defineCollection({
         requirementsItems: z.array(z.string()),
         infrastructureTitle: z.string(),
         infrastructureDescription: z.string(),
-        infrastructureTags: z.array(z.string()),
       }),
       actionBlock: z.object({
         title: z.string(),
