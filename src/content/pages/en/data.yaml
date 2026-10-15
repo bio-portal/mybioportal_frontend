@@ -5,13 +5,13 @@ hero:
   description: "Access research cohorts with deep-phenotyped data, explore multi-omics sample distributions, and request secure biological materials for approved scientific inquiries."
 landingMetrics:
 - label: Total Participants
-  value: 7,645
+  value: 7,750
 - label: Olink Explore HT Proteins
   value: 5,400
 - label: Proteomic Profiles
   value: 3,090
 - label: Illumina GSA v3-MD Genotyping (Soon)
-  value: 7,645
+  value: 7,750
 - label: Matched Blood Samples
   value: 4,845
 - label: Matched Urine Samples
