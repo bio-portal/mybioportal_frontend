@@ -123,6 +123,7 @@ export const DICTIONARY_FR: Record<string, string> = {
   "Proteomics Available": "Protéomique disponible",
   "Recruitment Site": "Site de recrutement",
   "Respiratory": "Respiratoire",
+  "Retinopathy Severity": "Sévérité de la rétinopathie"
   "Retinal": "Rétinien",
   "Retinal + Blood": "Rétinien + Sang",
   "Retinal + Blood + Urine": "Rétinien + Sang + Urine",
