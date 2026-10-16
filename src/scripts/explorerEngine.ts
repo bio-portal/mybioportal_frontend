@@ -921,7 +921,12 @@ const UIManager = {
       const stat = DataManager.currentStats.find(s => s.chart_id === meta.chart_id);
       if (!stat) return;
 
-      const validData = stat.data.filter(d => d.count !== 0 && d.count !== "0");
+      const validData = stat.data.filter(d =>
+          d.count !== 0 &&
+          d.count !== "0" &&
+          d.count !== "" &&
+          d.count !== null
+      );
       if (!validData.length) return;
 
       const isBar = meta.chart_type === 'bar';
