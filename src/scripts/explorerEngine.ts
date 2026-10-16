@@ -711,6 +711,7 @@ const ChartFactory = {
     };
   },
 
+
 getSharedOptions(meta: VariableMeta): any {
     return {
       responsive: true,
@@ -722,18 +723,24 @@ getSharedOptions(meta: VariableMeta): any {
       },
       onClick: (event: any, elements: any[]) => {
         if (!elements.length) return;
-        const targetIndex = elements[0].index;
+        const targetElement = elements[0];
         const chart = this.instances[meta.chart_id];
         const type = chart.config.type;
 
         let selectedCategory = '';
         if (type === 'treemap') {
-           selectedCategory = chart.data.datasets[0].data[targetIndex] ? (chart.data.datasets[0].data[targetIndex] as any)._data.category : '';
+           selectedCategory = targetElement.element?.$context?.raw?.g
+                           || (chart.data.datasets[0].data[targetElement.index] as any)?._data?.category
+                           || '';
         } else if (type === 'venn') {
-           // 🌟 THE FIX: Venn plugins reorder data. Extract name directly from the raw element.
-           selectedCategory = chart.data.datasets[0].data[targetIndex]?.name || '';
+           // 🌟 THE FIX: Intersections do not exist in the base data array.
+           // We must extract the category directly from the raw pixel element context.
+           selectedCategory = targetElement.element?.$context?.raw?.category
+                           || targetElement.element?.$context?.raw?.name
+                           || '';
         } else {
-           selectedCategory = (chart.data.datasets[0] as any).customData?.[targetIndex]?.category || String(chart.data.labels![targetIndex]);
+           const dataset = chart.data.datasets[targetElement.datasetIndex] as any;
+           selectedCategory = dataset.customData?.[targetElement.index]?.category || String(chart.data.labels![targetElement.index]);
         }
 
         UIManager.handleChartClick(meta.chart_id, selectedCategory);
@@ -751,8 +758,9 @@ getSharedOptions(meta: VariableMeta): any {
               if (!tooltipItems || !tooltipItems.length) return '';
               const type = tooltipItems[0].chart.config.type;
               let rawCat = '';
+
               if (type === 'treemap') rawCat = tooltipItems[0].raw?.g || '';
-              else if (type === 'venn') rawCat = tooltipItems[0].raw?.name || ''; // 🌟 THE FIX
+              else if (type === 'venn') rawCat = tooltipItems[0].raw?.category || tooltipItems[0].raw?.name || '';
               else {
                 const dataset = tooltipItems[0].dataset as any;
                 rawCat = dataset.customData?.[tooltipItems[0].dataIndex]?.category || tooltipItems[0].label;
@@ -771,8 +779,7 @@ getSharedOptions(meta: VariableMeta): any {
                 const categoryName = context.raw?.g;
                 rawItem = customData.find((d: any) => String(d.category) === String(categoryName));
               } else if (type === 'venn') {
-                // 🌟 THE FIX: Match Venn items by name, NOT by index
-                const categoryName = context.raw?.name;
+                const categoryName = context.raw?.category || context.raw?.name;
                 rawItem = customData.find((d: any) => String(d.category) === String(categoryName));
               } else {
                 rawItem = customData[context.dataIndex];
@@ -889,11 +896,12 @@ const UIManager = {
 handleChartClick(chartId: string, categoryName: string) {
     if (!categoryName) return;
     const prefix = chartId.toLowerCase().replace(/ /g, '_');
-    const sanitized = slugify(categoryName);
+
+    // 🌟 THE FIX: Mirror the sidebar logic exactly. Bypass slugify so we
+    // keep the '+' signs intact for the database match.
+    const sanitized = String(categoryName).toLowerCase().replace(/ /g, '_');
     const targetKey = `${prefix}_${sanitized}`;
 
-    // 🌟 THE FIX: Remove the dangerous fallback. Exact matching ensures
-    // "Retinal + Blood + Urine" routes perfectly without defaulting to "Urine"
     if (DataManager.filters.includes(targetKey)) {
       this.applyFilter(targetKey);
     }
