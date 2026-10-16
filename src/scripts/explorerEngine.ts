@@ -921,16 +921,24 @@ const UIManager = {
       const stat = DataManager.currentStats.find(s => s.chart_id === meta.chart_id);
       if (!stat) return;
 
-      const validData = stat.data.filter(d =>
-          d.count !== 0 &&
-          d.count !== "0" &&
-          d.count !== "" &&
-          d.count !== null
-      );
-      if (!validData.length) return;
-
+      // 1. Define chart types FIRST so the filter can use them
       const isBar = meta.chart_type === 'bar';
       const isVenn = meta.chart_id === 'sample_intersections';
+
+      // 2. Safely filter the data
+      const validData = stat.data.filter(d => {
+          // Always drop genuinely missing data
+          if (d.count === "" || d.count === null) return false;
+
+          // NEVER drop 0s for the Venn diagram (this prevents the s.bb crash!)
+          if (isVenn) return true;
+
+          // Safely drop 0s for all other charts to keep the UI clean
+          return d.count !== 0 && d.count !== "0";
+      });
+
+      if (!validData.length) return;
+
       const containerHeight = 240;
 
       const canvasHeight = isBar ? Math.max(containerHeight, validData.length * 38) : containerHeight;
