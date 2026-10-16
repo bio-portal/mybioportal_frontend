@@ -283,7 +283,9 @@ async initialize() {
     return this.currentStats;
   },
 
-  calculateCohortSizes() {
+
+
+calculateCohortSizes() {
     this.cohortSizes = {};
     const baselineData = this.cache.get("stats_baseline") as StatRow[];
     if (!baselineData) return;
@@ -294,12 +296,15 @@ async initialize() {
         this.cohortSizes['baseline'] = stat.data.reduce((acc, curr) => acc + (parseInt(String(curr.count)) || 0), 0);
       }
       stat.data.forEach(item => {
-        // Change this: const cleanCategory = String(item.category).toLowerCase().replace(/ /g, '_');
-        const cleanCategory = slugify(item.category);
+        // 🌟 THE FIX: Remove slugify. Mirror the exact same space-to-underscore
+        // formatting we use everywhere else to perfectly preserve the '+' signs.
+        const cleanCategory = String(item.category).toLowerCase().replace(/ /g, '_');
         this.cohortSizes[`${prefix}_${cleanCategory}`] = item.count;
       });
     });
   }
+
+
 };
 
 // ==========================================
