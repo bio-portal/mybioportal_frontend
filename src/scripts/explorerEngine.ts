@@ -711,7 +711,7 @@ const ChartFactory = {
     };
   },
 
-  getSharedOptions(meta: VariableMeta): any {
+getSharedOptions(meta: VariableMeta): any {
     return {
       responsive: true,
       maintainAspectRatio: false,
@@ -730,9 +730,9 @@ const ChartFactory = {
         if (type === 'treemap') {
            selectedCategory = chart.data.datasets[0].data[targetIndex] ? (chart.data.datasets[0].data[targetIndex] as any)._data.category : '';
         } else if (type === 'venn') {
-           selectedCategory = (chart.data.datasets[0] as any).customData[targetIndex]?.category || '';
+           // 🌟 THE FIX: Venn plugins reorder data. Extract name directly from the raw element.
+           selectedCategory = chart.data.datasets[0].data[targetIndex]?.name || '';
         } else {
-           // 🌟 SECURITY REWORK: Query standard data maps utilizing the raw unmutated English metadata payload configurations
            selectedCategory = (chart.data.datasets[0] as any).customData?.[targetIndex]?.category || String(chart.data.labels![targetIndex]);
         }
 
@@ -752,12 +752,11 @@ const ChartFactory = {
               const type = tooltipItems[0].chart.config.type;
               let rawCat = '';
               if (type === 'treemap') rawCat = tooltipItems[0].raw?.g || '';
-              else if (type === 'venn') rawCat = (tooltipItems[0].dataset as any).customData[tooltipItems[0].dataIndex]?.category;
+              else if (type === 'venn') rawCat = tooltipItems[0].raw?.name || ''; // 🌟 THE FIX
               else {
                 const dataset = tooltipItems[0].dataset as any;
                 rawCat = dataset.customData?.[tooltipItems[0].dataIndex]?.category || tooltipItems[0].label;
               }
-              // 🌟 LOCALIZED HOVER LABELS
               return t(rawCat);
             },
             label: (context: any) => {
@@ -770,6 +769,10 @@ const ChartFactory = {
               let rawItem;
               if (type === 'treemap') {
                 const categoryName = context.raw?.g;
+                rawItem = customData.find((d: any) => String(d.category) === String(categoryName));
+              } else if (type === 'venn') {
+                // 🌟 THE FIX: Match Venn items by name, NOT by index
+                const categoryName = context.raw?.name;
                 rawItem = customData.find((d: any) => String(d.category) === String(categoryName));
               } else {
                 rawItem = customData[context.dataIndex];
@@ -883,16 +886,17 @@ const UIManager = {
     }
   },
 
-  handleChartClick(chartId: string, categoryName: string) {
+handleChartClick(chartId: string, categoryName: string) {
     if (!categoryName) return;
     const prefix = chartId.toLowerCase().replace(/ /g, '_');
     const sanitized = slugify(categoryName);
     const targetKey = `${prefix}_${sanitized}`;
 
-    const fallback = DataManager.filters.find(f => f.endsWith(`_${sanitized}`) || sanitized.endsWith(f.replace(`${prefix}_`, '')));
-    const finalKey = DataManager.filters.includes(targetKey) ? targetKey : fallback;
-
-    if (finalKey) this.applyFilter(finalKey);
+    // 🌟 THE FIX: Remove the dangerous fallback. Exact matching ensures
+    // "Retinal + Blood + Urine" routes perfectly without defaulting to "Urine"
+    if (DataManager.filters.includes(targetKey)) {
+      this.applyFilter(targetKey);
+    }
   },
 
   updateDashboard() {
