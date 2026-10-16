@@ -200,7 +200,13 @@ export function t(key: string): string {
   return DICTIONARY_FR[key] || key;
 }
 
-
+const slugify = (str: string) => {
+  return String(str).toLowerCase()
+    .replace(/ /g, '_')
+    .replace(/\+/g, '_plus')
+    .replace(/</g, 'under_')
+    .replace(/>/g, 'over_');
+};
 // Register standard elements alongside Treemap, Venn, and DataLabels modules
 Chart.register(...registerables, TreemapController, TreemapElement, VennDiagramController, ArcSlice, ChartDataLabels);
 
@@ -257,12 +263,18 @@ const DataManager = {
     return data;
   },
 
-  async initialize() {
-    [this.metadata, this.filters, this.currentStats] = await Promise.all([
+async initialize() {
+    // Fetch and explicitly lowercase the filter array to prevent case-mismatches
+    const [meta, rawFilters, stats] = await Promise.all([
       this.fetch("type=metadata", "metadata"),
       this.fetch("type=filters", "filters"),
       this.fetch("filter=baseline", "stats_baseline")
     ]);
+
+    this.metadata = meta;
+    this.filters = rawFilters.map((f: string) => f.toLowerCase()); // 🌟 THE FIX
+    this.currentStats = stats;
+
     this.calculateCohortSizes();
   },
 
@@ -282,7 +294,8 @@ const DataManager = {
         this.cohortSizes['baseline'] = stat.data.reduce((acc, curr) => acc + (parseInt(String(curr.count)) || 0), 0);
       }
       stat.data.forEach(item => {
-        const cleanCategory = String(item.category).toLowerCase().replace(/ /g, '_');
+        // Change this: const cleanCategory = String(item.category).toLowerCase().replace(/ /g, '_');
+        const cleanCategory = slugify(item.category);
         this.cohortSizes[`${prefix}_${cleanCategory}`] = item.count;
       });
     });
@@ -873,7 +886,7 @@ const UIManager = {
   handleChartClick(chartId: string, categoryName: string) {
     if (!categoryName) return;
     const prefix = chartId.toLowerCase().replace(/ /g, '_');
-    const sanitized = String(categoryName).toLowerCase().replace(/ /g, '_');
+    const sanitized = slugify(categoryName);
     const targetKey = `${prefix}_${sanitized}`;
 
     const fallback = DataManager.filters.find(f => f.endsWith(`_${sanitized}`) || sanitized.endsWith(f.replace(`${prefix}_`, '')));
