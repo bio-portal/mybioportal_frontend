@@ -19,15 +19,17 @@ const pageData = await getEntry('pages', `${lang}/data`);
 const hero = pageData?.data?.hero || { tagline: 'Data', headline: 'BioPortal Datasets', description: 'Loading data...' };
 
 // 1. Grab landing metrics from YAML
-const rawMetrics = pageData?.data?.landingMetrics || [];
+const rawMetrics = pageData?.data?.landingMetrics;
 
 // 2. Exact Hex colors matching your SVG logo pieces (used as a fallback)
 const brandHexColors = ['#0284c7', '#0d9488', '#0ea5e9', '#16a34a', '#eab308', '#f97316', '#ea580c'];
 
-// 3. Prepare metrics for the client-side JS Engine
-const clientMetrics = rawMetrics.map((m: any, i: number) => ({
-  label: m.label,
-  value: String(m.value),
+// 3. Prepare metrics for the client-side JS Engine.
+// 🌟 THE FIX: Strictly enforce Array type using Array.isArray to prevent build crashes
+const safeMetrics = Array.isArray(rawMetrics) ? rawMetrics : [];
+const clientMetrics = safeMetrics.map((m: any, i: number) => ({
+  label: m.label || "",
+  value: String(m.value || "0"),
   color: brandHexColors[i % brandHexColors.length]
 }));
 
