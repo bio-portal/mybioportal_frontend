@@ -9,6 +9,17 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 const LANG = document.documentElement.lang || 'en';
 
+
+
+// ============================================================================
+// AI TRANSLATION TASK:
+// You are an expert medical and technical translator.
+// Please translate the empty string values (the right side of the colon)
+// from English to French. Keep the original formatting and casing in mind.
+// DO NOT modify the keys (the left side of the colon).
+// Return ONLY the fully completed TypeScript code block.
+// ============================================================================
+
 export const DICTIONARY_FR: Record<string, string> = {
   // --- Base UI Elements ---
   "Active View": "Vue active",
@@ -20,27 +31,27 @@ export const DICTIONARY_FR: Record<string, string> = {
   // --- Extracted Pipeline Data ---
   "African": "Africain",
   "Age Group": "Groupe d'âge",
-  "Alimentary & Metabolism": "Alimentation et métabolisme",
+  "Alimentary & Metabolism": "Alimentaire et Métabolisme",
   "Alive": "Vivant",
-  "Amputation History": "Historique d'amputation",
-  "Ancestry": "Ancestralité",
+  "Amputation History": "Antécédents d'amputation",
+  "Ancestry": "Ascendance",
   "Antiinfectives": "Anti-infectieux",
   "Antineoplastics & Immunomodulators": "Antinéoplasiques et immunomodulateurs",
   "Antiparasitics": "Antiparasitaires",
   "BMI": "IMC",
-  "BP (Diastolic)": "Tension artérielle (Diastolique)",
-  "BP (Systolic)": "Tension artérielle (Systolique)",
+  "BP (Diastolic)": "PA (Diastolique)",
+  "BP (Systolic)": "PA (Systolique)",
   "Bladder Cancer": "Cancer de la vessie",
   "Blood": "Sang",
   "Blood + Urine": "Sang + Urine",
   "Body Fat %": "% de graisse corporelle",
-  "Body Fat Mass (KG)": "Masse grasse (KG)",
+  "Body Fat Mass (KG)": "Masse grasse corporelle (KG)",
   "Body Fat Percentage": "Pourcentage de graisse corporelle",
   "Body Mass Index": "Indice de masse corporelle",
   "Bone Mass (KG)": "Masse osseuse (KG)",
   "Breast Cancer": "Cancer du sein",
   "Cancer": "Cancer",
-  "Cancer Distribution": "Distribution des cancers",
+  "Cancer Distribution": "Répartition des cancers",
   "Cardiology": "Cardiologie",
   "Cardiovascular": "Cardiovasculaire",
   "Colorectal Cancer": "Cancer colorectal",
@@ -52,25 +63,28 @@ export const DICTIONARY_FR: Record<string, string> = {
   "Dermatologicals": "Dermatologiques",
   "Diabetes Subtype": "Sous-type de diabète",
   "Diabetic Foot Clinic": "Clinique du pied diabétique",
-  "Diastolic Blood Pressure": "Tension artérielle diastolique",
-  "East Asian": "Est-asiatique",
+  "Diastolic Blood Pressure": "Pression artérielle diastolique",
+  "East Asian": "Asiatique de l'Est",
   "Elevated (120-129)": "Élevée (120-129)",
   "Elna": "Elna",
   "Emergency": "Urgence",
   "Endocrinology": "Endocrinologie",
   "Endometrial Cancer": "Cancer de l'endomètre",
-  "Ethnicity": "Ancestralité",
+  "Ethnicity": "Origine ethnique",
   "European": "Européen",
-  "EyeArt Severity Score": "Score de sévérité EyeArt",
-  "FEMALE": "FEMME",
   "Fat-Free Mass (KG)": "Masse maigre (KG)",
+  "Female": "Femme",
   "Foot Ulcers": "Ulcères du pied",
   "Former Smoker": "Ancien fumeur",
   "Frailty Scale (CFS)": "Échelle de fragilité (CFS)",
-  "Genito-urinary & Sex Hormones": "Système génito-urinaire et hormones sexuelles",
+  "Genito-urinary & Sex Hormones": "Génito-urinaire et hormones sexuelles",
   "Gestational": "Gestationnel",
-  "Gestational Diabetes Clinic": "Clinique de diabète gestationnel",
-  "Healthy (18.5-24.9)": "Poids santé (18.5-24.9)",
+  "Gestational Diabetes Clinic": "Clinique du diabète gestationnel",
+  "Grade 0": "Grade 0",
+  "Grade 1": "Grade 1",
+  "Grade 2": "Grade 2",
+  "Grade 3-4": "Grade 3-4",
+  "Healthy (18.5-24.9)": "Sain (18.5-24.9)",
   "Heart Failure": "Insuffisance cardiaque",
   "Herzl": "Herzl",
   "Hispanic Or Latin American": "Hispanique ou latino-américain",
@@ -79,16 +93,16 @@ export const DICTIONARY_FR: Record<string, string> = {
   "Kidney Disease (Nephropathy)": "Maladie rénale (Néphropathie)",
   "Leukemia Cancer": "Leucémie",
   "Lung Cancer": "Cancer du poumon",
-  "MALE": "HOMME",
   "MODY": "MODY",
   "Macular Edema (DME)": "Œdème maculaire (OMD)",
-  "Managing Well": "Se porte bien",
-  "Middle Eastern": "Moyen-Orient",
+  "Male": "Homme",
+  "Managing Well": "S'en sort bien",
+  "Middle Eastern": "Moyen-Oriental",
   "Mildly Frail": "Légèrement fragile",
   "Moderately Frail": "Modérément fragile",
   "Muscle Mass (KG)": "Masse musculaire (KG)",
   "Musculo-skeletal": "Musculo-squelettique",
-  "Native American": "Autochtone",
+  "Native American": "Amérindien",
   "Nephrology": "Néphrologie",
   "Nervous System": "Système nerveux",
   "Neuropathy": "Neuropathie",
@@ -100,7 +114,7 @@ export const DICTIONARY_FR: Record<string, string> = {
   "Obesity Class 2 (35.0-39.9)": "Obésité classe 2 (35.0-39.9)",
   "Obesity Class 3 (40.0+)": "Obésité classe 3 (40.0+)",
   "Other Cancer": "Autre cancer",
-  "Overweight (25.0-29.9)": "Surpoids (25.0-29.9)",
+  "Overweight (25.0-29.9)": "Embonpoint (25.0-29.9)",
   "Pancreatic Cancer": "Cancer du pancréas",
   "Peripheral Vascular Disease": "Maladie vasculaire périphérique",
   "Prediabetes": "Prédiabète",
@@ -109,34 +123,35 @@ export const DICTIONARY_FR: Record<string, string> = {
   "Proteomics Available": "Protéomique disponible",
   "Recruitment Site": "Site de recrutement",
   "Respiratory": "Respiratoire",
+  "Retinopathy Severity": "Sévérité de la rétinopathie",
   "Retinal": "Rétinien",
   "Retinal + Blood": "Rétinien + Sang",
   "Retinal + Blood + Urine": "Rétinien + Sang + Urine",
   "Retinal + Urine": "Rétinien + Urine",
   "Retinopathy (Any)": "Rétinopathie (Toute)",
-  "Sample Overlap": "Chevauchement des échantillons",
+  "Sample Overlap": "Chevauchement d'échantillons",
   "Sensory Organs": "Organes sensoriels",
   "Severely Frail": "Sévèrement fragile",
   "Sex at Birth": "Sexe à la naissance",
   "Skeletal Muscle Mass Measurement": "Mesure de la masse musculaire squelettique",
   "Skin Cancer": "Cancer de la peau",
   "Smoking Status": "Statut tabagique",
-  "South Asian": "Sud-asiatique",
+  "South Asian": "Asiatique du Sud",
   "Southeast Asian": "Asiatique du Sud-Est",
   "Stage 1 (130-139)": "Stade 1 (130-139)",
   "Stage 1 (80-89)": "Stade 1 (80-89)",
   "Stage 2 (140-159)": "Stade 2 (140-159)",
   "Stage 2 (90-99)": "Stade 2 (90-99)",
   "Stage 3 (100-119)": "Stade 3 (100-119)",
-  "Stroke History": "Historique d'AVC",
+  "Stroke History": "Antécédents d'AVC",
   "Systemic Hormones": "Hormones systémiques",
-  "Systolic Blood Pressure": "Tension artérielle systolique",
+  "Systolic Blood Pressure": "Pression artérielle systolique",
   "Thyroid Cancer": "Cancer de la thyroïde",
   "Top-Level Drug Classes": "Classes de médicaments principales",
   "Type 1 Diabetes": "Diabète de type 1",
   "Type 2 Diabetes": "Diabète de type 2",
-  "Underweight (<18.5)": "Poids insuffisant (<18.5)",
-  "Ungradable": "Inévaluable",
+  "Underweight (<18.5)": "Insuffisance pondérale (<18.5)",
+  "Ungradable": "Non gradable",
   "Unknown": "Inconnu",
   "Urine": "Urine",
   "Various": "Divers",
@@ -144,38 +159,38 @@ export const DICTIONARY_FR: Record<string, string> = {
   "Very Severely Frail": "Très sévèrement fragile",
   "Vital Status": "Statut vital",
   "Vulnerable": "Vulnérable",
-  "Wards": "Unités de soins",
-  "Well": "Bien",
+  "Wards": "Unités",
+  "Well": "En bonne santé",
   "Yes": "Oui",
-  "age": "Groupe d'âge",
-  "atc_classes": "Classes de médicaments",
-  "bone_mass": "Masse osseuse (KG)",
-  "cancer_types": "Distribution des cancers",
-  "cfs_score": "Échelle de fragilité (CFS)",
-  "consent_location": "Site de recrutement",
-  "deceased_status": "Statut vital",
-  "demo_smoking": "Statut tabagique",
-  "diabetes_type": "Sous-type de diabète",
+  "age": "âge",
+  "atc_classes": "classes_atc",
+  "bone_mass": "masse_osseuse",
+  "cancer_types": "types_cancer",
+  "cfs_score": "score_cfs",
+  "consent_location": "lieu_consentement",
+  "deceased_status": "statut_décès",
+  "demo_smoking": "démo_tabagisme",
+  "diabetes_type": "type_diabète",
   "diagnoses": "diagnostics",
-  "eyeart_severity": "Score de sévérité EyeArt",
-  "fat_free_mass": "Masse maigre (KG)",
-  "fat_mass": "Masse grasse (KG)",
-  "has_Amputation": "Historique d'amputation",
-  "has_Congestive_Heart_Failure": "Insuffisance cardiaque",
-  "has_Coronary_Artery_Disease": "Maladie coronarienne",
-  "has_DME": "Œdème maculaire (OMD)",
-  "has_Diabetic_foot_ulcer": "Ulcères du pied",
-  "has_Kidney_Disease": "Maladie rénale (Néphropathie)",
-  "has_Neuropathy": "Neuropathie",
-  "has_Peripheral_Vascular_Disease": "Maladie vasculaire périphérique",
-  "has_Retinopathy": "Rétinopathie (Toute)",
-  "has_Stroke": "Historique d'AVC",
-  "has_drug_history": "Historique des prescriptions",
-  "has_proteomics": "Protéomique disponible",
+  "eyeart_severity": "sévérité_eyeart",
+  "fat_free_mass": "masse_maigre",
+  "fat_mass": "masse_grasse",
+  "has_Amputation": "a_amputation",
+  "has_Congestive_Heart_Failure": "a_insuffisance_cardiaque_congestive",
+  "has_Coronary_Artery_Disease": "a_maladie_coronarienne",
+  "has_DME": "a_OMD",
+  "has_Diabetic_foot_ulcer": "a_ulcère_pied_diabétique",
+  "has_Kidney_Disease": "a_maladie_rénale",
+  "has_Neuropathy": "a_neuropathie",
+  "has_Peripheral_Vascular_Disease": "a_maladie_vasculaire_périphérique",
+  "has_Retinopathy": "a_rétinopathie",
+  "has_Stroke": "a_AVC",
+  "has_drug_history": "a_historique_médicaments",
+  "has_proteomics": "a_protéomique",
   "patients": "patients",
-  "prescriptions": "prescriptions",
-  "sample_intersections": "Chevauchement des échantillons",
-  "sex": "Sexe à la naissance",
+  "prescriptions": "ordonnances",
+  "sample_intersections": "intersections_échantillons",
+  "sex": "sexe",
 };
 
 export function t(key: string): string {
@@ -185,6 +200,14 @@ export function t(key: string): string {
   }
   return DICTIONARY_FR[key] || key;
 }
+
+const slugify = (str: string) => {
+  return String(str).toLowerCase()
+    .replace(/ /g, '_')
+    .replace(/\+/g, '_plus')
+    .replace(/</g, 'under_')
+    .replace(/>/g, 'over_');
+};
 // Register standard elements alongside Treemap, Venn, and DataLabels modules
 Chart.register(...registerables, TreemapController, TreemapElement, VennDiagramController, ArcSlice, ChartDataLabels);
 
@@ -241,12 +264,18 @@ const DataManager = {
     return data;
   },
 
-  async initialize() {
-    [this.metadata, this.filters, this.currentStats] = await Promise.all([
+async initialize() {
+    // Fetch and explicitly lowercase the filter array to prevent case-mismatches
+    const [meta, rawFilters, stats] = await Promise.all([
       this.fetch("type=metadata", "metadata"),
       this.fetch("type=filters", "filters"),
       this.fetch("filter=baseline", "stats_baseline")
     ]);
+
+    this.metadata = meta;
+    this.filters = rawFilters.map((f: string) => f.toLowerCase()); // 🌟 THE FIX
+    this.currentStats = stats;
+
     this.calculateCohortSizes();
   },
 
@@ -255,7 +284,9 @@ const DataManager = {
     return this.currentStats;
   },
 
-  calculateCohortSizes() {
+
+
+calculateCohortSizes() {
     this.cohortSizes = {};
     const baselineData = this.cache.get("stats_baseline") as StatRow[];
     if (!baselineData) return;
@@ -266,11 +297,15 @@ const DataManager = {
         this.cohortSizes['baseline'] = stat.data.reduce((acc, curr) => acc + (parseInt(String(curr.count)) || 0), 0);
       }
       stat.data.forEach(item => {
+        // 🌟 THE FIX: Remove slugify. Mirror the exact same space-to-underscore
+        // formatting we use everywhere else to perfectly preserve the '+' signs.
         const cleanCategory = String(item.category).toLowerCase().replace(/ /g, '_');
         this.cohortSizes[`${prefix}_${cleanCategory}`] = item.count;
       });
     });
   }
+
+
 };
 
 // ==========================================
@@ -682,7 +717,8 @@ const ChartFactory = {
     };
   },
 
-  getSharedOptions(meta: VariableMeta): any {
+
+getSharedOptions(meta: VariableMeta): any {
     return {
       responsive: true,
       maintainAspectRatio: false,
@@ -693,18 +729,24 @@ const ChartFactory = {
       },
       onClick: (event: any, elements: any[]) => {
         if (!elements.length) return;
-        const targetIndex = elements[0].index;
+        const targetElement = elements[0];
         const chart = this.instances[meta.chart_id];
         const type = chart.config.type;
 
         let selectedCategory = '';
         if (type === 'treemap') {
-           selectedCategory = chart.data.datasets[0].data[targetIndex] ? (chart.data.datasets[0].data[targetIndex] as any)._data.category : '';
+           selectedCategory = targetElement.element?.$context?.raw?.g
+                           || (chart.data.datasets[0].data[targetElement.index] as any)?._data?.category
+                           || '';
         } else if (type === 'venn') {
-           selectedCategory = (chart.data.datasets[0] as any).customData[targetIndex]?.category || '';
+           // 🌟 THE FIX: Intersections do not exist in the base data array.
+           // We must extract the category directly from the raw pixel element context.
+           selectedCategory = targetElement.element?.$context?.raw?.category
+                           || targetElement.element?.$context?.raw?.name
+                           || '';
         } else {
-           // 🌟 SECURITY REWORK: Query standard data maps utilizing the raw unmutated English metadata payload configurations
-           selectedCategory = (chart.data.datasets[0] as any).customData?.[targetIndex]?.category || String(chart.data.labels![targetIndex]);
+           const dataset = chart.data.datasets[targetElement.datasetIndex] as any;
+           selectedCategory = dataset.customData?.[targetElement.index]?.category || String(chart.data.labels![targetElement.index]);
         }
 
         UIManager.handleChartClick(meta.chart_id, selectedCategory);
@@ -722,13 +764,13 @@ const ChartFactory = {
               if (!tooltipItems || !tooltipItems.length) return '';
               const type = tooltipItems[0].chart.config.type;
               let rawCat = '';
+
               if (type === 'treemap') rawCat = tooltipItems[0].raw?.g || '';
-              else if (type === 'venn') rawCat = (tooltipItems[0].dataset as any).customData[tooltipItems[0].dataIndex]?.category;
+              else if (type === 'venn') rawCat = tooltipItems[0].raw?.category || tooltipItems[0].raw?.name || '';
               else {
                 const dataset = tooltipItems[0].dataset as any;
                 rawCat = dataset.customData?.[tooltipItems[0].dataIndex]?.category || tooltipItems[0].label;
               }
-              // 🌟 LOCALIZED HOVER LABELS
               return t(rawCat);
             },
             label: (context: any) => {
@@ -741,6 +783,9 @@ const ChartFactory = {
               let rawItem;
               if (type === 'treemap') {
                 const categoryName = context.raw?.g;
+                rawItem = customData.find((d: any) => String(d.category) === String(categoryName));
+              } else if (type === 'venn') {
+                const categoryName = context.raw?.category || context.raw?.name;
                 rawItem = customData.find((d: any) => String(d.category) === String(categoryName));
               } else {
                 rawItem = customData[context.dataIndex];
@@ -854,16 +899,18 @@ const UIManager = {
     }
   },
 
-  handleChartClick(chartId: string, categoryName: string) {
+handleChartClick(chartId: string, categoryName: string) {
     if (!categoryName) return;
     const prefix = chartId.toLowerCase().replace(/ /g, '_');
+
+    // 🌟 THE FIX: Mirror the sidebar logic exactly. Bypass slugify so we
+    // keep the '+' signs intact for the database match.
     const sanitized = String(categoryName).toLowerCase().replace(/ /g, '_');
     const targetKey = `${prefix}_${sanitized}`;
 
-    const fallback = DataManager.filters.find(f => f.endsWith(`_${sanitized}`) || sanitized.endsWith(f.replace(`${prefix}_`, '')));
-    const finalKey = DataManager.filters.includes(targetKey) ? targetKey : fallback;
-
-    if (finalKey) this.applyFilter(finalKey);
+    if (DataManager.filters.includes(targetKey)) {
+      this.applyFilter(targetKey);
+    }
   },
 
   updateDashboard() {
@@ -892,11 +939,24 @@ const UIManager = {
       const stat = DataManager.currentStats.find(s => s.chart_id === meta.chart_id);
       if (!stat) return;
 
-      const validData = stat.data.filter(d => d.count !== 0 && d.count !== "0");
-      if (!validData.length) return;
-
+      // 1. Define chart types FIRST so the filter can use them
       const isBar = meta.chart_type === 'bar';
       const isVenn = meta.chart_id === 'sample_intersections';
+
+      // 2. Safely filter the data
+      const validData = stat.data.filter(d => {
+          // Always drop genuinely missing data
+          if (d.count === "" || d.count === null) return false;
+
+          // NEVER drop 0s for the Venn diagram (this prevents the s.bb crash!)
+          if (isVenn) return true;
+
+          // Safely drop 0s for all other charts to keep the UI clean
+          return d.count !== 0 && d.count !== "0";
+      });
+
+      if (!validData.length) return;
+
       const containerHeight = 240;
 
       const canvasHeight = isBar ? Math.max(containerHeight, validData.length * 38) : containerHeight;

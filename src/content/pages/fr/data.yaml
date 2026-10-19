@@ -4,12 +4,22 @@ hero:
   headline: "Ensembles de données de population BioPortal"
   description: "Accédez à des cohortes de recherche au phénotypage approfondi, explorez les distributions d'échantillons multi-omiques et demandez du matériel biologique sécurisé pour des programme de recherche approuvés."
 landingMetrics:
-  participantsLabel: "Total des participants"
-  clinicalVariablesLabel: "Variables cliniques"
-  proteomicsLabel: "Profils protéomiques"
-  biosamplesLabel: "Échantillons biologiques"
-  fallbackValues:
-    clinicalVariables: "158"
+- label: Total des participants
+  value: 7,750
+- label: Protéines Olink Explore HT
+  value: 5,400
+- label: Profils protéomiques
+  value: 3,090
+- label: Illumina GSA v3-MD Génotypage (Bientôt)
+  value: 7,750
+- label: Échantillons de sang
+  value: 4,845
+- label: Échantillons d'urine
+  value: 3,210
+- label: Scans rétiniens
+  value: 4,230
+- label: Variables cliniques
+  value: 170
 
 explorer:
   pageTitle: "Explorateur de données interactif | BioPortal"
@@ -55,14 +65,11 @@ dataRequest:
     description: "L'accès aux ensembles de données de BioPortal exige un alignement institutionnel strict. Veuillez consulter les exigences en matière d'infrastructure et télécharger le cadre de demande d'accès officiel ci-dessous."
     requirementsTitle: "Exigences"
     requirementsItems:
-      - "Documentation du CÉR (Comité d'éthique de la recherche) approuvée par l'établissement et correspondant à la demande."
+      - "Documentation d'un CÉR (Comité d'éthique de la recherche) externe ou indépendant approuvée et correspondant à la demande."
       - "Accord de transfert de données (ATD) ou contrats d'alignement institutionnel signés."
       - "Conformité au cadre d'attribution de la science ouverte de BioPortal."
     infrastructureTitle: "Vérification de l'infrastructure"
     infrastructureDescription: "L'infrastructure utilise notre plateforme de découverte interactive sur mesure et s'appuie sur les réseaux informatiques haute performance de l'<strong>Alliance de recherche numérique du Canada (AllianceCan)</strong>, ainsi que sur une grappe de calcul privée et sécurisée à l'<strong>Institut de recherche Lady Davis (IRLD)</strong>."
-    infrastructureTags:
-      - "Grappe privée IRLD"
-      - "AllianceCan"
   actionBlock:
     title: "Demande d'accès aux données"
     description: "Visualisez en temps réel les cohortes cliniques, les distributions démographiques et les mesures d'échantillons grâce à notre portail. Filtrez et exportez des résumés de données rapidement et facilement."
